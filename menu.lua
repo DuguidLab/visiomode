@@ -13,7 +13,8 @@ end
 
 
 local function gotoStandAlone()
-    composer.gotoScene("select_protocol")
+    --composer.gotoScene("select_protocol")
+    composer.gotoScene("task")
 end
 
 

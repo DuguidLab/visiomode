@@ -9,6 +9,56 @@ local scene = composer.newScene()
 -- -----------------------------------------------------------------------------------
 
 
+-- initialise variables
+local target
+local hits = 0
+local misses = 0
+local bounds = {300, 700}
+local delay = 500
+
+
+local function restoreTarget()
+    target.x = bounds[math.random(#bounds)]
+    target.alpha = 1
+end
+
+
+local function onTargetHit(event)
+    local target = event.target
+    local phase = event.phase
+
+    if ("began" == phase) then
+
+    elseif ("moved" == phase) then
+
+    elseif ("ended" == phase) then
+        -- move target to a new random pos
+        target.alpha = 0
+        print("hit")
+        timer.performWithDelay(delay, restoreTarget)
+    end
+
+    return true
+end
+
+
+local function onTargetMiss(event)
+    local phase = event.phase
+
+    if ("began" == phase) then
+
+    elseif ("moved" == phase) then
+
+    elseif ("ended" == phase) then
+        if (target.alpha == 1) then
+            print("miss")
+        elseif (target.alpha == 0) then
+            print("overexcited")
+        end
+    end
+
+    return true
+end
 
 
 -- -----------------------------------------------------------------------------------
@@ -19,8 +69,16 @@ local scene = composer.newScene()
 function scene:create( event )
 
 	local sceneGroup = self.view
-	-- Code here runs when the scene is first created but has not yet appeared on screen
 
+    local background = display.newRect(display.contentCenterX, display.contentCenterY, display.contentWidth, display.contentHeight);
+    background:setFillColor(0, 0, 0);
+    background:toBack();
+
+    target = display.newRect(sceneGroup, bounds[math.random(#bounds)], 300, 80, display.contentHeight)
+    target.fill = { 1, 1, 1 }
+
+    background:addEventListener("touch", onTargetMiss)
+    target:addEventListener("touch", onTargetHit)
 end
 
 
