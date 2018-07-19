@@ -14,7 +14,7 @@ local target
 local bounds
 local hits = 0
 local misses = 0
-local numTargets = 5
+local numTargets = 4
 local targetDistance = 1000  -- mm
 local delay = 500
 
@@ -105,12 +105,12 @@ function scene:create( event )
 
 	local sceneGroup = self.view
 
-    local background = display.newRect(display.contentCenterX, display.contentCenterY, display.contentWidth, display.contentHeight);
-    background:setFillColor(0, 0, 0);
-    background:toBack();
+    local background = display.newRect(display.contentCenterX, display.contentCenterY, display.contentWidth, display.contentHeight)
+    background.fill = {0, 0, 0}
+    background:toBack()
 
     setTargetBounds()
-    target = display.newRect(sceneGroup, bounds[math.random(#bounds)], 300, 80, display.contentHeight)
+    target = display.newRect(sceneGroup, bounds[math.random(#bounds)], display.contentCenterY, 80, display.contentHeight)
     target.fill = { 1, 1, 1 }
 
     background:addEventListener("touch", onTargetMiss)
