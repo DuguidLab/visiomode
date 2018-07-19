@@ -17,6 +17,7 @@ local misses = 0
 local numTargets = 4
 local targetDistance = 1000  -- mm
 local delay = 500
+local horizontalWidth = 80
 
 
 local function setTargetBounds()
@@ -110,7 +111,7 @@ function scene:create( event )
     background:toBack()
 
     setTargetBounds()
-    target = display.newRect(sceneGroup, bounds[math.random(#bounds)], display.contentCenterY, 80, display.contentHeight)
+    target = display.newRect(sceneGroup, bounds[math.random(#bounds)], display.contentCenterY, horizontalWidth, display.contentHeight)
     target.fill = { 1, 1, 1 }
 
     background:addEventListener("touch", onTargetMiss)
