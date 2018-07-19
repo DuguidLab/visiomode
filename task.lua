@@ -11,10 +11,45 @@ local scene = composer.newScene()
 
 -- initialise variables
 local target
+local bounds
 local hits = 0
 local misses = 0
-local bounds = {300, 700}
+local numTargets = 5
+local targetDistance = 1000  -- mm
 local delay = 500
+
+
+local function setTargetBounds()
+    
+    -- convert distance between targets from mm to pixels
+    local pixelMilliMeter = 0.2645833  -- factor for converting pixels to mm
+    local distancePixels = math.floor(pixelMilliMeter * targetDistance)
+
+    bounds = {}
+    iter = 1  -- second counter for for loop
+    -- set bounds
+    if (numTargets % 2 == 0) then
+        -- slits placed center-out
+        for i = 1, numTargets, 2 do
+            table.insert(bounds, display.contentCenterX + ((distancePixels / 2) * iter))
+            table.insert(bounds, display.contentCenterX - ((distancePixels / 2) * iter))
+        iter = iter + 1
+        end
+    else
+        -- slits placed center-surround
+        table.insert(bounds, display.contentCenterX)
+        for i = 1, numTargets, 3 do
+            table.insert(bounds, display.contentCenterX + (distancePixels * iter))
+            table.insert(bounds, display.contentCenterX - (distancePixels * iter))
+        iter = iter + 1
+        end
+    end
+
+    -- inspect bounds table
+    print(table.foreach(bounds, print))
+    print(distancePixels)
+    print(display.contentCenterX)
+end
 
 
 local function restoreTarget()
@@ -74,6 +109,7 @@ function scene:create( event )
     background:setFillColor(0, 0, 0);
     background:toBack();
 
+    setTargetBounds()
     target = display.newRect(sceneGroup, bounds[math.random(#bounds)], 300, 80, display.contentHeight)
     target.fill = { 1, 1, 1 }
 
