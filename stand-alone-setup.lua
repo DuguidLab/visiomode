@@ -19,6 +19,8 @@ local targetDistance
 local animatedTargetOptions
 local shrinkingTargetOptions
 
+local goBackButton
+
 -- event handlers 
 local function onAnimatedTargetSwitchPress( event )
     local switch = event.target
@@ -41,6 +43,20 @@ local function onShrinkingTargetSwitchPress( event )
     end
 end
 
+
+local function gotoMenu()
+    composer.gotoScene("menu")
+end
+
+
+local function gotoAntimationOptions()
+    composer.gotoScene("animation-settings")
+end
+
+
+local function gotoShrinkingOptions()
+    composer.gotoScene("shrinking-settings")
+end
 
 -- -----------------------------------------------------------------------------------
 -- Scene event functions
@@ -92,7 +108,7 @@ function scene:create( event )
     })
     animatedTargetOptions = display.newText(sceneGroup, "Configure...", display.contentCenterX+450, 450, native.SystemFont, 35)
     animatedTargetOptions.alpha = 0
-
+    animatedTargetOptions:addEventListener("tap", gotoAntimationOptions)
 
     shrinkingTargetTitle = display.newText(sceneGroup, "Shrinking Target: ", display.contentCenterX-20, 525, native.SystemFont, 40)
     shrinkingTargetTitle.anchorX = 1
@@ -105,6 +121,7 @@ function scene:create( event )
     })
     shrinkingTargetOptions = display.newText(sceneGroup, "Configure...", display.contentCenterX+450, 525, native.SystemFont, 35)
     shrinkingTargetOptions.alpha = 0
+    shrinkingTargetOptions:addEventListener("tap", gotoShrinkingOptions)
 end
 
 
