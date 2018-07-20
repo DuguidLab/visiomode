@@ -20,7 +20,7 @@ local hapticsOnMiss
 local animatedTargetOptions
 local shrinkingTargetOptions
 
-local startTaskButton
+local setupSessionButton
 local goBackButton
 
 -- event handlers 
@@ -61,8 +61,8 @@ local function gotoShrinkingOptions()
 end
 
 
-local function startTask()
-    composer.gotoScene("task")
+local function setupSession()
+    composer.gotoScene("stand-alone-session-setup")
 end
 
 
@@ -147,8 +147,8 @@ function scene:create( event )
     })
     sceneGroup:insert(hapticsOnMissField)
  
-    startTaskButton = display.newText(sceneGroup, "Start Task", display.contentCenterX, 700, native.SystemFont, 45)
-    startTaskButton:addEventListener("tap", startTask)
+    setupSessionButton = display.newText(sceneGroup, "Setup Session", display.contentCenterX, 700, native.SystemFont, 45)
+    setupSessionButton:addEventListener("tap", setupSession)
 end
 
 
