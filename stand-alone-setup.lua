@@ -15,10 +15,12 @@ local targetWidth
 local delay
 local numTargets
 local targetDistance
+local hapticsOnMiss
 
 local animatedTargetOptions
 local shrinkingTargetOptions
 
+local startTaskButton
 local goBackButton
 
 -- event handlers 
@@ -57,6 +59,12 @@ end
 local function gotoShrinkingOptions()
     composer.gotoScene("shrinking-settings")
 end
+
+
+local function startTask()
+    composer.gotoScene("task")
+end
+
 
 -- -----------------------------------------------------------------------------------
 -- Scene event functions
@@ -128,6 +136,19 @@ function scene:create( event )
     shrinkingTargetOptions = display.newText(sceneGroup, "Configure...", display.contentCenterX+450, 525, native.SystemFont, 35)
     shrinkingTargetOptions.alpha = 0
     shrinkingTargetOptions:addEventListener("tap", gotoShrinkingOptions)
+
+    hapticsOnMissTitle = display.newText(sceneGroup, "Vibrate on Miss: ", display.contentCenterX-20, 600, native.SystemFont, 40)
+    hapticsOnMissTitle.anchorX = 1 
+    hapticsOnMissField = widget.newSwitch({
+        x = display.contentCenterX+295, 
+        y = 600,
+        style = "checkbox",
+        id = "shrinkingTargetCheckbox",
+    })
+    sceneGroup:insert(hapticsOnMissField)
+ 
+    startTaskButton = display.newText(sceneGroup, "Start Task", display.contentCenterX, 700, native.SystemFont, 45)
+    startTaskButton:addEventListener("tap", startTask)
 end
 
 
