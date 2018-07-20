@@ -9,6 +9,8 @@ local scene = composer.newScene()
 -- -----------------------------------------------------------------------------------
 local widget = require( "widget" )
 
+local taskSettings
+
 local animatedTarget
 local shrinkingTarget
 local targetWidth
@@ -62,6 +64,17 @@ end
 
 
 local function setupSession()
+    -- export task settings
+    taskSettings = {
+        delay = delay.text,
+        width = targetWidth.text,
+        targets = numTargets.text,
+        distance = targetDistance.text,
+        haptics = hapticsOnMiss.isOn,
+        animated = animatedTarget.isOn,
+        shrinking = shrinkingTarget.isOn
+    }
+    composer.setVariable("taskSettings", taskSettings)
     composer.gotoScene("stand-alone-session-setup")
 end
 
@@ -81,71 +94,79 @@ function scene:create( event )
 
     local title = display.newText(sceneGroup, "Stand-Alone Task Setup", display.contentCenterX, 70, native.SystemFont, 50)
     
-    delayTitle = display.newText(sceneGroup, "Presentation Delay (ms): ", display.contentCenterX-20, 150, native.SystemFont, 40)
+    local delayTitle = display.newText(sceneGroup, "Presentation Delay (ms): ", display.contentCenterX-20, 150, native.SystemFont, 40)
     delayTitle.anchorX = 1
-    delayField = native.newTextField(display.contentCenterX+250, 150, 100, 35)
-    delayField.text = 500
-    delayField.anchorX = 0
-    sceneGroup:insert(delayField)
+    
+    delay = native.newTextField(display.contentCenterX+250, 150, 100, 35)
+    delay.text = 500
+    delay.anchorX = 0
+    sceneGroup:insert(delay)
 
-    numTargetsTitle = display.newText(sceneGroup, "Number of Targets: ", display.contentCenterX-20, 225, native.SystemFont, 40)
+    local numTargetsTitle = display.newText(sceneGroup, "Number of Targets: ", display.contentCenterX-20, 225, native.SystemFont, 40)
     numTargetsTitle.anchorX = 1
-    numTargetsField = native.newTextField(display.contentCenterX+250, 225, 100, 35)
-    numTargetsField.text = 2
-    numTargetsField.anchorX = 0
-    sceneGroup:insert(numTargetsField)
+    
+    numTargets = native.newTextField(display.contentCenterX+250, 225, 100, 35)
+    numTargets.text = 2
+    numTargets.anchorX = 0
+    sceneGroup:insert(numTargets)
 
     targetDistanceTitle = display.newText(sceneGroup, "Min Target Distance (mm): ", display.contentCenterX-20, 300, native.SystemFont, 40)
     targetDistanceTitle.anchorX = 1
-    targetDistanceField = native.newTextField(display.contentCenterX+250, 300, 100, 35)
-    targetDistanceField.text = 1000
-    targetDistanceField.anchorX = 0
-    sceneGroup:insert(targetDistanceField)
 
-    targetWidthTitle = display.newText(sceneGroup, "Target Width (px): ", display.contentCenterX-20, 375, native.SystemFont, 40)
+    targetDistance = native.newTextField(display.contentCenterX+250, 300, 100, 35)
+    targetDistance.text = 1000
+    targetDistance.anchorX = 0
+    sceneGroup:insert(targetDistance)
+
+    local targetWidthTitle = display.newText(sceneGroup, "Target Width (px): ", display.contentCenterX-20, 375, native.SystemFont, 40)
     targetWidthTitle.anchorX = 1
-    targetWidthField = native.newTextField(display.contentCenterX+250, 375, 100, 35)
-    targetWidthField.text = 80
-    targetWidthField.anchorX = 0
-    sceneGroup:insert(targetWidthField)
 
-    animatedTargetTitle = display.newText(sceneGroup, "Animated Target: ", display.contentCenterX-20, 450, native.SystemFont, 40)
+    targetWidth = native.newTextField(display.contentCenterX+250, 375, 100, 35)
+    targetWidth.text = 80
+    targetWidth.anchorX = 0
+    sceneGroup:insert(targetWidth)
+
+    local animatedTargetTitle = display.newText(sceneGroup, "Animated Target: ", display.contentCenterX-20, 450, native.SystemFont, 40)
     animatedTargetTitle.anchorX = 1
-    animatedTargetField = widget.newSwitch({
+
+    animatedTarget = widget.newSwitch({
         x = display.contentCenterX+295, 
         y = 450,
         style = "checkbox",
         id = "animatedTargetCheckbox",
         onPress = onAnimatedTargetSwitchPress
     })
-    sceneGroup:insert(animatedTargetField)
+    sceneGroup:insert(animatedTarget)
     animatedTargetOptions = display.newText(sceneGroup, "Configure...", display.contentCenterX+450, 450, native.SystemFont, 35)
     animatedTargetOptions.alpha = 0
     animatedTargetOptions:addEventListener("tap", gotoAntimationOptions)
 
-    shrinkingTargetTitle = display.newText(sceneGroup, "Shrinking Target: ", display.contentCenterX-20, 525, native.SystemFont, 40)
+    local shrinkingTargetTitle = display.newText(sceneGroup, "Shrinking Target: ", display.contentCenterX-20, 525, native.SystemFont, 40)
     shrinkingTargetTitle.anchorX = 1
-    shrinkingTargetField = widget.newSwitch({
+
+    shrinkingTarget = widget.newSwitch({
         x = display.contentCenterX+295, 
         y = 525,
         style = "checkbox",
         id = "shrinkingTargetCheckbox",
         onPress = onShrinkingTargetSwitchPress
     })
-    sceneGroup:insert(shrinkingTargetField)
+    sceneGroup:insert(shrinkingTarget)
     shrinkingTargetOptions = display.newText(sceneGroup, "Configure...", display.contentCenterX+450, 525, native.SystemFont, 35)
     shrinkingTargetOptions.alpha = 0
     shrinkingTargetOptions:addEventListener("tap", gotoShrinkingOptions)
 
-    hapticsOnMissTitle = display.newText(sceneGroup, "Vibrate on Miss: ", display.contentCenterX-20, 600, native.SystemFont, 40)
+    local hapticsOnMissTitle = display.newText(sceneGroup, "Vibrate on Miss: ", display.contentCenterX-20, 600, native.SystemFont, 40)
     hapticsOnMissTitle.anchorX = 1 
-    hapticsOnMissField = widget.newSwitch({
+
+    hapticsOnMiss = widget.newSwitch({
         x = display.contentCenterX+295, 
         y = 600,
         style = "checkbox",
         id = "shrinkingTargetCheckbox",
+        initialSwitchState = true,
     })
-    sceneGroup:insert(hapticsOnMissField)
+    sceneGroup:insert(hapticsOnMiss)
  
     setupSessionButton = display.newText(sceneGroup, "Setup Session", display.contentCenterX, 700, native.SystemFont, 45)
     setupSessionButton:addEventListener("tap", setupSession)
@@ -159,8 +180,7 @@ function scene:show( event )
 	local phase = event.phase
 
 	if ( phase == "will" ) then
-		-- Code here runs when the scene is still off screen (but is about to come on screen)
-
+        -- publish taskSettings table
 	elseif ( phase == "did" ) then
 		-- Code here runs when the scene is entirely on screen
 
@@ -175,8 +195,7 @@ function scene:hide( event )
 	local phase = event.phase
 
 	if ( phase == "will" ) then
-		-- Code here runs when the scene is on screen (but is about to go off screen)
-
+        
 	elseif ( phase == "did" ) then
         composer.removeScene("stand-alone-setup")
 	end
