@@ -78,24 +78,28 @@ function scene:create( event )
     delayField = native.newTextField(display.contentCenterX+250, 150, 100, 35)
     delayField.text = 500
     delayField.anchorX = 0
+    sceneGroup:insert(delayField)
 
     numTargetsTitle = display.newText(sceneGroup, "Number of Targets: ", display.contentCenterX-20, 225, native.SystemFont, 40)
     numTargetsTitle.anchorX = 1
     numTargetsField = native.newTextField(display.contentCenterX+250, 225, 100, 35)
     numTargetsField.text = 2
     numTargetsField.anchorX = 0
+    sceneGroup:insert(numTargetsField)
 
     targetDistanceTitle = display.newText(sceneGroup, "Min Target Distance (mm): ", display.contentCenterX-20, 300, native.SystemFont, 40)
     targetDistanceTitle.anchorX = 1
     targetDistanceField = native.newTextField(display.contentCenterX+250, 300, 100, 35)
     targetDistanceField.text = 1000
     targetDistanceField.anchorX = 0
+    sceneGroup:insert(targetDistanceField)
 
     targetWidthTitle = display.newText(sceneGroup, "Target Width (px): ", display.contentCenterX-20, 375, native.SystemFont, 40)
     targetWidthTitle.anchorX = 1
     targetWidthField = native.newTextField(display.contentCenterX+250, 375, 100, 35)
     targetWidthField.text = 80
     targetWidthField.anchorX = 0
+    sceneGroup:insert(targetWidthField)
 
     animatedTargetTitle = display.newText(sceneGroup, "Animated Target: ", display.contentCenterX-20, 450, native.SystemFont, 40)
     animatedTargetTitle.anchorX = 1
@@ -106,6 +110,7 @@ function scene:create( event )
         id = "animatedTargetCheckbox",
         onPress = onAnimatedTargetSwitchPress
     })
+    sceneGroup:insert(animatedTargetField)
     animatedTargetOptions = display.newText(sceneGroup, "Configure...", display.contentCenterX+450, 450, native.SystemFont, 35)
     animatedTargetOptions.alpha = 0
     animatedTargetOptions:addEventListener("tap", gotoAntimationOptions)
@@ -119,6 +124,7 @@ function scene:create( event )
         id = "shrinkingTargetCheckbox",
         onPress = onShrinkingTargetSwitchPress
     })
+    sceneGroup:insert(shrinkingTargetField)
     shrinkingTargetOptions = display.newText(sceneGroup, "Configure...", display.contentCenterX+450, 525, native.SystemFont, 35)
     shrinkingTargetOptions.alpha = 0
     shrinkingTargetOptions:addEventListener("tap", gotoShrinkingOptions)
@@ -151,8 +157,7 @@ function scene:hide( event )
 		-- Code here runs when the scene is on screen (but is about to go off screen)
 
 	elseif ( phase == "did" ) then
-		-- Code here runs immediately after the scene goes entirely off screen
-
+        composer.removeScene("stand-alone-setup")
 	end
 end
 
