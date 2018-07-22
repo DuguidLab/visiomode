@@ -74,6 +74,7 @@ local function setupSession()
         animated = animatedTarget.isOn,
         shrinking = shrinkingTarget.isOn
     }
+    --table.foreach(taskSettings, print) -- debug
     composer.setVariable("taskSettings", taskSettings)
     composer.gotoScene("stand-alone-session-setup")
 end
