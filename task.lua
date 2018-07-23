@@ -37,8 +37,8 @@ local function getTaskSettings()
     vibrateOnMiss = taskSettings.haptics
 
     -- convert mm to pix
-    targetDistance = math.floor(taskSettings.distance / pixelMilliMeter)
     horizontalWidth = math.floor(taskSettings.width / pixelMilliMeter)
+    targetDistance = math.floor(taskSettings.distance / pixelMilliMeter) + math.floor(horizontalWidth / 2)
 end
 
 
