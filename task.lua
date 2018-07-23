@@ -21,6 +21,7 @@ local numTargets
 local targetDistance  -- mm
 local delay
 local horizontalWidth
+local vibrateOnMiss
 
 local pixelMilliMeter = 0.2645833  -- factor for converting pixels to mm
 
@@ -33,10 +34,11 @@ local function getTaskSettings()
     -- set settings vars
     numTargets = taskSettings.targets
     delay = taskSettings.delay
+    vibrateOnMiss = taskSettings.haptics
 
     -- convert mm to pix
-    targetDistance = math.floor(taskSettings.distance * pixelMilliMeter)
-    horizontalWidth = math.floor(taskSettings.width * pixelMilliMeter)
+    targetDistance = math.floor(taskSettings.distance / pixelMilliMeter)
+    horizontalWidth = math.floor(taskSettings.width / pixelMilliMeter)
 end
 
 
@@ -104,6 +106,10 @@ local function onTargetMiss(event)
     elseif ("ended" == phase) then
         if (target.alpha == 1) then
             print("miss")
+            -- vibrate if haptics enabled
+            if (vibrateOnMiss) then
+                system.vibrate()
+            end
         elseif (target.alpha == 0) then
             print("overexcited")
         end
