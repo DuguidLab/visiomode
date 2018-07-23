@@ -22,7 +22,6 @@ local hapticsOnMiss
 local animatedTargetOptions
 local shrinkingTargetOptions
 
-local setupSessionButton
 local goBackButton
 
 -- event handlers 
@@ -76,6 +75,7 @@ local function setupSession()
     }
     --table.foreach(taskSettings, print) -- debug
     composer.setVariable("taskSettings", taskSettings)
+
     composer.gotoScene("stand-alone-session-setup")
 end
 
@@ -115,15 +115,15 @@ function scene:create( event )
     targetDistanceTitle.anchorX = 1
 
     targetDistance = native.newTextField(display.contentCenterX+250, 300, 100, 35)
-    targetDistance.text = 1000
+    targetDistance.text = 20
     targetDistance.anchorX = 0
     sceneGroup:insert(targetDistance)
 
-    local targetWidthTitle = display.newText(sceneGroup, "Target Width (px): ", display.contentCenterX-20, 375, native.SystemFont, 40)
+    local targetWidthTitle = display.newText(sceneGroup, "Target Width (mm): ", display.contentCenterX-20, 375, native.SystemFont, 40)
     targetWidthTitle.anchorX = 1
 
     targetWidth = native.newTextField(display.contentCenterX+250, 375, 100, 35)
-    targetWidth.text = 80
+    targetWidth.text = 5
     targetWidth.anchorX = 0
     sceneGroup:insert(targetWidth)
 
@@ -169,7 +169,7 @@ function scene:create( event )
     })
     sceneGroup:insert(hapticsOnMiss)
  
-    setupSessionButton = display.newText(sceneGroup, "Setup Session", display.contentCenterX, 700, native.SystemFont, 45)
+    local setupSessionButton = display.newText(sceneGroup, "Setup Session", display.contentCenterX, 700, native.SystemFont, 45)
     setupSessionButton:addEventListener("tap", setupSession)
 end
 
