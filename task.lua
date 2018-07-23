@@ -16,14 +16,14 @@ local hits
 local misses
 
 local taskSettings
+local sessionSettings
 
-local numTargets
 local targetDistance  -- mm
-local delay
 local horizontalWidth
-local vibrateOnMiss
 
-local pixelMilliMeter = 0.2645833  -- factor for converting pixels to mm
+
+-- TODO figure out DPI at runtime!
+local pixelMilliMeter = 0.2645833  -- factor for converting pixels to mm 
 
 
 local function getTaskSettings()
@@ -31,14 +31,15 @@ local function getTaskSettings()
     taskSettings = composer.getVariable("taskSettings")
     table.foreach(taskSettings, print)
 
-    -- set settings vars
-    numTargets = taskSettings.targets
-    delay = taskSettings.delay
-    vibrateOnMiss = taskSettings.haptics
-
     -- convert mm to pix
     horizontalWidth = math.floor(taskSettings.width / pixelMilliMeter)
     targetDistance = math.floor(taskSettings.distance / pixelMilliMeter) + math.floor(horizontalWidth / 2)
+end
+
+
+local function getSessionSettings()
+    sessionSettings = composer.getVariable("sessionSettings")
+    table.foreach(sessionSettings, print)
 end
 
 
@@ -47,9 +48,9 @@ local function setTargetBounds()
     bounds = {}
     iter = 1  -- second counter for for loop
     -- set bounds
-    if (numTargets % 2 == 0) then
+    if (taskSettings.targets % 2 == 0) then
         -- slits placed center-out
-        for i = 1, numTargets, 2 do
+        for i = 1, taskSettings.targets, 2 do
             table.insert(bounds, display.contentCenterX + ((targetDistance / 2) * iter))
             table.insert(bounds, display.contentCenterX - ((targetDistance / 2) * iter))
             iter = iter + 1
@@ -57,7 +58,7 @@ local function setTargetBounds()
     else
         -- slits placed center-surround
         table.insert(bounds, display.contentCenterX)
-        for i = 1, numTargets, 3 do
+        for i = 1, taskSettings.targets, 3 do
             table.insert(bounds, display.contentCenterX + (targetDistance * iter))
             table.insert(bounds, display.contentCenterX - (targetDistance * iter))
         iter = iter + 1
@@ -67,7 +68,6 @@ local function setTargetBounds()
     -- inspect bounds table
     print(table.foreach(bounds, print))
     print(targetDistance)
-    print(display.contentCenterX)
 end
 
 
@@ -89,7 +89,7 @@ local function onTargetHit(event)
         -- move target to a new random pos
         target.alpha = 0
         print("hit")
-        timer.performWithDelay(delay, restoreTarget)
+        timer.performWithDelay(taskSettings.delay, restoreTarget)
     end
 
     return true
@@ -107,7 +107,7 @@ local function onTargetMiss(event)
         if (target.alpha == 1) then
             print("miss")
             -- vibrate if haptics enabled
-            if (vibrateOnMiss) then
+            if (taskSettings.haptics) then
                 system.vibrate()
             end
         elseif (target.alpha == 0) then
