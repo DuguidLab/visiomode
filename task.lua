@@ -140,7 +140,7 @@ end
 
 local function sessionEnd()
     session = {
-        timestamp = os.date('%Y-%m-%d-%H:%M:%S'),
+        timestamp = os.date('%Y-%m-%d-%H_%M:%S'),
         hits = hits,
         misses = misses,
         precued = precued
