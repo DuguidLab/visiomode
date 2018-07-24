@@ -49,19 +49,19 @@ function scene:create( event )
     local hitsTitle = display.newText(sceneGroup, "Hits: ", display.contentCenterX-50, 300, native.SystemFont, 40)
     hitsTitle.anchorX = 1
     
-    local hitsText = display.newText(sceneGroup, hits, display.contentCenterX+100, 300, native.SystemFont, 40)
+    local hitsText = display.newText(sceneGroup, #hits, display.contentCenterX+100, 300, native.SystemFont, 40)
     hitsText.anchorX = 0
  
     local missesTitle = display.newText(sceneGroup, "Misses: ", display.contentCenterX-50, 400, native.SystemFont, 40)
     missesTitle.anchorX = 1
     
-    local missesText = display.newText(sceneGroup, misses, display.contentCenterX+100, 400, native.SystemFont, 40)
+    local missesText = display.newText(sceneGroup, #misses, display.contentCenterX+100, 400, native.SystemFont, 40)
     missesText.anchorX = 0
 
     local precuedTitle = display.newText(sceneGroup, "Precued: ", display.contentCenterX-50, 500, native.SystemFont, 40)
     precuedTitle.anchorX = 1
     
-    local precuedText = display.newText(sceneGroup, precued, display.contentCenterX+100, 500, native.SystemFont, 40)
+    local precuedText = display.newText(sceneGroup, #precued, display.contentCenterX+100, 500, native.SystemFont, 40)
     precuedText.anchorX = 0
 end
 

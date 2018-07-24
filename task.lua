@@ -95,8 +95,18 @@ local function onTargetHit(event)
     elseif ("ended" == phase) then
         -- move target to a new random pos
         target.alpha = 0
-        hits = hits + 1
+
+        local hit = {
+            timestamp = os.date('%H:%M:%S'),
+            x_distance = math.abs(event.x - event.xStart),
+            y_distance = math.abs(event.y - event.yStart),
+            touch_coords = {x = event.x, y = event.y},
+            touch_force = event.pressure
+        }
+
+        table.insert(hits, hit)
         print("hit")
+        
         timer.performWithDelay(taskSettings.delay, restoreTarget)
     end
 
@@ -113,15 +123,31 @@ local function onTargetMiss(event)
 
     elseif ("ended" == phase) then
         if (target.alpha == 1) then
+            local miss = {
+                timestamp = os.date('%H:%M:%S'),
+                x_distance = math.abs(event.x - event.xStart),
+                y_distance = math.abs(event.y - event.yStart),
+                touch_coords = {x = event.x, y = event.y},
+                touch_force = event.pressure
+            }
+
+            table.insert(misses, miss)
             print("miss")
-            misses = misses + 1
+            
             -- vibrate if haptics enabled
             if (taskSettings.haptics) then
                 system.vibrate()
             end
         elseif (target.alpha == 0) then
-            print("overexcited")
-            precued = precued + 1
+            local prec = {
+                timestamp = os.date('%H:%M:%S'),
+                x_distance = math.abs(event.x - event.xStart),
+                y_distance = math.abs(event.y - event.yStart),
+                touch_coords = {x = event.x, y = event.y},
+                touch_force = event.pressure
+            }
+            table.insert(precued, prec)
+            print("precued")
         end
     end
 
@@ -164,10 +190,10 @@ function scene:create( event )
     getTaskSettings()
     getSessionSettings()
 
-    -- reset hits / misses
-    hits = 0
-    misses = 0
-    precued = 0
+    -- init tables for hits / misses
+    hits = {}
+    misses = {}
+    precued = {}
 
     -- set up task scene
 	local sceneGroup = self.view
