@@ -8,7 +8,19 @@ local scene = composer.newScene()
 -- the scene is removed entirely (not recycled) via "composer.removeScene()"
 -- -----------------------------------------------------------------------------------
 
+local hits
+local misses
+local precued
+local timestamp
 
+
+local function getLastSession()
+    lastSession = composer.getVariable("lastSession")
+    hits = lastSession.hits
+    misses = lastSession.misses
+    precued = lastSession.precued
+    timestamp = lastSession.timestamp
+end
 
 
 -- -----------------------------------------------------------------------------------
@@ -18,9 +30,39 @@ local scene = composer.newScene()
 -- create()
 function scene:create( event )
 
-	local sceneGroup = self.view
-	-- Code here runs when the scene is first created but has not yet appeared on screen
+    getLastSession()
 
+	local sceneGroup = self.view
+
+    local background = display.newImageRect(sceneGroup, "assets/menu-background.jpg", 1400, 800)
+    background.x = display.contentCenterX
+    background.y = display.contentCenterY
+
+    local title = display.newText(sceneGroup, "Last Session Data", display.contentCenterX, 70, native.SystemFont, 50)
+    
+    local timestampTitle = display.newText(sceneGroup, "Session Timestamp: ", display.contentCenterX-50, 200, native.SystemFont, 40)
+    timestampTitle.anchorX = 1
+    
+    local timestampText = display.newText(sceneGroup, timestamp, display.contentCenterX+100, 200, native.SystemFont, 40)
+    timestampText.anchorX = 0
+
+    local hitsTitle = display.newText(sceneGroup, "Hits: ", display.contentCenterX-50, 300, native.SystemFont, 40)
+    hitsTitle.anchorX = 1
+    
+    local hitsText = display.newText(sceneGroup, hits, display.contentCenterX+100, 300, native.SystemFont, 40)
+    hitsText.anchorX = 0
+ 
+    local missesTitle = display.newText(sceneGroup, "Misses: ", display.contentCenterX-50, 400, native.SystemFont, 40)
+    missesTitle.anchorX = 1
+    
+    local missesText = display.newText(sceneGroup, misses, display.contentCenterX+100, 400, native.SystemFont, 40)
+    missesText.anchorX = 0
+
+    local precuedTitle = display.newText(sceneGroup, "Precued: ", display.contentCenterX-50, 500, native.SystemFont, 40)
+    precuedTitle.anchorX = 1
+    
+    local precuedText = display.newText(sceneGroup, precued, display.contentCenterX+100, 500, native.SystemFont, 40)
+    precuedText.anchorX = 0
 end
 
 
