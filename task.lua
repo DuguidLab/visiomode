@@ -140,7 +140,7 @@ end
 
 local function sessionEnd()
     session = {
-        timestamp = os.time(),
+        timestamp = os.date('%Y-%m-%d-%H:%M:%S'),
         hits = hits,
         misses = misses,
         precued = precued
@@ -148,7 +148,7 @@ local function sessionEnd()
 
     saveSession()
     composer.setVariable("lastSession", session)
-    composer.gotoScene("menu")
+    composer.gotoScene("last-session-summary")
 end
 
 
