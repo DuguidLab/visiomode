@@ -23,6 +23,7 @@ local precued
 
 local taskSettings
 local sessionSettings
+local sessionTimer
 
 local targetDistance  -- mm
 local horizontalWidth
@@ -195,7 +196,7 @@ function scene:show( event )
 	elseif ( phase == "did" ) then
         if (sessionSettings.duration > 0) then
             -- gotta convert min to msec
-            timer.performWithDelay(sessionSettings.duration * 60000, sessionEnd, 1)
+            sessionTimer = timer.performWithDelay(sessionSettings.duration * 60000, sessionEnd, 1)
         end
 	end
 end
@@ -208,8 +209,7 @@ function scene:hide( event )
 	local phase = event.phase
 
 	if ( phase == "will" ) then
-		-- Code here runs when the scene is on screen (but is about to go off screen)
-
+        timer.cancel(sessionTimer)
 	elseif ( phase == "did" ) then
         composer.removeScene("task")
 	end
