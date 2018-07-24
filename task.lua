@@ -7,13 +7,19 @@ local scene = composer.newScene()
 -- Code outside of the scene event functions below will only be executed ONCE unless
 -- the scene is removed entirely (not recycled) via "composer.removeScene()"
 -- -----------------------------------------------------------------------------------
+local json = require("json")
+
+local filePath = system.pathForFile("sessions.json", system.DocumentsDirectory)
 
 
 -- initialise variables
+local session
+
 local target
 local bounds
 local hits
 local misses
+local precued
 
 local taskSettings
 local sessionSettings
@@ -88,6 +94,7 @@ local function onTargetHit(event)
     elseif ("ended" == phase) then
         -- move target to a new random pos
         target.alpha = 0
+        hits = hits + 1
         print("hit")
         timer.performWithDelay(taskSettings.delay, restoreTarget)
     end
@@ -106,16 +113,42 @@ local function onTargetMiss(event)
     elseif ("ended" == phase) then
         if (target.alpha == 1) then
             print("miss")
+            misses = misses + 1
             -- vibrate if haptics enabled
             if (taskSettings.haptics) then
                 system.vibrate()
             end
         elseif (target.alpha == 0) then
             print("overexcited")
+            precued = precued + 1
         end
     end
 
     return true
+end
+
+
+local function saveSession()
+    local file = io.open(filePath, "w")
+
+    if file then
+        file:write(json.encode(session))
+        io.close(file)
+    end
+end
+
+
+local function sessionEnd()
+    session = {
+        timestamp = os.time(),
+        hits = hits,
+        misses = misses,
+        precued = precued
+    }
+
+    saveSession()
+    composer.setVariable("lastSession", session)
+    composer.gotoScene("menu")
 end
 
 
@@ -126,7 +159,14 @@ end
 -- create()
 function scene:create( event )
 
+    -- get settings
     getTaskSettings()
+    getSessionSettings()
+
+    -- reset hits / misses
+    hits = 0
+    misses = 0
+    precued = 0
 
     -- set up task scene
 	local sceneGroup = self.view
@@ -151,11 +191,12 @@ function scene:show( event )
 	local phase = event.phase
 
 	if ( phase == "will" ) then
-		-- Code here runs when the scene is still off screen (but is about to come on screen)
 
 	elseif ( phase == "did" ) then
-		-- Code here runs when the scene is entirely on screen
-
+        if (sessionSettings.duration > 0) then
+            -- gotta convert min to msec
+            timer.performWithDelay(sessionSettings.duration * 60000, sessionEnd, 1)
+        end
 	end
 end
 
@@ -170,8 +211,7 @@ function scene:hide( event )
 		-- Code here runs when the scene is on screen (but is about to go off screen)
 
 	elseif ( phase == "did" ) then
-		-- Code here runs immediately after the scene goes entirely off screen
-
+        composer.removeScene("task")
 	end
 end
 
