@@ -20,7 +20,7 @@ local function startSession()
     -- export session settings
     sessionSettings = {
         sessionType = "stand-alone",
-        duration = sessionTime.text,
+        duration = tonumber(sessionTime.text),
         showResults = showEndScreen.isOn,
         playToneAtEnd = endTone.isOn,
         saveSession = saveSessionData.isOn
