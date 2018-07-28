@@ -29,6 +29,7 @@ def listen():
                 target=client_connection,
                 args=(client_sock,)
             )
+        client_handle.start()
 
 
 if __name__ == '__main__':
