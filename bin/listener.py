@@ -10,7 +10,7 @@ def listen():
     """listener loop"""
     server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     server.bind((BIND_IP, BIND_PORT))
-    server.listen(2)  # max connections
+    server.listen(5)  # max connections
 
     print("Listening on {}:{}".format(BIND_IP, BIND_PORT))
 
