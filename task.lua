@@ -35,147 +35,146 @@ local pixelMilliMeter = 0.2645833  -- factor for converting pixels to mm
 
 local function getTaskSettings()
 
-    taskSettings = composer.getVariable("taskSettings")
-    table.foreach(taskSettings, print)
+  taskSettings = composer.getVariable("taskSettings")
+  table.foreach(taskSettings, print)
 
-    -- convert mm to pix
-    horizontalWidth = math.floor(taskSettings.width / pixelMilliMeter)
-    targetDistance = math.floor(taskSettings.distance / pixelMilliMeter) + math.floor(horizontalWidth / 2)
+  -- convert mm to pix
+  horizontalWidth = math.floor(taskSettings.width / pixelMilliMeter)
+  targetDistance = math.floor(taskSettings.distance / pixelMilliMeter) + math.floor(horizontalWidth / 2)
 end
 
 
 local function getSessionSettings()
-    sessionSettings = composer.getVariable("sessionSettings")
-    table.foreach(sessionSettings, print)
+  sessionSettings = composer.getVariable("sessionSettings")
+  table.foreach(sessionSettings, print)
 end
 
 
 local function setTargetBounds()
-    
-    bounds = {}
-    iter = 1  -- second counter for for loop
-    -- set bounds
-    if (taskSettings.targets % 2 == 0) then
-        -- slits placed center-out
-        for i = 1, taskSettings.targets, 2 do
-            table.insert(bounds, display.contentCenterX + ((targetDistance / 2) * iter))
-            table.insert(bounds, display.contentCenterX - ((targetDistance / 2) * iter))
-            iter = iter + 1
-        end
-    else
-        -- slits placed center-surround
-        table.insert(bounds, display.contentCenterX)
-        for i = 1, taskSettings.targets, 3 do
-            table.insert(bounds, display.contentCenterX + (targetDistance * iter))
-            table.insert(bounds, display.contentCenterX - (targetDistance * iter))
-        iter = iter + 1
-        end
-    end
+  bounds = {}
+  iter = 1  -- second counter for for loop
+  -- set bounds
+  if (taskSettings.targets % 2 == 0) then
+      -- slits placed center-out
+      for i = 1, taskSettings.targets, 2 do
+          table.insert(bounds, display.contentCenterX + ((targetDistance / 2) * iter))
+          table.insert(bounds, display.contentCenterX - ((targetDistance / 2) * iter))
+          iter = iter + 1
+      end
+  else
+      -- slits placed center-surround
+      table.insert(bounds, display.contentCenterX)
+      for i = 1, taskSettings.targets, 3 do
+          table.insert(bounds, display.contentCenterX + (targetDistance * iter))
+          table.insert(bounds, display.contentCenterX - (targetDistance * iter))
+      iter = iter + 1
+      end
+  end
 
-    -- inspect bounds table
-    print(table.foreach(bounds, print))
-    print(targetDistance)
+  -- inspect bounds table
+  print(table.foreach(bounds, print))
+  print(targetDistance)
 end
 
 
 local function restoreTarget()
-    target.x = bounds[math.random(#bounds)]
-    target.alpha = 1
+  target.x = bounds[math.random(#bounds)]
+  target.alpha = 1
 end
 
 
 local function onTargetHit(event)
-    local target = event.target
-    local phase = event.phase
+  local target = event.target
+  local phase = event.phase
 
-    if ("began" == phase) then
+  if ("began" == phase) then
 
-    elseif ("moved" == phase) then
+  elseif ("moved" == phase) then
 
-    elseif ("ended" == phase) then
-        -- move target to a new random pos
-        target.alpha = 0
+  elseif ("ended" == phase) then
+      -- move target to a new random pos
+      target.alpha = 0
 
-        local hit = {
-            timestamp = os.date('%H:%M:%S'),
-            x_distance = math.abs(event.x - event.xStart),
-            y_distance = math.abs(event.y - event.yStart),
-            touch_coords = {x = event.x, y = event.y},
-            touch_force = event.pressure
-        }
+      local hit = {
+          timestamp = os.date('%H:%M:%S'),
+          x_distance = math.abs(event.x - event.xStart),
+          y_distance = math.abs(event.y - event.yStart),
+          touch_coords = {x = event.x, y = event.y},
+          touch_force = event.pressure
+      }
 
-        table.insert(hits, hit)
-        print("hit")
-        
-        timer.performWithDelay(taskSettings.delay, restoreTarget)
-    end
+      table.insert(hits, hit)
+      print("hit")
 
-    return true
+      timer.performWithDelay(taskSettings.delay, restoreTarget)
+  end
+
+  return true
 end
 
 
 local function onTargetMiss(event)
-    local phase = event.phase
+  local phase = event.phase
 
-    if ("began" == phase) then
+  if ("began" == phase) then
 
-    elseif ("moved" == phase) then
+  elseif ("moved" == phase) then
 
-    elseif ("ended" == phase) then
-        if (target.alpha == 1) then
-            local miss = {
-                timestamp = os.date('%H:%M:%S'),
-                x_distance = math.abs(event.x - event.xStart),
-                y_distance = math.abs(event.y - event.yStart),
-                touch_coords = {x = event.x, y = event.y},
-                touch_force = event.pressure
-            }
+  elseif ("ended" == phase) then
+    if (target.alpha == 1) then
+      local miss = {
+          timestamp = os.date('%H:%M:%S'),
+          x_distance = math.abs(event.x - event.xStart),
+          y_distance = math.abs(event.y - event.yStart),
+          touch_coords = {x = event.x, y = event.y},
+          touch_force = event.pressure
+      }
 
-            table.insert(misses, miss)
-            print("miss")
-            
-            -- vibrate if haptics enabled
-            if (taskSettings.haptics) then
-                system.vibrate()
-            end
-        elseif (target.alpha == 0) then
-            local prec = {
-                timestamp = os.date('%H:%M:%S'),
-                x_distance = math.abs(event.x - event.xStart),
-                y_distance = math.abs(event.y - event.yStart),
-                touch_coords = {x = event.x, y = event.y},
-                touch_force = event.pressure
-            }
-            table.insert(precued, prec)
-            print("precued")
-        end
+      table.insert(misses, miss)
+      print("miss")
+
+      -- vibrate if haptics enabled
+      if (taskSettings.haptics) then
+        system.vibrate()
+      end
+    elseif (target.alpha == 0) then
+      local prec = {
+        timestamp = os.date('%H:%M:%S'),
+        x_distance = math.abs(event.x - event.xStart),
+        y_distance = math.abs(event.y - event.yStart),
+        touch_coords = {x = event.x, y = event.y},
+        touch_force = event.pressure
+      }
+      table.insert(precued, prec)
+      print("precued")
     end
+  end
 
-    return true
+  return true
 end
 
 
 local function saveSession()
-    local file = io.open(filePath, "w")
+  local file = io.open(filePath, "w")
 
-    if file then
-        file:write(json.encode(session))
-        io.close(file)
-    end
+  if file then
+    file:write(json.encode(session))
+    io.close(file)
+  end
 end
 
 
 local function sessionEnd()
-    session = {
-        timestamp = os.date('%Y-%m-%d_%H:%M:%S'),
-        hits = hits,
-        misses = misses,
-        precued = precued
-    }
+  session = {
+    timestamp = os.date('%Y-%m-%d_%H:%M:%S'),
+    hits = hits,
+    misses = misses,
+    precued = precued
+  }
 
-    saveSession()
-    composer.setVariable("lastSession", session)
-    composer.gotoScene("last-session-summary")
+  saveSession()
+  composer.setVariable("lastSession", session)
+  composer.gotoScene("last-session-summary")
 end
 
 
@@ -186,28 +185,28 @@ end
 -- create()
 function scene:create( event )
 
-    -- get settings
-    getTaskSettings()
-    getSessionSettings()
+  -- get settings
+  getTaskSettings()
+  getSessionSettings()
 
-    -- init tables for hits / misses
-    hits = {}
-    misses = {}
-    precued = {}
+  -- init tables for hits / misses
+  hits = {}
+  misses = {}
+  precued = {}
 
-    -- set up task scene
-	local sceneGroup = self.view
+  -- set up task scene
+  local sceneGroup = self.view
 
-    local background = display.newRect(display.contentCenterX, display.contentCenterY, display.contentWidth, display.contentHeight)
-    background.fill = {0, 0, 0}
-    background:toBack()
+  local background = display.newRect(display.contentCenterX, display.contentCenterY, display.contentWidth, display.contentHeight)
+  background.fill = {0, 0, 0}
+  background:toBack()
 
-    setTargetBounds()
-    target = display.newRect(sceneGroup, bounds[math.random(#bounds)], display.contentCenterY, horizontalWidth, display.contentHeight)
-    target.fill = { 1, 1, 1 }
+  setTargetBounds()
+  target = display.newRect(sceneGroup, bounds[math.random(#bounds)], display.contentCenterY, horizontalWidth, display.contentHeight)
+  target.fill = { 1, 1, 1 }
 
-    background:addEventListener("touch", onTargetMiss)
-    target:addEventListener("touch", onTargetHit)
+  background:addEventListener("touch", onTargetMiss)
+  target:addEventListener("touch", onTargetHit)
 end
 
 
@@ -220,10 +219,10 @@ function scene:show( event )
 	if ( phase == "will" ) then
 
 	elseif ( phase == "did" ) then
-        if (sessionSettings.duration > 0) then
-            -- gotta convert min to msec
-            sessionTimer = timer.performWithDelay(sessionSettings.duration * 60000, sessionEnd, 1)
-        end
+    if (sessionSettings.duration > 0) then
+      -- gotta convert min to msec
+      sessionTimer = timer.performWithDelay(sessionSettings.duration * 60000, sessionEnd, 1)
+    end
 	end
 end
 
@@ -235,9 +234,9 @@ function scene:hide( event )
 	local phase = event.phase
 
 	if ( phase == "will" ) then
-        timer.cancel(sessionTimer)
+    timer.cancel(sessionTimer)
 	elseif ( phase == "did" ) then
-        composer.removeScene("task")
+    composer.removeScene("task")
 	end
 end
 

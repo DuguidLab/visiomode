@@ -15,15 +15,15 @@ local rpiClient
 
 
 local function connectRpi()
-    -- Connect to the client
-    local client = socket.connect( "0.0.0.0", 5050 )
-    -- Get IP and port from client
-    local ip, port = client:getsockname()
+  -- Connect to the client
+  local client = socket.connect( "0.0.0.0", 5050 )
+  -- Get IP and port from client
+  local ip, port = client:getsockname()
 
-    -- Print the IP address and port to the terminal
-    print( "IP Address:", ip )
-    print( "Port:", port )
-    client:send('somestuf')
+  -- Print the IP address and port to the terminal
+  print( "IP Address:", ip )
+  print( "Port:", port )
+  client:send('somestuf')
 end
 
 connectRpi()

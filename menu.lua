@@ -8,17 +8,17 @@ local scene = composer.newScene()
 -- -----------------------------------------------------------------------------------
 
 local function gotoConnectRpi()
-    composer.gotoScene("connect")
+  composer.gotoScene("connect")
 end
 
 
 local function gotoStandAlone()
-    composer.gotoScene("stand-alone-setup")
+  composer.gotoScene("stand-alone-setup")
 end
 
 
 local function gotoAbout()
-    composer.gotoScene("about")
+  composer.gotoScene("about")
 end
 
 
@@ -29,26 +29,26 @@ end
 -- create()
 function scene:create( event )
 
-	local sceneGroup = self.view
-    
-    local background = display.newImageRect(sceneGroup, "assets/menu-background.jpg", 1400, 800)
-    background.x = display.contentCenterX
-    background.y = display.contentCenterY
+  local sceneGroup = self.view
 
-    local title = display.newText(sceneGroup, "Rodent Touchscreen Behaviour Suite", display.contentCenterX, 50, native.systemFont, 60)
+  local background = display.newImageRect(sceneGroup, "assets/menu-background.jpg", 1400, 800)
+  background.x = display.contentCenterX
+  background.y = display.contentCenterY
 
-    local connectButton = display.newText(sceneGroup, "Connect to RPi Controller", display.contentCenterX, 300, native.systemFont, 44)
-    connectButton:setFillColor(0.75, 0.78, 1)
+  local title = display.newText(sceneGroup, "Rodent Touchscreen Behaviour Suite", display.contentCenterX, 50, native.systemFont, 60)
 
-    local standAloneButton = display.newText(sceneGroup, "Stand-Alone Mode", display.contentCenterX, 400, native.systemFont, 44)
-    standAloneButton:setFillColor(0.75, 0.78, 1)
+  local connectButton = display.newText(sceneGroup, "Connect to RPi Controller", display.contentCenterX, 300, native.systemFont, 44)
+  connectButton:setFillColor(0.75, 0.78, 1)
 
-    local aboutButton = display.newText(sceneGroup, "About", display.contentCenterX, 500, native.systemFont, 44)
-    aboutButton:setFillColor(0.75, 0.78, 1)
+  local standAloneButton = display.newText(sceneGroup, "Stand-Alone Mode", display.contentCenterX, 400, native.systemFont, 44)
+  standAloneButton:setFillColor(0.75, 0.78, 1)
 
-    connectButton:addEventListener("tap", gotoConnectRpi)
-    standAloneButton:addEventListener("tap", gotoStandAlone)
-    aboutButton:addEventListener("tap", gotoAbout)
+  local aboutButton = display.newText(sceneGroup, "About", display.contentCenterX, 500, native.systemFont, 44)
+  aboutButton:setFillColor(0.75, 0.78, 1)
+
+  connectButton:addEventListener("tap", gotoConnectRpi)
+  standAloneButton:addEventListener("tap", gotoStandAlone)
+  aboutButton:addEventListener("tap", gotoAbout)
 end
 
 
