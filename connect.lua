@@ -9,14 +9,16 @@ local scene = composer.newScene()
 -- -----------------------------------------------------------------------------------
 
 local socket = require( "socket" )
+local widget = require( "widget" )
 local rpiServer
 local rpiSocket
 local rpiClient
 
 
 local function connectRpi()
+  print(rpiServer.text)
   -- Connect to the client
-  local client = socket.connect( "0.0.0.0", 5050 )
+  local client = socket.connect(rpiServer.text, tonumber(rpiSocket.text) )
   -- Get IP and port from client
   local ip, port = client:getsockname()
 
@@ -25,8 +27,6 @@ local function connectRpi()
   print( "Port:", port )
   client:send('somestuf')
 end
-
-connectRpi()
 
 -- -----------------------------------------------------------------------------------
 -- Scene event functions
@@ -38,6 +38,28 @@ function scene:create( event )
 	local sceneGroup = self.view
 	-- Code here runs when the scene is first created but has not yet appeared on screen
 
+  local background = display.newImageRect(sceneGroup, "assets/menu-background.jpg", 1400, 800)
+  background.x = display.contentCenterX
+  background.y = display.contentCenterY
+
+  local title = display.newText(sceneGroup, "Connect to Raspberry Pi Controller", display.contentCenterX, 70, native.SystemFont, 50)
+
+  local subtitle = display.newText(sceneGroup, "Make sure that phone and RPi are connected to the same network", display.contentCenterX, 150, native.SystemFont, 42)
+
+  local ipTitle = display.newText(sceneGroup, "RPi IP: ", display.contentCenterX-200, 300, native.SystemFont, 40)
+  ipTitle.anchorX = 1
+
+  rpiServer = native.newTextField(display.contentCenterX+200, 300, 300, 35)
+  sceneGroup:insert(rpiServer)
+
+  local portTitle = display.newText(sceneGroup, "RPi Port: ", display.contentCenterX-200, 375, native.SystemFont, 40)
+  portTitle.anchorX = 1
+
+  rpiSocket = native.newTextField(display.contentCenterX+200, 375, 100, 35)
+  sceneGroup:insert(rpiSocket)
+
+  local connectButton = display.newText(sceneGroup, "Connect", display.contentCenterX, 700, native.SystemFont, 45)
+  connectButton:addEventListener("tap", connectRpi)
 end
 
 
