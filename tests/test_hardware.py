@@ -4,4 +4,4 @@ import rodent_control.core as rc
 
 def test_stepper_motor():
     """Test for stepper motor"""
-    rc.water_reward()
+    rc.water_reward(delay=1000)
