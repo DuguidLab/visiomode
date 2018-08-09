@@ -18,5 +18,6 @@ def water_reward(delay=500, speed=150, distance=100):
 
     # Water reward logic
     gb.move_stepper(BOARD, CHANNEL, distance)
+    time.sleep(distance/speed)
     time.sleep(delay/1000)  # Delay conversion from msec to sec
     gb.move_stepper(BOARD, CHANNEL, -distance)
