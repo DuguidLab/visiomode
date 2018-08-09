@@ -17,17 +17,17 @@ local saveSessionData
 
 
 local function startSession()
-    -- export session settings
-    sessionSettings = {
+  -- export session settings
+  sessionSettings = {
       sessionType = "stand-alone",
       duration = tonumber(sessionTime.text),
       showResults = showEndScreen.isOn,
       playToneAtEnd = endTone.isOn,
       saveSession = saveSessionData.isOn
-    }
-    composer.setVariable("sessionSettings", sessionSettings)
+  }
+  composer.setVariable("sessionSettings", sessionSettings)
 
-    composer.gotoScene("task")
+  composer.gotoScene("task")
 end
 
 -- -----------------------------------------------------------------------------------
@@ -39,57 +39,57 @@ function scene:create( event )
 
 	local sceneGroup = self.view
 
-    local background = display.newImageRect(sceneGroup, "assets/menu-background.jpg", 1400, 800)
-    background.x = display.contentCenterX
-    background.y = display.contentCenterY
+  local background = display.newImageRect(sceneGroup, "assets/menu-background.jpg", 1400, 800)
+  background.x = display.contentCenterX
+  background.y = display.contentCenterY
 
-    local title = display.newText(sceneGroup, "Stand-Alone Session Setup", display.contentCenterX, 70, native.SystemFont, 50)
+  local title = display.newText(sceneGroup, "Stand-Alone Session Setup", display.contentCenterX, 70, native.SystemFont, 50)
 
-    local sessionTimeTitle = display.newText(sceneGroup, "Session Duration (min): ", display.contentCenterX-20, 150, native.SystemFont, 40)
-    sessionTimeTitle.anchorX = 1
+  local sessionTimeTitle = display.newText(sceneGroup, "Session Duration (min): ", display.contentCenterX-20, 150, native.SystemFont, 40)
+  sessionTimeTitle.anchorX = 1
 
-    sessionTime = native.newTextField(display.contentCenterX+250, 150, 100, 35)
-    sessionTime.text = 30
-    sessionTime.anchorX = 0
-    sceneGroup:insert(sessionTime)
+  sessionTime = native.newTextField(display.contentCenterX+250, 150, 100, 35)
+  sessionTime.text = 30
+  sessionTime.anchorX = 0
+  sceneGroup:insert(sessionTime)
 
-    local showEndScreenTitle = display.newText(sceneGroup, "Show Results at End: ", display.contentCenterX-20, 225, native.SystemFont, 40)
-    showEndScreenTitle.anchorX = 1
+  local showEndScreenTitle = display.newText(sceneGroup, "Show Results at End: ", display.contentCenterX-20, 225, native.SystemFont, 40)
+  showEndScreenTitle.anchorX = 1
 
-    showEndScreen = widget.newSwitch({
+  showEndScreen = widget.newSwitch({
       x= display.contentCenterX+295,
       y = 225,
       style = "checkbox",
       id = "showEndScreenCheckbox",
       initialSwitchState = true
-    })
-    sceneGroup:insert(showEndScreen)
+  })
+  sceneGroup:insert(showEndScreen)
 
-    local endToneTitle = display.newText(sceneGroup, "Tone at End: ", display.contentCenterX-20, 300, native.SystemFont, 40)
-    endToneTitle.anchorX = 1
+  local endToneTitle = display.newText(sceneGroup, "Tone at End: ", display.contentCenterX-20, 300, native.SystemFont, 40)
+  endToneTitle.anchorX = 1
 
-    endTone = widget.newSwitch({
+  endTone = widget.newSwitch({
       x = display.contentCenterX+295,
       y = 300,
       style = "checkbox",
       id = "endToneCheckbox"
-    })
-    sceneGroup:insert(endTone)
+  })
+  sceneGroup:insert(endTone)
 
-    local saveSessionDataTitle = display.newText(sceneGroup, "Save Session Data: ", display.contentCenterX-20, 375, native.SystemFont, 40)
-    saveSessionDataTitle.anchorX = 1
+  local saveSessionDataTitle = display.newText(sceneGroup, "Save Session Data: ", display.contentCenterX-20, 375, native.SystemFont, 40)
+  saveSessionDataTitle.anchorX = 1
 
-    saveSessionData = widget.newSwitch({
+  saveSessionData = widget.newSwitch({
       x = display.contentCenterX+295,
       y = 375, 
       style = "checkbox",
       id = "saveSessionDataCheckbox",
       initialSwitchState = true
-    })
-    sceneGroup:insert(saveSessionData)
+  })
+  sceneGroup:insert(saveSessionData)
 
-    local startSessionButton = display.newText(sceneGroup, "Start Session", display.contentCenterX, 700, native.SystemFont, 45)
-    startSessionButton:addEventListener("tap", startSession)
+  local startSessionButton = display.newText(sceneGroup, "Start Session", display.contentCenterX, 700, native.SystemFont, 45)
+  startSessionButton:addEventListener("tap", startSession)
 
 end
 
