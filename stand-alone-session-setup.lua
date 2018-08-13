@@ -23,7 +23,8 @@ local function startSession()
       duration = tonumber(sessionTime.text),
       showResults = showEndScreen.isOn,
       playToneAtEnd = endTone.isOn,
-      saveSession = saveSessionData.isOn
+      saveSession = saveSessionData.isOn,
+      rpiClient = nil
   }
   composer.setVariable("sessionSettings", sessionSettings)
 
