@@ -22,8 +22,7 @@ class TCPHandler(socketserver.BaseRequestHandler):
             if str(self.data, 'utf-8') == 'connect':
                 # TODO assign session ID
                 self.request.sendall(b'connected\n')
-                task_settings = usr.task_settings()
-                self.request.sendall(bytes(task_settings + '\n', 'utf-8'))
+                self.request.sendall(bytes(usr.all_settings() + '\n', 'utf-8'))
             if self.data == b'test':
                 print('test water reward')
                 #rc.water_reward(delay=1000)
