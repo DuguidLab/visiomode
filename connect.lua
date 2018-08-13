@@ -56,12 +56,19 @@ local function rpiLoop(client)
                     allData[#allData+1] = data
                 end
             end
-            print(data)
         until not data
 
         if ( #allData > 0 ) then 
             for i, thisData in ipairs(allData) do
                 print("thisData: ", thisData)
+            end
+        end
+
+        for i, msg in ipairs(buffer) do
+            local data, err = client:send(msg)
+            if (err == "closed" and clientPulse) then
+                connectRpi()
+                data, err = client:send(msg)
             end
         end
     end
