@@ -8,86 +8,27 @@ local scene = composer.newScene()
 -- the scene is removed entirely (not recycled) via "composer.removeScene()"
 -- -----------------------------------------------------------------------------------
 
-local socket = require( "socket" )
+local rpiClient = require("rpi-client")
 local widget = require( "widget" )
 local rpiServer
 local rpiSocket
 
-
-local function connectRpi()
-    print(rpiServer.text)
-    -- Connect to the client
-    local client = socket.connect(rpiServer.text, tonumber(rpiSocket.text) )
-    if client == nil then
-        return false
-    end
-    -- Get IP and port from client
-    local ip, port = client:getsockname()
-    client:settimeout(0)
-    client:setoption( "tcp-nodelay", true ) 
-
-    -- Print the IP address and port to the terminal
-    print( "IP Address:", ip )
-    print( "Port:", port )
-    client:send("connected")
-
-    return client
-end
-
-
-local function rpiLoop(client)
-    local buffer = {}
-    local clientPulse
-
-    local function cPulse()
-        local allData = {}
-        local data, err
-
-        repeat 
-            data, err = client:receive()
-            if data then
-                allData[#allData+1] = data
-            end
-            if (err == "closed" and clientPulse) then
-                print("reconnecting...")
-                connectRpi()
-                data, err = client:receive()
-                if data then 
-                    allData[#allData+1] = data
-                end
-            end
-        until not data
-
-        if ( #allData > 0 ) then 
-            for i, thisData in ipairs(allData) do
-                print("thisData: ", thisData)
-            end
-        end
-
-        for i, msg in ipairs(buffer) do
-            local data, err = client:send(msg)
-            if (err == "closed" and clientPulse) then
-                connectRpi()
-                data, err = client:send(msg)
-            end
-        end
-    end
-
-    clientPulse = timer.performWithDelay(100, cPulse, 0)
-
-    local function stopClient()
-        timer.cancel(clientPulse)
-        clientPulse = nil
-        client:close()
-    end
-
-    return stopClient
-end
+local connectButton
+local connectionMessage
 
 
 local function connectionWrapper()
-    client = connectRpi()
-    rpiLoop(client)
+    connectButton.alpha = 0
+    client = rpiClient.rpiCheck(rpiServer.text, rpiSocket.text)
+    if client then
+        print("Can connect!")
+        connectionMessage.text = "Successfully connected to RPi Server"
+    else
+        print("Cannot connect to " .. rpiServer.text)
+        connectionMessage.text = "Could not connect to " .. rpiServer.text .. " on port " .. rpiSocket.text
+        connectButton.alpha = 1
+    end
+    rpiClient.rpiLoop(client, rpiServer.text, rpiSocket.text)
 end
 
 
@@ -121,7 +62,9 @@ function scene:create( event )
     rpiSocket = native.newTextField(display.contentCenterX+200, 375, 100, 35)
     sceneGroup:insert(rpiSocket)
 
-    local connectButton = display.newText(sceneGroup, "Connect", display.contentCenterX, 700, native.SystemFont, 45)
+    connectionMessage = display.newText(sceneGroup, "", display.contentCenterX, 550, native.SystemFont, 42)
+
+    connectButton = display.newText(sceneGroup, "Connect", display.contentCenterX, 700, native.SystemFont, 45)
     connectButton:addEventListener("tap", connectionWrapper)
 end
 
