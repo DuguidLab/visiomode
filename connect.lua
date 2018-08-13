@@ -19,16 +19,16 @@ local connectionMessage
 
 local function connectionWrapper()
     connectButton.alpha = 0
-    client = rpiClient.rpiCheck(rpiServer.text, rpiSocket.text)
+    client = rpiClient.rpiConnect(rpiServer.text, rpiSocket.text)
     if client then
         print("Can connect!")
         connectionMessage.text = "Successfully connected to RPi Server"
+        rpiClient.rpiLoop(client, rpiServer.text, rpiSocket.text)
     else
         print("Cannot connect to " .. rpiServer.text)
         connectionMessage.text = "Could not connect to " .. rpiServer.text .. " on port " .. rpiSocket.text
         connectButton.alpha = 1
     end
-    rpiClient.rpiLoop(client, rpiServer.text, rpiSocket.text)
 end
 
 

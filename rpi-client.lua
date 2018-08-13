@@ -1,25 +1,29 @@
-local socket = require("socket")
 local exports = {}
+
+local socket = require("socket")
+local json = require("json")
 
 local reconnect = false 
 
 
 -- Request parsers
-local function parseTaskSettings(request)
+local function parseSettings(request)
+    local jsonified = json.decode(request)
+    if not jsonified then 
+        return false 
+    end
+    local taskSettings = jsonified
+    -- local sessionSettings = jsonified.session
 
+    return taskSettings
 end
-
-
-local function parseSessionSettings(request)
-
-end
-
 
 
 -- RPi connection stuff
 local function rpiCheck(ip, port)
     -- check if connection to ip and port is possible
     local client = socket.connect(ip, tonumber(port))
+    client:settimeout(0)
     if client == nil then
         return false
     end
@@ -47,6 +51,9 @@ local function rpiConnect(ip, port)
     if not reconnect then
         client:send("connect")
         reconnect = true
+    else 
+        -- TODO include session ID in restore request
+        client:send("restore")
     end
 
     return client
@@ -78,10 +85,13 @@ local function rpiLoop(client, ip, port)
 
         if ( #allData > 0 ) then 
             for i, thisData in ipairs(allData) do
-                print("thisData: ", thisData)
+                print("received: ", thisData)
+                if string.match(thisData, "{*}") then  -- does it look like json?
+                    settings = parseSettings(thisData)
+                    print(settings)
+                end
             end
         end
-
     end
 
     clientPulse = timer.performWithDelay(100, cPulse, 0)
