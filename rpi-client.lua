@@ -8,14 +8,7 @@ local reconnect = false
 
 -- Request parsers
 local function parseSettings(request)
-    local jsonified = json.decode(request)
-    if not jsonified then 
-        return false 
-    end
-    local taskSettings = jsonified
-    -- local sessionSettings = jsonified.session
-
-    return taskSettings
+    return json.decode(request)
 end
 
 
@@ -89,6 +82,8 @@ local function rpiLoop(client, ip, port)
                 if string.match(thisData, "{*}") then  -- does it look like json?
                     settings = parseSettings(thisData)
                     print(settings)
+                    composer.setVariable("taskSettings", settings.task)
+                    composer.setVariable("sessionSettings", settings.session)
                 end
             end
         end

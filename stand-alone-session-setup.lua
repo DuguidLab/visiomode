@@ -24,7 +24,6 @@ local function startSession()
       showResults = showEndScreen.isOn,
       playToneAtEnd = endTone.isOn,
       saveSession = saveSessionData.isOn,
-      rpiClient = nil
   }
   composer.setVariable("sessionSettings", sessionSettings)
 
