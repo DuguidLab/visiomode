@@ -2,6 +2,8 @@ local exports = {}
 
 local socket = require("socket")
 local json = require("json")
+local composer = require( "composer" )
+
 
 local reconnect = false 
 
@@ -81,9 +83,9 @@ local function rpiLoop(client, ip, port)
                 print("received: ", thisData)
                 if string.match(thisData, "{*}") then  -- does it look like json?
                     settings = parseSettings(thisData)
-                    print(settings)
                     composer.setVariable("taskSettings", settings.task)
                     composer.setVariable("sessionSettings", settings.session)
+                    composer.gotoScene("task")
                 end
             end
         end
