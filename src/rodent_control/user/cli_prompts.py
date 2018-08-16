@@ -14,10 +14,10 @@ def all_settings(as_json=True):
 
 def task_settings(as_json=True):
     task_settings = {
-            'targets': input("Number of targets: "),
-            'width': input("Target width (mm): "),
-            'distance': input("Distance between targets (mm): "),
-            'delay': input("Presentation delay (ms): "),
+            'targets': int(input("Number of targets: ")),
+            'width': int(input("Target width (mm): ")),
+            'distance': int(input("Distance between targets (mm): ")),
+            'delay': int(input("Presentation delay (ms): ")),
             'haptics': False if input("Haptic feedback (Y/N): ") == 'N' else True,
             'animated': True if input("Animated (Y/N): ") == 'Y' else False,
             'shrinking': True if input("Shrinking (Y/N): ") == 'Y' else False
@@ -30,7 +30,7 @@ def task_settings(as_json=True):
 def session_settings(as_json=True):
     session_settings = {
             'sessionType': 'rpi',
-            'duration': input("Session duration (min): "),
+            'duration': float(input("Session duration (min): ")),
             'showResults': False,
             'playToneAtEnd': True if input("Tone at End (Y/N): ") == 'Y' else False,
             'saveSession': True
