@@ -9,7 +9,6 @@ local scene = composer.newScene()
 -- -----------------------------------------------------------------------------------
 local json = require("json")
 
-local filePath = system.pathForFile("sessions.json", system.DocumentsDirectory)
 
 
 -- initialise variables
@@ -27,6 +26,9 @@ local sessionTimer
 
 local targetDistance  -- mm
 local horizontalWidth
+
+-- RPi comm buffer
+local buffer
 
 
 -- TODO figure out DPI at runtime!
@@ -84,32 +86,35 @@ end
 
 
 local function onTargetHit(event)
-  local target = event.target
-  local phase = event.phase
+    local target = event.target
+    local phase = event.phase
 
-  if ("began" == phase) then
+    if ("began" == phase) then
 
-  elseif ("moved" == phase) then
+    elseif ("moved" == phase) then
 
-  elseif ("ended" == phase) then
-      -- move target to a new random pos
-      target.alpha = 0
+    elseif ("ended" == phase) then
+        target.alpha = 0
 
-      local hit = {
-          timestamp = os.date('%H:%M:%S'),
-          x_distance = math.abs(event.x - event.xStart),
-          y_distance = math.abs(event.y - event.yStart),
-          touch_coords = {x = event.x, y = event.y},
-          touch_force = event.pressure
-      }
+        local hit = {
+            timestamp = os.date('%H:%M:%S'),
+            x_distance = math.abs(event.x - event.xStart),
+            y_distance = math.abs(event.y - event.yStart),
+            touch_coords = {x = event.x, y = event.y},
+            touch_force = event.pressure
+        }
 
-      table.insert(hits, hit)
-      print("hit")
+        table.insert(hits, hit)
+        print("hit")
+        if sessionSettings.sessionType == 'rpi' then
+            composer.setVariable('buffer', {'reward:' .. taskSettings.delay})
+        end
 
-      timer.performWithDelay(taskSettings.delay, restoreTarget)
-  end
 
-  return true
+        timer.performWithDelay(taskSettings.delay, restoreTarget)
+    end
+
+    return true
 end
 
 
@@ -155,26 +160,39 @@ end
 
 
 local function saveSession()
-  local file = io.open(filePath, "w")
+    local filePath = system.pathForFile("session-" .. os.date('%Y%m%d_%H%M%S') ..  ".json", system.DocumentsDirectory)
+    local file = io.open(filePath, "w")
 
-  if file then
-    file:write(json.encode(session))
-    io.close(file)
-  end
+    session = {
+        timestamp = os.date('%Y-%m-%d_%H:%M:%S'),
+        hits = hits,
+        misses = misses,
+        precued = precued
+    }
+
+    if file then
+        file:write(json.encode(session))
+        io.close(file)
+    end
+end
+
+
+local function streamSession()
+    -- Stream session data back to RPi controller
+    if sessionSettings.sessionType == 'rpi' then
+        print('streaming session data to rpi...')
+        composer.setVariable(
+            'buffer', {'session:' .. os.date('%Y%m%d_%H%M%S') .. ':' .. json.encode(session)}
+        )
+    end
 end
 
 
 local function sessionEnd()
-  session = {
-    timestamp = os.date('%Y-%m-%d_%H:%M:%S'),
-    hits = hits,
-    misses = misses,
-    precued = precued
-  }
-
-  saveSession()
-  composer.setVariable("lastSession", session)
-  composer.gotoScene("last-session-summary")
+    saveSession()
+    streamSession()
+    composer.setVariable("lastSession", session)
+    composer.gotoScene("last-session-summary")
 end
 
 
@@ -185,28 +203,28 @@ end
 -- create()
 function scene:create( event )
 
-  -- get settings
-  getTaskSettings()
-  getSessionSettings()
+    -- get settings
+    getTaskSettings()
+    getSessionSettings()
 
-  -- init tables for hits / misses
-  hits = {}
-  misses = {}
-  precued = {}
+    -- init tables for hits / misses
+    hits = {}
+    misses = {}
+    precued = {}
 
-  -- set up task scene
-  local sceneGroup = self.view
+    -- set up task scene
+    local sceneGroup = self.view
 
-  local background = display.newRect(display.contentCenterX, display.contentCenterY, display.contentWidth, display.contentHeight)
-  background.fill = {0, 0, 0}
-  background:toBack()
+    local background = display.newRect(display.contentCenterX, display.contentCenterY, display.contentWidth, display.contentHeight)
+    background.fill = {0, 0, 0}
+    background:toBack()
 
-  setTargetBounds()
-  target = display.newRect(sceneGroup, bounds[math.random(#bounds)], display.contentCenterY, horizontalWidth, display.contentHeight)
-  target.fill = { 1, 1, 1 }
+    setTargetBounds()
+    target = display.newRect(sceneGroup, bounds[math.random(#bounds)], display.contentCenterY, horizontalWidth, display.contentHeight)
+    target.fill = { 1, 1, 1 }
 
-  background:addEventListener("touch", onTargetMiss)
-  target:addEventListener("touch", onTargetHit)
+    background:addEventListener("touch", onTargetMiss)
+    target:addEventListener("touch", onTargetHit)
 end
 
 
@@ -219,10 +237,10 @@ function scene:show( event )
 	if ( phase == "will" ) then
 
 	elseif ( phase == "did" ) then
-    if (sessionSettings.duration > 0) then
-      -- gotta convert min to msec
-      sessionTimer = timer.performWithDelay(sessionSettings.duration * 60000, sessionEnd, 1)
-    end
+        if (sessionSettings.duration > 0) then
+          -- gotta convert min to msec
+            sessionTimer = timer.performWithDelay(sessionSettings.duration * 60000, sessionEnd, 1)
+        end
 	end
 end
 
@@ -234,9 +252,9 @@ function scene:hide( event )
 	local phase = event.phase
 
 	if ( phase == "will" ) then
-    timer.cancel(sessionTimer)
+        timer.cancel(sessionTimer)
 	elseif ( phase == "did" ) then
-    composer.removeScene("task")
+        composer.removeScene("task")
 	end
 end
 

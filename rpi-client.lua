@@ -56,12 +56,13 @@ end
 
 
 local function rpiLoop(client, ip, port)
-    local buffer = {}
     local clientPulse
+    composer.setVariable('buffer', {})
 
     local function cPulse()
         local allData = {}
         local data, err
+        local buffer = composer.getVariable('buffer')
 
         repeat 
             data, err = client:receive()
@@ -87,6 +88,18 @@ local function rpiLoop(client, ip, port)
                     composer.setVariable("sessionSettings", settings.session)
                     composer.gotoScene("task")
                 end
+            end
+        end
+
+        for i, msg in pairs(buffer) do
+            print('sending: ' .. msg)
+            local data, err = client:send(msg)
+            if (err == "closed" and clientPulse) then  --try to reconnect and resend
+                rpiConnect(ip, port)
+                data, err = client:send(msg)
+            end
+            if not err then 
+                composer.setVariable('buffer', {})
             end
         end
     end
