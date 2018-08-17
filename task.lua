@@ -24,6 +24,11 @@ local taskSettings
 local sessionSettings
 local sessionTimer
 
+local startTime
+local hitTime
+local missTime
+local precueTime
+
 local targetDistance  -- mm
 local horizontalWidth
 
@@ -90,17 +95,19 @@ local function onTargetHit(event)
     local phase = event.phase
 
     if ("began" == phase) then
-
+        hitTime = os.clock()
     elseif ("moved" == phase) then
-
+        return true
     elseif ("ended" == phase) then
+        local now = os.clock()
         target.alpha = 0
 
         local hit = {
-            timestamp = os.date('%H:%M:%S'),
+            timestamp = hitTime - startTime,
             x_distance = math.abs(event.x - event.xStart),
             y_distance = math.abs(event.y - event.yStart),
             touch_coords = {x = event.x, y = event.y},
+            duration = now - hitTime,
             touch_force = event.pressure
         }
 
@@ -119,43 +126,46 @@ end
 
 
 local function onTargetMiss(event)
-  local phase = event.phase
+    local phase = event.phase
 
-  if ("began" == phase) then
+    if ("began" == phase) then
+        missTime = os.clock()
+    elseif ("moved" == phase) then
 
-  elseif ("moved" == phase) then
+    elseif ("ended" == phase) then
+        local now = os.clock()
+        if (target.alpha == 1) then
+            local miss = {
+                timestamp = missTime - startTime,
+                x_distance = math.abs(event.x - event.xStart),
+                y_distance = math.abs(event.y - event.yStart),
+                touch_coords = {x = event.x, y = event.y},
+                duration = now - missTime,
+                touch_force = event.pressure
+            }
 
-  elseif ("ended" == phase) then
-    if (target.alpha == 1) then
-      local miss = {
-          timestamp = os.date('%H:%M:%S'),
-          x_distance = math.abs(event.x - event.xStart),
-          y_distance = math.abs(event.y - event.yStart),
-          touch_coords = {x = event.x, y = event.y},
-          touch_force = event.pressure
-      }
+            table.insert(misses, miss)
+            print("miss")
 
-      table.insert(misses, miss)
-      print("miss")
-
-      -- vibrate if haptics enabled
-      if (taskSettings.haptics) then
-        system.vibrate()
-      end
-    elseif (target.alpha == 0) then
-      local prec = {
-        timestamp = os.date('%H:%M:%S'),
-        x_distance = math.abs(event.x - event.xStart),
-        y_distance = math.abs(event.y - event.yStart),
-        touch_coords = {x = event.x, y = event.y},
-        touch_force = event.pressure
-      }
-      table.insert(precued, prec)
-      print("precued")
+            -- vibrate if haptics enabled
+            if (taskSettings.haptics) then
+                system.vibrate()
+            end
+        elseif (target.alpha == 0) then
+            local prec = {
+                timestamp = missTime - startTime,
+                x_distance = math.abs(event.x - event.xStart),
+                y_distance = math.abs(event.y - event.yStart),
+                touch_coords = {x = event.x, y = event.y},
+                duration = now - missTime,
+                touch_force = event.pressure
+            }
+            table.insert(precued, prec)
+            print("precued")
+        end
     end
-  end
 
-  return true
+    return true
 end
 
 
@@ -202,6 +212,8 @@ end
 
 -- create()
 function scene:create( event )
+    -- set msec start time
+    startTime = os.clock()
 
     -- get settings
     getTaskSettings()
