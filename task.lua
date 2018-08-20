@@ -8,8 +8,7 @@ local scene = composer.newScene()
 -- the scene is removed entirely (not recycled) via "composer.removeScene()"
 -- -----------------------------------------------------------------------------------
 local json = require("json")
-
-
+local physics = require("physics")
 
 -- initialise variables
 local session
@@ -22,6 +21,8 @@ local precued
 
 local taskSettings
 local sessionSettings
+local animationSettings
+local shrinkingSettings
 local sessionTimer
 
 local startTime
@@ -35,25 +36,38 @@ local horizontalWidth
 -- RPi comm buffer
 local buffer
 
+-- start physics engine (needed for animation)
+physics.start()
+physics.setGravity( 0, 0 )
+
 
 -- TODO figure out DPI at runtime!
 local pixelMilliMeter = 0.2645833  -- factor for converting pixels to mm 
 
 
 local function getTaskSettings()
+    local taskSettings = composer.getVariable("taskSettings")
+    table.foreach(taskSettings, print)
 
-  taskSettings = composer.getVariable("taskSettings")
-  table.foreach(taskSettings, print)
-
-  -- convert mm to pix
-  horizontalWidth = math.floor(taskSettings.width / pixelMilliMeter)
-  targetDistance = math.floor(taskSettings.distance / pixelMilliMeter) + math.floor(horizontalWidth / 2)
+    -- convert mm to pix
+    horizontalWidth = math.floor(taskSettings.width / pixelMilliMeter)
+    targetDistance = math.floor(taskSettings.distance / pixelMilliMeter) + math.floor(horizontalWidth / 2)
+    return taskSettings
 end
 
 
 local function getSessionSettings()
-  sessionSettings = composer.getVariable("sessionSettings")
-  table.foreach(sessionSettings, print)
+    local sessionSettings = composer.getVariable("sessionSettings")
+    table.foreach(sessionSettings, print)
+    return sessionSettings
+end
+
+
+local function getAnimationSettings()
+    if not taskSettings.animated then
+        return nil
+    end
+    return composer.getVariable( "animationSettings" )
 end
 
 
@@ -84,9 +98,51 @@ local function setTargetBounds()
 end
 
 
-local function restoreTarget()
-  target.x = bounds[math.random(#bounds)]
-  target.alpha = 1
+local function restoreTarget(newX)
+    if not unpack(newX) then
+        newX = bounds[math.random(#bounds)]
+    end
+    target.x = newX
+    target.alpha = 1
+end
+
+
+local function animateBetweenBounds(sceneGroup)
+    -- sweep target between boundaries
+    local boundLeft = display.newRect(sceneGroup, math.min(unpack(bounds))-horizontalWidth, display.contentCenterY, horizontalWidth, display.contentHeight)
+    boundLeft.fill = { 0, 1, 0 }
+    local boundRight = display.newRect(sceneGroup, math.max(unpack(bounds))+horizontalWidth, display.contentCenterY, horizontalWidth, display.contentHeight)
+    boundRight.fill = { 0, 1, 0 }
+end
+
+
+local function animateEdgeToEdge(sceneGroup)
+    -- sweep target from screen edge to screen edge
+
+end
+
+
+local function animateTarget(sceneGroup)
+    -- figure out which continuous animation is appropriate
+    animationType = animationSettings.movtType
+    if ( animationType == 'bound-bound' ) then
+        animateBetweenBounds(sceneGroup)
+    elseif ( animationType == 'edge-edge' ) then 
+        animateEdgeToEdge(sceneGroup)
+    end
+end
+
+
+local function animateOnTouch()
+    newX = bounds[math.random(#bounds)]
+    if (newX == target.x) then
+        print("yo")
+        -- if not new position, blink
+        target.alpha = 0
+        timer.performWithDelay(taskSettings.delay, restoreTarget(newX))
+    else
+        transition.to(target, { x=newX, time=500})
+    end
 end
 
 
@@ -116,7 +172,6 @@ local function onTargetHit(event)
         if sessionSettings.sessionType == 'rpi' then
             composer.setVariable('buffer', {'reward:' .. taskSettings.delay})
         end
-
 
         timer.performWithDelay(taskSettings.delay, restoreTarget)
     end
@@ -216,8 +271,9 @@ function scene:create( event )
     startTime = os.clock()
 
     -- get settings
-    getTaskSettings()
-    getSessionSettings()
+    taskSettings = getTaskSettings()
+    sessionSettings = getSessionSettings()
+    animationSettings = getAnimationSettings()
 
     -- init tables for hits / misses
     hits = {}
@@ -234,6 +290,11 @@ function scene:create( event )
     setTargetBounds()
     target = display.newRect(sceneGroup, bounds[math.random(#bounds)], display.contentCenterY, horizontalWidth, display.contentHeight)
     target.fill = { 1, 1, 1 }
+    physics.addBody( target, "dynamic", { radius = horizontalWidth } )
+
+    if taskSettings.animated then
+        animateTarget(sceneGroup)
+    end
 
     background:addEventListener("touch", onTargetMiss)
     target:addEventListener("touch", onTargetHit)
@@ -243,39 +304,39 @@ end
 -- show()
 function scene:show( event )
 
-	local sceneGroup = self.view
-	local phase = event.phase
+    local sceneGroup = self.view
+    local phase = event.phase
 
-	if ( phase == "will" ) then
+    if ( phase == "will" ) then
 
-	elseif ( phase == "did" ) then
+    elseif ( phase == "did" ) then
         if (sessionSettings.duration > 0) then
           -- gotta convert min to msec
             sessionTimer = timer.performWithDelay(sessionSettings.duration * 60000, sessionEnd, 1)
         end
-	end
+    end
 end
 
 
 -- hide()
 function scene:hide( event )
 
-	local sceneGroup = self.view
-	local phase = event.phase
+    local sceneGroup = self.view
+    local phase = event.phase
 
-	if ( phase == "will" ) then
+    if ( phase == "will" ) then
         timer.cancel(sessionTimer)
-	elseif ( phase == "did" ) then
+    elseif ( phase == "did" ) then
+        physics.pause()
         composer.removeScene("task")
-	end
+    end
 end
 
 
 -- destroy()
 function scene:destroy( event )
 
-	local sceneGroup = self.view
-	-- Code here runs prior to the removal of scene's view
+    local sceneGroup = self.view
 
 end
 
