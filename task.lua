@@ -110,14 +110,29 @@ end
 local function animateBetweenBounds(sceneGroup)
     -- sweep target between boundaries
     local boundLeft = display.newRect(sceneGroup, math.min(unpack(bounds))-horizontalWidth, display.contentCenterY, horizontalWidth, display.contentHeight)
-    boundLeft.fill = { 0, 1, 0 }
+    boundLeft.fill = { 0, 0, 0 }
+    physics.addBody( boundLeft, "static" )
+
     local boundRight = display.newRect(sceneGroup, math.max(unpack(bounds))+horizontalWidth, display.contentCenterY, horizontalWidth, display.contentHeight)
-    boundRight.fill = { 0, 1, 0 }
+    boundRight.fill = { 0, 0, 0 }
+    physics.addBody( boundRight, "static" )
+
+    target:applyLinearImpulse( 0.05, 0, target.x, target.y )
+
 end
 
 
 local function animateEdgeToEdge(sceneGroup)
     -- sweep target from screen edge to screen edge
+    local boundLeft = display.newRect(sceneGroup, 0, display.contentCenterY, horizontalWidth, display.contentHeight)
+    boundLeft.fill = { 0, 0, 0 }
+    physics.addBody( boundLeft, "static" )
+
+    local boundRight = display.newRect(sceneGroup, display.contentWidth, display.contentCenterY, horizontalWidth, display.contentHeight)
+    boundRight.fill = { 0, 0, 0 }
+    physics.addBody( boundRight, "static" )
+
+    target:applyLinearImpulse( 0.05, 0, target.x, target.y )
 
 end
 
@@ -138,10 +153,9 @@ local function animateOnTouch()
     if (newX == target.x) then
         print("yo")
         -- if not new position, blink
-        target.alpha = 0
         timer.performWithDelay(taskSettings.delay, restoreTarget(newX))
     else
-        transition.to(target, { x=newX, time=500})
+        transition.to(target, { x=newX, time=taskSettings.delay+animationSettings.delay})
     end
 end
 
@@ -290,7 +304,7 @@ function scene:create( event )
     setTargetBounds()
     target = display.newRect(sceneGroup, bounds[math.random(#bounds)], display.contentCenterY, horizontalWidth, display.contentHeight)
     target.fill = { 1, 1, 1 }
-    physics.addBody( target, "dynamic", { radius = horizontalWidth } )
+    physics.addBody( target, "dynamic", { radius = horizontalWidth, bounce=1.0 } )
 
     if taskSettings.animated then
         animateTarget(sceneGroup)
