@@ -99,7 +99,7 @@ end
 
 
 local function restoreTarget(newX)
-    if not unpack(newX) then
+    if not type(newX) == 'number' then
         newX = bounds[math.random(#bounds)]
     end
     target.x = newX
@@ -137,6 +137,20 @@ local function animateEdgeToEdge(sceneGroup)
 end
 
 
+local function animateOnTouch()
+    newX = bounds[math.random(#bounds)]
+    if (newX == target.x) then
+        -- if not new position, blink
+        timer.performWithDelay(taskSettings.delay, restoreTarget(newX))
+    else
+        print(taskSettings.delay)
+        print(animationSettings.speed)
+        local transitionTime = tonumber(taskSettings.delay) + (math.abs(newX - target.x) / tonumber(animationSettings.speed))
+        transition.to(target, { x=newX, time=transitionTime, alpha=1 })
+    end
+end
+
+
 local function animateTarget(sceneGroup)
     -- figure out which continuous animation is appropriate
     animationType = animationSettings.movtType
@@ -144,18 +158,8 @@ local function animateTarget(sceneGroup)
         animateBetweenBounds(sceneGroup)
     elseif ( animationType == 'edge-edge' ) then 
         animateEdgeToEdge(sceneGroup)
-    end
-end
-
-
-local function animateOnTouch()
-    newX = bounds[math.random(#bounds)]
-    if (newX == target.x) then
-        print("yo")
-        -- if not new position, blink
-        timer.performWithDelay(taskSettings.delay, restoreTarget(newX))
-    else
-        transition.to(target, { x=newX, time=taskSettings.delay+animationSettings.delay})
+    elseif (animationType == 'on-touch') then
+        animateOnTouch()
     end
 end
 
@@ -187,7 +191,11 @@ local function onTargetHit(event)
             composer.setVariable('buffer', {'reward:' .. taskSettings.delay})
         end
 
-        timer.performWithDelay(taskSettings.delay, restoreTarget)
+        if ( animationSettings.movtType == 'on-touch' ) then 
+            animateOnTouch()
+        else
+            timer.performWithDelay(taskSettings.delay, restoreTarget)
+        end
     end
 
     return true
