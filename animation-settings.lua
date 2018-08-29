@@ -29,8 +29,8 @@ local function exportSettings()
     
     -- settings table
     animationSettings = {
-        speed = speed,
-        startDelay = startDelay,
+        speed = speed.text,
+        startDelay = startDelay.text,
         movtType = movtType,
     }
     composer.setVariable("animationSettings", animationSettings)
