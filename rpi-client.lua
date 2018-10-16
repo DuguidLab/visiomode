@@ -59,6 +59,12 @@ local function rpiLoop(client, ip, port)
     local clientPulse
     composer.setVariable('buffer', {})
 
+    local function stopClient()
+        timer.cancel(clientPulse)
+        clientPulse = nil
+        client:close()
+    end
+
     local function cPulse()
         local allData = {}
         local data, err
@@ -70,12 +76,9 @@ local function rpiLoop(client, ip, port)
                 allData[#allData+1] = data
             end
             if (err == "closed" and clientPulse) then
-                print("reconnecting...")
-                rpiConnect(ip, port)
-                data, err = client:receive()
-                if data then 
-                    allData[#allData+1] = data
-                end
+                print("connection lost, closing...")
+                composer.gotoScene("menu")
+                stopClient()
             end
         until not data
 
@@ -105,12 +108,6 @@ local function rpiLoop(client, ip, port)
     end
 
     clientPulse = timer.performWithDelay(100, cPulse, 0)
-
-    local function stopClient()
-        timer.cancel(clientPulse)
-        clientPulse = nil
-        client:close()
-    end
 
     return stopClient
 end
