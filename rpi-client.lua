@@ -86,10 +86,12 @@ local function rpiLoop(client, ip, port)
             for i, thisData in ipairs(allData) do
                 print("received: ", thisData)
                 if string.match(thisData, "{*}") then  -- does it look like json?
-                    settings = parseSettings(thisData)
-                    composer.setVariable("taskSettings", settings.task)
-                    composer.setVariable("sessionSettings", settings.session)
-                    composer.gotoScene("task")
+                    --settings = parseSettings(thisData)
+                    --composer.setVariable("taskSettings", settings.task)
+                    --composer.setVariable("sessionSettings", settings.session)
+                    --composer.gotoScene("task")
+                    -- HACK only initiate visuomotor task for now
+                    composer.gotoScene("task-visuomotor")
                 end
             end
         end
