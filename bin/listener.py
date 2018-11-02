@@ -1,5 +1,5 @@
 import socketserver
-#import rodent_control.core as rc
+import rodent_control.core as rc
 import rodent_control.user.cli_prompts as usr
 import time
 
@@ -18,10 +18,14 @@ class TCPHandler(socketserver.BaseRequestHandler):
             if str(self.data, 'utf-8') == 'connect':
                 # TODO assign session ID
                 self.request.sendall(b'connected\n')
-                self.request.sendall(bytes(usr.all_settings() + '\n', 'utf-8'))
+                settings = usr.all_settings()
+                self.request.sendall(bytes(settings + '\n', 'utf-8'))
             if self.data == b'test':
                 print('test water reward')
-                #rc.water_reward(delay=1000)
+                rc.water_reward(delay=1000)
+            if str(self.data, 'utf-8').startswith('reward'):
+                print('dispensing reward')
+                rc.water_reward(delay=800)
 
 
 if __name__ == '__main__':
