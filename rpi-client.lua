@@ -91,7 +91,7 @@ local function rpiLoop(client, ip, port)
                     --composer.setVariable("sessionSettings", settings.session)
                     --composer.gotoScene("task")
                     -- HACK only initiate visuomotor task for now
-                    composer.gotoScene("task-visuomotor")
+                    composer.gotoScene("task-visuomotor-stage1")
                 end
             end
         end
