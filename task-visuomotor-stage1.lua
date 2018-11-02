@@ -20,8 +20,6 @@ local precued
 
 local taskSettings
 local sessionSettings
-local animationSettings
-local shrinkingSettings
 local sessionTimer
 
 local startTime
@@ -40,42 +38,16 @@ local pixelMilliMeter = 0.2645833  -- factor for converting pixels to mm
 
 
 local function getSessionSettings()
-    local sessionSettings = composer.getVariable("sessionSettings")
-    return sessionSettings
+    sessionSettings = composer.getVariable("sessionSettings")
+    table.foreach(sessionSettings, print)
 end
 
-local function setTargetBounds()
-  bounds = {}
-  iter = 1  -- second counter for for loop
-  -- set bounds
-  if (taskSettings.targets % 2 == 0) then
-      -- slits placed center-out
-      for i = 1, taskSettings.targets, 2 do
-          table.insert(bounds, display.contentCenterX + ((targetDistance / 2) * iter))
-          table.insert(bounds, display.contentCenterX - ((targetDistance / 2) * iter))
-          iter = iter + 1
-      end
-  else
-      -- slits placed center-surround
-      table.insert(bounds, display.contentCenterX)
-      for i = 1, taskSettings.targets, 3 do
-          table.insert(bounds, display.contentCenterX + (targetDistance * iter))
-          table.insert(bounds, display.contentCenterX - (targetDistance * iter))
-      iter = iter + 1
-      end
-  end
-
-  -- inspect bounds table
-  print(table.foreach(bounds, print))
-  print(targetDistance)
+local function getTaskSettings()
+    taskSettings = composer.getVariable("taskSettings")
+    table.foreach(taskSettings, print)
 end
 
-
-local function restoreTarget(newX)
-    if not type(newX) == 'number' then
-        newX = bounds[math.random(#bounds)]
-    end
-    target.x = newX
+local function restoreTarget()
     target.alpha = 1
 end
 
@@ -107,11 +79,7 @@ local function onTargetHit(event)
             composer.setVariable('buffer', {'reward:' .. taskSettings.delay})
         end
 
-        if ( animationSettings.movtType == 'on-touch' ) then 
-            animateOnTouch()
-        else
-            timer.performWithDelay(taskSettings.delay, restoreTarget)
-        end
+        timer.performWithDelay(taskSettings.delay, restoreTarget)
     end
 
     return true
@@ -205,11 +173,11 @@ end
 
 -- create()
 function scene:create( event )
+    -- get settings 
+    getSessionSettings()
+    getTaskSettings()
     -- set msec start time
     startTime = os.clock()
-
-    -- get settings
-    sessionSettings = getSessionSettings()
 
     -- init tables for hits / misses
     hits = {}
