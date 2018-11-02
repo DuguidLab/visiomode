@@ -224,15 +224,8 @@ function scene:create( event )
     background:toBack()
 
     --setTargetBounds()
-    target = display.newRect( sceneGroup, bounds[math.random(#bounds)], display.contentCenterY, horizontalWidth, display.contentHeight )
+    target = display.newRect( sceneGroup, display.contentCenterX, display.contentCenterY, 500, display.contentHeight )
     target.fill = { 1, 1, 0 }
-
-    distractor = display.newRect( sceneGroup, bounds[math.random(#bounds)], display.contentCenterY, horizontalWidth, display.contentHeight )
-    distractor.fill = { 1, 0, 1 }
-
-    if taskSettings.animated then
-        animateTarget(sceneGroup)
-    end
 
     background:addEventListener("touch", onTargetMiss)
     target:addEventListener("touch", onTargetHit)
