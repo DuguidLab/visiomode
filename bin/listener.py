@@ -6,11 +6,7 @@ import time
 
 class TCPHandler(socketserver.BaseRequestHandler):
     """
-    The request handler class for our server.
-
-    It is instantiated once per connection to the server, and must
-    override the handle() method to implement communication to the
-    client.
+    The request handler class for the TCP listener server.
     """
     def handle(self):
         # self.request is the TCP socket connected to the client
