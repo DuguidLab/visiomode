@@ -76,7 +76,7 @@ local function onTargetHit(event)
         table.insert(hits, hit)
         print("hit")
         if sessionSettings.sessionType == 'rpi' then
-            composer.setVariable('buffer', {'reward:' .. taskSettings.delay})
+            composer.setVariable('buffer', {'reward:' .. now})
         end
 
         timer.performWithDelay(taskSettings.delay, restoreTarget)
