@@ -30,7 +30,7 @@ class TCPHandler(socketserver.BaseRequestHandler):
                 rc.water_reward(delay=800)
             if str(self.data, 'utf-8').startswith('session'):
                 print('---Session End---')
-                path = input("Saved sessions directory: ")
+                path = input("Saved sessions directory: ") or "."
                 _, timestamp, session_data = str(self.data, 'utf-8').split(':', 2)
                 with open(path + '/' + timestamp + '.json', 'w') as f:
                     json.dump(json.loads(session_data), f)
