@@ -33,7 +33,7 @@ def water_reward(delay=500, speed=150, distance=25):
 
     # Water reward logic
     # First, move motor in
-    gb.move_stepper(BOARD, CHANNEL, distance)
+    gb.move_stepper(BOARD, CHANNEL, -distance)
     time.sleep(distance/speed) # Account for movement forward
 
     # Open solenoid
@@ -47,4 +47,4 @@ def water_reward(delay=500, speed=150, distance=25):
     time.sleep(delay/1000)  # Delay conversion from msec to sec
 
     # Move stepper back
-    gb.move_stepper(BOARD, CHANNEL, -(distance-5))  # Less backward steps so spout ends up in same place
+    gb.move_stepper(BOARD, CHANNEL, distance-5)  # Less backward steps so spout ends up in same place
