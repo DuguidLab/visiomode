@@ -1,11 +1,12 @@
 import time
 from rodent_control.external import gertbot as gb
+from gpiozero import OutputDevice
 
 
 SERIAL_PORT = 0
 BOARD = 3
 CHANNEL = 0
-SOLENOID_PIN = 6
+SOLENOID_PIN = 16  # Plugged in Rpi, BCM numbering
 
 DEBUG = False
 
@@ -26,6 +27,8 @@ def water_reward(delay=500, speed=150, distance=25):
         return
 
     solenoid_open_delay = 200  # ms solenoid remains open for
+    motor_movt_delay = distance / speed  # Amount of time motor takes to move
+    reward_delay = delay - (solenoid_open_delay - motor_movt_delay)
 
     # Setup channel for stepper motor
     gb.set_mode(BOARD, CHANNEL, gb.MODE_STEPG_OFF)
@@ -34,17 +37,16 @@ def water_reward(delay=500, speed=150, distance=25):
     # Water reward logic
     # First, move motor in
     gb.move_stepper(BOARD, CHANNEL, -distance)
-    time.sleep(distance/speed) # Account for movement forward
+    time.sleep(motor_movt_delay) # Account for movement forward
 
-    # Open solenoid
-    pin_state = (1<<SOLENOID_PIN)  
-    gb.set_output_pin_state(BOARD, pin_state)  # Set pin to high
-    time.sleep(solenoid_open_delay)  # wait for enough water to drip
-    pin_state &= ~(1<<SOLENOID_PIN) 
-    gb.set_output_pin_state(BOARD, pin_state)  # set pin to low
+    # Open solenoid - plugged into RPi port!
+    solenoid = OutputDevice(SOLENOID_PIN)
+    solenoid.on()
+    time.sleep(solenoid_open_delay / 1000)  # wait for enough water to drip
+    solenoid.off()
 
     # Wait!
-    time.sleep(delay/1000)  # Delay conversion from msec to sec
+    time.sleep(reward_delay / 1000)  # Delay conversion from msec to sec
 
     # Move stepper back
     gb.move_stepper(BOARD, CHANNEL, distance-5)  # Less backward steps so spout ends up in same place
