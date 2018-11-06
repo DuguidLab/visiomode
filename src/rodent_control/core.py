@@ -1,6 +1,10 @@
 import time
 from rodent_control.external import gertbot as gb
-from gpiozero import OutputDevice
+
+try:
+    from gpiozero import OutputDevice
+except Exception as e:
+    print("Could not load RPi GPIO library - " + str(e))
 
 
 SERIAL_PORT = 0
