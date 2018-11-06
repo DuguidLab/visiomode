@@ -192,8 +192,12 @@ function scene:create( event )
     background:toBack()
 
     --setTargetBounds()
-    target = display.newRect( sceneGroup, display.contentCenterX, display.contentCenterY, 500, display.contentHeight )
-    target.fill = { 1, 1, 1 }
+    --target = display.newRect( sceneGroup, display.contentCenterX, display.contentCenterY, 500, display.contentHeight )
+    --target.fill = { 1, 1, 1 }
+    target = display.newImageRect(sceneGroup, "assets/stage1.jpg", 1000, 768)
+    target.x = display.contentCenterX
+    target.y = display.contentCenterY
+    print(display.contentHeight)
 
     background:addEventListener("touch", onTargetMiss)
     target:addEventListener("touch", onTargetHit)
