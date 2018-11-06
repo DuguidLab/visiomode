@@ -22,6 +22,8 @@ settings =
 		{
 			"android.permission.INTERNET",
 			"android.permission.VIBRATE",
+            "android.permission.WRITE_INTERNAL_STORAGE",
+            "android.permission.WRITE_EXTERNAL_STORAGE",
 		},
 	},
 
