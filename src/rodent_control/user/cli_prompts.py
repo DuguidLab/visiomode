@@ -7,7 +7,6 @@ def all_settings(as_json=True):
         'task': task_settings(as_json=False),
         'session': session_settings(as_json=False)
     }
-    input("Press ENTER to begin session...")
     if as_json:
         return json.dumps(all_settings)
     return all_settings
@@ -18,6 +17,7 @@ def task_settings(as_json=True):
 #        'targets': int(input("Number of targets: ")),
 #        'width': int(input("Target width (mm): ")),
 #        'distance': int(input("Distance between targets (mm): ")),
+        'stage': int(input("Task Stage: ")),
         'delay': int(input("Presentation delay (ms): ")),
 #        'haptics': False if input("Haptic feedback (Y/N): ") == 'N' else True,
 #        'animated': True if input("Animated (Y/N): ") == 'Y' else False,
