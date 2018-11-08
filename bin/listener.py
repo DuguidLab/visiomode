@@ -13,7 +13,7 @@ class TCPHandler(socketserver.BaseRequestHandler):
         # self.request is the TCP socket connected to the client
         self.settings = usr.all_settings(as_json=False)
         while True:
-            self.data = self.request.recv(10240)  # Only suitable for single clients!
+            self.data = self.request.recv(1024000)  # Only suitable for single clients!
             if not self.data:
                 break
             print("{}:{} wrote: {}".format(self.client_address[0], self.client_address[1], str(self.data, 'utf-8')))
