@@ -105,6 +105,7 @@ local function rpiLoop(client, ip, port)
         for i, msg in pairs(buffer) do
             print('sending: ' .. msg)
             local data, err = client:send(msg)
+            print(err)
             if (err == "closed" and clientPulse) then  --try to reconnect and resend
                 rpiConnect(ip, port)
                 data, err = client:send(msg)
