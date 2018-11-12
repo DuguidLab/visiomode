@@ -29,7 +29,7 @@ local horizontalWidth
 local buffer
 
 -- TODO figure out DPI at runtime!
-local pixelMilliMeter = 0.2645833  -- factor for converting pixels to mm 
+local pixelMilliMeter = 0.123902439  -- factor for converting pixels to mm 
 
 
 local function getTaskSettings()
@@ -79,7 +79,7 @@ local function onTargetHit(event)
         table.insert(hits, hit)
         print("hit")
         if sessionSettings.sessionType == 'rpi' then
-            composer.setVariable('buffer', {'reward:' .. taskSettings.delay})
+            composer.setVariable('buffer', {'reward:' .. hitTime})
         end
 
         if ( animationSettings.movtType == 'on-touch' ) then 
@@ -186,7 +186,6 @@ function scene:create( event )
     -- get settings
     taskSettings = getTaskSettings()
     sessionSettings = getSessionSettings()
-    animationSettings = getAnimationSettings()
 
     -- init tables for hits / misses
     hits = {}
@@ -200,16 +199,16 @@ function scene:create( event )
     background.fill = {0, 0, 0}
     background:toBack()
 
-    setTargetBounds()
-    target = display.newRect(sceneGroup, bounds[math.random(#bounds)], display.contentCenterY, horizontalWidth, display.contentHeight)
-    target.fill = { 1, 1, 1 }
+    local dividerWidth = 5 / pixelMilliMeter  -- 6 mm to pixels
+    local divider = display.newRect(sceneGroup, display.contentCenterX, display.contentCenterY, dividerWidth, display.contentHeight)
+    divider.fill= { 0.5, 0.5, 0.5 }
 
-    if taskSettings.animated then
-        animateTarget(sceneGroup)
-    end
+    --setTargetBounds()
+    --target = display.newRect(sceneGroup, bounds[math.random(#bounds)], display.contentCenterY, horizontalWidth, display.contentHeight)
+    --target.fill = { 1, 1, 1 }
 
     background:addEventListener("touch", onTargetMiss)
-    target:addEventListener("touch", onTargetHit)
+    --target:addEventListener("touch", onTargetHit)
 end
 
 
