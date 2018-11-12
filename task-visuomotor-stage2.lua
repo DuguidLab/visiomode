@@ -13,6 +13,8 @@ local hits
 local misses
 local precued
 
+local start
+
 local taskSettings
 local sessionSettings
 local sessionTimer
@@ -82,11 +84,7 @@ local function onTargetHit(event)
             composer.setVariable('buffer', {'reward:' .. hitTime})
         end
 
-        if ( animationSettings.movtType == 'on-touch' ) then 
-            animateOnTouch()
-        else
-            timer.performWithDelay(taskSettings.delay, restoreTarget)
-        end
+        timer.performWithDelay(taskSettings.delay, restoreTarget)
     end
 
     return true
@@ -143,6 +141,8 @@ local function saveSession()
 
     session = {
         timestamp = os.date('%Y-%m-%d_%H:%M:%S'),
+        start = start,
+        finish = os.clock(),
         hits = hits,
         misses = misses,
         precued = precued
@@ -187,10 +187,13 @@ function scene:create( event )
     taskSettings = getTaskSettings()
     sessionSettings = getSessionSettings()
 
+    start = os.clock()
+
     -- init tables for hits / misses
     hits = {}
     misses = {}
     precued = {}
+    session = {}
 
     -- set up task scene
     local sceneGroup = self.view
@@ -203,12 +206,13 @@ function scene:create( event )
     local divider = display.newRect(sceneGroup, display.contentCenterX, display.contentCenterY, dividerWidth, display.contentHeight)
     divider.fill= { 0.5, 0.5, 0.5 }
 
-    --setTargetBounds()
-    --target = display.newRect(sceneGroup, bounds[math.random(#bounds)], display.contentCenterY, horizontalWidth, display.contentHeight)
-    --target.fill = { 1, 1, 1 }
+    local width = (display.contentWidth / 2) - (dividerWidth / 2)
+    target = display.newImageRect(sceneGroup, 'assets/stage2_target.jpg', width, display.contentHeight)
+    target.x = display.contentCenterX / 2
+    target.y = display.contentCenterY
 
     background:addEventListener("touch", onTargetMiss)
-    --target:addEventListener("touch", onTargetHit)
+    target:addEventListener("touch", onTargetHit)
 end
 
 
