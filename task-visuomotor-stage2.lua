@@ -35,10 +35,6 @@ local pixelMilliMeter = 0.2645833  -- factor for converting pixels to mm
 local function getTaskSettings()
     local taskSettings = composer.getVariable("taskSettings")
     table.foreach(taskSettings, print)
-
-    -- convert mm to pix
-    horizontalWidth = math.floor(taskSettings.width / pixelMilliMeter)
-    targetDistance = math.floor(taskSettings.distance / pixelMilliMeter) + math.floor(horizontalWidth / 2)
     return taskSettings
 end
 
@@ -50,100 +46,12 @@ local function getSessionSettings()
 end
 
 
-local function getAnimationSettings()
-    if not taskSettings.animated then
-        return nil
-    end
-    return composer.getVariable( "animationSettings" )
-end
-
-
-local function setTargetBounds()
-  bounds = {}
-  iter = 1  -- second counter for for loop
-  -- set bounds
-  if (taskSettings.targets % 2 == 0) then
-      -- slits placed center-out
-      for i = 1, taskSettings.targets, 2 do
-          table.insert(bounds, display.contentCenterX + ((targetDistance / 2) * iter))
-          table.insert(bounds, display.contentCenterX - ((targetDistance / 2) * iter))
-          iter = iter + 1
-      end
-  else
-      -- slits placed center-surround
-      table.insert(bounds, display.contentCenterX)
-      for i = 1, taskSettings.targets, 3 do
-          table.insert(bounds, display.contentCenterX + (targetDistance * iter))
-          table.insert(bounds, display.contentCenterX - (targetDistance * iter))
-      iter = iter + 1
-      end
-  end
-
-  -- inspect bounds table
-  print(table.foreach(bounds, print))
-  print(targetDistance)
-end
-
-
 local function restoreTarget(newX)
     if not type(newX) == 'number' then
         newX = bounds[math.random(#bounds)]
     end
     target.x = newX
     target.alpha = 1
-end
-
-
-local function animateBetweenBounds(sceneGroup)
-    -- sweep target between boundaries
-    local boundLeft = display.newRect(sceneGroup, math.min(unpack(bounds))-horizontalWidth, display.contentCenterY, horizontalWidth, display.contentHeight)
-    boundLeft.fill = { 0, 0, 0 }
-
-    local boundRight = display.newRect(sceneGroup, math.max(unpack(bounds))+horizontalWidth, display.contentCenterY, horizontalWidth, display.contentHeight)
-    boundRight.fill = { 0, 0, 0 }
-
-    target:applyLinearImpulse( 0.05, 0, target.x, target.y )
-
-end
-
-
-local function animateEdgeToEdge(sceneGroup)
-    -- sweep target from screen edge to screen edge
-    local boundLeft = display.newRect(sceneGroup, 0, display.contentCenterY, horizontalWidth, display.contentHeight)
-    boundLeft.fill = { 0, 0, 0 }
-
-    local boundRight = display.newRect(sceneGroup, display.contentWidth, display.contentCenterY, horizontalWidth, display.contentHeight)
-    boundRight.fill = { 0, 0, 0 }
-
-    target:applyLinearImpulse( 0.05, 0, target.x, target.y )
-
-end
-
-
-local function animateOnTouch()
-    newX = bounds[math.random(#bounds)]
-    if (newX == target.x) then
-        -- if not new position, blink
-        timer.performWithDelay(taskSettings.delay, restoreTarget(newX))
-    else
-        print(taskSettings.delay)
-        print(animationSettings.speed)
-        local transitionTime = tonumber(taskSettings.delay) + (math.abs(newX - target.x) / tonumber(animationSettings.speed))
-        transition.to(target, { x=newX, time=transitionTime, alpha=1 })
-    end
-end
-
-
-local function animateTarget(sceneGroup)
-    -- figure out which continuous animation is appropriate
-    animationType = animationSettings.movtType
-    if ( animationType == 'bound-bound' ) then
-        animateBetweenBounds(sceneGroup)
-    elseif ( animationType == 'edge-edge' ) then 
-        animateEdgeToEdge(sceneGroup)
-    elseif (animationType == 'on-touch') then
-        animateOnTouch()
-    end
 end
 
 
