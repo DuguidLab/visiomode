@@ -48,12 +48,14 @@ local function getSessionSettings()
 end
 
 
-local function restoreTarget(newX)
-    if not type(newX) == 'number' then
-        newX = bounds[math.random(#bounds)]
-    end
-    target.x = newX
+local function restoreTargets()
+    local target_idx = math.random(#bounds)
+    print(target_idx)
+    local distractor_idx = 3 - target_idx
+    target.x = bounds[target_idx]
     target.alpha = 1
+    distractor.x = bounds[distractor_idx]
+    distractor.alpha=1
 end
 
 
@@ -68,6 +70,7 @@ local function onTargetHit(event)
     elseif ("ended" == phase) then
         local now = os.clock()
         target.alpha = 0
+        distractor.alpha = 0
 
         local hit = {
             timestamp = hitTime - startTime,
@@ -84,7 +87,7 @@ local function onTargetHit(event)
             composer.setVariable('buffer', {'reward:' .. hitTime})
         end
 
-        timer.performWithDelay(taskSettings.delay, restoreTarget)
+        timer.performWithDelay(taskSettings.delay, restoreTargets)
     end
 
     return true
@@ -113,10 +116,9 @@ local function onTargetMiss(event)
             table.insert(misses, miss)
             print("miss")
 
-            -- vibrate if haptics enabled
-            if (taskSettings.haptics) then
-                system.vibrate()
-            end
+            target.alpha = 0
+            distractor.alpha = 0
+            timer.performWithDelay(taskSettings.delay, restoreTargets)
         elseif (target.alpha == 0) then
             local prec = {
                 timestamp = missTime - startTime,
@@ -208,14 +210,21 @@ function scene:create( event )
     local divider = display.newRect(sceneGroup, (display.actualContentWidth * 0.5) + display.screenOriginX, display.contentCenterY, dividerWidth, display.contentHeight)
     divider.fill= { 0.5, 0.5, 0.5 }
 
+
+     -- set up bounds (x positions)
+    bounds = {
+        (display.actualContentWidth * 0.25) + display.screenOriginX  - (dividerWidth / 2),
+        (display.actualContentWidth * 0.75) + display.screenOriginX + (dividerWidth / 2)
+    }
+
     local width = 665
     target = display.newImageRect(sceneGroup, 'assets/stage2_target.jpg', width, display.contentHeight)
-    target.x = (display.actualContentWidth * 0.25) + display.screenOriginX  - (dividerWidth / 2)
     target.y = display.contentCenterY
 
     distractor = display.newImageRect(sceneGroup, 'assets/stage2_distractor.jpg', width, display.contentHeight)
-    distractor.x = (display.actualContentWidth * 0.75) + display.screenOriginX + (dividerWidth / 2)
     distractor.y = display.contentCenterY
+
+    restoreTargets()
 
     background:addEventListener("touch", onTargetMiss)
     target:addEventListener("touch", onTargetHit)
