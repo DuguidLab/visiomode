@@ -59,6 +59,19 @@ local function restoreTargets()
 end
 
 
+local function getTime()
+    local _,msec = math.modf(os.clock())
+    if msec==0 then
+        msec='000' 
+    else 
+        msec=tostring(msec):sub(3,5) 
+    end
+ 
+    local time=os.date('%Y-%m-%dT%H:%M:%S.',os.time())
+    return time .. msec
+end
+
+
 local function onTargetHit(event)
     local target = event.target
     local phase = event.phase
@@ -73,7 +86,7 @@ local function onTargetHit(event)
         distractor.alpha = 0
 
         local hit = {
-            timestamp = hitTime - startTime,
+            timestamp = getTime(),
             x_distance = math.abs(event.x - event.xStart),
             y_distance = math.abs(event.y - event.yStart),
             touch_coords = {x = event.x, y = event.y},
@@ -84,7 +97,7 @@ local function onTargetHit(event)
         table.insert(hits, hit)
         print("hit")
         if sessionSettings.sessionType == 'rpi' then
-            composer.setVariable('buffer', {'reward:' .. hitTime})
+            composer.setVariable('buffer', {'reward:' .. getTime()})
         end
 
         timer.performWithDelay(taskSettings.delay, restoreTargets)
@@ -105,7 +118,7 @@ local function onTargetMiss(event)
         local now = os.clock()
         if (target.alpha == 1) then
             local miss = {
-                timestamp = missTime - startTime,
+                timestamp = getTime(),
                 x_distance = math.abs(event.x - event.xStart),
                 y_distance = math.abs(event.y - event.yStart),
                 touch_coords = {x = event.x, y = event.y},
@@ -142,9 +155,8 @@ local function saveSession()
     local file = io.open(filePath, "w")
 
     session = {
-        timestamp = os.date('%Y-%m-%d_%H:%M:%S'),
+        timestamp = getTime(),
         start = start,
-        finish = os.clock(),
         hits = hits,
         misses = misses,
         precued = precued
@@ -183,7 +195,7 @@ end
 -- create()
 function scene:create( event )
     -- set msec start time
-    startTime = os.clock()
+    startTime = getTime()
 
     -- get settings
     taskSettings = getTaskSettings()
