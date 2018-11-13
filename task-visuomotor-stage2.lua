@@ -116,37 +116,50 @@ local function onTargetMiss(event)
 
     elseif ("ended" == phase) then
         local now = os.clock()
-        if (target.alpha == 1) then
-            local miss = {
-                timestamp = getTime(),
-                x_distance = math.abs(event.x - event.xStart),
-                y_distance = math.abs(event.y - event.yStart),
-                touch_coords = {x = event.x, y = event.y},
-                duration = now - missTime,
-                touch_force = event.pressure
-            }
+        local miss = {
+            timestamp = getTime(),
+            x_distance = math.abs(event.x - event.xStart),
+            y_distance = math.abs(event.y - event.yStart),
+            touch_coords = {x = event.x, y = event.y},
+            duration = now - missTime,
+            touch_force = event.pressure
+        }
 
-            table.insert(misses, miss)
-            print("miss")
+        table.insert(misses, miss)
+        print("miss")
 
-            target.alpha = 0
-            distractor.alpha = 0
-            timer.performWithDelay(taskSettings.delay, restoreTargets)
-        elseif (target.alpha == 0) then
-            local prec = {
-                timestamp = missTime - startTime,
-                x_distance = math.abs(event.x - event.xStart),
-                y_distance = math.abs(event.y - event.yStart),
-                touch_coords = {x = event.x, y = event.y},
-                duration = now - missTime,
-                touch_force = event.pressure
-            }
-            table.insert(precued, prec)
-            print("precued")
-        end
+        target.alpha = 0
+        distractor.alpha = 0
+        timer.performWithDelay(taskSettings.delay, restoreTargets)
     end
 
     return true
+end
+
+
+local function onPrecued(event)
+    local phase = event.phase
+
+    if ("began" == phase) then
+        missTime = os.clock()
+    elseif ("moved" == phase) then
+
+    elseif ("ended" == phase) then
+        local now = os.clock()
+        local prec = {
+            timestamp = missTime - startTime,
+            x_distance = math.abs(event.x - event.xStart),
+            y_distance = math.abs(event.y - event.yStart),
+            touch_coords = {x = event.x, y = event.y},
+            duration = now - missTime,
+            touch_force = event.pressure
+        }
+        table.insert(precued, prec)
+        print("precued")
+    end
+
+    return true
+
 end
 
 
@@ -238,7 +251,7 @@ function scene:create( event )
 
     restoreTargets()
 
-    background:addEventListener("touch", onTargetMiss)
+    background:addEventListener("touch", onPrecued)
     target:addEventListener("touch", onTargetHit)
     distractor:addEventListener("touch", onTargetMiss)
 end
