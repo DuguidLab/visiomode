@@ -198,21 +198,28 @@ function scene:create( event )
     -- set up task scene
     local sceneGroup = self.view
 
-    local background = display.newRect(sceneGroup, display.contentCenterX, display.contentCenterY, display.contentWidth, display.contentHeight)
+    local background = display.newRect(sceneGroup, display.contentCenterX, display.contentCenterY, display.contentHeight, display.contentWidth)
     background.fill = {0, 0, 0}
     background:toBack()
 
-    local dividerWidth = 5 / pixelMilliMeter  -- 6 mm to pixels
-    local divider = display.newRect(sceneGroup, display.contentCenterX, display.contentCenterY, dividerWidth, display.contentHeight)
+    print(display.actualContentWidth)
+    -- local dividerWidth 5 / pixelMilliMeter  -- 5 mm to pixels
+    local dividerWidth = 40
+    local divider = display.newRect(sceneGroup, (display.actualContentWidth * 0.5) + display.screenOriginX, display.contentCenterY, dividerWidth, display.contentHeight)
     divider.fill= { 0.5, 0.5, 0.5 }
 
-    local width = (display.contentWidth / 2) - (dividerWidth / 2)
+    local width = 665
     target = display.newImageRect(sceneGroup, 'assets/stage2_target.jpg', width, display.contentHeight)
-    target.x = display.contentCenterX / 2
+    target.x = (display.actualContentWidth * 0.25) + display.screenOriginX  - (dividerWidth / 2)
     target.y = display.contentCenterY
+
+    distractor = display.newImageRect(sceneGroup, 'assets/stage2_distractor.jpg', width, display.contentHeight)
+    distractor.x = (display.actualContentWidth * 0.75) + display.screenOriginX + (dividerWidth / 2)
+    distractor.y = display.contentCenterY
 
     background:addEventListener("touch", onTargetMiss)
     target:addEventListener("touch", onTargetHit)
+    distractor:addEventListener("touch", onTargetMiss)
 end
 
 
