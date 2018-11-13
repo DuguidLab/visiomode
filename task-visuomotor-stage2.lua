@@ -195,13 +195,13 @@ end
 -- create()
 function scene:create( event )
     -- set msec start time
-    startTime = getTime()
+    startTime = os.clock()
 
     -- get settings
     taskSettings = getTaskSettings()
     sessionSettings = getSessionSettings()
 
-    start = os.clock()
+    start = getTime()
 
     -- init tables for hits / misses
     hits = {}
