@@ -1,5 +1,5 @@
 import time
-from rodent_control.external import gertbot as gb
+from carie_controller.external import gertbot as gb
 
 try:
     from gpiozero import OutputDevice

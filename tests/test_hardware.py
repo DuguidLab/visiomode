@@ -1,5 +1,5 @@
 """Test hardware components of controller"""
-import rodent_control.core as rc
+import carie_controller.core as rc
 
 
 def test_stepper_motor():

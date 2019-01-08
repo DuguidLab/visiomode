@@ -1,6 +1,6 @@
 import socketserver
-import rodent_control.core as rc
-import rodent_control.user.cli_prompts as usr
+import carie_controller.core as rc
+import carie_controller.user.cli_prompts as usr
 import datetime
 import json
 

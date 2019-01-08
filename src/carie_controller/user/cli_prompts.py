@@ -14,14 +14,14 @@ def all_settings(as_json=True):
 
 def task_settings(as_json=True):
     task_settings = {
-#        'targets': int(input("Number of targets: ")),
-#        'width': int(input("Target width (mm): ")),
-#        'distance': int(input("Distance between targets (mm): ")),
+        # 'targets': int(input("Number of targets: ")),
+        # 'width': int(input("Target width (mm): ")),
+        # 'distance': int(input("Distance between targets (mm): ")),
         'stage': int(input("Task Stage: ")),
         'delay': int(input("Presentation delay (ms): ")),
-#        'haptics': False if input("Haptic feedback (Y/N): ") == 'N' else True,
-#        'animated': True if input("Animated (Y/N): ") == 'Y' else False,
-#        'shrinking': True if input("Shrinking (Y/N): ") == 'Y' else False
+        # 'haptics': False if input("Haptic feedback (Y/N): ") == 'N' else True,
+        # 'animated': True if input("Animated (Y/N): ") == 'Y' else False,
+        # 'shrinking': True if input("Shrinking (Y/N): ") == 'Y' else False
     }
     if as_json:
         return json.dumps(task_settings)
@@ -33,7 +33,7 @@ def session_settings(as_json=True):
         'sessionType': 'rpi',
         'duration': float(input("Session duration (min): ")),
         'showResults': False,
-#        'playToneAtEnd': True if input("Tone at End (Y/N): ") == 'Y' else False,
+        # 'playToneAtEnd': True if input("Tone at End (Y/N): ") == 'Y' else False,
         'saveSession': True
     }
     if as_json:
