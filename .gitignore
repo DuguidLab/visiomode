@@ -109,3 +109,6 @@ etc/
 # ignore vim swp
 *.swp
 .#*
+
+# ignore pycharm stuff
+.idea/
