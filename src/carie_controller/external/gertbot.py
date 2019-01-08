@@ -171,7 +171,7 @@ def open_uart(port):
    port_attr[1] = 0
    port_attr[2] = port_attr[2] | termios.CLOCAL | \
                   termios.CREAD # ignore mode status, enable rec.
-   port_attr[2] = port_attr[2] & ~(termios.PARENB | \
+   port_attr[2] = port_attr[2] & ~(termios.PARENB |
                   termios.PARODD | termios.CSTOPB) # No parity, 1 stop bit
    port_attr[3] = 0
    port_attr[4] = termios.B57600
@@ -180,7 +180,7 @@ def open_uart(port):
 
 
 def read_uart(num_bytes) :
-  if num_bytes>16 : raise
+  if num_bytes>16 : raise Exception
   retry = 4
   buffer = [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0 ]
   while (retry) :
