@@ -1,6 +1,7 @@
 import time
 from carie_controller.external import gertbot as gb
 
+
 try:
     from gpiozero import OutputDevice
 except Exception as e:
@@ -53,4 +54,4 @@ def water_reward(delay=500, speed=150, distance=25):
     time.sleep(reward_delay / 1000)  # Delay conversion from msec to sec
 
     # Move stepper back
-    gb.move_stepper(BOARD, CHANNEL, distance-5)  # Less backward steps so spout ends up in same place
+    gb.move_stepper(BOARD, CHANNEL, distance-5)  # Less backward steps - spout ends up in same place
