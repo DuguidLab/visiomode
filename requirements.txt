@@ -1,6 +1,6 @@
 alabaster==0.7.11
 atomicwrites==1.1.5
--e git+git@github.com:DuguidLab/carie-controller.git@bb59e22f43928ca8440858934e022c3bf394c166#egg=carie_controller
+-e git+git@github.com:DuguidLab/carie-controller.git@1f0a95e86502551edbd60d8d4246176a886b54d7#egg=carie_controller
 chardet==3.0.4
 docutils==0.14
 gpiozero==1.4.1
