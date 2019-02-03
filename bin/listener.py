@@ -13,7 +13,7 @@ class TCPHandler(socketserver.BaseRequestHandler):
         # self.request is the TCP socket connected to the client
         self.settings = usr.all_settings(as_json=False)
         while True:
-            self.data = self.request.recv(1024000)  # Only suitable for single clients!
+            self.data = self.request.recv(1024)  # Only suitable for single clients!
             if not self.data:
                 break
             print("{}:{} wrote: {}".format(self.client_address[0], self.client_address[1], str(self.data, 'utf-8')))
@@ -30,7 +30,7 @@ class TCPHandler(socketserver.BaseRequestHandler):
             if str(self.data, 'utf-8').startswith('session'):
                 self.end_session()
                 self.start_session()  # Start new one
-                
+
     def start_session(self):
         input("Press ENTER to begin session...")
         self.request.sendall(bytes(json.dumps(self.settings) + '\n', 'utf-8'))
