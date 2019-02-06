@@ -1,5 +1,5 @@
 import time
-from carie_controller.external import gertbot as gb
+from carie_controller.hardware.rpi import gertbot as gb
 
 
 try:
@@ -42,7 +42,7 @@ def water_reward(delay=500, speed=150, distance=25):
     # Water reward logic
     # First, move motor in
     gb.move_stepper(BOARD, CHANNEL, -distance)
-    time.sleep(motor_movt_delay) # Account for movement forward
+    time.sleep(motor_movt_delay)  # Account for movement forward
 
     # Open solenoid - plugged into RPi port!
     solenoid = OutputDevice(SOLENOID_PIN)
@@ -54,4 +54,6 @@ def water_reward(delay=500, speed=150, distance=25):
     time.sleep(reward_delay / 1000)  # Delay conversion from msec to sec
 
     # Move stepper back
-    gb.move_stepper(BOARD, CHANNEL, distance-5)  # Less backward steps - spout ends up in same place
+    gb.move_stepper(
+        BOARD, CHANNEL, distance - 5
+    )  # Less backward steps - spout ends up in same place
