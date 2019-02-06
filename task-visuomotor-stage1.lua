@@ -66,9 +66,10 @@ local function onTargetHit(event)
 
         local hit = {
             timestamp = hitTime - startTime,
-            x_distance = math.abs(event.x - event.xStart),
-            y_distance = math.abs(event.y - event.yStart),
-            touch_coords = {x = event.x, y = event.y},
+            x_distance = event.x - event.xStart,
+            y_distance = event.y - event.yStart,
+            x = event.x,
+            y = event.y,
             duration = now - hitTime,
             touch_force = event.pressure
         }
@@ -98,9 +99,10 @@ local function onTargetMiss(event)
         if (target.alpha == 1) then
             local miss = {
                 timestamp = missTime - startTime,
-                x_distance = math.abs(event.x - event.xStart),
-                y_distance = math.abs(event.y - event.yStart),
-                touch_coords = {x = event.x, y = event.y},
+                x_distance = event.x - event.xStart,
+                y_distance = event.y - event.yStart,
+                x = event.x,
+                y = event.y,
                 duration = now - missTime,
                 touch_force = event.pressure
             }
@@ -115,9 +117,10 @@ local function onTargetMiss(event)
         elseif (target.alpha == 0) then
             local prec = {
                 timestamp = missTime - startTime,
-                x_distance = math.abs(event.x - event.xStart),
-                y_distance = math.abs(event.y - event.yStart),
-                touch_coords = {x = event.x, y = event.y},
+                x_distance = event.x - event.xStart,
+                y_distance = event.y - event.yStart,
+                x = event.x,
+                y = event.y,
                 duration = now - missTime,
                 touch_force = event.pressure
             }

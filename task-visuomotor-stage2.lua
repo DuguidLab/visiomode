@@ -86,10 +86,10 @@ local function onTargetHit(event)
         distractor.alpha = 0
 
         local hit = {
-            timestamp = getTime(),
-            x_distance = math.abs(event.x - event.xStart),
-            y_distance = math.abs(event.y - event.yStart),
-            touch_coords = {x = event.x, y = event.y},
+            timestamp = hitTime - startTime,
+            x_distance = event.x - event.xStart,
+            y_distance = event.y - event.yStart,
+            x = event.x, y = event.y,
             duration = now - hitTime,
             touch_force = event.pressure
         }
@@ -117,10 +117,11 @@ local function onTargetMiss(event)
     elseif ("ended" == phase) then
         local now = os.clock()
         local miss = {
-            timestamp = getTime(),
-            x_distance = math.abs(event.x - event.xStart),
-            y_distance = math.abs(event.y - event.yStart),
-            touch_coords = {x = event.x, y = event.y},
+            timestamp = missTime - startTime,
+            x_distance = event.x - event.xStart,
+            y_distance = event.y - event.yStart,
+            x = event.x,
+            y = event.y,
             duration = now - missTime,
             touch_force = event.pressure
         }
@@ -148,9 +149,9 @@ local function onPrecued(event)
         local now = os.clock()
         local prec = {
             timestamp = missTime - startTime,
-            x_distance = math.abs(event.x - event.xStart),
-            y_distance = math.abs(event.y - event.yStart),
-            touch_coords = {x = event.x, y = event.y},
+            x_distance = event.x - event.xStart,
+            y_distance = event.y - event.yStart,
+            x = event.x, y = event.y,
             duration = now - missTime,
             touch_force = event.pressure
         }
