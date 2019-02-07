@@ -169,7 +169,7 @@ local function saveSession()
     local file = io.open(filePath, "w")
 
     session = {
-        timestamp = getTime(),
+        timestamp = os.date('%Y-%m-%d_%H:%M:%S'),
         start = start,
         hits = hits,
         misses = misses,
