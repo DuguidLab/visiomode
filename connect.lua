@@ -54,12 +54,14 @@ function scene:create( event )
     ipTitle.anchorX = 1
 
     rpiServer = native.newTextField(display.contentCenterX+200, 300, 300, 35)
+    rpiServer.text = "192.168.0.1"
     sceneGroup:insert(rpiServer)
 
     local portTitle = display.newText(sceneGroup, "RPi Port: ", display.contentCenterX-200, 375, native.SystemFont, 40)
     portTitle.anchorX = 1
 
     rpiSocket = native.newTextField(display.contentCenterX+200, 375, 100, 35)
+    rpiSocket.text = "5000"
     sceneGroup:insert(rpiSocket)
 
     connectionMessage = display.newText(sceneGroup, "", display.contentCenterX, 550, native.SystemFont, 42)
