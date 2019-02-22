@@ -12,6 +12,8 @@ local bounds
 local hits
 local misses
 local precued
+local corrections
+local correction_trial -- indicateif a trial is a correction so as to not be counted
 
 local start
 
@@ -55,18 +57,24 @@ local function restoreTargets()
     target.x = bounds[target_idx]
     target.alpha = 1
     distractor.x = bounds[distractor_idx]
-    distractor.alpha=1
+    distractor.alpha = 1
+end
+
+
+local function restoreTargetsSamePos()
+    target.alpha = 1
+    distractor.alpha = 1
 end
 
 
 local function getTime()
     local _,msec = math.modf(os.clock())
     if msec==0 then
-        msec='000' 
+        msec='000'
     else 
-        msec=tostring(msec):sub(3,5) 
+        msec=tostring(msec):sub(3,5)
     end
- 
+
     local time=os.date('%Y-%m-%dT%H:%M:%S.',os.time())
     return time .. msec
 end
@@ -84,7 +92,6 @@ local function onTargetHit(event)
         local now = os.clock()
         target.alpha = 0
         distractor.alpha = 0
-
         local hit = {
             timestamp = hitTime - startTime,
             x_distance = event.x - event.xStart,
@@ -93,9 +100,14 @@ local function onTargetHit(event)
             duration = now - hitTime,
             touch_force = event.pressure
         }
-
-        table.insert(hits, hit)
-        print("hit")
+        if correction_trial then
+            table.insert(corrections, hit)
+            print("corrected")
+            correction_trial = false
+        else
+            table.insert(hits, hit)
+            print("hit")
+        end
         if sessionSettings.sessionType == 'rpi' then
             composer.setVariable('buffer', {'reward:' .. getTime()})
         end
@@ -125,13 +137,20 @@ local function onTargetMiss(event)
             duration = now - missTime,
             touch_force = event.pressure
         }
-
-        table.insert(misses, miss)
-        print("miss")
-
         target.alpha = 0
         distractor.alpha = 0
-        timer.performWithDelay(taskSettings.delay, restoreTargets)
+
+        if correction_trial then
+            table.insert(corrections, miss)
+            print("still correcting")
+        else
+            table.insert(misses, miss)
+            print("miss")
+            correction_trial = true -- next trial should be a correction trial
+        end
+
+        timer.performWithDelay(taskSettings.delay, restoreTargetsSamePos)
+
     end
 
     return true
@@ -173,7 +192,8 @@ local function saveSession()
         start = start,
         hits = hits,
         misses = misses,
-        precued = precued
+        precued = precued,
+        corrections = corrections
     }
 
     if file then
@@ -221,6 +241,8 @@ function scene:create( event )
     hits = {}
     misses = {}
     precued = {}
+    corrections = {}
+    correction_trial = false
     session = {}
 
     -- set up task scene
