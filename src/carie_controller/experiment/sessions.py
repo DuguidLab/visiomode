@@ -6,10 +6,22 @@ import datetime
 
 
 class Session():
-    """Experiment session data class
-    
+    """Experiment session data class.
+
+    Each instance is an experimental session and holds all relevant information
+    including mouse ID.
+
+    Attributes:
+        mouse: A string MouseID as it appears in the animal records, e.g. "3801295940".
+        session: An integer representing which session this is in sequence, e.g. 2 (if second).
+        task: A string of the task ID, e.g. openfield.
+        timestamp: A string with the datetime in ISO format.
+        session_id: A string generated using the session ID, mouse ID and task ID.
+        filename: A string that's basically the session_id with '.json' stuck at its end.
+        trials: A list of trial data as dictionaries.
     """
     def __init__(self, mouse, session, task, timestamp):
+        """Inits Session with mouse, session, task and timestamp details."""
         # Sanitise session so that ids < 10 are e.g. 01 instead of just 1
         self.session = '0' + str(session) if int(session) < 10 else session
         self.mouse = str(mouse)
@@ -21,7 +33,6 @@ class Session():
             task=self.task,
         )
         self.filename = self.session_id + ".json"
-
         self.trials = []
 
     def add_trial(self, trial):
@@ -65,7 +76,7 @@ class Session():
 class Trial():
     __trial_keys = [
         'x', 'y', 'duration', 'touch_force', 'timestamp',
-        'x_distance', 'y_distance', 'event'
+        'x_distance', 'y_distance', 'event', 'time_iso'
     ]
 
     def __init__(self, **kwargs):
