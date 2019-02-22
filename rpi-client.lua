@@ -43,14 +43,7 @@ local function rpiConnect(ip, port)
     print( "IP Address:", ip )
     print( "Port:", lport )
 
-    if not reconnect then
-        client:send("connect")
-        reconnect = true
-    else 
-        -- TODO include session ID in restore request
-        client:send("restore")
-    end
-
+    client:send("connect")
     return client
 end
 
