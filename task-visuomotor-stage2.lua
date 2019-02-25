@@ -89,7 +89,7 @@ local function onTargetHit(event)
     if ("began" == phase) then
         hitTime = os.clock()
     elseif ("moved" == phase) then
-        return true
+
     elseif ("ended" == phase) then
         local now = os.clock()
         target.alpha = 0
