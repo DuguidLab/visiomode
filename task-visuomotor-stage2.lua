@@ -78,6 +78,11 @@ local function getTime()
 end
 
 
+local function getITI()
+    return math.random(2000, 4000)
+end
+
+
 local function onTargetHit(event)
     local target = event.target
     local phase = event.phase
@@ -110,7 +115,7 @@ local function onTargetHit(event)
             composer.setVariable('buffer', {'reward:' .. getTime()})
         end
 
-        iti_timer = timer.performWithDelay(taskSettings.delay, restoreTargets)
+        iti_timer = timer.performWithDelay(getITI(), restoreTargets)
     end
 
     return true
@@ -147,7 +152,7 @@ local function onTargetMiss(event)
             correction_trial = true -- next trial should be a correction trial
         end
 
-        iti_timer = timer.performWithDelay(taskSettings.delay, restoreTargets)
+        iti_timer = timer.performWithDelay(getITI(), restoreTargets)
 
     end
 
@@ -177,7 +182,7 @@ local function onPrecued(event)
 
         -- reset ITI
         timer.cancel(iti_timer)
-        iti_timer = timer.performWithDelay(taskSettings.delay, restoreTargets)
+        iti_timer = timer.performWithDelay(getITI(), restoreTargets)
     end
 
     return true
