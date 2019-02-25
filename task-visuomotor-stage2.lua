@@ -174,6 +174,10 @@ local function onPrecued(event)
         }
         table.insert(precued, prec)
         print("precued")
+
+        -- reset ITI
+        timer.cancel(iti_timer)
+        iti_timer = timer.performWithDelay(taskSettings.delay, restoreTargets)
     end
 
     return true
