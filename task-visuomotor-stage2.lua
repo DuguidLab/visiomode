@@ -21,6 +21,8 @@ local taskSettings
 local sessionSettings
 local sessionTimer
 
+local iti_timer
+
 local startTime
 local hitTime
 local missTime
@@ -112,7 +114,7 @@ local function onTargetHit(event)
             composer.setVariable('buffer', {'reward:' .. getTime()})
         end
 
-        timer.performWithDelay(taskSettings.delay, restoreTargets)
+        iti_timer = timer.performWithDelay(taskSettings.delay, restoreTargets)
     end
 
     return true
@@ -149,7 +151,7 @@ local function onTargetMiss(event)
             correction_trial = true -- next trial should be a correction trial
         end
 
-        timer.performWithDelay(taskSettings.delay, restoreTargetsSamePos)
+        iti_timer = timer.performWithDelay(taskSettings.delay, restoreTargetsSamePos)
 
     end
 
