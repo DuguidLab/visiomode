@@ -53,17 +53,13 @@ end
 
 
 local function restoreTargets()
-    local target_idx = math.random(#bounds)
-    print(target_idx)
-    local distractor_idx = 3 - target_idx
-    target.x = bounds[target_idx]
-    target.alpha = 1
-    distractor.x = bounds[distractor_idx]
-    distractor.alpha = 1
-end
-
-
-local function restoreTargetsSamePos()
+    if not correction_trial then
+        -- randomly assign target/distractor positions
+        local target_pos = math.random(#bounds)
+        local distractor_pos = 3 - target_pos
+        target.x = bounds[target_pos]
+        distractor.x = bounds[distractor_pos]
+    end
     target.alpha = 1
     distractor.alpha = 1
 end
@@ -151,7 +147,7 @@ local function onTargetMiss(event)
             correction_trial = true -- next trial should be a correction trial
         end
 
-        iti_timer = timer.performWithDelay(taskSettings.delay, restoreTargetsSamePos)
+        iti_timer = timer.performWithDelay(taskSettings.delay, restoreTargets)
 
     end
 
