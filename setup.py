@@ -6,7 +6,7 @@ setup(
     name="carie_controller",
     version="0.1.0",
     package_dir={'': 'src'},
-    packages=find_packages('./src'),
+    packages=find_packages('./src/'),
 
     install_requires=[
         'docutils>=0.3',
@@ -17,4 +17,3 @@ setup(
     description="RPi control module for rodent-fiddle",
     license="MIT",
 )
-
