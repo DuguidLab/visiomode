@@ -23,7 +23,7 @@ class Session():
     def __init__(self, mouse, session, task, timestamp):
         """Inits Session with mouse, session, task and timestamp details."""
         # Sanitise session so that ids < 10 are e.g. 01 instead of just 1
-        self.session = '0' + str(session) if int(session) < 10 else session
+        self.session = '0' + str(session) if int(session) < 10 else str(session)
         self.mouse = str(mouse)
         self.task = str(task)
         self.timestamp = str(timestamp)
