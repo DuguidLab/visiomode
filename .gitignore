@@ -110,5 +110,6 @@ etc/
 *.swp
 .#*
 
-# ignore pycharm stuff
+# ignore editor / IDE stuff
 .idea/
+.sublime-*
