@@ -11,7 +11,6 @@ local scene = composer.newScene()
 local hits
 local misses
 local precued
-local timestamp
 
 
 local function getLastSession()
@@ -42,7 +41,7 @@ function scene:create( event )
   local timestampTitle = display.newText(sceneGroup, "Session Timestamp: ", display.contentCenterX-50, 200, native.SystemFont, 40)
   timestampTitle.anchorX = 1
 
-  local timestampText = display.newText(sceneGroup, timestamp, display.contentCenterX+100, 200, native.SystemFont, 40)
+  local timestampText = display.newText(sceneGroup, os.date('%Y%m%d_%H%M%S'), display.contentCenterX+100, 200, native.SystemFont, 40)
   timestampText.anchorX = 0
 
   local hitsTitle = display.newText(sceneGroup, "Hits: ", display.contentCenterX-50, 300, native.SystemFont, 40)
