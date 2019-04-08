@@ -59,7 +59,7 @@ end
 
 
 local function restoreTargets()
-    if mode == 'single_target' then
+    if taskSettings.mode == 'single_target' then
         target.alpha = 1
         return
     end
@@ -85,7 +85,7 @@ end
 local function streamEvent(event_type, touchTime, event)
     local now = os.clock()
     local event = {
-            event = event_type,
+            event_type = event_type,
             timestamp = touchTime,
             x_distance = event.x - event.xStart,
             y_distance = event.y - event.yStart,
@@ -183,6 +183,12 @@ end
 
 local function sessionEnd()
     saveSession()
+
+    -- tell listener it's all over
+    composer.setVariable(
+            'buffer', {'session_end:' .. os.date('%Y%m%d_%H%M%S')}
+        )
+
     if composer.getVariable('lastSession') then
         composer.variables['lastSession'] = nil
     end
@@ -263,7 +269,7 @@ function scene:create( event )
     target.y = display.contentCenterY
     print(display.contentHeight)
 
-    background:addEventListener("touch", onTargetMiss)
+    background:addEventListener("touch", onPrecued)
     target:addEventListener("touch", onTargetHit)
 end
 
