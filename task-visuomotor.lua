@@ -154,7 +154,9 @@ local function onPrecued(event)
         print("precued")
 
         -- reset ITI
-        timer.cancel(iti_timer)
+        if iti_timer then
+            timer.cancel(iti_timer)
+        end
         iti_timer = nil
         iti_timer = timer.performWithDelay(getITI(), restoreTargets)
     end
@@ -197,7 +199,7 @@ local function sessionEnd()
 end
 
 
-local function setupSingleTarget()
+local function setupSingleTarget(sceneGroup)
     target = display.newImageRect(sceneGroup, "assets/stage1.jpg", 1000, 768)
     target.x = display.contentCenterX
     target.y = display.contentCenterY
@@ -206,7 +208,7 @@ local function setupSingleTarget()
 end
 
 
-local function setupVisualDiscrimination()
+local function setupVisualDiscrimination(sceneGroup)
     corrections = {}
     correction_trial = false
 
@@ -261,16 +263,16 @@ function scene:create( event )
     background.fill = {0, 0, 0}
     background:toBack()
 
-    --setTargetBounds()
-    --target = display.newRect( sceneGroup, display.contentCenterX, display.contentCenterY, 500, display.contentHeight )
-    --target.fill = { 1, 1, 1 }
-    target = display.newImageRect(sceneGroup, "assets/stage1.jpg", 1000, 768)
-    target.x = display.contentCenterX
-    target.y = display.contentCenterY
+
+    if (taskSettings.mode == 'vdt') then
+        setupVisualDiscrimination(sceneGroup)
+    else
+        setupSingleTarget(sceneGroup)
+    end 
+
     print(display.contentHeight)
 
     background:addEventListener("touch", onPrecued)
-    target:addEventListener("touch", onTargetHit)
 end
 
 
