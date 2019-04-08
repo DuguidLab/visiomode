@@ -77,6 +77,11 @@ local function restoreTargets()
 end
 
 
+local function getITI()
+    return math.random(2000, 4000)
+end
+
+
 local function streamEvent(event_type, touchTime, event)
     local now = os.clock()
     local event = {
@@ -89,8 +94,7 @@ local function streamEvent(event_type, touchTime, event)
             duration = now - touchTime,
             touch_force = event.pressure
         }
-        os.date('%Y%m%d_%H%M%S') .. ':' .. json.encode(session)
-    composer.setVariable('buffer', {'reward:' .. now})
+    composer.setVariable('buffer', {'event:' .. json.encode(event)})
 end
 
 
@@ -110,7 +114,7 @@ local function onTargetHit(event)
         table.insert(hits, event)
         print("hit")
 
-        timer.performWithDelay(taskSettings.delay, restoreTargets)
+        iti_timer = timer.performWithDelay(getITI(), restoreTargets)
     end
 
     return true
@@ -125,17 +129,34 @@ local function onTargetMiss(event)
     elseif ("moved" == phase) then
 
     elseif ("ended" == phase) then
-        if (target.alpha == 1) then
-            streamEvent('miss', missTime, event)
+        streamEvent('miss', missTime, event)
 
-            table.insert(misses, event)
-            print("miss")
+        table.insert(misses, event)
+        print("miss")
+        
+        iti_timer = timer.performWithDelay(getITI(), restoreTargets)
+    end
 
-        elseif (target.alpha == 0) then
-            streamEvent('precued', missTime, event)
-            table.insert(precued, event)
-            print("precued")
-        end
+    return true
+end
+
+
+local function onPrecued(event)
+    local phase = event.phase
+
+    if ("began" == phase) then
+        missTime = os.clock()
+    elseif ("moved" == phase) then
+
+    elseif ("ended" == phase) then
+        streamEvent('precued', missTime, event)
+        table.insert(precued, event)
+        print("precued")
+
+        -- reset ITI
+        timer.cancel(iti_timer)
+        iti_timer = nil
+        iti_timer = timer.performWithDelay(getITI(), restoreTargets)
     end
 
     return true
