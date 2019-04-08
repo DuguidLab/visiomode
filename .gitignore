@@ -112,4 +112,4 @@ etc/
 
 # ignore editor / IDE stuff
 .idea/
-.sublime-*
+*.sublime-*
