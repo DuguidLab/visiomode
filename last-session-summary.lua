@@ -19,7 +19,6 @@ local function getLastSession()
     hits = lastSession.hits
     misses = lastSession.misses
     precued = lastSession.precued
-    timestamp = lastSession.timestamp
 end
 
 
