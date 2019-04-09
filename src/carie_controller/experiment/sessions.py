@@ -20,7 +20,7 @@ class Session():
         filename: A string that's basically the session_id with '.json' stuck at its end.
         trials: A list of trial data as dictionaries.
     """
-    def __init__(self, mouse, session, task, timestamp):
+    def __init__(self, mouse, session, task, timestamp=datetime.datetime.now().isoformat()):
         """Inits Session with mouse, session, task and timestamp details."""
         # Sanitise session so that ids < 10 are e.g. 01 instead of just 1
         self.session = '0' + str(session) if int(session) < 10 else str(session)
@@ -45,14 +45,11 @@ class Session():
                 "Expected dictionary or 'Trial' object, not {}".format(type(trial)))
 
     def save(self, data_dir):
-        self.load(data_dir)
-        # path and filename are superfluous for json file
-        session = vars(self).pop('filename')
         path = str(data_dir) + os.sep + self.filename
         with open(path, 'w') as f:
-            json.dump(session, f)
+            json.dump(self.__dict__, f)
 
-    def load(self, data_dir):
+    def load(self, data_dir): # TODO REMOVE
         path = str(data_dir) + os.sep + self.filename
         if not os.path.isfile(path):
             return None
@@ -72,6 +69,9 @@ class Session():
     def from_dict(cls, data):
         return cls(**data)
 
+    def __repr__(self):
+        return str(self.__dict__)
+
 
 class Trial():
     __trial_keys = [
@@ -80,10 +80,8 @@ class Trial():
     ]
 
     def __init__(self, **kwargs):
+        self.time_iso = datetime.datetime.now().isoformat()
         for key in kwargs:
-            if key == 'time_iso':
-                self.__setattr__(key, datetime.datetime.now().isoformat())
-                continue
             if key in self.__trial_keys:
                 self.__setattr__(key, kwargs[key])
 

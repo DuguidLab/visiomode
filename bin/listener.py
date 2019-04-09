@@ -10,7 +10,7 @@ class TCPHandler(socketserver.BaseRequestHandler):
     """
     The request handler class for the TCP listener server.
     """
-    self.session = None  # Experiment session placeholder
+    session = None  # Experiment session placeholder
 
     def handle(self):
         # self.request is the TCP socket connected to the client
@@ -41,13 +41,13 @@ class TCPHandler(socketserver.BaseRequestHandler):
                 if event['event_type'] == 'hit' or event['event_type'] == 'correction_hit':
                     rc.water_reward(delay=self.settings['iti_min'])
                 if self.session:
-                    self.session.add_trial(sess.Trial(event))
+                    self.session.add_trial(sess.Trial(**event))
             if str(self.data, "utf-8").startswith("session_end"):
                 self.end_session()
                 self.start_session()  # Start new one
 
     def start_session(self):
-        self.session = Session(
+        self.session = sess.Session(
             mouse = input("Mouse ID: "),
             session = input("Session ID: "),
             task = input("Task ID: ")
