@@ -81,6 +81,9 @@ class Trial():
 
     def __init__(self, **kwargs):
         for key in kwargs:
+            if key == 'time_iso':
+                self.__setattr__(key, datetime.datetime.now().isoformat())
+                continue
             if key in self.__trial_keys:
                 self.__setattr__(key, kwargs[key])
 
