@@ -1,6 +1,7 @@
 import socketserver
 import carie_controller.core as rc
 import carie_controller.interface.cli.cli_prompts as usr
+import carie_controller.experiment.sessions as sess
 import datetime
 import json
 
@@ -9,6 +10,7 @@ class TCPHandler(socketserver.BaseRequestHandler):
     """
     The request handler class for the TCP listener server.
     """
+    self.session = None  # Experiment session placeholder
 
     def handle(self):
         # self.request is the TCP socket connected to the client
@@ -28,7 +30,6 @@ class TCPHandler(socketserver.BaseRequestHandler):
                 str(self.data, "utf-8") == "connect"
                 or str(self.data, "utf-8") == "restore"
             ):
-                # TODO assign session ID
                 self.request.sendall(b"connected\n")
                 self.start_session()
             if self.data == b"test":
@@ -39,11 +40,18 @@ class TCPHandler(socketserver.BaseRequestHandler):
                 event = json.loads(str(self.data, "utf-8").strip("event:"))
                 if event['event_type'] == 'hit' or event['event_type'] == 'correction_hit':
                     rc.water_reward(delay=self.settings['iti_min'])
+                if self.session:
+                    self.session.add_trial(sess.Trial(event))
             if str(self.data, "utf-8").startswith("session_end"):
                 self.end_session()
                 self.start_session()  # Start new one
 
     def start_session(self):
+        self.session = Session(
+            mouse = input("Mouse ID: "),
+            session = input("Session ID: "),
+            task = input("Task ID: ")
+        )
         input("Press ENTER to begin session...")
         self.request.sendall(bytes(json.dumps(self.settings) + "\n", "utf-8"))
         print("---Session Start---")
@@ -51,13 +59,13 @@ class TCPHandler(socketserver.BaseRequestHandler):
     def end_session(self):
         print("---Session End---")
         path = input("Saved sessions directory: ") or "."
-        _, timestamp, session_data = str(self.data, "utf-8").split(":", 2)
-        with open(path + "/" + timestamp + ".json", "w") as f:
-            try:
-                json.dump(json.loads(session_data), f)
-            except Exception as e:
-                print(str(e))
-                print(session_data, file=f)
+        try:
+            self.session.save(path)
+        except Exception as e:
+            print(str(e))
+            print(self.session)
+            print(self.session, file=self.session.filename)
+        self.session = None
 
 
 if __name__ == "__main__":
