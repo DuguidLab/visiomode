@@ -109,7 +109,7 @@ local function onTargetHit(event)
         end
         
         if correction_trial then
-            event_type = 'correction'
+            event_type = 'correction_hit'
             table.insert(corrections, hit)
             correction_trial = false
         else
