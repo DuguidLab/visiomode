@@ -23,7 +23,6 @@ local correction_trial -- indicateif a trial is a correction so as to not be cou
 local start
 
 local taskSettings
-local sessionSettings
 local sessionTimer
 
 local iti_timer
@@ -46,11 +45,6 @@ local mode
 -- TODO figure out DPI at runtime!
 local pixelMilliMeter = 0.123902439  -- factor for converting pixels to mm 
 
-
-local function getSessionSettings()
-    sessionSettings = composer.getVariable("sessionSettings")
-    table.foreach(sessionSettings, print)
-end
 
 local function getTaskSettings()
     taskSettings = composer.getVariable("taskSettings")
@@ -271,7 +265,6 @@ end
 -- create()
 function scene:create( event )
     -- get settings 
-    getSessionSettings()
     getTaskSettings()
     -- set msec start time
     startTime = os.clock()
@@ -312,9 +305,9 @@ function scene:show( event )
     if ( phase == "will" ) then
 
     elseif ( phase == "did" ) then
-        if (sessionSettings.duration > 0) then
+        if (taskSettings.duration > 0) then
           -- gotta convert min to msec
-            sessionTimer = timer.performWithDelay( sessionSettings.duration * 60000, sessionEnd, 1 )
+            sessionTimer = timer.performWithDelay( taskSettings.duration * 60000, sessionEnd, 1 )
         end
     end
 end
