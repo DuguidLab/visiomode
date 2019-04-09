@@ -1,28 +1,22 @@
 import time
-from carie_controller.hardware.rpi import gertbot as gb
-
+from adafruit_motor import stepper as stp
 
 try:
-    from gpiozero import OutputDevice
+    import adafruit_motorkit as mk
+    DEBUG = False
+except NotImplementedError:
+    print("Could not connect to motor board - " + str(e))
+    DEBUG = True
+
+try:
+    from gpiozero import OutputDevice as pinout
 except Exception as e:
     print("Could not load RPi GPIO library - " + str(e))
 
 
-SERIAL_PORT = 0
-BOARD = 3
-CHANNEL = 0
 SOLENOID_PIN = 16  # Plugged in Rpi, BCM numbering
 
-DEBUG = False
-
-# Connect to gertbot
-try:
-    gb.open_uart(SERIAL_PORT)
-except Exception as e:
-    print("***WARNING - COULD NOT CONNECT TO GERTBOT!***")
-    print(str(e))
-    DEBUG = True
-
+motor_kit = mk.MotorKit()
 
 def water_reward(delay=500, speed=150, distance=25):
     """Motor control to dispense rewards"""
@@ -35,17 +29,14 @@ def water_reward(delay=500, speed=150, distance=25):
     motor_movt_delay = distance / speed  # Amount of time motor takes to move
     reward_delay = delay - (solenoid_open_delay - motor_movt_delay)
 
-    # Setup channel for stepper motor
-    gb.set_mode(BOARD, CHANNEL, gb.MODE_STEPG_OFF)
-    gb.set_pin_mode(BOARD, SOLENOID_PIN, gb.PIN_OUTPUT)
-
     # Water reward logic
     # First, move motor in
-    gb.move_stepper(BOARD, CHANNEL, -distance)
+    for i in range(distance):
+        motor_kit.stepper1.onestep(direction=stepper.FORWARD)
     time.sleep(motor_movt_delay)  # Account for movement forward
 
     # Open solenoid - plugged into RPi port!
-    solenoid = OutputDevice(SOLENOID_PIN)
+    solenoid = pinout(SOLENOID_PIN)
     solenoid.on()
     time.sleep(solenoid_open_delay / 1000)  # wait for enough water to drip
     solenoid.off()
@@ -54,6 +45,5 @@ def water_reward(delay=500, speed=150, distance=25):
     time.sleep(reward_delay / 1000)  # Delay conversion from msec to sec
 
     # Move stepper back
-    gb.move_stepper(
-        BOARD, CHANNEL, distance - 5
-    )  # Less backward steps - spout ends up in same place
+    for i in range(distance - 5):  # Less backward steps - spout ends up in same place
+        motor_kit.stepper1.onestep(direction=stepper.BACKWARD)
