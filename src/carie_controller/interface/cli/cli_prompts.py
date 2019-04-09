@@ -39,11 +39,3 @@ def session_settings(as_json=True):
     if as_json:
         return json.dumps(session_settings)
     return session_settings
-
-
-def animation_settings(as_json=True):
-    return
-
-
-def shrinking_settings(as_json=True):
-    return
