@@ -12,7 +12,7 @@ class TCPHandler(socketserver.BaseRequestHandler):
 
     def handle(self):
         # self.request is the TCP socket connected to the client
-        self.settings = usr.all_settings(as_json=False)
+        self.settings = usr.task_settings(as_json=False)
         while True:
             self.data = self.request.recv(1024)  # Only suitable for single clients!
             if not self.data:
