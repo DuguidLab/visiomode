@@ -37,7 +37,7 @@ class TCPHandler(socketserver.BaseRequestHandler):
             if str(self.data, "utf-8").startswith("event"):
                 print(str(self.data, "utf-8"))
                 event = json.loads(str(self.data, "utf-8").strip("event:"))
-                if event['event_type'] == 'hit':
+                if event['event_type'] == 'hit' or event['event_type'] == 'correction_hit':
                     rc.water_reward(delay=self.settings['iti_min'])
             if str(self.data, "utf-8").startswith("session_end"):
                 self.end_session()
