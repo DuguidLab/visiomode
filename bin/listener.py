@@ -38,7 +38,7 @@ class TCPHandler(socketserver.BaseRequestHandler):
                 print(str(self.data, "utf-8"))
                 event = json.loads(str(self.data, "utf-8").strip("event:"))
                 if event['event_type'] == 'hit':
-                    rc.water_reward(delay=self.settings["task"]["delay"])
+                    rc.water_reward(delay=2000)  # TODO remove hardcoded value based off calibration
             if str(self.data, "utf-8").startswith("session_end"):
                 self.end_session()
                 self.start_session()  # Start new one
