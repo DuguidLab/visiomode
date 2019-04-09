@@ -34,10 +34,12 @@ class TCPHandler(socketserver.BaseRequestHandler):
             if self.data == b"test":
                 print("test water reward")
                 rc.water_reward(delay=1000)
-            if str(self.data, "utf-8").startswith("reward"):
-                print("dispensing reward")
-                rc.water_reward(delay=self.settings["task"]["delay"])
-            if str(self.data, "utf-8").startswith("session"):
+            if str(self.data, "utf-8").startswith("event"):
+                print(str(self.data, "utf-8"))
+                event = json.loads(str(self.data, "utf-8").strip("event:"))
+                if event['event_type'] == 'hit':
+                    rc.water_reward(delay=self.settings["task"]["delay"])
+            if str(self.data, "utf-8").startswith("session_end"):
                 self.end_session()
                 self.start_session()  # Start new one
 
