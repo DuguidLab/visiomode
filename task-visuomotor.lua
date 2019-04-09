@@ -277,7 +277,7 @@ function scene:create( event )
     -- set up task scene
     local sceneGroup = self.view
 
-    local background = display.newRect( display.contentCenterX, display.contentCenterY, display.contentWidth, display.contentHeight )
+    local background = display.newRect( sceneGroup, display.contentCenterX, display.contentCenterY, display.contentWidth, display.contentHeight )
     background.fill = {0, 0, 0}
     background:toBack()
 
