@@ -44,7 +44,7 @@ local mode
 
 
 -- TODO figure out DPI at runtime!
-local pixelMilliMeter = 0.2645833  -- factor for converting pixels to mm 
+local pixelMilliMeter = 0.123902439  -- factor for converting pixels to mm 
 
 
 local function getSessionSettings()
@@ -106,14 +106,24 @@ local function onTargetHit(event)
         hitTime = os.clock()
     elseif ("moved" == phase) then
         return true
-    elseif ("ended" == phase) then
+    elseif ("ended" == phase) then    
+        local event_type = 'hit'
         target.alpha = 0
 
-        streamEvent('hit', hitTime, event)
+        if taskSettings.mode == 'vdt' then
+            distractor.alpha = 0
+        end
+        
+        if correction_trial then
+            event_type = 'correction'
+            table.insert(corrections, hit)
+            correction_trial = false
+        else
+            table.insert(hits, event)
+            print("hit")
+        end
 
-        table.insert(hits, event)
-        print("hit")
-
+        streamEvent(event_type, hitTime, event)
         iti_timer = timer.performWithDelay(getITI(), restoreTargets)
     end
 
@@ -129,11 +139,26 @@ local function onTargetMiss(event)
     elseif ("moved" == phase) then
 
     elseif ("ended" == phase) then
-        streamEvent('miss', missTime, event)
+        local event_type = 'miss'
+        target.alpha = 0
 
-        table.insert(misses, event)
-        print("miss")
-        
+        if taskSettings.mode == 'vdt' then
+            distractor.alpha = 0
+
+            -- correction trials
+            if correction_trial then
+                event_type = 'correction'
+                table.insert(corrections, event)
+                print("still correcting")
+            else
+                event_type = 'miss'
+                table.insert(misses, event)
+                print("miss")
+                correction_trial = true -- next trial should be a correction trial
+            end
+        end 
+
+        streamEvent(event_type, missTime, event)
         iti_timer = timer.performWithDelay(getITI(), restoreTargets)
     end
 
@@ -273,6 +298,8 @@ function scene:create( event )
     print(display.contentHeight)
 
     background:addEventListener("touch", onPrecued)
+
+    restoreTargets()
 end
 
 
