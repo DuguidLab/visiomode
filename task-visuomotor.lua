@@ -72,7 +72,7 @@ end
 
 
 local function getITI()
-    return math.random(2000, 4000)
+    return math.random(taskSettings.iti_min, taskSettings.iti_max)
 end
 
 
