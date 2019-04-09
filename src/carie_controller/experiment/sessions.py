@@ -75,8 +75,8 @@ class Session():
 
 class Trial():
     __trial_keys = [
-        'x', 'y', 'duration', 'touch_force', 'timestamp',
-        'x_distance', 'y_distance', 'event', 'time_iso'
+        'x', 'y', 'duration', 'event_type', 'timestamp',
+        'x_distance', 'y_distance', 'time_iso'
     ]
 
     def __init__(self, **kwargs):
