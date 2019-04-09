@@ -17,7 +17,7 @@ def task_settings(as_json=True):
         # 'targets': int(input("Number of targets: ")),
         # 'width': int(input("Target width (mm): ")),
         # 'distance': int(input("Distance between targets (mm): ")),
-        'stage': int(input("Task Stage: ")),
+        'mode': str(input("Task Mode ([single_target] / vdt): ")) or "single_target",
         'delay': int(input("Presentation delay (ms): ")),
         # 'haptics': False if input("Haptic feedback (Y/N): ") == 'N' else True,
         # 'animated': True if input("Animated (Y/N): ") == 'Y' else False,
