@@ -47,3 +47,5 @@ def water_reward(delay=500, speed=150, distance=25):
     # Move stepper back
     for i in range(distance - 5):  # Less backward steps - spout ends up in same place
         motor_kit.stepper1.onestep(direction=stepper.BACKWARD)
+
+    motor_kit.stepper1.release()  # release motor to save power / avoid overheating
