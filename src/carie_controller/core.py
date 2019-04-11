@@ -14,7 +14,7 @@ except Exception as e:
     print("Could not load RPi GPIO library - " + str(e))
 
 
-SOLENOID_PIN = 16  # Plugged in Rpi, BCM numbering
+SOLENOID_PIN = 18  # Plugged in Rpi, BCM numbering
 
 motor_kit = mk.MotorKit()
 
