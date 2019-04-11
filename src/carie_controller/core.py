@@ -14,7 +14,7 @@ except Exception as e:
     print("Could not load RPi GPIO library - " + str(e))
 
 
-SOLENOID_PIN = 18  # Plugged in Rpi, BCM numbering
+SOLENOID_PIN = 18  # BCM numbering
 
 motor_kit = mk.MotorKit()
 
@@ -32,7 +32,7 @@ def water_reward(delay=500, speed=150, distance=25):
     # Water reward logic
     # First, move motor in
     for i in range(distance):
-        motor_kit.stepper1.onestep(direction=stepper.FORWARD)
+        motor_kit.stepper1.onestep(direction=stp.FORWARD)
     time.sleep(motor_movt_delay)  # Account for movement forward
 
     # Open solenoid - plugged into RPi port!
@@ -45,7 +45,7 @@ def water_reward(delay=500, speed=150, distance=25):
     time.sleep(reward_delay / 1000)  # Delay conversion from msec to sec
 
     # Move stepper back
-    for i in range(distance - 5):  # Less backward steps - spout ends up in same place
-        motor_kit.stepper1.onestep(direction=stepper.BACKWARD)
+    for i in range(distance - 10):  # Less backward steps - spout ends up in same place
+        motor_kit.stepper1.onestep(direction=stp.BACKWARD)
 
     motor_kit.stepper1.release()  # release motor to save power / avoid overheating
