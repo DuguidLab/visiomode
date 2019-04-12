@@ -113,3 +113,5 @@ etc/
 # ignore editor / IDE stuff
 .idea/
 *.sublime-*
+
+*.json

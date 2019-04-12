@@ -3,6 +3,7 @@ import carie_controller.core as rc
 import carie_controller.interface.cli.cli_prompts as usr
 import carie_controller.experiment.sessions as sess
 import datetime
+import threading
 import json
 
 
@@ -39,7 +40,8 @@ class TCPHandler(socketserver.BaseRequestHandler):
                 print(str(self.data, "utf-8"))
                 event = json.loads(str(self.data, "utf-8").strip("event:"))
                 if event['event_type'] == 'hit' or event['event_type'] == 'correction_hit':
-                    rc.water_reward(delay=self.settings['iti_min'])
+                    reward = threading.Thread(target=rc.water_reward, kwargs={'delay': self.settings['iti_min']})
+                    reward.start()
                 if self.session:
                     self.session.add_trial(sess.Trial(**event))
             if str(self.data, "utf-8").startswith("session_end"):
