@@ -48,13 +48,6 @@ class Session():
         with open(path, 'w') as f:
             json.dump(self.__dict__, f)
 
-    def load(self, data_dir):  # TODO REMOVE
-        path = str(data_dir) + os.sep + self.filename
-        if not os.path.isfile(path):
-            return None
-        with open(path, 'r') as f:
-            self.trials = json.load(f)['trials']
-
     @classmethod
     def from_json(cls, raw):
         return cls(**json.loads(raw))
