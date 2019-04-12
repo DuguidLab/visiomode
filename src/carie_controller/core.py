@@ -5,7 +5,7 @@ try:
     import adafruit_motorkit as mk
     DEBUG = False
 except NotImplementedError:
-    print("Could not connect to motor board - " + str(e))
+    print("Could not connect to motor board - ")
     DEBUG = True
 
 try:
