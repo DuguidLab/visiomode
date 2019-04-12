@@ -1,7 +1,6 @@
 """Experiment session classes"""
 import os
 import json
-import logging
 import datetime
 
 
@@ -49,7 +48,7 @@ class Session():
         with open(path, 'w') as f:
             json.dump(self.__dict__, f)
 
-    def load(self, data_dir): # TODO REMOVE
+    def load(self, data_dir):  # TODO REMOVE
         path = str(data_dir) + os.sep + self.filename
         if not os.path.isfile(path):
             return None

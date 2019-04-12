@@ -2,7 +2,6 @@ import socketserver
 import carie_controller.core as rc
 import carie_controller.interface.cli.cli_prompts as usr
 import carie_controller.experiment.sessions as sess
-import datetime
 import threading
 import json
 
@@ -28,8 +27,8 @@ class TCPHandler(socketserver.BaseRequestHandler):
                 )
             )
             if (
-                str(self.data, "utf-8") == "connect"
-                or str(self.data, "utf-8") == "restore"
+                str(self.data, "utf-8") == "connect" or
+                str(self.data, "utf-8") == "restore"
             ):
                 self.request.sendall(b"connected\n")
                 self.start_session()
@@ -50,9 +49,9 @@ class TCPHandler(socketserver.BaseRequestHandler):
 
     def start_session(self):
         self.session = sess.Session(
-            mouse = input("Mouse ID: "),
-            session = input("Session ID: "),
-            task = input("Task ID: ")
+            mouse=input("Mouse ID: "),
+            session=input("Session ID: "),
+            task=input("Task ID: ")
         )
         input("Press ENTER to begin session...")
         self.request.sendall(bytes(json.dumps(self.settings) + "\n", "utf-8"))
@@ -66,7 +65,6 @@ class TCPHandler(socketserver.BaseRequestHandler):
         except Exception as e:
             print(str(e))
             print(self.session)
-            print(self.session, file=self.session.filename)
         self.session = None
 
 

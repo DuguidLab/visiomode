@@ -18,6 +18,7 @@ SOLENOID_PIN = 18  # BCM numbering
 
 motor_kit = mk.MotorKit()
 
+
 def water_reward(delay=500, speed=150, distance=25):
     """Motor control to dispense rewards"""
     if DEBUG:
