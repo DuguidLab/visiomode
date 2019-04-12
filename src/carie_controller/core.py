@@ -26,7 +26,7 @@ def water_reward(delay=500, speed=150, distance=25):
         print("very best debug reward")
         return
 
-    solenoid_open_delay = 200  # ms solenoid remains open for
+    solenoid_open_delay = 150  # ms solenoid remains open for
     motor_movt_delay = distance / speed  # Amount of time motor takes to move
     reward_delay = delay - (solenoid_open_delay - motor_movt_delay)
 
