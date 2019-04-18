@@ -37,7 +37,11 @@ class TCPHandler(socketserver.BaseRequestHandler):
                 rc.water_reward(delay=1000)
             if str(self.data, "utf-8").startswith("event"):
                 print(str(self.data, "utf-8"))
-                event = json.loads(str(self.data, "utf-8").strip("event:"))
+                try:
+                    event = json.loads(str(self.data, "utf-8").strip("event:"))
+                except Exception as e:
+                    print("Could not parse event - {}".format(str(e)))
+                    continue
                 if event['event_type'] == 'hit' or event['event_type'] == 'correction_hit':
                     reward = threading.Thread(target=rc.water_reward, kwargs={'delay': self.settings['iti_min']})
                     reward.start()
