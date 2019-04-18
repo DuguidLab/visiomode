@@ -108,7 +108,7 @@ local function rpiLoop(client, ip, port)
         end
     end
 
-    clientPulse = timer.performWithDelay(100, cPulse, 0)
+    clientPulse = timer.performWithDelay(5, cPulse, 0)
 
     return stopClient
 end
