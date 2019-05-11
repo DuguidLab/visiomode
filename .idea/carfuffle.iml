@@ -1,23 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <module type="PYTHON_MODULE" version="4">
   <component name="NewModuleRootManager">
-    <content url="file://$MODULE_DIR$">
-      <excludeFolder url="file://$MODULE_DIR$/controller/venv" />
-    </content>
-    <orderEntry type="jdk" jdkName="Python 3.7 (carfuffle)" jdkType="Python SDK" />
+    <content url="file://$MODULE_DIR$" />
+    <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="library" name="R Skeletons" level="application" />
     <orderEntry type="library" name="R User Library" level="project" />
-  </component>
-  <component name="PackageRequirementsSettings">
-    <option name="requirementsPath" value="$MODULE_DIR$/controller/requirements.txt" />
-  </component>
-  <component name="PyDocumentationSettings">
-    <option name="myDocStringFormat" value="Google" />
-  </component>
-  <component name="ReSTService">
-    <option name="workdir" value="$MODULE_DIR$/controller/docs" />
-    <option name="DOC_DIR" value="$MODULE_DIR$/controller/docs" />
   </component>
   <component name="TestRunnerService">
     <option name="projectConfiguration" value="Nosetests" />
