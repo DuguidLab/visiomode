@@ -12,7 +12,7 @@ local function gotoConnectRpi()
 end
 
 
-local function gotoStandAlone()
+local function gotoSettings()
     composer.gotoScene("stand-alone-setup")
 end
 
@@ -40,14 +40,14 @@ function scene:create( event )
     local connectButton = display.newText(sceneGroup, "Connect to RPi Controller", display.contentCenterX, 300, native.systemFont, 44)
     connectButton:setFillColor(0.75, 0.78, 1)
 
-    local standAloneButton = display.newText(sceneGroup, "Stand-Alone Mode", display.contentCenterX, 400, native.systemFont, 44)
+    local standAloneButton = display.newText(sceneGroup, "Settings", display.contentCenterX, 400, native.systemFont, 44)
     standAloneButton:setFillColor(0.75, 0.78, 1)
 
     local aboutButton = display.newText(sceneGroup, "About", display.contentCenterX, 500, native.systemFont, 44)
     aboutButton:setFillColor(0.75, 0.78, 1)
 
     connectButton:addEventListener("tap", gotoConnectRpi)
-    standAloneButton:addEventListener("tap", gotoStandAlone)
+    standAloneButton:addEventListener("tap", gotoSettings)
     aboutButton:addEventListener("tap", gotoAbout)
 end
 
