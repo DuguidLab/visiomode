@@ -32,14 +32,8 @@ local hitTime
 local missTime
 local precueTime
 
-local targetDistance  -- mm
-local horizontalWidth
-
 -- RPi comm buffer
 local buffer
-
--- protocol mode
-local mode
 
 
 -- TODO figure out DPI at runtime!
