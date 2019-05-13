@@ -9,7 +9,7 @@ except NotImplementedError:
     DEBUG = True
 
 try:
-    from gpiozero import OutputDevice as pinout
+    from gpiozero import OutputDevice as PinOut
 except Exception as e:
     print("Could not load RPi GPIO library - " + str(e))
 
@@ -37,7 +37,7 @@ def water_reward(delay=500, speed=150, distance=25):
     time.sleep(motor_movt_delay)  # Account for movement forward
 
     # Open solenoid - plugged into RPi port!
-    solenoid = pinout(SOLENOID_PIN)
+    solenoid = PinOut(SOLENOID_PIN)
     solenoid.on()
     time.sleep(solenoid_open_delay / 1000)  # wait for enough water to drip
     solenoid.off()
