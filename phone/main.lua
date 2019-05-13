@@ -4,6 +4,8 @@
 --
 -----------------------------------------------------------------------------------------
 
+local VERSION = 1.0
+
 -- load composer to manage scenes
 local composer = require("composer")
 
