@@ -52,16 +52,6 @@ local function gotoMenu()
 end
 
 
-local function gotoAntimationOptions()
-  composer.gotoScene("animation-settings")
-end
-
-
-local function gotoShrinkingOptions()
-  composer.gotoScene("shrinking-settings")
-end
-
-
 local function setupSession()
   -- export task settings
   taskSettings = {
@@ -75,8 +65,6 @@ local function setupSession()
   }
   --table.foreach(taskSettings, print) -- debug
   composer.setVariable("taskSettings", taskSettings)
-
-  composer.gotoScene("stand-alone-session-setup")  
 end
 
 
@@ -138,9 +126,6 @@ function scene:create( event )
       onPress = onAnimatedTargetSwitchPress
   })
   sceneGroup:insert(animatedTarget)
-  animatedTargetOptions = display.newText(sceneGroup, "Configure...", display.contentCenterX+450, 450, native.SystemFont, 35)
-  animatedTargetOptions.alpha = 0
-  animatedTargetOptions:addEventListener("tap", gotoAntimationOptions)
 
   local shrinkingTargetTitle = display.newText(sceneGroup, "Shrinking Target: ", display.contentCenterX-20, 525, native.SystemFont, 40)
   shrinkingTargetTitle.anchorX = 1
@@ -153,9 +138,6 @@ function scene:create( event )
       onPress = onShrinkingTargetSwitchPress
   })
   sceneGroup:insert(shrinkingTarget)
-  shrinkingTargetOptions = display.newText(sceneGroup, "Configure...", display.contentCenterX+450, 525, native.SystemFont, 35)
-  shrinkingTargetOptions.alpha = 0
-  shrinkingTargetOptions:addEventListener("tap", gotoShrinkingOptions)
 
   local hapticsOnMissTitle = display.newText(sceneGroup, "Vibrate on Miss: ", display.contentCenterX-20, 600, native.SystemFont, 40)
   hapticsOnMissTitle.anchorX = 1 
@@ -198,7 +180,7 @@ function scene:hide( event )
 	if ( phase == "will" ) then
 
 	elseif ( phase == "did" ) then
-    composer.removeScene("stand-alone-setup")
+    composer.removeScene("settings")
 	end
 end
 
