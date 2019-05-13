@@ -13,7 +13,7 @@ end
 
 
 local function gotoSettings()
-    composer.gotoScene("stand-alone-setup")
+    composer.gotoScene("settings")
 end
 
 
@@ -37,7 +37,7 @@ function scene:create( event )
 
     local title = display.newText(sceneGroup, "Rodent Touchscreen Behaviour Suite", display.contentCenterX, 50, native.systemFont, 60)
 
-    local connectButton = display.newText(sceneGroup, "Connect to RPi Controller", display.contentCenterX, 300, native.systemFont, 44)
+    local connectButton = display.newText(sceneGroup, "Connect to Controller", display.contentCenterX, 300, native.systemFont, 44)
     connectButton:setFillColor(0.75, 0.78, 1)
 
     local standAloneButton = display.newText(sceneGroup, "Settings", display.contentCenterX, 400, native.systemFont, 44)
