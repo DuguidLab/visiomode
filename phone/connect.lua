@@ -1,20 +1,17 @@
-
-local composer = require( "composer" )
+local composer = require("composer")
 local saveload = require("saveload")
 
 local scene = composer.newScene()
 
 local settingsFile = "settings.json"
 
-
 local rpiClient = require("rpi-client")
-local widget = require( "widget" )
+local widget = require("widget")
 local controllerAddress
 local controllerPort
 
 local connectButton
 local connectionMessage
-
 
 local function connectionWrapper()
     connectButton.alpha = 0
@@ -36,7 +33,7 @@ end
 -- -----------------------------------------------------------------------------------
 
 -- create()
-function scene:create( event )
+function scene:create(event)
     -- Get existing settings or use defaults
     local settings = saveload.loadTable(settingsFile)
     if not settings then
@@ -46,8 +43,8 @@ function scene:create( event )
         }
     end
 
-	local sceneGroup = self.view
-	-- Code here runs when the scene is first created but has not yet appeared on screen
+    local sceneGroup = self.view
+    -- Code here runs when the scene is first created but has not yet appeared on screen
 
     local background = display.newImageRect(sceneGroup, "assets/menu-background.jpg", 1400, 800)
     background.x = display.contentCenterX
@@ -57,17 +54,17 @@ function scene:create( event )
 
     local subtitle = display.newText(sceneGroup, "Make sure that phone and controller are connected to the same network", display.contentCenterX, 150, native.SystemFont, 42)
 
-    local ipTitle = display.newText(sceneGroup, "Controller Address: ", display.contentCenterX-200, 300, native.SystemFont, 40)
+    local ipTitle = display.newText(sceneGroup, "Controller Address: ", display.contentCenterX - 200, 300, native.SystemFont, 40)
     ipTitle.anchorX = 1
 
-    controllerAddress = native.newTextField(display.contentCenterX+200, 300, 300, 35)
+    controllerAddress = native.newTextField(display.contentCenterX + 200, 300, 300, 35)
     controllerAddress.text = settings.address
     sceneGroup:insert(controllerAddress)
 
-    local portTitle = display.newText(sceneGroup, "Controller Port: ", display.contentCenterX-200, 375, native.SystemFont, 40)
+    local portTitle = display.newText(sceneGroup, "Controller Port: ", display.contentCenterX - 200, 375, native.SystemFont, 40)
     portTitle.anchorX = 1
 
-    controllerPort = native.newTextField(display.contentCenterX+200, 375, 100, 35)
+    controllerPort = native.newTextField(display.contentCenterX + 200, 375, 100, 35)
     controllerPort.text = settings.port
     sceneGroup:insert(controllerPort)
 
@@ -79,41 +76,41 @@ end
 
 
 -- show()
-function scene:show( event )
+function scene:show(event)
 
-	local sceneGroup = self.view
-	local phase = event.phase
+    local sceneGroup = self.view
+    local phase = event.phase
 
-	if ( phase == "will" ) then
-		-- Code here runs when the scene is still off screen (but is about to come on screen)
+    if (phase == "will") then
+        -- Code here runs when the scene is still off screen (but is about to come on screen)
 
-	elseif ( phase == "did" ) then
-		-- Code here runs when the scene is entirely on screen
+    elseif (phase == "did") then
+        -- Code here runs when the scene is entirely on screen
 
-	end
+    end
 end
 
 
 -- hide()
-function scene:hide( event )
+function scene:hide(event)
 
-	local sceneGroup = self.view
-	local phase = event.phase
+    local sceneGroup = self.view
+    local phase = event.phase
 
-	if ( phase == "will" ) then
-		-- Code here runs when the scene is on screen (but is about to go off screen)
+    if (phase == "will") then
+        -- Code here runs when the scene is on screen (but is about to go off screen)
 
-	elseif ( phase == "did" ) then
+    elseif (phase == "did") then
         composer.removeScene("connect")
-	end
+    end
 end
 
 
 -- destroy()
-function scene:destroy( event )
+function scene:destroy(event)
 
-	local sceneGroup = self.view
-	-- Code here runs prior to the removal of scene's view
+    local sceneGroup = self.view
+    -- Code here runs prior to the removal of scene's view
 
 end
 
@@ -121,10 +118,10 @@ end
 -- -----------------------------------------------------------------------------------
 -- Scene event function listeners
 -- -----------------------------------------------------------------------------------
-scene:addEventListener( "create", scene )
-scene:addEventListener( "show", scene )
-scene:addEventListener( "hide", scene )
-scene:addEventListener( "destroy", scene )
+scene:addEventListener("create", scene)
+scene:addEventListener("show", scene)
+scene:addEventListener("hide", scene)
+scene:addEventListener("destroy", scene)
 -- -----------------------------------------------------------------------------------
 
 return scene

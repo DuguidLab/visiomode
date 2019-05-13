@@ -1,5 +1,5 @@
 -- Single target, always rewarded
-local composer = require( "composer" )
+local composer = require("composer")
 
 local scene = composer.newScene()
 
@@ -45,7 +45,6 @@ local function getTaskSettings()
     table.foreach(taskSettings, print)
 end
 
-
 local function restoreTargets()
     if taskSettings.mode == 'single_target' then
         target.alpha = 1
@@ -59,32 +58,29 @@ local function restoreTargets()
         target.x = bounds[target_pos]
         distractor.x = bounds[distractor_pos]
     end
-    
+
     target.alpha = 1
     distractor.alpha = 1
 end
-
 
 local function getITI()
     return math.random(taskSettings.iti_min, taskSettings.iti_max)
 end
 
-
 local function streamEvent(event_type, touchTime, event)
     local now = os.clock()
     local event = {
-            event_type = event_type,
-            timestamp = touchTime,
-            x_distance = event.x - event.xStart,
-            y_distance = event.y - event.yStart,
-            x = event.x,
-            y = event.y,
-            duration = now - touchTime,
-            touch_force = event.pressure
-        }
-    composer.setVariable('buffer', {'event:' .. json.encode(event)})
+        event_type = event_type,
+        timestamp = touchTime,
+        x_distance = event.x - event.xStart,
+        y_distance = event.y - event.yStart,
+        x = event.x,
+        y = event.y,
+        duration = now - touchTime,
+        touch_force = event.pressure
+    }
+    composer.setVariable('buffer', { 'event:' .. json.encode(event) })
 end
-
 
 local function onTargetHit(event)
     local target = event.target
@@ -94,14 +90,14 @@ local function onTargetHit(event)
         hitTime = os.clock()
     elseif ("moved" == phase) then
         return true
-    elseif ("ended" == phase) then    
+    elseif ("ended" == phase) then
         local event_type = 'hit'
         target.alpha = 0
 
         if taskSettings.mode == 'vdt' then
             distractor.alpha = 0
         end
-        
+
         if correction_trial then
             event_type = 'correction_hit'
             table.insert(corrections, hit)
@@ -117,7 +113,6 @@ local function onTargetHit(event)
 
     return true
 end
-
 
 local function onTargetMiss(event)
     local phase = event.phase
@@ -144,7 +139,7 @@ local function onTargetMiss(event)
                 print("miss")
                 correction_trial = true -- next trial should be a correction trial
             end
-        end 
+        end
 
         streamEvent(event_type, missTime, event)
         iti_timer = timer.performWithDelay(getITI(), restoreTargets)
@@ -152,7 +147,6 @@ local function onTargetMiss(event)
 
     return true
 end
-
 
 local function onPrecued(event)
     local phase = event.phase
@@ -177,9 +171,8 @@ local function onPrecued(event)
     return true
 end
 
-
 local function saveSession()
-    local filePath = system.pathForFile("session-" .. os.date('%Y%m%d_%H%M%S') ..  ".json", system.DocumentsDirectory)
+    local filePath = system.pathForFile("session-" .. os.date('%Y%m%d_%H%M%S') .. ".json", system.DocumentsDirectory)
     local file = io.open(filePath, "w")
 
     session = {
@@ -195,14 +188,13 @@ local function saveSession()
     end
 end
 
-
 local function sessionEnd()
     saveSession()
 
     -- tell listener it's all over
     composer.setVariable(
-            'buffer', {'session_end:' .. os.date('%Y%m%d_%H%M%S')}
-        )
+            'buffer', { 'session_end:' .. os.date('%Y%m%d_%H%M%S') }
+    )
 
     if composer.getVariable('lastSession') then
         composer.variables['lastSession'] = nil
@@ -211,7 +203,6 @@ local function sessionEnd()
     composer.gotoScene("last-session-summary")
 end
 
-
 local function setupSingleTarget(sceneGroup)
     target = display.newImageRect(sceneGroup, "assets/stage1.jpg", 1000, 768)
     target.x = display.contentCenterX
@@ -219,7 +210,6 @@ local function setupSingleTarget(sceneGroup)
 
     target:addEventListener("touch", onTargetHit)
 end
-
 
 local function setupVisualDiscrimination(sceneGroup)
     corrections = {}
@@ -232,12 +222,12 @@ local function setupVisualDiscrimination(sceneGroup)
     -- local dividerWidth 5 / pixelMilliMeter  -- 5 mm to pixels
     local dividerWidth = 35
     local divider = display.newRect(sceneGroup, (display.actualContentWidth * 0.5) + display.screenOriginX + offset, display.contentCenterY, dividerWidth, display.contentHeight)
-    divider.fill= { 0.5, 0.5, 0.5 }
+    divider.fill = { 0.5, 0.5, 0.5 }
 
 
-     -- set up bounds (x positions)
+    -- set up bounds (x positions)
     bounds = {
-        (display.actualContentWidth * 0.25) + display.screenOriginX  - (dividerWidth / 2) + offset,
+        (display.actualContentWidth * 0.25) + display.screenOriginX - (dividerWidth / 2) + offset,
         (display.actualContentWidth * 0.75) + display.screenOriginX + (dividerWidth / 2) + offset
     }
 
@@ -257,7 +247,7 @@ end
 -- -----------------------------------------------------------------------------------
 
 -- create()
-function scene:create( event )
+function scene:create(event)
     -- get settings 
     getTaskSettings()
     -- set msec start time
@@ -271,16 +261,15 @@ function scene:create( event )
     -- set up task scene
     local sceneGroup = self.view
 
-    local background = display.newRect( sceneGroup, display.contentCenterX, display.contentCenterY, display.contentWidth, display.contentHeight )
-    background.fill = {0, 0, 0}
+    local background = display.newRect(sceneGroup, display.contentCenterX, display.contentCenterY, display.contentWidth, display.contentHeight)
+    background.fill = { 0, 0, 0 }
     background:toBack()
-
 
     if (taskSettings.mode == 'vdt') then
         setupVisualDiscrimination(sceneGroup)
     else
         setupSingleTarget(sceneGroup)
-    end 
+    end
 
     print(display.contentHeight)
 
@@ -291,39 +280,39 @@ end
 
 
 -- show()
-function scene:show( event )
+function scene:show(event)
 
     local sceneGroup = self.view
     local phase = event.phase
 
-    if ( phase == "will" ) then
+    if (phase == "will") then
 
-    elseif ( phase == "did" ) then
+    elseif (phase == "did") then
         if (taskSettings.duration > 0) then
-          -- gotta convert min to msec
-            sessionTimer = timer.performWithDelay( taskSettings.duration * 60000, sessionEnd, 1 )
+            -- gotta convert min to msec
+            sessionTimer = timer.performWithDelay(taskSettings.duration * 60000, sessionEnd, 1)
         end
     end
 end
 
 
 -- hide()
-function scene:hide( event )
+function scene:hide(event)
 
     local sceneGroup = self.view
     local phase = event.phase
 
-    if ( phase == "will" ) then
-        timer.cancel( sessionTimer )
+    if (phase == "will") then
+        timer.cancel(sessionTimer)
         saveSession()
-    elseif ( phase == "did" ) then
-        composer.removeScene( "task-visuomotor" )
+    elseif (phase == "did") then
+        composer.removeScene("task-visuomotor")
     end
 end
 
 
 -- destroy()
-function scene:destroy( event )
+function scene:destroy(event)
 
     local sceneGroup = self.view
 
@@ -333,10 +322,10 @@ end
 -- -----------------------------------------------------------------------------------
 -- Scene event function listeners
 -- -----------------------------------------------------------------------------------
-scene:addEventListener( "create", scene )
-scene:addEventListener( "show", scene )
-scene:addEventListener( "hide", scene )
-scene:addEventListener( "destroy", scene )
+scene:addEventListener("create", scene)
+scene:addEventListener("show", scene)
+scene:addEventListener("hide", scene)
+scene:addEventListener("destroy", scene)
 -- -----------------------------------------------------------------------------------
 
 return scene

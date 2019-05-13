@@ -4,7 +4,6 @@ local M = {}
 local json = require("json")
 local defaultLocation = system.DocumentsDirectory
 
-
 function M.loadTable(filename, location)
     local loc = location
     if not location then
@@ -27,7 +26,6 @@ function M.loadTable(filename, location)
     return table
 end
 
-
 function M.saveTable(table, filename, location)
     local loc = location
     if not location then
@@ -47,6 +45,5 @@ function M.saveTable(table, filename, location)
 
     return true
 end
-
 
 return M

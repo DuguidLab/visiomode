@@ -2,10 +2,9 @@ local exports = {}
 
 local socket = require("socket")
 local json = require("json")
-local composer = require( "composer" )
+local composer = require("composer")
 
-
-local reconnect = false 
+local reconnect = false
 
 
 -- Request parsers
@@ -27,7 +26,6 @@ local function rpiCheck(ip, port)
     return true
 end
 
-
 local function rpiConnect(ip, port)
     -- Connect to the client
     local client = socket.connect(ip, tonumber(port))
@@ -37,16 +35,15 @@ local function rpiConnect(ip, port)
     -- Get IP and port from client
     local _, lport = client:getsockname()
     client:settimeout(0)
-    client:setoption( "tcp-nodelay", true ) 
+    client:setoption("tcp-nodelay", true)
 
     -- Print the IP address and port to the terminal
-    print( "IP Address:", ip )
-    print( "Port:", lport )
+    print("IP Address:", ip)
+    print("Port:", lport)
 
     client:send("connect")
     return client
 end
-
 
 local function rpiLoop(client, ip, port)
     local clientPulse
@@ -63,10 +60,10 @@ local function rpiLoop(client, ip, port)
         local data, err
         local buffer = composer.getVariable('buffer')
 
-        repeat 
+        repeat
             data, err = client:receive()
             if data then
-                allData[#allData+1] = data
+                allData[#allData + 1] = data
             end
             if (err == "closed" and clientPulse) then
                 print("connection lost, closing...")
@@ -75,10 +72,11 @@ local function rpiLoop(client, ip, port)
             end
         until not data
 
-        if ( #allData > 0 ) then 
+        if (#allData > 0) then
             for i, thisData in ipairs(allData) do
                 print("received: ", thisData)
-                if string.match(thisData, "{*}") then  -- does it look like json?
+                if string.match(thisData, "{*}") then
+                    -- does it look like json?
                     settings = parseSettings(thisData)
                     composer.setVariable("taskSettings", settings)
                     composer.gotoScene("task-visuomotor")
@@ -98,11 +96,12 @@ local function rpiLoop(client, ip, port)
             print('sending: ' .. msg)
             local data, err = client:send(msg)
             print(err)
-            if (err == "closed" and clientPulse) then  --try to reconnect and resend
+            if (err == "closed" and clientPulse) then
+                --try to reconnect and resend
                 rpiConnect(ip, port)
                 data, err = client:send(msg)
             end
-            if not err then 
+            if not err then
                 composer.setVariable('buffer', {})
             end
         end
