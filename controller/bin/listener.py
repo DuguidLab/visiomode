@@ -1,7 +1,7 @@
 import socketserver
-import carie_controller.core as rc
-import carie_controller.interface.cli.cli_prompts as usr
-import carie_controller.experiment.sessions as sess
+import touchymouse.core as rc
+import touchymouse.interface.cli.cli_prompts as usr
+import touchymouse.experiment.sessions as sess
 import threading
 import json
 

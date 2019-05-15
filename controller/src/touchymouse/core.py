@@ -16,7 +16,8 @@ except Exception as e:
 
 SOLENOID_PIN = 18  # BCM numbering
 
-motor_kit = mk.MotorKit()
+if not DEBUG:
+    motor_kit = mk.MotorKit()
 
 
 def water_reward(delay=500, speed=150, distance=25):
