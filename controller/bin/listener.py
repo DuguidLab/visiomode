@@ -11,10 +11,12 @@ class TCPHandler(socketserver.BaseRequestHandler):
     The request handler class for the TCP listener server.
     """
     session = None  # Experiment session placeholder
+    path = input("Sessions path: ") or "."
+    settings = usr.task_settings(as_json=False)
+    data = None
 
     def handle(self):
         # self.request is the TCP socket connected to the client
-        self.settings = usr.task_settings(as_json=False)
         while True:
             self.data = self.request.recv(1024)  # Only suitable for single clients!
             if not self.data:
@@ -47,6 +49,7 @@ class TCPHandler(socketserver.BaseRequestHandler):
                     reward.start()
                 if self.session:
                     self.session.add_trial(sess.Trial(**event))
+                    self.session.save(self.path)
             if str(self.data, "utf-8").startswith("session_end"):
                 self.end_session()
                 self.start_session()  # Start new one
@@ -54,7 +57,6 @@ class TCPHandler(socketserver.BaseRequestHandler):
     def start_session(self):
         self.session = sess.Session(
             mouse=input("Mouse ID: "),
-            session=input("Session ID: "),
             task=input("Task ID: ")
         )
         input("Press ENTER to begin session...")
@@ -63,9 +65,8 @@ class TCPHandler(socketserver.BaseRequestHandler):
 
     def end_session(self):
         print("---Session End---")
-        path = input("Saved sessions directory: ") or "."
         try:
-            self.session.save(path)
+            self.session.save(self.path)
         except Exception as e:
             print(str(e))
             print(self.session)

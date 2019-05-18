@@ -22,13 +22,13 @@ class Session():
     def __init__(self, mouse, session, task, timestamp=datetime.datetime.now().isoformat()):
         """Inits Session with mouse, session, task and timestamp details."""
         # Sanitise session so that ids < 10 are e.g. 01 instead of just 1
-        self.session = '0' + str(session) if int(session) < 10 else str(session)
+        # self.session = '0' + str(session) if int(session) < 10 else str(session)
         self.mouse = str(mouse)
         self.task = str(task)
         self.timestamp = str(timestamp)
-        self.session_id = "sub-mouse{mouse}_ses-{session}_task-{task}".format(
+        self.session_id = "sub-mouse{mouse}_task-{task}_time-{time}".format(
             mouse=self.mouse,
-            session=self.session,
+            time=self.timestamp,
             task=self.task,
         )
         self.filename = self.session_id + ".json"
