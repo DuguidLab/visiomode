@@ -204,9 +204,20 @@ local function sessionEnd()
 end
 
 local function setupSingleTarget(sceneGroup)
-    target = display.newImageRect(sceneGroup, "assets/stage1.jpg", 1000, 768)
+    target = display.newGroup()
+    local frame1 = display.newImageRect(sceneGroup, "assets/stage1.jpg", 1000, 768)
+    local frame2 = display.newImageRect(sceneGroup, "assets/stage1.jpg", 1000, 768)
+
+    frame1.y = display.contentCenterY + 384
+    frame2.y = display.contentCenterY - 384
+
+    transition.to( frame1, { time=12000, y=384, iterations=0 } )
+    transition.to( frame2, { time=12000, y=-384, iterations=0 } )
+
+    target:insert(frame1)
+    target:insert(frame2)
+    --target = display.newImageRect(sceneGroup, "assets/stage1.jpg", 1000, 768)
     target.x = display.contentCenterX
-    target.y = display.contentCenterY
 
     target:addEventListener("touch", onTargetHit)
 end
@@ -232,7 +243,19 @@ local function setupVisualDiscrimination(sceneGroup)
     }
 
     local width = 665
-    target = display.newImageRect(sceneGroup, 'assets/stage2_target.jpg', width, display.contentHeight)
+    target = display.newGroup()
+    local frame1 = display.newImageRect(sceneGroup, "assets/stage2_target.jpg", width, display.contentHeight)
+    local frame2 = display.newImageRect(sceneGroup, "assets/stage2_target.jpg", width, display.contentHeight)
+
+    frame1.y = display.contentCenterY + 384
+    frame2.y = display.contentCenterY - 384
+
+    transition.to( frame1, { time=12000, y=384, iterations=0 } )
+    transition.to( frame2, { time=12000, y=-384, iterations=0 } )
+
+    target:insert(frame1)
+    target:insert(frame2)
+    --target = display.newImageRect(sceneGroup, 'assets/stage2_target.jpg', width, display.contentHeight)
     target.y = display.contentCenterY
 
     distractor = display.newImageRect(sceneGroup, 'assets/stage2_distractor.jpg', width, display.contentHeight)
