@@ -232,14 +232,16 @@ local function setupVisualDiscrimination(sceneGroup)
     print(display.actualContentWidth)
     -- local dividerWidth 5 / pixelMilliMeter  -- 5 mm to pixels
     local dividerWidth = 35
-    local divider = display.newRect(sceneGroup, (display.actualContentWidth * 0.5) + display.screenOriginX + offset, display.contentCenterY, dividerWidth, display.contentHeight)
-    divider.fill = { 0.5, 0.5, 0.5 }
+    local divider = display.newRect(sceneGroup, (display.actualContentWidth * 0.5) + display.screenOriginX + offset,
+            display.contentCenterY, dividerWidth, display.contentHeight)
+    divider.fill = { 0, 0, 0 }
+    divider:addEventListener("touch", function () return true end)
 
 
     -- set up bounds (x positions)
     bounds = {
-        (display.actualContentWidth * 0.25) + display.screenOriginX - (dividerWidth / 2) + offset,
-        (display.actualContentWidth * 0.75) + display.screenOriginX + (dividerWidth / 2) + offset
+        (display.actualContentWidth * 0.25) + display.screenOriginX - (dividerWidth / 3) + offset,
+        (display.actualContentWidth * 0.75) + display.screenOriginX + (dividerWidth / 3) + offset
     }
 
     local width = 665
