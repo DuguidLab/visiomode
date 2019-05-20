@@ -19,7 +19,7 @@ class Session():
         filename: A string that's basically the session_id with '.json' stuck at its end.
         trials: A list of trial data as dictionaries.
     """
-    def __init__(self, mouse, session, task, timestamp=datetime.datetime.now().isoformat()):
+    def __init__(self, mouse, task, timestamp=datetime.datetime.now().isoformat()):
         """Inits Session with mouse, session, task and timestamp details."""
         # Sanitise session so that ids < 10 are e.g. 01 instead of just 1
         # self.session = '0' + str(session) if int(session) < 10 else str(session)
