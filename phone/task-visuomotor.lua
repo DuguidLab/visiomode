@@ -211,8 +211,8 @@ local function setupSingleTarget(sceneGroup)
     frame1.y = display.contentCenterY + 384
     frame2.y = display.contentCenterY - 384
 
-    transition.to( frame1, { time=12000, y=384, iterations=0 } )
-    transition.to( frame2, { time=12000, y=-384, iterations=0 } )
+    transition.to( frame1, { time=1000, y=384, iterations=0 } )
+    transition.to( frame2, { time=1000, y=-384, iterations=0 } )
 
     target:insert(frame1)
     target:insert(frame2)
@@ -250,8 +250,8 @@ local function setupVisualDiscrimination(sceneGroup)
     frame1.y = display.contentCenterY + 384
     frame2.y = display.contentCenterY - 384
 
-    transition.to( frame1, { time=12000, y=384, iterations=0 } )
-    transition.to( frame2, { time=12000, y=-384, iterations=0 } )
+    transition.to( frame1, { time=1000, y=384, iterations=0 } )
+    transition.to( frame2, { time=1000, y=-384, iterations=0 } )
 
     target:insert(frame1)
     target:insert(frame2)
