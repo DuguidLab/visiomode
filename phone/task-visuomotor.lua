@@ -326,7 +326,9 @@ function scene:hide(event)
     local phase = event.phase
 
     if (phase == "will") then
+        transition.cancel()
         timer.cancel(sessionTimer)
+        timer.cancel(iti_timer)
         saveSession()
     elseif (phase == "did") then
         composer.removeScene("task-visuomotor")
