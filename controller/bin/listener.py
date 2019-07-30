@@ -1,7 +1,7 @@
 import socketserver
-import touchymouse.core as rc
-import touchymouse.interface.cli.cli_prompts as usr
-import touchymouse.experiment.sessions as sess
+import visiomode.core as rc
+import visiomode.interface.cli.cli_prompts as usr
+import visiomode.experiment.sessions as sess
 import threading
 import json
 
