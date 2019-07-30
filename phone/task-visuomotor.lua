@@ -227,11 +227,11 @@ local function setupVisualDiscrimination(sceneGroup)
     correction_trial = false
 
     -- offset to move everything left or right
-    local offset = -25
+    local offset = taskSettings.offset
 
     print(display.actualContentWidth)
     -- local dividerWidth 5 / pixelMilliMeter  -- 5 mm to pixels
-    local dividerWidth = 35
+    local dividerWidth = 200
     local divider = display.newRect(sceneGroup, (display.actualContentWidth * 0.5) + display.screenOriginX + offset,
             display.contentCenterY, dividerWidth, display.contentHeight)
     divider.fill = { 0, 0, 0 }
@@ -245,7 +245,7 @@ local function setupVisualDiscrimination(sceneGroup)
     }
 
     local width = 665
-    target = display.newGroup()
+    target = display.newGroup(sceneGroup)
     local frame1 = display.newImageRect(sceneGroup, "assets/stage2_target.jpg", width, display.contentHeight)
     local frame2 = display.newImageRect(sceneGroup, "assets/stage2_target.jpg", width, display.contentHeight)
 
@@ -328,11 +328,12 @@ function scene:hide(event)
     local phase = event.phase
 
     if (phase == "will") then
-        transition.cancel()
-        timer.cancel(sessionTimer)
-        timer.cancel(iti_timer)
         saveSession()
     elseif (phase == "did") then
+        transition.cancel()
+        target:removeSelf()
+        timer.cancel(sessionTimer)
+        timer.cancel(iti_timer)
         composer.removeScene("task-visuomotor")
     end
 end
