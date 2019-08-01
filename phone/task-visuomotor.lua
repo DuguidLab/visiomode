@@ -25,8 +25,8 @@ local sessionTimer
 local itiTimer
 
 local startTime
-local hitTime
-local missTime
+local touchTime
+local presentationTime
 
 
 local function getTaskSettings()
@@ -35,6 +35,8 @@ local function getTaskSettings()
 end
 
 local function restoreTargets()
+    presentationTime = os.clock()
+    
     if taskSettings.mode == 'single_target' then
         target.alpha = 1
         return
@@ -58,7 +60,7 @@ end
 
 local function streamEvent(event_type, touchTime, event)
     local now = os.clock()
-    local event = {
+    local touchEvent = {
         event_type = event_type,
         timestamp = touchTime,
         x_distance = event.x - event.xStart,
@@ -66,9 +68,10 @@ local function streamEvent(event_type, touchTime, event)
         x = event.x,
         y = event.y,
         duration = now - touchTime,
+        rt = presentationTime - touchTime,
         touch_force = event.pressure
     }
-    composer.setVariable('buffer', { 'event:' .. json.encode(event) })
+    composer.setVariable('buffer', { 'event:' .. json.encode(touchEvent) })
 end
 
 local function onTargetHit(event)
@@ -76,7 +79,7 @@ local function onTargetHit(event)
     local phase = event.phase
 
     if ("began" == phase) then
-        hitTime = os.clock()
+        touchTime = os.clock()
     elseif ("moved" == phase) then
         return true
     elseif ("ended" == phase) then
@@ -96,7 +99,7 @@ local function onTargetHit(event)
             print("hit")
         end
 
-        streamEvent(eventType, hitTime, event)
+        streamEvent(eventType, touchTime, event)
         itiTimer = timer.performWithDelay(getITI(), restoreTargets)
     end
 
@@ -107,7 +110,7 @@ local function onTargetMiss(event)
     local phase = event.phase
 
     if ("began" == phase) then
-        missTime = os.clock()
+        touchTime = os.clock()
     elseif ("moved" == phase) then
 
     elseif ("ended" == phase) then
@@ -130,7 +133,7 @@ local function onTargetMiss(event)
             end
         end
 
-        streamEvent(event_type, missTime, event)
+        streamEvent(event_type, touchTime, event)
         itiTimer = timer.performWithDelay(getITI(), restoreTargets)
     end
 
@@ -141,11 +144,11 @@ local function onPrecued(event)
     local phase = event.phase
 
     if ("began" == phase) then
-        missTime = os.clock()
+        touchTime = os.clock()
     elseif ("moved" == phase) then
 
     elseif ("ended" == phase) then
-        streamEvent('precued', missTime, event)
+        streamEvent('precued', touchTime, event)
         table.insert(precued, event)
         print("precued")
 
