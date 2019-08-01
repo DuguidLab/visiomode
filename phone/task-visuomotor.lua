@@ -42,10 +42,10 @@ local function restoreTargets()
 
     if not correctionTrial then
         -- randomly assign target/distractor positions
-        local target_pos = math.random(#bounds)
-        local distractor_pos = 3 - target_pos
-        target.x = bounds[target_pos]
-        distractor.x = bounds[distractor_pos]
+        local targetPosition = math.random(#bounds)
+        local distractorPosition = 3 - targetPosition
+        target.x = bounds[targetPosition]
+        distractor.x = bounds[distractorPosition]
     end
 
     target.alpha = 1
@@ -80,7 +80,7 @@ local function onTargetHit(event)
     elseif ("moved" == phase) then
         return true
     elseif ("ended" == phase) then
-        local event_type = 'hit'
+        local eventType = 'hit'
         target.alpha = 0
 
         if taskSettings.mode == 'vdt' then
@@ -88,7 +88,7 @@ local function onTargetHit(event)
         end
 
         if correctionTrial then
-            event_type = 'correction_hit'
+            eventType = 'correction_hit'
             table.insert(corrections, hit)
             correctionTrial = false
         else
@@ -96,7 +96,7 @@ local function onTargetHit(event)
             print("hit")
         end
 
-        streamEvent(event_type, hitTime, event)
+        streamEvent(eventType, hitTime, event)
         itiTimer = timer.performWithDelay(getITI(), restoreTargets)
     end
 
