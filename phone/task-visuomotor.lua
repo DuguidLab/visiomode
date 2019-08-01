@@ -20,8 +20,6 @@ local precued
 local corrections
 local correction_trial -- indicateif a trial is a correction so as to not be counted
 
-local start
-
 local taskSettings
 local sessionTimer
 
@@ -30,10 +28,6 @@ local iti_timer
 local startTime
 local hitTime
 local missTime
-local precueTime
-
--- RPi comm buffer
-local buffer
 
 
 -- TODO figure out DPI at runtime!
