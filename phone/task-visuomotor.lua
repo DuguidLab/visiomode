@@ -35,7 +35,7 @@ local function getTaskSettings()
 end
 
 local function restoreTargets()
-    presentationTime = os.clock()
+    presentationTime = os.time()
     
     if taskSettings.mode == 'single_target' then
         target.alpha = 1
@@ -59,7 +59,7 @@ local function getITI()
 end
 
 local function streamEvent(event_type, touchTime, event)
-    local now = os.clock()
+    local now = os.time()
     local touchEvent = {
         event_type = event_type,
         timestamp = touchTime,
@@ -67,8 +67,8 @@ local function streamEvent(event_type, touchTime, event)
         y_distance = event.y - event.yStart,
         x = event.x,
         y = event.y,
-        duration = now - touchTime,
-        rt = presentationTime - touchTime,
+        duration = os.difftime(now, touchTime),
+        rt = os.difftime(touchTime, presentationTime),
         touch_force = event.pressure
     }
     composer.setVariable('buffer', { 'event:' .. json.encode(touchEvent) })
@@ -79,7 +79,7 @@ local function onTargetHit(event)
     local phase = event.phase
 
     if ("began" == phase) then
-        touchTime = os.clock()
+        touchTime = os.time()
     elseif ("moved" == phase) then
         return true
     elseif ("ended" == phase) then
@@ -110,7 +110,7 @@ local function onTargetMiss(event)
     local phase = event.phase
 
     if ("began" == phase) then
-        touchTime = os.clock()
+        touchTime = os.time()
     elseif ("moved" == phase) then
 
     elseif ("ended" == phase) then
@@ -144,7 +144,7 @@ local function onPrecued(event)
     local phase = event.phase
 
     if ("began" == phase) then
-        touchTime = os.clock()
+        touchTime = os.time()
     elseif ("moved" == phase) then
 
     elseif ("ended" == phase) then
@@ -268,7 +268,7 @@ function scene:create(event)
     -- get settings 
     getTaskSettings()
     -- set msec start time
-    startTime = os.clock()
+    startTime = os.time()
 
     -- init tables for hits / misses
     hits = {}
