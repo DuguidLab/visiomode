@@ -58,17 +58,17 @@ local function getITI()
     return math.random(taskSettings.iti_min, taskSettings.iti_max)
 end
 
-local function streamEvent(event_type, touchTime, event)
+local function streamEvent(eventType, eventTime, event)
     local now = system.getTimer()
     local touchEvent = {
-        event_type = event_type,
+        event_type = eventType,
         timestamp = now - startTime,
         x_distance = event.x - event.xStart,
         y_distance = event.y - event.yStart,
         x = event.x,
         y = event.y,
-        duration = now - touchTime,
-        rt = touchTime - presentationTime,
+        duration = now - eventTime,
+        rt = eventTime - presentationTime,
         touch_force = event.pressure,
     }
     composer.setVariable('buffer', { 'event:' .. json.encode(touchEvent) })
