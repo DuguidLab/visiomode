@@ -35,7 +35,7 @@ local function getTaskSettings()
 end
 
 local function restoreTargets()
-    presentationTime = os.time()
+    presentationTime = system.getTimer()
     
     if taskSettings.mode == 'single_target' then
         target.alpha = 1
@@ -59,17 +59,17 @@ local function getITI()
 end
 
 local function streamEvent(event_type, touchTime, event)
-    local now = os.time()
+    local now = system.getTimer()
     local touchEvent = {
         event_type = event_type,
-        timestamp = touchTime,
+        timestamp = now - startTime,
         x_distance = event.x - event.xStart,
         y_distance = event.y - event.yStart,
         x = event.x,
         y = event.y,
-        duration = os.difftime(now, touchTime),
-        rt = os.difftime(touchTime, presentationTime),
-        touch_force = event.pressure
+        duration = now - touchTime,
+        rt = touchTime - presentationTime,
+        touch_force = event.pressure,
     }
     composer.setVariable('buffer', { 'event:' .. json.encode(touchEvent) })
 end
@@ -79,7 +79,7 @@ local function onTargetHit(event)
     local phase = event.phase
 
     if ("began" == phase) then
-        touchTime = os.time()
+        touchTime = system.getTimer()
     elseif ("moved" == phase) then
         return true
     elseif ("ended" == phase) then
@@ -110,7 +110,7 @@ local function onTargetMiss(event)
     local phase = event.phase
 
     if ("began" == phase) then
-        touchTime = os.time()
+        touchTime = system.getTimer()
     elseif ("moved" == phase) then
 
     elseif ("ended" == phase) then
@@ -144,7 +144,7 @@ local function onPrecued(event)
     local phase = event.phase
 
     if ("began" == phase) then
-        touchTime = os.time()
+        touchTime = system.getTimer()
     elseif ("moved" == phase) then
 
     elseif ("ended" == phase) then
@@ -268,7 +268,7 @@ function scene:create(event)
     -- get settings 
     getTaskSettings()
     -- set msec start time
-    startTime = os.time()
+    startTime = system.getTimer()
 
     -- init tables for hits / misses
     hits = {}
