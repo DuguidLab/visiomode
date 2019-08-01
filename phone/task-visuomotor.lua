@@ -9,7 +9,6 @@ local scene = composer.newScene()
 -- -----------------------------------------------------------------------------------
 local json = require("json")
 
--- initialise variables
 local session
 
 local target
@@ -18,20 +17,16 @@ local hits
 local misses
 local precued
 local corrections
-local correction_trial -- indicateif a trial is a correction so as to not be counted
+local correctionTrial -- indicate if a trial is a correction so as to not be counted
 
 local taskSettings
 local sessionTimer
 
-local iti_timer
+local itiTimer
 
 local startTime
 local hitTime
 local missTime
-
-
--- TODO figure out DPI at runtime!
-local pixelMilliMeter = 0.123902439  -- factor for converting pixels to mm 
 
 
 local function getTaskSettings()
@@ -45,7 +40,7 @@ local function restoreTargets()
         return
     end
 
-    if not correction_trial then
+    if not correctionTrial then
         -- randomly assign target/distractor positions
         local target_pos = math.random(#bounds)
         local distractor_pos = 3 - target_pos
@@ -92,17 +87,17 @@ local function onTargetHit(event)
             distractor.alpha = 0
         end
 
-        if correction_trial then
+        if correctionTrial then
             event_type = 'correction_hit'
             table.insert(corrections, hit)
-            correction_trial = false
+            correctionTrial = false
         else
             table.insert(hits, event)
             print("hit")
         end
 
         streamEvent(event_type, hitTime, event)
-        iti_timer = timer.performWithDelay(getITI(), restoreTargets)
+        itiTimer = timer.performWithDelay(getITI(), restoreTargets)
     end
 
     return true
@@ -123,7 +118,7 @@ local function onTargetMiss(event)
             distractor.alpha = 0
 
             -- correction trials
-            if correction_trial then
+            if correctionTrial then
                 event_type = 'correction'
                 table.insert(corrections, event)
                 print("still correcting")
@@ -131,12 +126,12 @@ local function onTargetMiss(event)
                 event_type = 'miss'
                 table.insert(misses, event)
                 print("miss")
-                correction_trial = true -- next trial should be a correction trial
+                correctionTrial = true -- next trial should be a correction trial
             end
         end
 
         streamEvent(event_type, missTime, event)
-        iti_timer = timer.performWithDelay(getITI(), restoreTargets)
+        itiTimer = timer.performWithDelay(getITI(), restoreTargets)
     end
 
     return true
@@ -155,11 +150,11 @@ local function onPrecued(event)
         print("precued")
 
         -- reset ITI
-        if iti_timer then
-            timer.cancel(iti_timer)
+        if itiTimer then
+            timer.cancel(itiTimer)
         end
-        iti_timer = nil
-        iti_timer = timer.performWithDelay(getITI(), restoreTargets)
+        itiTimer = nil
+        itiTimer = timer.performWithDelay(getITI(), restoreTargets)
     end
 
     return true
@@ -218,7 +213,7 @@ end
 
 local function setupVisualDiscrimination(sceneGroup)
     corrections = {}
-    correction_trial = false
+    correctionTrial = false
 
     -- offset to move everything left or right
     local offset = taskSettings.offset
@@ -327,7 +322,7 @@ function scene:hide(event)
         transition.cancel()
         target:removeSelf()
         timer.cancel(sessionTimer)
-        timer.cancel(iti_timer)
+        timer.cancel(itiTimer)
         composer.removeScene("task-visuomotor")
     end
 end
