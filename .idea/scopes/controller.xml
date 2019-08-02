@@ -1,0 +1,3 @@
+<component name="DependencyValidationManager">
+  <scope name="controller" pattern="file[visiomode]:controller//*&amp;&amp;!file[visiomode]:phone//*&amp;&amp;!file:.gitignore&amp;&amp;!file:README.md" />
+</component>
