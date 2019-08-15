@@ -45,7 +45,8 @@ class TCPHandler(socketserver.BaseRequestHandler):
                     print("Could not parse event - {}".format(str(e)))
                     continue
                 if event['event_type'] == 'hit' or event['event_type'] == 'correction_hit':
-                    reward = threading.Thread(target=rc.water_reward, kwargs={'delay': self.settings['iti_min']})
+                    reward = threading.Thread(target=rc.water_reward,
+                                              kwargs={'delay': self.settings['iti_min']})
                     reward.start()
                 if self.session:
                     self.session.add_trial(sess.Trial(**event))
