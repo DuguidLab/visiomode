@@ -80,14 +80,6 @@ local function rpiLoop(client, ip, port)
                     settings = parseSettings(thisData)
                     composer.setVariable("taskSettings", settings)
                     composer.gotoScene("task-visuomotor")
-                    -- HACK only initiate visuomotor task for now
-                    --if settings.task.stage == 1 then
-                    --    print("Stage 1")
-                    --    composer.gotoScene("task-visuomotor-stage1")
-                    --elseif settings.task.stage == 2 then
-                    --    print("Stage 2")
-                    --    composer.gotoScene("task-visuomotor-stage2")
-                    --end
                 end
             end
         end
