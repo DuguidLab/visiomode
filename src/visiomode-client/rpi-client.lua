@@ -79,7 +79,11 @@ local function rpiLoop(client, ip, port)
                     -- does it look like json?
                     settings = parseSettings(thisData)
                     composer.setVariable("taskSettings", settings)
-                    composer.gotoScene("task-visuomotor")
+                    if string.match(settings.mode, "stim") then
+                        composer.gotoScene("stim-presentation")
+                    else
+                        composer.gotoScene("task-visuomotor")
+                    end
                 end
             end
         end
