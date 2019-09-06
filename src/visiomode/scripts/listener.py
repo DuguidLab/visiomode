@@ -3,6 +3,7 @@ import visiomode.core as rc
 import visiomode.interface.cli.cli_prompts as usr
 import visiomode.experiment.sessions as sess
 import threading
+import datetime
 import json
 
 
@@ -62,10 +63,12 @@ class TCPHandler(socketserver.BaseRequestHandler):
         )
         input("Press ENTER to begin session...")
         self.request.sendall(bytes(json.dumps(self.settings) + "\n", "utf-8"))
+        self.session.timestamp = str(datetime.datetime.now().isoformat())
         print("---Session Start---")
 
     def end_session(self):
         print("---Session End---")
+        self.session.end_timestamp = str(datetime.datetime.now().isoformat())
         try:
             self.session.save(self.path)
         except Exception as e:

@@ -18,6 +18,7 @@ class Session():
         session_id: A string generated using the session ID, mouse ID and task ID.
         filename: A string that's basically the session_id with '.json' stuck at its end.
         trials: A list of trial data as dictionaries.
+        end_timestamp: A string with the datetime the session ends in ISO format.
     """
     def __init__(self, mouse, task, timestamp=datetime.datetime.now().isoformat()):
         """Inits Session with mouse, session, task and timestamp details."""
@@ -33,6 +34,7 @@ class Session():
         )
         self.filename = self.session_id + ".json"
         self.trials = []
+        self.end_timestamp = None
 
     def add_trial(self, trial):
         if isinstance(trial, Trial):
