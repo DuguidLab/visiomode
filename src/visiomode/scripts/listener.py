@@ -63,12 +63,12 @@ class TCPHandler(socketserver.BaseRequestHandler):
         )
         input("Press ENTER to begin session...")
         self.request.sendall(bytes(json.dumps(self.settings) + "\n", "utf-8"))
-        self.session.timestamp = str(datetime.datetime.now().isoformat())
+        self.session.timestamp = str(datetime.datetime.utcnow().isoformat())
         print("---Session Start---")
 
     def end_session(self):
         print("---Session End---")
-        self.session.end_timestamp = str(datetime.datetime.now().isoformat())
+        self.session.end_timestamp = str(datetime.datetime.utcnow().isoformat())
         try:
             self.session.save(self.path)
         except Exception as e:
