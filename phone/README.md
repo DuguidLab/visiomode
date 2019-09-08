@@ -1,2 +1,0 @@
-# rodent-fiddle
-Touchscreen app

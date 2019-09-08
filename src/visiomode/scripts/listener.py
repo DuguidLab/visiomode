@@ -3,6 +3,7 @@ import visiomode.core as rc
 import visiomode.interface.cli.cli_prompts as usr
 import visiomode.experiment.sessions as sess
 import threading
+import datetime
 import json
 
 
@@ -45,7 +46,8 @@ class TCPHandler(socketserver.BaseRequestHandler):
                     print("Could not parse event - {}".format(str(e)))
                     continue
                 if event['event_type'] == 'hit' or event['event_type'] == 'correction_hit':
-                    reward = threading.Thread(target=rc.water_reward, kwargs={'delay': self.settings['iti_min']})
+                    reward = threading.Thread(target=rc.water_reward,
+                                              kwargs={'delay': self.settings['iti_min']})
                     reward.start()
                 if self.session:
                     self.session.add_trial(sess.Trial(**event))
@@ -61,10 +63,12 @@ class TCPHandler(socketserver.BaseRequestHandler):
         )
         input("Press ENTER to begin session...")
         self.request.sendall(bytes(json.dumps(self.settings) + "\n", "utf-8"))
+        self.session.timestamp = str(datetime.datetime.utcnow().isoformat())
         print("---Session Start---")
 
     def end_session(self):
         print("---Session End---")
+        self.session.end_timestamp = str(datetime.datetime.utcnow().isoformat())
         try:
             self.session.save(self.path)
         except Exception as e:

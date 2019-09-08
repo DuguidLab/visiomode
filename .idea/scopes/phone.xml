@@ -1,3 +1,0 @@
-<component name="DependencyValidationManager">
-  <scope name="phone" pattern="file[visiomode]:phone//*&amp;&amp;!file[visiomode]:controller//*&amp;&amp;!file:.gitignore&amp;&amp;!file:README.md" />
-</component>

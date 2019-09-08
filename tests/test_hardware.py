@@ -1,5 +1,5 @@
 """Test hardware components of controller"""
-import carie_controller.core as rc
+import visiomode.core as rc
 
 
 def test_stepper_motor():
