@@ -65,7 +65,6 @@ local function hideTarget()
     target.alpha = 0
 end
 
-
 local function cycleTarget()
     local ipi = getIPI()
     local stimDuration = 2000
