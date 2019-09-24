@@ -100,6 +100,7 @@ local function sessionEnd()
     composer.setVariable(
             'buffer', { 'session_end:' .. os.date('%Y%m%d_%H%M%S') }
     )
+    composer.gotoScene("menu")
 end
 
 -- -----------------------------------------------------------------------------------
