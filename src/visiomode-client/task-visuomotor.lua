@@ -199,15 +199,19 @@ local function setupSingleTarget(sceneGroup)
     target = display.newGroup()
     local frame1 = display.newImageRect(sceneGroup, "assets/stage1.jpg", 1000, 768)
     local frame2 = display.newImageRect(sceneGroup, "assets/stage1.jpg", 1000, 768)
+    local frame3 = display.newImageRect(sceneGroup, "assets/stage1.jpg", 1000, 768)
 
-    frame1.y = display.contentCenterY + 384
-    frame2.y = display.contentCenterY - 384
+    frame1.y = display.contentHeight * 0.25
+    frame2.y = display.contentHeight * 0.75
+    frame3.y = display.contentHeight * 1.25
 
-    transition.to( frame1, { time=1000, y=384, iterations=0 } )
-    transition.to( frame2, { time=1000, y=-384, iterations=0 } )
+    transition.to( frame1, { time=1000, y=-display.contentHeight * 0.25, iterations=0 } )
+    transition.to( frame2, { time=1000, y=display.contentHeight * 0.25, iterations=0 } )
+    transition.to( frame3, { time=1000, y=display.contentHeight * 0.75, iterations=0 } )
 
     target:insert(frame1)
     target:insert(frame2)
+    target:insert(frame3)
     --target = display.newImageRect(sceneGroup, "assets/stage1.jpg", 1000, 768)
     target.x = display.contentCenterX
 
@@ -278,7 +282,8 @@ function scene:create(event)
     -- set up task scene
     local sceneGroup = self.view
 
-    local background = display.newRect(sceneGroup, display.contentCenterX, display.contentCenterY, display.contentWidth, display.contentHeight)
+    local background = display.newRect(sceneGroup, display.contentCenterX,
+            display.contentCenterY, display.actualContentWidth, display.actualContentHeight)
     background.fill = { 0, 0, 0 }
     background:toBack()
 
