@@ -19,8 +19,12 @@ SOLENOID_PIN = 25  # BCM numbering
 SERVO_PIN = 19
 SERVO_START = 1200
 
-pi = pigpio.pi()
-pi.set_servo_pulsewidth(SERVO_PIN, SERVO_START)
+try:
+    pi = pigpio.pi()
+    pi.set_servo_pulsewidth(SERVO_PIN, SERVO_START)
+except Exception as e:
+    DEBUG = True
+    print(e)
 
 #if not DEBUG:
 #    motor_kit = mk.MotorKit()
@@ -29,10 +33,10 @@ pi.set_servo_pulsewidth(SERVO_PIN, SERVO_START)
 #def water_reward(delay=500, speed=150, distance=25):
 def water_reward(delay=500, servo_away=SERVO_START, servo_reward=1800):
     """Motor control to dispense rewards"""
-    #if DEBUG:
-     #   # if hardware not connected, run dummy reward
-     #   print("very best debug reward")
-     #   return
+    if DEBUG:
+        # if hardware not connected, run dummy reward
+        print("very best debug reward")
+        return
 
     solenoid_open_delay = 150  # ms solenoid remains open for
     #motor_movt_delay = distance / speed  # Amount of time motor takes to move
