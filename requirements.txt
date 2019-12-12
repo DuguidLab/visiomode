@@ -1,3 +1,4 @@
+pigpio
 Adafruit-Blinka==1.2.8
 adafruit-circuitpython-busdevice==2.2.9
 adafruit-circuitpython-motor==1.4.1
