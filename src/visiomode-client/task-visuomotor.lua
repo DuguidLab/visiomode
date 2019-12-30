@@ -9,7 +9,6 @@ local scene = composer.newScene()
 -- -----------------------------------------------------------------------------------
 local json = require("json")
 
--- initialise variables
 local session
 
 local target
@@ -18,26 +17,16 @@ local hits
 local misses
 local precued
 local corrections
-local correction_trial -- indicateif a trial is a correction so as to not be counted
-
-local start
+local correctionTrial -- indicate if a trial is a correction so as to not be counted
 
 local taskSettings
 local sessionTimer
 
-local iti_timer
+local itiTimer
 
 local startTime
-local hitTime
-local missTime
-local precueTime
-
--- RPi comm buffer
-local buffer
-
-
--- TODO figure out DPI at runtime!
-local pixelMilliMeter = 0.123902439  -- factor for converting pixels to mm 
+local touchTime
+local presentationTime
 
 
 local function getTaskSettings()
@@ -46,17 +35,19 @@ local function getTaskSettings()
 end
 
 local function restoreTargets()
+    presentationTime = system.getTimer()
+    
     if taskSettings.mode == 'single_target' then
         target.alpha = 1
         return
     end
 
-    if not correction_trial then
+    if not correctionTrial then
         -- randomly assign target/distractor positions
-        local target_pos = math.random(#bounds)
-        local distractor_pos = 3 - target_pos
-        target.x = bounds[target_pos]
-        distractor.x = bounds[distractor_pos]
+        local targetPosition = math.random(#bounds)
+        local distractorPosition = 3 - targetPosition
+        target.x = bounds[targetPosition]
+        distractor.x = bounds[distractorPosition]
     end
 
     target.alpha = 1
@@ -67,19 +58,20 @@ local function getITI()
     return math.random(taskSettings.iti_min, taskSettings.iti_max)
 end
 
-local function streamEvent(event_type, touchTime, event)
-    local now = os.clock()
-    local event = {
-        event_type = event_type,
-        timestamp = touchTime,
+local function streamEvent(eventType, eventTime, event)
+    local now = system.getTimer()
+    local touchEvent = {
+        event_type = eventType,
+        timestamp = now - startTime,
         x_distance = event.x - event.xStart,
         y_distance = event.y - event.yStart,
         x = event.x,
         y = event.y,
-        duration = now - touchTime,
-        touch_force = event.pressure
+        duration = now - eventTime,
+        rt = eventTime - presentationTime,
+        touch_force = event.pressure,
     }
-    composer.setVariable('buffer', { 'event:' .. json.encode(event) })
+    composer.setVariable('buffer', { 'event:' .. json.encode(touchEvent) })
 end
 
 local function onTargetHit(event)
@@ -87,28 +79,28 @@ local function onTargetHit(event)
     local phase = event.phase
 
     if ("began" == phase) then
-        hitTime = os.clock()
+        touchTime = system.getTimer()
     elseif ("moved" == phase) then
         return true
     elseif ("ended" == phase) then
-        local event_type = 'hit'
+        local eventType = 'hit'
         target.alpha = 0
 
         if taskSettings.mode == 'vdt' then
             distractor.alpha = 0
         end
 
-        if correction_trial then
-            event_type = 'correction_hit'
+        if correctionTrial then
+            eventType = 'correction_hit'
             table.insert(corrections, hit)
-            correction_trial = false
+            correctionTrial = false
         else
             table.insert(hits, event)
             print("hit")
         end
 
-        streamEvent(event_type, hitTime, event)
-        iti_timer = timer.performWithDelay(getITI(), restoreTargets)
+        streamEvent(eventType, touchTime, event)
+        itiTimer = timer.performWithDelay(getITI(), restoreTargets)
     end
 
     return true
@@ -118,7 +110,7 @@ local function onTargetMiss(event)
     local phase = event.phase
 
     if ("began" == phase) then
-        missTime = os.clock()
+        touchTime = system.getTimer()
     elseif ("moved" == phase) then
 
     elseif ("ended" == phase) then
@@ -129,7 +121,7 @@ local function onTargetMiss(event)
             distractor.alpha = 0
 
             -- correction trials
-            if correction_trial then
+            if correctionTrial then
                 event_type = 'correction'
                 table.insert(corrections, event)
                 print("still correcting")
@@ -137,12 +129,12 @@ local function onTargetMiss(event)
                 event_type = 'miss'
                 table.insert(misses, event)
                 print("miss")
-                correction_trial = true -- next trial should be a correction trial
+                correctionTrial = true -- next trial should be a correction trial
             end
         end
 
-        streamEvent(event_type, missTime, event)
-        iti_timer = timer.performWithDelay(getITI(), restoreTargets)
+        streamEvent(event_type, touchTime, event)
+        itiTimer = timer.performWithDelay(getITI(), restoreTargets)
     end
 
     return true
@@ -152,20 +144,20 @@ local function onPrecued(event)
     local phase = event.phase
 
     if ("began" == phase) then
-        missTime = os.clock()
+        touchTime = system.getTimer()
     elseif ("moved" == phase) then
 
     elseif ("ended" == phase) then
-        streamEvent('precued', missTime, event)
+        streamEvent('precued', touchTime, event)
         table.insert(precued, event)
         print("precued")
 
         -- reset ITI
-        if iti_timer then
-            timer.cancel(iti_timer)
+        if itiTimer then
+            timer.cancel(itiTimer)
         end
-        iti_timer = nil
-        iti_timer = timer.performWithDelay(getITI(), restoreTargets)
+        itiTimer = nil
+        itiTimer = timer.performWithDelay(getITI(), restoreTargets)
     end
 
     return true
@@ -207,15 +199,19 @@ local function setupSingleTarget(sceneGroup)
     target = display.newGroup()
     local frame1 = display.newImageRect(sceneGroup, "assets/stage1.jpg", 1000, 768)
     local frame2 = display.newImageRect(sceneGroup, "assets/stage1.jpg", 1000, 768)
+    local frame3 = display.newImageRect(sceneGroup, "assets/stage1.jpg", 1000, 768)
 
-    frame1.y = display.contentCenterY + 384
-    frame2.y = display.contentCenterY - 384
+    frame1.y = display.contentHeight * 0.25
+    frame2.y = display.contentHeight * 0.75
+    frame3.y = display.contentHeight * 1.25
 
-    transition.to( frame1, { time=1000, y=384, iterations=0 } )
-    transition.to( frame2, { time=1000, y=-384, iterations=0 } )
+    transition.to( frame1, { time=1000, y=-display.contentHeight * 0.25, iterations=0 } )
+    transition.to( frame2, { time=1000, y=display.contentHeight * 0.25, iterations=0 } )
+    transition.to( frame3, { time=1000, y=display.contentHeight * 0.75, iterations=0 } )
 
     target:insert(frame1)
     target:insert(frame2)
+    target:insert(frame3)
     --target = display.newImageRect(sceneGroup, "assets/stage1.jpg", 1000, 768)
     target.x = display.contentCenterX
 
@@ -224,7 +220,7 @@ end
 
 local function setupVisualDiscrimination(sceneGroup)
     corrections = {}
-    correction_trial = false
+    correctionTrial = false
 
     -- offset to move everything left or right
     local offset = taskSettings.offset
@@ -276,7 +272,7 @@ function scene:create(event)
     -- get settings 
     getTaskSettings()
     -- set msec start time
-    startTime = os.clock()
+    startTime = system.getTimer()
 
     -- init tables for hits / misses
     hits = {}
@@ -286,7 +282,8 @@ function scene:create(event)
     -- set up task scene
     local sceneGroup = self.view
 
-    local background = display.newRect(sceneGroup, display.contentCenterX, display.contentCenterY, display.contentWidth, display.contentHeight)
+    local background = display.newRect(sceneGroup, display.contentCenterX,
+            display.contentCenterY, display.actualContentWidth, display.actualContentHeight)
     background.fill = { 0, 0, 0 }
     background:toBack()
 
@@ -333,7 +330,7 @@ function scene:hide(event)
         transition.cancel()
         target:removeSelf()
         timer.cancel(sessionTimer)
-        timer.cancel(iti_timer)
+        timer.cancel(itiTimer)
         composer.removeScene("task-visuomotor")
     end
 end
