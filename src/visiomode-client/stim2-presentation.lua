@@ -1,4 +1,4 @@
--- Single target, always rewarded
+-- Grating and gray stimulus presentation
 local composer = require("composer")
 local json = require("json")
 
@@ -10,6 +10,7 @@ local scene = composer.newScene()
 -- the scene is removed entirely (not recycled) via "composer.removeScene()"
 -- -----------------------------------------------------------------------------------
 local target
+local distractor
 local session
 local startTime
 local presentationTime
@@ -32,7 +33,7 @@ end
 
 local function streamCycle(timestamp, ipi, duration)
     local touchEvent = {
-        event_type = 'stim',
+        event_type = 'stim2',
         timestamp = timestamp,
         duration = duration,
         ipi = ipi,
@@ -40,10 +41,27 @@ local function streamCycle(timestamp, ipi, duration)
     composer.setVariable('buffer', { 'event:' .. json.encode(touchEvent) })
 end
 
-local function setupSingleTarget(sceneGroup)
-    target = display.newGroup()
-    local frame1 = display.newImageRect(sceneGroup, "assets/stage1.jpg", 1000, 768)
-    local frame2 = display.newImageRect(sceneGroup, "assets/stage1.jpg", 1000, 768)
+local function setupStimuli(sceneGroup)
+    -- offset to move everything left or right
+    local offset = taskSettings.offset
+
+    print(display.actualContentWidth)
+    -- local dividerWidth 5 / pixelMilliMeter  -- 5 mm to pixels
+    local dividerWidth = 100
+    local divider = display.newRect(sceneGroup, (display.actualContentWidth * 0.5) + display.screenOriginX + offset,
+            display.contentCenterY, dividerWidth, display.contentHeight)
+    divider.fill = { 0, 0, 0 }
+
+    -- set up bounds (x positions)
+    bounds = {
+        (display.actualContentWidth * 0.25) + display.screenOriginX - (dividerWidth / 3) + offset,
+        (display.actualContentWidth * 0.75) + display.screenOriginX + (dividerWidth / 3) + offset
+    }
+
+    local width = 665
+    target = display.newGroup(sceneGroup)
+    local frame1 = display.newImageRect(sceneGroup, "assets/stage2_target.jpg", width, display.contentHeight)
+    local frame2 = display.newImageRect(sceneGroup, "assets/stage2_target.jpg", width, display.contentHeight)
 
     frame1.y = display.contentCenterY + 384
     frame2.y = display.contentCenterY - 384
@@ -53,16 +71,23 @@ local function setupSingleTarget(sceneGroup)
 
     target:insert(frame1)
     target:insert(frame2)
-    target.x = display.contentCenterX
-    target.alpha = 0
+    target.y = display.contentCenterY
+
+    distractor = display.newImageRect(sceneGroup, 'assets/stage2_distractor.jpg', width, display.contentHeight)
+    distractor.y = display.contentCenterY
+
+    target.x = bounds[1]
+    distractor.x = bounds[2]
 end
 
-local function showTarget()
+local function showStimuli()
     target.alpha = 1
+    distractor.alpha = 1
 end
 
-local function hideTarget()
+local function hideStimuli()
     target.alpha = 0
+    distractor.alpha = 0
 end
 
 local function cycleTarget()
@@ -73,8 +98,8 @@ local function cycleTarget()
     local ts = now - startTime
     print("thing")
     streamCycle(ts, ipi, stimDuration)
-    showTarget()
-    ipiTimer = timer.performWithDelay(stimDuration, hideTarget)
+    showStimuli()
+    ipiTimer = timer.performWithDelay(stimDuration, hideStimuli)
     cycleTimer = timer.performWithDelay(cycleDuration, cycleTarget)
 end
 
@@ -118,7 +143,7 @@ function scene:create(event)
     background.fill = { 0, 0, 0 }
     background:toBack()
 
-    setupSingleTarget(sceneGroup)
+    setupStimuli(sceneGroup)
     cycleTarget()
 end
 
