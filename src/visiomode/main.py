@@ -7,12 +7,28 @@
 #  Distributed under the terms of the MIT Licence.
 
 import redis as rds
+import pyglet as pgt
 import visiomode.config as cfg
 
 
 def main():
     config = cfg.Config()
     redis = rds.Redis(host=config.redis_host, port=config.redis_port)
+
+    # Dummy hello world pyglet window
+    window = pgt.window.Window()
+    label = pgt.text.Label('Hello, world',
+                           font_name='Times New Roman',
+                           font_size=36,
+                           x=window.width // 2, y=window.height // 2,
+                           anchor_x='center', anchor_y='center')
+
+    @window.event
+    def on_draw():
+        window.clear()
+        label.draw()
+
+    pgt.app.run()
 
 
 if __name__ == '__main__':
