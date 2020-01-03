@@ -1,0 +1,7 @@
+<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="gui-web" type="CompoundRunConfigurationType">
+    <toRun name="gui" type="PythonConfigurationType" />
+    <toRun name="webapp" type="PythonConfigurationType" />
+    <method v="2" />
+  </configuration>
+</component>
