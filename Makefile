@@ -5,7 +5,8 @@ PROJECT_NAME = "visiomode"
 PYTHON_INTERPRETER = python3
 
 run:
-	$(PYTHON_INTERPRETER) src/visiomode/webapp/
+	$(PYTHON_INTERPRETER) src/visiomode/webapp/main.py
+	$(PYTHON_INTERPRETER) src/visiomode/gui/main.py
 
 requirements:
 	$(PYTHON_INTERPRETER) -m pip install -U pip setuptools wheel
