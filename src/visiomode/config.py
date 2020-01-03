@@ -10,7 +10,7 @@ import logging
 
 
 DEFAULT_PATH = '/etc/visiomode/config.yaml'
-CONFIG_PARAMS = ('debug', 'redis_port', 'redis_host')
+CONFIG_PARAMS = ('debug', 'redis_port', 'redis_host', 'flask_key')
 
 
 class Config:
@@ -21,6 +21,7 @@ class Config:
     redis_port = 6379
     redis_host = 'localhost'
     debug = True
+    flask_key = 'dev'
 
     def __init__(self, path=DEFAULT_PATH):
         """Initialises Config with a path to a configuration file.
