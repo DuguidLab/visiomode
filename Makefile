@@ -5,6 +5,7 @@ PROJECT_NAME = "visiomode"
 PYTHON_INTERPRETER = python3
 
 run:
+	redis-server
 	$(PYTHON_INTERPRETER) src/visiomode/webapp/__init__.py
 	$(PYTHON_INTERPRETER) src/visiomode/gui/main.py
 
