@@ -6,9 +6,11 @@
 
 import os
 import yaml
+import logging
 
 
 DEFAULT_PATH = '/etc/visiomode/config.yaml'
+CONFIG_PARAMS = ('debug', 'redis_port', 'redis_host')
 
 
 class Config:
@@ -42,4 +44,8 @@ class Config:
         with open(path) as f:
             config = yaml.safe_load(f)
             for key, value in config.items():
+                if key not in CONFIG_PARAMS:
+                    logging.info("{} is not a valid config parameter, skipping...".format(key))
+                    continue
                 setattr(self, key, value)
+
