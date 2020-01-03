@@ -48,4 +48,3 @@ class Config:
                     logging.info("{} is not a valid config parameter, skipping...".format(key))
                     continue
                 setattr(self, key, value)
-
