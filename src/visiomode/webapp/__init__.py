@@ -13,6 +13,11 @@ import visiomode.config as cfg
 
 
 def create_app():
+    """Flask app factory
+
+    Returns:
+        Flask app object
+    """
     config = cfg.Config()
     redis = rds.Redis(host=config.redis_host, port=config.redis_port)
 
