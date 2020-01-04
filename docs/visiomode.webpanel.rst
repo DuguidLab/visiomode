@@ -4,7 +4,7 @@ visiomode.webapp package
 Module contents
 ---------------
 
-.. automodule:: visiomode.webapp
+.. automodule:: visiomode.webpanel
    :members:
    :undoc-members:
    :show-inheritance:
