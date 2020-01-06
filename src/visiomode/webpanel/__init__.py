@@ -5,6 +5,7 @@
 #  Distributed under the terms of the MIT Licence.
 
 import os
+import logging
 
 import redis as rds
 import flask as fsk
@@ -25,7 +26,14 @@ def create_app():
     app.config.from_mapping({
         'SECRET_KEY': config.flask_key,
         'DEBUG': config.debug,
+        'DATABASE': os.path.join(app.instance_path, 'visiomode.sqlite'),
     })
+
+    # ensure that instance dir exists
+    try:
+        os.makedirs(app.instance_path)
+    except OSError:
+        logging.warning("Could not create instance directory at {}".format(app.instance_path))
 
     @app.route('/')
     def hello_world():
@@ -37,4 +45,3 @@ def create_app():
 if __name__ == '__main__':
     http_server = wsg.WSGIServer(('', 5000), create_app())
     http_server.serve_forever()
-
