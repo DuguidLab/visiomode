@@ -128,6 +128,3 @@ dmypy.json
 .pyre/
 
 .vagrant/
-
-# ignore webpanel instance folder
-/src/visiomode/webpanel/instance/
