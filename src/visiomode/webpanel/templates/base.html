@@ -1,0 +1,21 @@
+<!--
+  ~ This file is part of visiomode.
+  ~ Copyright (c) 2020 Constantinos Eleftheriou <Constantinos.Eleftheriou@ed.ac.uk>
+  ~ Distributed under the terms of the MIT Licence. 
+  -->
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>{% block title %}{% endblock %} - Visiomode Web Panel</title>
+</head>
+<body>
+<section class="content">
+  <header>
+    {% block header %}{% endblock %}
+  </header>
+  {% block content %}{% endblock %}
+</section>
+</body>
+</html>
