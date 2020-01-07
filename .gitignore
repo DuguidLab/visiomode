@@ -128,3 +128,4 @@ dmypy.json
 .pyre/
 
 .vagrant/
+/src/visiomode/webpanel/instance/
