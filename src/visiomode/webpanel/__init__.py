@@ -11,6 +11,7 @@ import redis as rds
 import flask as fsk
 import gevent.pywsgi as wsg
 import visiomode.config as cfg
+import visiomode.webpanel.db as db
 
 
 def create_app():
@@ -34,6 +35,11 @@ def create_app():
         os.makedirs(app.instance_path)
     except OSError:
         logging.warning("Could not create instance directory at {}".format(app.instance_path))
+
+    # Initialise the database
+    if not os.path.exists(app.config['DATABASE']):
+        db.init_db()
+    app.teardown_appcontext(db.close_db)
 
     @app.route('/')
     def hello_world():
