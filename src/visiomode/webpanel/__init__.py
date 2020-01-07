@@ -36,9 +36,10 @@ def create_app():
     except OSError:
         logging.warning("Could not create instance directory at {}".format(app.instance_path))
 
-    # Initialise the database
+    # Initialise the database if it doesn't exist
     if not os.path.exists(app.config['DATABASE']):
-        db.init_db()
+        with app.app_context():
+            db.init_db()
     app.teardown_appcontext(db.close_db)
 
     @app.route('/')
