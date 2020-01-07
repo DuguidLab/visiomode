@@ -44,7 +44,7 @@ def create_app():
 
     @app.route('/')
     def hello_world():
-        return fsk.render_template('home.html')
+        return fsk.render_template('index.html')
 
     return app
 
