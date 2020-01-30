@@ -7,8 +7,9 @@
 import os
 import logging
 
-import redis as rds
-import flask as fsk
+import redis
+import flask
+import werkzeug.serving
 import gevent.pywsgi as wsg
 import visiomode.config as cfg
 import visiomode.webpanel.db as db
@@ -21,9 +22,9 @@ def create_app():
         Flask app object
     """
     config = cfg.Config()
-    redis = rds.Redis(host=config.redis_host, port=config.redis_port)
+    rds = redis.Redis(host=config.redis_host, port=config.redis_port)
 
-    app = fsk.Flask(__name__)
+    app = flask.Flask(__name__)
     app.config.from_mapping({
         'SECRET_KEY': config.flask_key,
         'DEBUG': config.debug,
@@ -43,12 +44,29 @@ def create_app():
     app.teardown_appcontext(db.close_db)
 
     @app.route('/')
-    def hello_world():
-        return fsk.render_template('index.html')
+    def index():
+        return flask.render_template('index.html')
+
+    @app.route('/session')
+    def session():
+        return flask.render_template('session.html')
+
+    @app.route('/settings')
+    def settings():
+        return flask.render_template('settings.html')
+
+    @app.route('/history')
+    def history():
+        return flask.render_template('history.html')
 
     return app
 
 
-if __name__ == '__main__':
+@werkzeug.serving.run_with_reloader
+def runserver():
     http_server = wsg.WSGIServer(('', 5000), create_app())
     http_server.serve_forever()
+
+
+if __name__ == '__main__':
+    runserver()
