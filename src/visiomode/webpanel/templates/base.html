@@ -11,11 +11,9 @@
     <title>{% block title %}{% endblock %} - Visiomode Web Panel</title>
 </head>
 <body>
-<section class="content">
-  <header>
+<header>
     {% block header %}{% endblock %}
-  </header>
-  {% block content %}{% endblock %}
-</section>
+</header>
+{% block content %}{% endblock %}
 </body>
 </html>
