@@ -129,3 +129,5 @@ dmypy.json
 
 .vagrant/
 /src/visiomode/webpanel/instance/
+
+.anaconda
