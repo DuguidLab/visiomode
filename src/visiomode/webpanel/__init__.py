@@ -51,13 +51,21 @@ def create_app():
     def session():
         return flask.render_template('session.html')
 
+    @app.route('/history')
+    def history():
+        return flask.render_template('history.html')
+
     @app.route('/settings')
     def settings():
         return flask.render_template('settings.html')
 
-    @app.route('/history')
-    def history():
-        return flask.render_template('history.html')
+    @app.route('/help')
+    def docs():
+        return flask.render_template('help.html')
+
+    @app.route('/about')
+    def about():
+        return flask.render_template('about.html')
 
     return app
 
