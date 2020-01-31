@@ -1,245 +1,152 @@
-<!DOCTYPE html>
-<html>
+{% extends "base.html" %}
+{% set active_page = "session" %}
+{% block title %}Session{% endblock %}
 
-<head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
-    <title>Session - Visiomode</title>
-    <link rel="stylesheet" href="assets/bootstrap/css/bootstrap.min.css">
-    <link rel="stylesheet"
-          href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i">
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Advent+Pro">
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Rajdhani:300,400,500,600,700">
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto+Condensed">
-    <link rel="stylesheet" href="assets/fonts/fontawesome-all.min.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.5.2/animate.min.css">
-    <link rel="stylesheet" href="assets/css/styles.min.css">
-</head>
-
-<body id="page-top">
-<div id="wrapper">
-    <nav class="navbar navbar-dark align-items-start sidebar sidebar-dark accordion bg-gradient-primary p-0">
-        <div class="container-fluid d-flex flex-column p-0">
-            <a class="navbar-brand d-flex justify-content-center align-items-center sidebar-brand m-0" href="#">
-                <div class="sidebar-brand-icon rotate-n-15"><i class="far fa-eye"></i></div>
-                <div class="sidebar-brand-text mx-3"><span
-                        style="font-family: 'Advent Pro', sans-serif;font-size: 22px;">Visiomode</span></div>
-            </a>
-            <hr class="sidebar-divider my-0">
-            <ul class="nav navbar-nav text-light" id="accordionSidebar">
-                <li class="nav-item" role="presentation"><a class="nav-link text-left" href="index.html"><i
-                        class="fas fa-tachometer-alt fa-fw" href="session.html"></i><span class="d-none d-md-inline">Dashboard</span></a><a
-                        class="nav-link text-left active" href="session.html"><i
-                        class="fas fa-stopwatch fa-fw"></i><span class="d-none d-md-inline">Session</span></a>
-                    <a
-                            class="nav-link text-left" href="history.html"><i class="fas fa-history fa-fw"></i><span
-                            class="d-none d-md-inline">History</span></a><a class="nav-link text-left"
-                                                                            href="settings.html"><i
-                            class="fas fa-cog fa-fw"></i><span class="d-none d-md-inline">Settings</span></a><a
-                            class="nav-link text-left"
-                            href="help.html"><i class="far fa-life-ring fa-fw"></i><span
-                            class="d-none d-md-inline">Help</span></a><a class="nav-link text-left" href="about.html"><i
-                            class="fas fa-info-circle fa-fw" id="content"></i><span
-                            class="d-none d-md-inline">About</span></a></li>
-            </ul>
-            <div class="text-center d-none d-md-inline">
-                <button class="btn rounded-circle border-0" id="sidebarToggle" type="button"></button>
-            </div>
-        </div>
-    </nav>
-    <div class="d-flex flex-column" id="content-wrapper">
-        <div id="content">
-            <nav class="navbar navbar-light navbar-expand bg-white shadow d-xl-flex align-items-xl-center mb-4 topbar static-top">
-                <div class="container-fluid">
-                    <button class="btn btn-link d-md-none rounded-circle mr-3" id="sidebarToggleTop" type="button"><i
-                            class="fas fa-bars"></i></button>
-                    <div class="row d-xl-flex justify-content-xl-center ml-auto">
-                        <div class="col d-xl-flex align-items-xl-center">
-                            <ul class="nav navbar-nav">
-                                <li class="nav-item" role="presentation"></li>
-                                <li class="nav-item" role="presentation"><a
-                                        class="nav-link active text-truncate text-muted d-flex"
-                                        style="max-height: 30px;">RPi01</a></li>
-                                <li class="nav-item" role="presentation"></li>
-                                <li class="nav-item" role="presentation"></li>
-                            </ul>
+{% block content %}
+    <div class="row">
+        <div class="col-xl-12 offset-xl-0">
+            <div class="row">
+                <div class="col-xl-7">
+                    <div class="card shadow mb-4">
+                        <div class="card-header d-flex justify-content-between align-items-center">
+                            <h6 class="text-primary font-weight-bold m-0">Setup</h6>
                         </div>
-                        <div class="col d-xl-flex">
-                            <form class="form-inline d-none d-sm-inline-block mr-auto ml-md-3 my-2 my-md-0 mw-100 navbar-search"
-                                  style="padding-bottom: 0px;">
-                                <div class="input-group"><input class="bg-light form-control border-0 small" type="text"
-                                                                placeholder="Search documentation for ...">
-                                    <div class="input-group-append">
-                                        <button class="btn btn-primary py-0" type="button"><i class="fas fa-search"></i>
-                                        </button>
+                        <div class="card-body" style="min-height: 178px;">
+                            <div class="row">
+                                <div class="col">
+                                    <div class="form-group">
+                                        <form><label>Animal ID</label><input class="form-control"
+                                                                             type="text"
+                                                                             placeholder="animal id"></form>
+                                        <form><label>Protocol</label><select class="form-control">
+                                            <optgroup label="Tasks">
+                                                <option value="12" selected="">Single Target</option>
+                                                <option value="13">Visual Discrimination</option>
+                                            </optgroup>
+                                            <optgroup label="Stimuli">
+                                                <option value="">Single Grating</option>
+                                                <option value="">Double Grating</option>
+                                            </optgroup>
+                                        </select></form>
                                     </div>
                                 </div>
-                            </form>
-                        </div>
-                    </div>
-                </div>
-            </nav>
-            <div class="container-fluid">
-                <div class="row">
-                    <div class="col-xl-12 offset-xl-0">
-                        <div class="row">
-                            <div class="col-xl-7">
-                                <div class="card shadow mb-4">
-                                    <div class="card-header d-flex justify-content-between align-items-center">
-                                        <h6 class="text-primary font-weight-bold m-0">Setup</h6>
-                                    </div>
-                                    <div class="card-body" style="min-height: 178px;">
-                                        <div class="row">
-                                            <div class="col">
-                                                <div class="form-group">
-                                                    <form><label>Animal ID</label><input class="form-control"
-                                                                                         type="text"
-                                                                                         placeholder="animal id"></form>
-                                                    <form><label>Protocol</label><select class="form-control">
-                                                        <optgroup label="Tasks">
-                                                            <option value="12" selected="">Single Target</option>
-                                                            <option value="13">Visual Discrimination</option>
-                                                        </optgroup>
-                                                        <optgroup label="Stimuli">
-                                                            <option value="">Single Grating</option>
-                                                            <option value="">Double Grating</option>
-                                                        </optgroup>
-                                                    </select></form>
-                                                </div>
-                                            </div>
-                                            <div class="col">
-                                                <form><label>Experiment Reference</label><input class="form-control"
-                                                                                                type="text"
-                                                                                                placeholder="experiment id">
-                                                </form>
-                                                <form><label>Duration (mins)</label><input class="form-control"
-                                                                                           type="number" value="30"
-                                                                                           min="0" step="5"></form>
-                                            </div>
-                                        </div>
-                                        <div class="row">
-                                            <div class="col">
-                                                <div><a class="btn btn-outline-primary btn-block" data-toggle="collapse"
-                                                        aria-expanded="false" aria-controls="collapse-1"
-                                                        href="#collapse-1" role="button">More Options</a>
-                                                    <div class="collapse" id="collapse-1">
-                                                        <p>Collapse content.</p>
-                                                    </div>
-                                                </div>
-                                            </div>
+                                <div class="col">
+                                    <form><label>Experiment Reference</label><input class="form-control"
+                                                                                    type="text"
+                                                                                    placeholder="experiment id">
+                                    </form>
+                                    <form><label>Duration (mins)</label><input class="form-control"
+                                                                               type="number" value="30"
+                                                                               min="0" step="5"></form>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col">
+                                    <div><a class="btn btn-outline-primary btn-block" data-toggle="collapse"
+                                            aria-expanded="false" aria-controls="collapse-1"
+                                            href="#collapse-1" role="button">More Options</a>
+                                        <div class="collapse" id="collapse-1">
+                                            <p>Collapse content.</p>
                                         </div>
                                     </div>
                                 </div>
                             </div>
-                            <div class="col">
-                                <div class="card shadow mb-4">
-                                    <div class="card-header d-flex justify-content-between align-items-center">
-                                        <h6 class="text-primary font-weight-bold m-0">Status</h6>
-                                    </div>
-                                    <div class="card-body" style="min-height: 178px;">
-                                        <div class="row">
-                                            <div class="col text-center" style="font-size: 18px;padding-bottom: 17px;">
+                        </div>
+                    </div>
+                </div>
+                <div class="col">
+                    <div class="card shadow mb-4">
+                        <div class="card-header d-flex justify-content-between align-items-center">
+                            <h6 class="text-primary font-weight-bold m-0">Status</h6>
+                        </div>
+                        <div class="card-body" style="min-height: 178px;">
+                            <div class="row">
+                                <div class="col text-center" style="font-size: 18px;padding-bottom: 17px;">
                                                 <span class="flash animated mr-2" style="font-size: 20px;"><i
                                                         class="fas fa-circle text-success" style="font-size: 18px;"></i>&nbsp;Running</span>
-                                            </div>
-                                        </div>
-                                        <div class="row">
-                                            <div class="col">
-                                                <div class="progress" style="min-height: 20px;">
-                                                    <div class="progress-bar bg-dark progress-bar-striped"
-                                                         aria-valuenow="79" aria-valuemin="0" aria-valuemax="100"
-                                                         style="width: 79%;">79%
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="row">
-                                            <div class="col">
-                                                <hr>
-                                            </div>
-                                        </div>
-                                        <div class="row">
-                                            <div class="col">
-                                                <button class="btn btn-success btn-block btn-lg" type="button">Start
-                                                </button>
-                                            </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col">
+                                    <div class="progress" style="min-height: 20px;">
+                                        <div class="progress-bar bg-dark progress-bar-striped"
+                                             aria-valuenow="79" aria-valuemin="0" aria-valuemax="100"
+                                             style="width: 79%;">79%
                                         </div>
                                     </div>
                                 </div>
                             </div>
-                        </div>
-                        <div class="row">
-                            <div class="col-lg-7 col-xl-7">
-                                <div class="card shadow mb-4">
-                                    <div class="card-header d-flex justify-content-between align-items-center">
-                                        <h6 class="text-primary font-weight-bold m-0">Overview</h6>
-                                        <div class="dropdown no-arrow">
-                                            <button class="btn btn-link btn-sm dropdown-toggle" data-toggle="dropdown"
-                                                    aria-expanded="false" type="button"><i
-                                                    class="fas fa-ellipsis-v text-gray-400"></i></button>
-                                            <div class="dropdown-menu shadow dropdown-menu-right animated--fade-in"
-                                                 role="menu"><a class="dropdown-item" role="presentation">Rewards</a><a
-                                                    class="dropdown-item" role="presentation">Hits/Misses</a><a
-                                                    class="dropdown-item" role="presentation">Discrimination (d')</a>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="card-body">
-                                        <div class="chart-area">
-                                            <canvas data-bs-chart="{&quot;type&quot;:&quot;scatter&quot;,&quot;data&quot;:{&quot;datasets&quot;:[{&quot;label&quot;:&quot;Earnings&quot;,&quot;backgroundColor&quot;:&quot;rgba(78, 115, 223, 0.05)&quot;,&quot;borderColor&quot;:&quot;rgba(78, 115, 223, 1)&quot;,&quot;data&quot;:[{&quot;x&quot;:&quot;&quot;,&quot;y&quot;:&quot;0&quot;},{&quot;x&quot;:&quot;&quot;,&quot;y&quot;:&quot;10000&quot;},{&quot;x&quot;:&quot;&quot;,&quot;y&quot;:&quot;5000&quot;},{&quot;x&quot;:&quot;&quot;,&quot;y&quot;:&quot;15000&quot;},{&quot;x&quot;:&quot;&quot;,&quot;y&quot;:&quot;10000&quot;},{&quot;x&quot;:&quot;&quot;,&quot;y&quot;:&quot;20000&quot;},{&quot;x&quot;:&quot;&quot;,&quot;y&quot;:&quot;15000&quot;},{&quot;x&quot;:&quot;&quot;,&quot;y&quot;:&quot;25000&quot;}]}]},&quot;options&quot;:{&quot;maintainAspectRatio&quot;:false,&quot;legend&quot;:{&quot;display&quot;:false},&quot;title&quot;:{},&quot;scales&quot;:{&quot;xAxes&quot;:[{&quot;gridLines&quot;:{&quot;color&quot;:&quot;rgb(234, 236, 244)&quot;,&quot;zeroLineColor&quot;:&quot;rgb(234, 236, 244)&quot;,&quot;drawBorder&quot;:false,&quot;drawTicks&quot;:false,&quot;borderDash&quot;:[&quot;2&quot;],&quot;zeroLineBorderDash&quot;:[&quot;2&quot;],&quot;drawOnChartArea&quot;:false},&quot;ticks&quot;:{&quot;fontColor&quot;:&quot;#858796&quot;,&quot;padding&quot;:20}}],&quot;yAxes&quot;:[{&quot;gridLines&quot;:{&quot;color&quot;:&quot;rgb(234, 236, 244)&quot;,&quot;zeroLineColor&quot;:&quot;rgb(234, 236, 244)&quot;,&quot;drawBorder&quot;:false,&quot;drawTicks&quot;:false,&quot;borderDash&quot;:[&quot;2&quot;],&quot;zeroLineBorderDash&quot;:[&quot;2&quot;]},&quot;ticks&quot;:{&quot;fontColor&quot;:&quot;#858796&quot;,&quot;padding&quot;:20}}]}}}"></canvas>
-                                        </div>
-                                    </div>
+                            <div class="row">
+                                <div class="col">
+                                    <hr>
                                 </div>
                             </div>
-                            <div class="col">
-                                <div class="card shadow mb-4">
-                                    <div class="card-header d-flex justify-content-between align-items-center">
-                                        <h6 class="text-primary font-weight-bold m-0">Log</h6>
-                                    </div>
-                                    <div class="card-body" style="min-height: 210px;">
-                                        <ul class="list-unstyled">
-                                            <li><em>01/01/2020, 09:40:27:</em>&nbsp;Hit!</li>
-                                            <li><em>01/01/2020, 09:35:50:</em>&nbsp;Miss!</li>
-                                            <li><em>01/01/2020, 09:33:13:</em>&nbsp;Hit!</li>
-                                            <li><em>01/01/2020, 09:32:30:</em>&nbsp;Hit!</li>
-                                            <li><em>01/01/2020, 09:30:22:</em>&nbsp;Session started</li>
-                                        </ul>
-                                    </div>
+                            <div class="row">
+                                <div class="col">
+                                    <button class="btn btn-success btn-block btn-lg" type="button">Start
+                                    </button>
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
-                <div class="row">
-                    <div class="col">
-                        <div class="toast fade hide" role="alert">
-                            <div class="toast-header"><img class="mr-2"><strong class="mr-auto">Title</strong><small>10
-                                min ago</small>
-                                <button class="close ml-2 mb-1 close" data-dismiss="toast"><span
-                                        aria-hidden="true">×</span></button>
+            </div>
+            <div class="row">
+                <div class="col-lg-7 col-xl-7">
+                    <div class="card shadow mb-4">
+                        <div class="card-header d-flex justify-content-between align-items-center">
+                            <h6 class="text-primary font-weight-bold m-0">Overview</h6>
+                            <div class="dropdown no-arrow">
+                                <button class="btn btn-link btn-sm dropdown-toggle" data-toggle="dropdown"
+                                        aria-expanded="false" type="button"><i
+                                        class="fas fa-ellipsis-v text-gray-400"></i></button>
+                                <div class="dropdown-menu shadow dropdown-menu-right animated--fade-in"
+                                     role="menu"><a class="dropdown-item" role="presentation">Rewards</a><a
+                                        class="dropdown-item" role="presentation">Hits/Misses</a><a
+                                        class="dropdown-item" role="presentation">Discrimination (d')</a>
+                                </div>
                             </div>
-                            <div class="toast-body" role="alert">
-                                <p>Nullam id dolor id nibh ultricies vehicula ut id elit. Cras justo odio, dapibus ac
-                                    facilisis in, egestas eget quam. Donec id elit non mi porta gravida at eget
-                                    metus.</p>
+                        </div>
+                        <div class="card-body">
+                            <div class="chart-area">
+                                <canvas data-bs-chart="{&quot;type&quot;:&quot;scatter&quot;,&quot;data&quot;:{&quot;datasets&quot;:[{&quot;label&quot;:&quot;Earnings&quot;,&quot;backgroundColor&quot;:&quot;rgba(78, 115, 223, 0.05)&quot;,&quot;borderColor&quot;:&quot;rgba(78, 115, 223, 1)&quot;,&quot;data&quot;:[{&quot;x&quot;:&quot;&quot;,&quot;y&quot;:&quot;0&quot;},{&quot;x&quot;:&quot;&quot;,&quot;y&quot;:&quot;10000&quot;},{&quot;x&quot;:&quot;&quot;,&quot;y&quot;:&quot;5000&quot;},{&quot;x&quot;:&quot;&quot;,&quot;y&quot;:&quot;15000&quot;},{&quot;x&quot;:&quot;&quot;,&quot;y&quot;:&quot;10000&quot;},{&quot;x&quot;:&quot;&quot;,&quot;y&quot;:&quot;20000&quot;},{&quot;x&quot;:&quot;&quot;,&quot;y&quot;:&quot;15000&quot;},{&quot;x&quot;:&quot;&quot;,&quot;y&quot;:&quot;25000&quot;}]}]},&quot;options&quot;:{&quot;maintainAspectRatio&quot;:false,&quot;legend&quot;:{&quot;display&quot;:false},&quot;title&quot;:{},&quot;scales&quot;:{&quot;xAxes&quot;:[{&quot;gridLines&quot;:{&quot;color&quot;:&quot;rgb(234, 236, 244)&quot;,&quot;zeroLineColor&quot;:&quot;rgb(234, 236, 244)&quot;,&quot;drawBorder&quot;:false,&quot;drawTicks&quot;:false,&quot;borderDash&quot;:[&quot;2&quot;],&quot;zeroLineBorderDash&quot;:[&quot;2&quot;],&quot;drawOnChartArea&quot;:false},&quot;ticks&quot;:{&quot;fontColor&quot;:&quot;#858796&quot;,&quot;padding&quot;:20}}],&quot;yAxes&quot;:[{&quot;gridLines&quot;:{&quot;color&quot;:&quot;rgb(234, 236, 244)&quot;,&quot;zeroLineColor&quot;:&quot;rgb(234, 236, 244)&quot;,&quot;drawBorder&quot;:false,&quot;drawTicks&quot;:false,&quot;borderDash&quot;:[&quot;2&quot;],&quot;zeroLineBorderDash&quot;:[&quot;2&quot;]},&quot;ticks&quot;:{&quot;fontColor&quot;:&quot;#858796&quot;,&quot;padding&quot;:20}}]}}}"></canvas>
                             </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col">
+                    <div class="card shadow mb-4">
+                        <div class="card-header d-flex justify-content-between align-items-center">
+                            <h6 class="text-primary font-weight-bold m-0">Log</h6>
+                        </div>
+                        <div class="card-body" style="min-height: 210px;">
+                            <ul class="list-unstyled">
+                                <li><em>01/01/2020, 09:40:27:</em>&nbsp;Hit!</li>
+                                <li><em>01/01/2020, 09:35:50:</em>&nbsp;Miss!</li>
+                                <li><em>01/01/2020, 09:33:13:</em>&nbsp;Hit!</li>
+                                <li><em>01/01/2020, 09:32:30:</em>&nbsp;Hit!</li>
+                                <li><em>01/01/2020, 09:30:22:</em>&nbsp;Session started</li>
+                            </ul>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
-        <footer class="bg-white sticky-footer">
-            <div class="container my-auto">
-                <div class="text-center my-auto copyright"><span>Copyright © Constantinos Eleftheriou 2020</span></div>
-            </div>
-        </footer>
     </div>
-    <a class="border rounded d-inline scroll-to-top" href="#page-top"><i class="fas fa-angle-up"></i></a></div>
-<script src="assets/js/jquery.min.js"></script>
-<script src="assets/bootstrap/js/bootstrap.min.js"></script>
-<script src="assets/js/chart.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-easing/1.4.1/jquery.easing.js"></script>
-<script src="assets/js/script.min.js"></script>
-</body>
-
-</html>
+    <div class="row">
+        <div class="col">
+            <div class="toast fade hide" role="alert">
+                <div class="toast-header"><img class="mr-2"><strong class="mr-auto">Title</strong><small>10
+                    min ago</small>
+                    <button class="close ml-2 mb-1 close" data-dismiss="toast"><span
+                            aria-hidden="true">×</span></button>
+                </div>
+                <div class="toast-body" role="alert">
+                    <p>Nullam id dolor id nibh ultricies vehicula ut id elit. Cras justo odio, dapibus ac
+                        facilisis in, egestas eget quam. Donec id elit non mi porta gravida at eget
+                        metus.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
