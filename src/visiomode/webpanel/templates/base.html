@@ -1,0 +1,108 @@
+<!--
+  ~ This file is part of visiomode.
+  ~ Copyright (c) 2020 Constantinos Eleftheriou <Constantinos.Eleftheriou@ed.ac.uk>
+  ~ Distributed under the terms of the MIT Licence. 
+  -->
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+    <title>{% block title %}{% endblock %} - Visiomode</title>
+    <link rel="stylesheet" href="static/bootstrap/css/bootstrap.min.css">
+    <link rel="stylesheet"
+          href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Advent+Pro">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Rajdhani:300,400,500,600,700">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto+Condensed">
+    <link rel="stylesheet" href="static/fonts/fontawesome-all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.5.2/animate.min.css">
+    <link rel="stylesheet" href="static/css/styles.min.css">
+</head>
+
+<body id="page-top">
+<div id="wrapper">
+    {% set navigation_bar = [
+        ('/', 'index', 'Dashboard', 'fa-tachometer-alt'),
+        ('/session', 'session','Session', 'fa-stopwatch'),
+        ('/history', 'history', 'History', 'fa-history'),
+        ('/settings', 'settings', 'Settings', 'fa-cog'),
+        ('/help', 'help', 'Help', 'fa-life-ring'),
+        ('/about', 'about', 'About', 'fa-info-circle')
+    ] -%}
+    {% set active_page = active_page|default('index') -%}
+    <nav class="navbar navbar-dark align-items-start sidebar sidebar-dark accordion bg-gradient-primary p-0">
+        <div class="container-fluid d-flex flex-column p-0">
+            <a class="navbar-brand d-flex justify-content-center align-items-center sidebar-brand m-0" href="#">
+                <div class="sidebar-brand-icon rotate-n-15"><i class="far fa-eye"></i></div>
+                <div class="sidebar-brand-text mx-3"><span
+                        style="font-family: 'Advent Pro', sans-serif;font-size: 22px;">Visiomode</span></div>
+            </a>
+            <hr class="sidebar-divider my-0">
+            <ul class="nav navbar-nav text-light" id="accordionSidebar">
+                <li class="nav-item" role="presentation">
+                    {% for href, id, caption, icon in navigation_bar %}
+                        <a class="nav-link text-left {% if id == active_page %}active{% endif %}"
+                           href="{{ href|e }}">
+                            <i class="fas {{ icon|e }} fa-fw" href="{{ href|e }}"></i>
+                            <span class="d-none d-md-inline">{{ caption|e }}</span></a>
+                    {% endfor %}
+                </li>
+            </ul>
+            <div class="text-center d-none d-md-inline">
+                <button class="btn rounded-circle border-0" id="sidebarToggle" type="button"></button>
+            </div>
+        </div>
+    </nav>
+    <div class="d-flex flex-column" id="content-wrapper">
+        <div id="content">
+            <nav class="navbar navbar-light navbar-expand bg-white shadow d-xl-flex align-items-xl-center mb-4 topbar static-top">
+                <div class="container-fluid">
+                    <button class="btn btn-link d-md-none rounded-circle mr-3" id="sidebarToggleTop" type="button"><i
+                            class="fas fa-bars"></i></button>
+                    <div class="row d-xl-flex justify-content-xl-center ml-auto">
+                        <div class="col d-xl-flex align-items-xl-center">
+                            <ul class="nav navbar-nav">
+                                <li class="nav-item" role="presentation"></li>
+                                <li class="nav-item" role="presentation"><a
+                                        class="nav-link active text-truncate text-muted d-flex"
+                                        style="max-height: 30px;">RPi01</a></li>
+                                <li class="nav-item" role="presentation"></li>
+                                <li class="nav-item" role="presentation"></li>
+                            </ul>
+                        </div>
+                        <div class="col d-xl-flex">
+                            <form class="form-inline d-none d-sm-inline-block mr-auto ml-md-3 my-2 my-md-0 mw-100 navbar-search"
+                                  style="padding-bottom: 0px;">
+                                <div class="input-group"><input class="bg-light form-control border-0 small" type="text"
+                                                                placeholder="Search documentation for ...">
+                                    <div class="input-group-append">
+                                        <button class="btn btn-primary py-0" type="button"><i class="fas fa-search"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </nav>
+        <div class="container-fluid">
+            {% block content %}{% endblock %}
+        </div>
+        </div>
+        <footer class="bg-white sticky-footer">
+            <div class="container my-auto">
+                <div class="text-center my-auto copyright"><span>Copyright © Constantinos Eleftheriou 2020</span></div>
+            </div>
+        </footer>
+    </div>
+    <a class="border rounded d-inline scroll-to-top" href="#page-top"><i class="fas fa-angle-up"></i></a>
+</div>
+<script src="static/js/jquery.min.js"></script>
+<script src="static/bootstrap/js/bootstrap.min.js"></script>
+<script src="static/js/chart.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-easing/1.4.1/jquery.easing.js"></script>
+<script src="static/js/script.min.js"></script>
+</body>
+</html>

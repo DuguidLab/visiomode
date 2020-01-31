@@ -3,15 +3,18 @@
 PROJECT_DIR := $(shell dirname $(realpath $(lastword $(MAKEFILE_LIST))))
 PROJECT_NAME = "visiomode"
 PYTHON_INTERPRETER = python3
+export PYTHONPATH=$(shell pwd)/src
 
 run:
-	redis-server
-	$(PYTHON_INTERPRETER) src/visiomode/webapp/__init__.py
+	$(PYTHON_INTERPRETER) src/visiomode/webpanel/__init__.py
 	$(PYTHON_INTERPRETER) src/visiomode/gui/main.py
 
 requirements:
 	$(PYTHON_INTERPRETER) -m pip install -U pip setuptools wheel
 	$(PYTHON_INTERPRETER) -m pip install -r requirements.txt
+
+webserver:
+	$(PYTHON_INTERPRETER) src/visiomode/webpanel/__init__.py
 
 
 .DEFAULT_GOAL := help

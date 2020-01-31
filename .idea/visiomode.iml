@@ -6,6 +6,7 @@
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
+    <orderEntry type="library" name="animate" level="application" />
   </component>
   <component name="PackageRequirementsSettings">
     <option name="requirementsPath" value="" />
@@ -13,5 +14,16 @@
   <component name="PyDocumentationSettings">
     <option name="format" value="GOOGLE" />
     <option name="myDocStringFormat" value="Google" />
+  </component>
+  <component name="ReSTService">
+    <option name="DOC_DIR" value="$MODULE_DIR$/docs" />
+  </component>
+  <component name="TemplatesService">
+    <option name="TEMPLATE_CONFIGURATION" value="Jinja2" />
+    <option name="TEMPLATE_FOLDERS">
+      <list>
+        <option value="$MODULE_DIR$/src/visiomode/webpanel/templates" />
+      </list>
+    </option>
   </component>
 </module>
