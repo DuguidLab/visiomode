@@ -2,5 +2,24 @@
   <profile version="1.0">
     <option name="myName" value="Project Default" />
     <inspection_tool class="PyMissingOrEmptyDocstringInspection" enabled="true" level="WEAK WARNING" enabled_by_default="true" />
+    <inspection_tool class="PyUnresolvedReferencesInspection" enabled="true" level="WARNING" enabled_by_default="true">
+      <option name="ignoredIdentifiers">
+        <list>
+          <option value="id" />
+          <option value="timestamp" />
+          <option value="animal_id" />
+          <option value="experiment_ref" />
+          <option value="notes" />
+          <option value="outcome" />
+          <option value="iti" />
+          <option value="reaction_time" />
+          <option value="pos_x" />
+          <option value="pos_y" />
+          <option value="duration" />
+          <option value="dist_x" />
+          <option value="dist_y" />
+        </list>
+      </option>
+    </inspection_tool>
   </profile>
 </component>
