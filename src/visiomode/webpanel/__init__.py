@@ -34,7 +34,7 @@ def create_app():
 
     # ensure that instance dir exists
     try:
-        os.makedirs(app.instance_path)
+        os.makedirs(app.instance_path, exist_ok=True)
     except OSError:
         logging.warning("Could not create instance directory at {}".format(app.instance_path))
 
