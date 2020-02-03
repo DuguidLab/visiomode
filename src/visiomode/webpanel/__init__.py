@@ -12,7 +12,7 @@ import flask
 import werkzeug.serving
 import gevent.pywsgi as wsg
 import visiomode.config as cfg
-import visiomode.webpanel.db as db
+import visiomode.webpanel.models as db
 
 
 def create_app():
@@ -28,7 +28,8 @@ def create_app():
     app.config.from_mapping({
         'SECRET_KEY': config.flask_key,
         'DEBUG': config.debug,
-        'DATABASE': os.path.join(app.instance_path, 'visiomode.sqlite'),
+        'SQLALCHEMY_DATABASE_URI': "sqlite:////" + os.path.join(app.instance_path, 'visiomode.sqlite'),
+        'SQLALCHEMY_TRACK_MODIFICATIONS': False,
     })
 
     # ensure that instance dir exists
@@ -37,11 +38,11 @@ def create_app():
     except OSError:
         logging.warning("Could not create instance directory at {}".format(app.instance_path))
 
+    db.init_app(app)
     # Initialise the database if it doesn't exist
-    if not os.path.exists(app.config['DATABASE']):
+    if not os.path.exists(app.config['SQLALCHEMY_DATABASE_URI']):
         with app.app_context():
             db.init_db()
-    app.teardown_appcontext(db.close_db)
 
     @app.route('/')
     def index():
