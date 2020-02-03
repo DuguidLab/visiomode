@@ -46,30 +46,37 @@ def create_app():
 
     @app.route('/')
     def index():
+        """Dashboard page."""
         return flask.render_template('index.html')
 
     @app.route('/session')
     def session():
+        """Session page."""
         return flask.render_template('session.html')
 
     @app.route('/history')
     def history():
+        """Session history page."""
         return flask.render_template('history.html')
 
     @app.route('/settings')
     def settings():
+        """Settings page."""
         return flask.render_template('settings.html')
 
     @app.route('/help')
     def docs():
+        """Help / documentation page."""
         return flask.render_template('help.html')
 
     @app.route('/about')
     def about():
+        """About page."""
         return flask.render_template('about.html')
 
     @app.errorhandler(404)
     def page_not_found(e):
+        """404 page not found redirect."""
         return flask.render_template('404.html')
 
     return app
