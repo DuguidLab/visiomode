@@ -35,8 +35,8 @@ def create_app():
     # ensure that instance dir exists
     try:
         os.makedirs(app.instance_path, exist_ok=True)
-    except OSError:
-        logging.warning("Could not create instance directory at {}".format(app.instance_path))
+    except OSError as exc:
+        logging.warning("Could not create instance directory ({}) - {}".format(app.instance_path, str(exc)))
 
     db.init_app(app)
     # Initialise the database if it doesn't exist
