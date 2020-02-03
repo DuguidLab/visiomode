@@ -18,6 +18,7 @@
           <option value="duration" />
           <option value="dist_x" />
           <option value="dist_y" />
+          <option value="length" />
         </list>
       </option>
     </inspection_tool>
