@@ -44,9 +44,6 @@ def create_app():
         with app.app_context():
             db.init_db()
 
-    socketio = sock.SocketIO(app)
-    socketio.on_namespace(sess.SessionNamespace('/session'))
-
     @app.route('/')
     def index():
         """Dashboard page."""
@@ -89,6 +86,7 @@ def runserver():
     """Runs the flask app in an integrated server."""
     app = create_app()
     socketio = sock.SocketIO(app)
+    socketio.on_namespace(sess.SessionNamespace('/session'))
     socketio.run(app)
 
 

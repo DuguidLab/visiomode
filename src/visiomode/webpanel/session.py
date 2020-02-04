@@ -6,12 +6,14 @@ import flask_socketio as sock
 
 
 class SessionNamespace(sock.Namespace):
-    def on_connect(self, data):
+    def on_connect(self):
         print('connected')
-        print(data)
 
     def on_disconnect(self):
         pass
 
     def on_event(self):
         pass
+
+    def on_message(self,data):
+        print(data)
