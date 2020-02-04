@@ -9,10 +9,10 @@ import logging
 
 import redis
 import flask
-import werkzeug.serving
-import gevent.pywsgi as wsg
+import flask_socketio as sock
 import visiomode.config as cfg
 import visiomode.webpanel.models as db
+import visiomode.webpanel.session as sess
 
 
 def create_app():
@@ -82,10 +82,10 @@ def create_app():
     return app
 
 
-@werkzeug.serving.run_with_reloader
 def runserver():
-    http_server = wsg.WSGIServer(('', 5000), create_app())
-    http_server.serve_forever()
+    app = create_app()
+    socketio = sock.SocketIO(app)
+    socketio.run(app)
 
 
 if __name__ == '__main__':
