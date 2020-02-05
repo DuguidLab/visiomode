@@ -8,6 +8,7 @@ import flask_socketio as sock
 class SessionNamespace(sock.Namespace):
     def on_connect(self):
         print('connected')
+        self.emit('callback', 'yoseph')
 
     def on_disconnect(self):
         pass
