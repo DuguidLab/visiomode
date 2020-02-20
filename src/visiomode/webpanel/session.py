@@ -1,3 +1,5 @@
+"""Real-time async session streaming module"""
+
 #  This file is part of visiomode.
 #  Copyright (c) 2020 Constantinos Eleftheriou <Constantinos.Eleftheriou@ed.ac.uk>
 #  Distributed under the terms of the MIT Licence.
@@ -16,5 +18,5 @@ class SessionNamespace(sock.Namespace):
     def on_event(self):
         pass
 
-    def on_message(self,data):
+    def on_message(self, data):
         print(data)
