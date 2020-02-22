@@ -12,45 +12,54 @@
                             <h6 class="text-primary font-weight-bold m-0">Setup</h6>
                         </div>
                         <div class="card-body" style="min-height: 178px;">
-                            <div class="row">
-                                <div class="col">
-                                    <div class="form-group">
-                                        <form><label>Animal ID</label><input class="form-control"
-                                                                             type="text"
-                                                                             placeholder="animal id"></form>
-                                        <form><label>Protocol</label><select class="form-control">
-                                            <optgroup label="Tasks">
-                                                <option value="12" selected="">Single Target</option>
-                                                <option value="13">Visual Discrimination</option>
-                                            </optgroup>
-                                            <optgroup label="Stimuli">
-                                                <option value="">Single Grating</option>
-                                                <option value="">Double Grating</option>
-                                            </optgroup>
-                                        </select></form>
+                            <form id="session-form">
+                                <div class="row">
+                                    <div class="col">
+                                        <div class="form-group">
+                                            <label for="animal-id">Animal ID</label>
+                                            <input id="animal-id"
+                                                   class="form-control mb-3"
+                                                   type="text"
+                                                   placeholder="animal id"
+                                                   required>
+                                            <label for="protocol">Protocol</label>
+                                            <select id="protocol" class="form-control mb-3">
+                                                <optgroup label="Tasks">
+                                                    <option value="12" selected="">Single Target</option>
+                                                    <option value="13">Visual Discrimination</option>
+                                                </optgroup>
+                                                <optgroup label="Stimuli">
+                                                    <option value="">Single Grating</option>
+                                                    <option value="">Double Grating</option>
+                                                </optgroup>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="col">
+                                        <label for="experiment-ref">Experiment Reference</label>
+                                        <input id="experiment-ref"
+                                               class="form-control mb-3"
+                                               type="text"
+                                               placeholder="experiment id"
+                                               required>
+                                        <label for="duration">Duration (mins)</label>
+                                        <input id="duration" class="form-control mb-3"
+                                               type="number" value="30"
+                                               min="0" step="5">
                                     </div>
                                 </div>
-                                <div class="col">
-                                    <form><label>Experiment Reference</label><input class="form-control"
-                                                                                    type="text"
-                                                                                    placeholder="experiment id">
-                                    </form>
-                                    <form><label>Duration (mins)</label><input class="form-control"
-                                                                               type="number" value="30"
-                                                                               min="0" step="5"></form>
-                                </div>
-                            </div>
-                            <div class="row">
-                                <div class="col">
-                                    <div><a class="btn btn-outline-primary btn-block" data-toggle="collapse"
-                                            aria-expanded="false" aria-controls="collapse-1"
-                                            href="#collapse-1" role="button">More Options</a>
-                                        <div class="collapse" id="collapse-1">
-                                            <p>Collapse content.</p>
+                                <div class="row">
+                                    <div class="col">
+                                        <div><a class="btn btn-outline-primary btn-block" data-toggle="collapse"
+                                                aria-expanded="false" aria-controls="collapse-1"
+                                                href="#collapse-1" role="button">More Options</a>
+                                            <div class="collapse" id="collapse-1">
+                                                <p>Collapse content.</p>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
-                            </div>
+                            </form>
                         </div>
                     </div>
                 </div>
@@ -83,8 +92,7 @@
                             </div>
                             <div class="row">
                                 <div class="col">
-                                    <button class="btn btn-success btn-block btn-lg" type="button">Start
-                                    </button>
+                                    <button class="btn btn-success btn-block btn-lg" type="submit" form="session-form">Start</button>
                                 </div>
                             </div>
                         </div>
@@ -152,14 +160,5 @@
 {% endblock %}
 
 {% block scripts %}
-    <script>
-        var session = io.connect('/session');
-        session.on('connect', function () {
-            session.emit('message', 'hello');
-            console.log('hi!');
-        });
-        session.on('callback', function (msg) {
-            console.log(msg);
-        });
-    </script>
+    <script src="static/js/session.js"></script>
 {% endblock %}
