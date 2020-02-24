@@ -14,3 +14,14 @@ session.on('connect', function () {
 session.on('callback', function (msg) {
     console.log(msg);
 });
+
+var form = document.getElementById('session-form');
+var submit_button = document.getElementById('session-form-submit');
+
+submit_button.onclick = function () {
+    if (form.reportValidity()) {
+        session.emit('message', 'start!');
+        console.log('session start request');
+    }
+    return false;
+};
