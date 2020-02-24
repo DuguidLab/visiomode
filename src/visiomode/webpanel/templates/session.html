@@ -71,8 +71,8 @@
                         <div class="card-body" style="min-height: 178px;">
                             <div class="row">
                                 <div class="col text-center" style="font-size: 18px;padding-bottom: 17px;">
-                                                <span class="flash animated mr-2" style="font-size: 20px;"><i
-                                                        class="fas fa-circle text-success" style="font-size: 18px;"></i>&nbsp;Running</span>
+                                                <span id="status-text" class="flash animated mr-2" style="font-size: 20px;">
+                                                    <i id="status-icon" class="fas fa-circle text-danger" style="font-size: 18px;"></i>&nbsp;Not Running</span>
                                 </div>
                             </div>
                             <div class="row">
@@ -92,7 +92,7 @@
                             </div>
                             <div class="row">
                                 <div class="col">
-                                    <button class="btn btn-success btn-block btn-lg" id="session-form-submit">Start</button>
+                                    <button class="btn btn-success btn-block btn-lg" id="session-control-btn">Start</button>
                                 </div>
                             </div>
                         </div>
