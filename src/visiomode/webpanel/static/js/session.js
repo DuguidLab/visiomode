@@ -25,8 +25,12 @@ var session_status = "inactive"; // TODO read from Redis
 session_button.onclick = function () {
     if (form.reportValidity() && (session_status === "inactive")) {
         // Start session
-        socket.emit('message', 'start!');
+        let fields = [...form.getElementsByClassName('form-control')];
+        let request = fields.reduce((_, x) => ({..._, [x.id]: x.value}), {});
+
+        socket.emit('message', request);
         console.log('session start request');
+
         setStatusActive();
     } else if (session_status === "active") {
         // Stop session
@@ -40,10 +44,13 @@ session_button.onclick = function () {
 
 function setStatusActive () {
     console.log("Session is running");
+
     session_button.className = "btn btn-danger btn-block btn-lg";
     session_button.textContent = "Stop";
+
     status_icon.className = "fas fa-circle text-success";
     status_text.childNodes[2].nodeValue = " Running";
+
     session_status = "active";
 
     // disable input fields
@@ -57,10 +64,13 @@ function setStatusActive () {
 
 function setStatusInactive () {
     console.log("No active session");
+
     session_button.className = "btn btn-success btn-block btn-lg";
     session_button.textContent = "Start";
+
     status_icon.className = "fas fa-circle text-danger";
     status_text.childNodes[2].nodeValue = " Not Running";
+
     session_status = "inactive";
 
     // enable input fields
