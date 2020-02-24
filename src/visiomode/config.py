@@ -37,7 +37,7 @@ class Config:
             self.load(path)
 
     def load(self, path):
-        """Method to load YAML file parameters as class attributes.
+        """Loads YAML file parameters as class attributes.
 
         Args:
             path: Path to config YAML, assumed to exist.

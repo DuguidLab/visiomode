@@ -131,3 +131,4 @@ dmypy.json
 /src/visiomode/webpanel/instance/
 
 .anaconda
+/node_modules/
