@@ -38,15 +38,16 @@ session_button.onclick = function () {
         let fields = [...form.getElementsByClassName('form-control')];
         let request = fields.reduce((_, x) => ({..._, [x.id]: x.value}), {});
 
-        socket.emit('message', request);
+        socket.emit('session_start', request);
         console.log('session start request');
 
-        setStatusActive();
+        setStatusWaiting();
     } else if (session_status === "active") {
         // Stop session
-        socket.emit('message', 'stop');
+        socket.emit('session_stop');
         console.log('session stop request');
-        setStatusInactive();
+
+        setStatusWaiting();
     }
     return false;
 };
@@ -88,5 +89,23 @@ function setStatusInactive () {
     for (var i = 0; i < fields.length; i++)
     {
         fields[i].disabled = false;
+    }
+}
+
+
+function setStatusWaiting () {
+    session_button.className = "btn btn-light btn-block btn-lg";
+    session_button.textContent = "Waiting...";
+
+    status_icon.className = "fas fa-circle";
+    status_text.childNodes[2].nodeValue = " Waiting";
+
+    session_status = "inactive";
+
+    // enable input fields
+    let fields = form.getElementsByClassName('form-control');
+    for (var i = 0; i < fields.length; i++)
+    {
+        fields[i].disabled = true;
     }
 }

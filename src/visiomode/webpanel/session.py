@@ -27,8 +27,11 @@ class SessionNamespace(sock.Namespace):
     def on_disconnect(self):
         print("disconnected")
 
-    def on_event(self):
-        pass
+    def on_session_start(self, request):
+        rds.mset({'status': 'active'})
+
+    def on_session_stop(self):
+        rds.mset({'status': 'inactive'})
 
     def on_message(self, data):
         print(data)
