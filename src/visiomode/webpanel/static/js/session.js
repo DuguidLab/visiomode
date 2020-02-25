@@ -62,8 +62,6 @@ function setStatusActive () {
     status_icon.className = "fas fa-circle text-success";
     status_text.childNodes[2].nodeValue = " Running";
 
-    session_status = "active";
-
     // disable input fields
     let fields = form.getElementsByClassName('form-control');
     for (var i = 0; i < fields.length; i++)
@@ -82,8 +80,6 @@ function setStatusInactive () {
     status_icon.className = "fas fa-circle text-danger";
     status_text.childNodes[2].nodeValue = " Not Running";
 
-    session_status = "inactive";
-
     // enable input fields
     let fields = form.getElementsByClassName('form-control');
     for (var i = 0; i < fields.length; i++)
@@ -97,10 +93,8 @@ function setStatusWaiting () {
     session_button.className = "btn btn-light btn-block btn-lg";
     session_button.textContent = "Waiting...";
 
-    status_icon.className = "fas fa-circle";
+    status_icon.className = "fas fa-circle text-warning";
     status_text.childNodes[2].nodeValue = " Waiting";
-
-    session_status = "inactive";
 
     // enable input fields
     let fields = form.getElementsByClassName('form-control');
