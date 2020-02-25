@@ -4,7 +4,9 @@
  * Distributed under the terms of the MIT Licence.
  */
 
-var socket = io.connect('/session');
+let socket = io.connect('/session');
+
+let session_status; // TODO read from Redis
 
 socket.on('connect', function () {
     socket.emit('message', 'hello');
@@ -15,12 +17,20 @@ socket.on('callback', function (msg) {
     console.log(msg);
 });
 
+socket.on('status', function(status) {
+    session_status = status;
+    if (session_status === 'active') {
+        setStatusActive()
+    } else if (session_status === 'inactive') {
+        setStatusInactive()
+    }
+});
+
 var form = document.getElementById('session-form');
 var session_button = document.getElementById('session-control-btn');
 var status_icon = document.getElementById('status-icon');
 var status_text = document.getElementById('status-text');
 
-var session_status = "inactive"; // TODO read from Redis
 
 session_button.onclick = function () {
     if (form.reportValidity() && (session_status === "inactive")) {
