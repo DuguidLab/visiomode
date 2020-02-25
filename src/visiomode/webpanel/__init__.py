@@ -86,8 +86,9 @@ def runserver():
     """Runs the flask app in an integrated server."""
     app = create_app()
     socketio = sock.SocketIO(app)
-    socketio.on_namespace(sess.SessionNamespace('/session'))
-    socketio.run(app)
+    with sess.SessionNamespace('/session') as s:
+        socketio.on_namespace(s)
+        socketio.run(app)
 
 
 if __name__ == '__main__':

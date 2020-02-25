@@ -6,7 +6,7 @@
 
 let socket = io.connect('/session');
 
-let session_status; // TODO read from Redis
+let session_status;
 
 socket.on('connect', function () {
     socket.emit('message', 'hello');
