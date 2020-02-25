@@ -10,7 +10,7 @@ let session_status; // TODO read from Redis
 
 socket.on('connect', function () {
     socket.emit('message', 'hello');
-    console.log('hi!');
+    console.log('connected');
 });
 
 socket.on('callback', function (msg) {
