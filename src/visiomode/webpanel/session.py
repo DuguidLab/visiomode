@@ -14,39 +14,55 @@ rds = redis.Redis(host=config.redis_host, port=config.redis_port)
 
 
 class SessionNamespace(sock.Namespace):
-    """SocketIO namespace for the Session interface
+    """SocketIO namespace for the Session interface.
 
     Attributes:
-        session_sub: Redis session channel
-        session_thread: Status update thread; listens for updates on the session channel
+        session_sub: Redis session channel.
+        session_thread: Status update thread; listens for updates on the session channel.
     """
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
-        # Subscribe to Redis session status updates
+        # Subscribe to Redis session status updates.
         self.session_sub = rds.pubsub()
         self.session_sub.psubscribe(**{"__key*__:session": self.update_status})
         self.session_thread = self.session_sub.run_in_thread(sleep_time=0.01)
 
     def on_connect(self):
+        """Runs when a frontend client navigates to the session page.
+
+        Corresponds to SocketIO `connect` event. Pushes current session status to frontend.
+        """
         print('connected')
         self.update_status()
 
     def on_disconnect(self):
+        """Runs when a frontend client disconnects from the session page.
+
+        Corresponds to SocketIO `disconnect` event.
+        """
         print("disconnected")
 
     def on_session_start(self, request):
+        """Runs when the a frontend client submits a request to start a new session.
+
+        Args:
+            request:
+        """
         rds.mset({'session': 'active'})
+        print(type(request))
 
     def on_session_stop(self):
+        """Runs when the a frontend client submits a request to stop the active session."""
         rds.mset({'session': 'inactive'})
 
     def on_message(self, data):
+        """Generic message passing between frontend and backend, used for debugging."""
         print(data)
 
     def update_status(self, *args, **kwargs):
-        """Pushes status update to front-end."""
-        self.emit('session', rds.get('session').decode("utf-8") or 'inactive')
+        """Pushes session status update to front-end."""
+        self.emit('status', rds.get('session').decode("utf-8"))
 
     def __enter__(self):
         return self
