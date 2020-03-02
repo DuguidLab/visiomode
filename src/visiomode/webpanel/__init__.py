@@ -44,6 +44,9 @@ def create_app():
         with app.app_context():
             db.init_db()
 
+    # Set active session status to inactive
+    rds.mset({'session': 'inactive'})
+
     @app.route('/')
     def index():
         """Dashboard page."""
