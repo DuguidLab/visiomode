@@ -47,10 +47,11 @@ class SessionNamespace(sock.Namespace):
         """Runs when the a frontend client submits a request to start a new session.
 
         Args:
-            request:
+            request: A dictionary with session parameters. Required keys are 'animal_id', 'experiment', 'protocol' and
+                'duration'.
         """
         rds.mset({'session': 'active'})
-        print(type(request))
+
 
     def on_session_stop(self):
         """Runs when the a frontend client submits a request to stop the active session."""

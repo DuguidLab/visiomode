@@ -37,12 +37,6 @@ def create_app():
     except OSError as exc:
         logging.warning("Could not create instance directory ({}) - {}".format(app.instance_path, str(exc)))
 
-    db.init_app(app)
-    # Initialise the database if it doesn't exist
-    if not os.path.exists(app.config['SQLALCHEMY_DATABASE_URI']):
-        with app.app_context():
-            db.init_db()
-
     # Set active session status to inactive
     rds.mset({'session': 'inactive'})
 
