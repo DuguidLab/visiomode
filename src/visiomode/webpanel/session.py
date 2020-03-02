@@ -14,11 +14,19 @@ rds = redis.Redis(host=config.redis_host, port=config.redis_port)
 
 
 class SessionNamespace(sock.Namespace):
+    """SocketIO namespace for the Session interface
+
+    Attributes:
+        session_sub: Redis session channel
+        session_thread: Status update thread; listens for updates on the session channel
+    """
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.status_sub = rds.pubsub()
-        self.status_sub.psubscribe(**{"__key*__:status": self.update_status})
-        self.status_thread = self.status_sub.run_in_thread(sleep_time=0.01)
+
+        # Subscribe to Redis session status updates
+        self.session_sub = rds.pubsub()
+        self.session_sub.psubscribe(**{"__key*__:session": self.update_status})
+        self.session_thread = self.session_sub.run_in_thread(sleep_time=0.01)
 
     def on_connect(self):
         print('connected')
@@ -28,17 +36,17 @@ class SessionNamespace(sock.Namespace):
         print("disconnected")
 
     def on_session_start(self, request):
-        rds.mset({'status': 'active'})
+        rds.mset({'session': 'active'})
 
     def on_session_stop(self):
-        rds.mset({'status': 'inactive'})
+        rds.mset({'session': 'inactive'})
 
     def on_message(self, data):
         print(data)
 
     def update_status(self, *args, **kwargs):
-        """Handles session status update on Redis"""
-        self.emit('status', rds.get('status').decode("utf-8") or 'inactive')
+        """Pushes status update to front-end."""
+        self.emit('session', rds.get('session').decode("utf-8") or 'inactive')
 
     def __enter__(self):
         return self
@@ -46,6 +54,6 @@ class SessionNamespace(sock.Namespace):
     def __exit__(self, exc_type, exc_value, traceback):
         """Cleans up resources before instance is destroyed.
 
-        In this instance, stop the redis listener thread to allow the class to be garbage collected.
+        Stop the Redis listener thread to allow the class to be garbage collected.
         """
-        self.status_thread.stop()
+        self.session_thread.stop()
