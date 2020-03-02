@@ -27,8 +27,6 @@ def create_app():
     app.config.from_mapping({
         'SECRET_KEY': config.flask_key,
         'DEBUG': config.debug,
-        'SQLALCHEMY_DATABASE_URI': "sqlite:////" + os.path.join(app.instance_path, 'visiomode.sqlite'),
-        'SQLALCHEMY_TRACK_MODIFICATIONS': False,
     })
 
     # ensure that instance dir exists
