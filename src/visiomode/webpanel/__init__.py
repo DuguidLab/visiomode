@@ -11,7 +11,6 @@ import redis
 import flask
 import flask_socketio as sock
 import visiomode.config as cfg
-import visiomode.webpanel.models as db
 import visiomode.webpanel.session as sess
 
 
