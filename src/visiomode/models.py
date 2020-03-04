@@ -3,12 +3,25 @@
 #  This file is part of visiomode.
 #  Copyright (c) 2020 Constantinos Eleftheriou <Constantinos.Eleftheriou@ed.ac.uk>
 #  Distributed under the terms of the MIT Licence.
-from dataclasses import dataclass, field
+import dataclasses
+import json
 from typing import List
 
 
-@dataclass
-class Trial:
+@dataclasses.dataclass
+class Base:
+    """Base model class."""
+    def to_dict(self):
+        """Returns class instance attributes as a dictionary."""
+        return dataclasses.asdict(self)
+
+    def to_json(self):
+        """Returns class instance attributes as JSON."""
+        return json.dumps(self.to_dict())
+
+
+@dataclasses.dataclass
+class Trial(Base):
     """Trial model class.
 
     Attributes:
@@ -36,8 +49,8 @@ class Trial:
         return "<Trial {}>".format(str(self.timestamp))
 
 
-@dataclass
-class Session:
+@dataclasses.dataclass
+class Session(Base):
     """Session model class.
 
     Attributes:
@@ -60,7 +73,15 @@ class Session:
     duration: int
     device: str
     notes: str
-    trials: List[Trial] = field(default_factory=list)
+    trials: List[Trial] = dataclasses.field(default_factory=list)
+
+    def to_dict(self):
+        """Returns class instance attributes as a dictionary.
+
+        This method overrides the Base class to cast nested Trial objects under self.trials as dictionaries.
+        """
+        self.trials = [trial.to_dict() for trial in self.trials if self.trials]
+        return dataclasses.asdict(self)
 
     def __repr__(self):
         return "<Session {}>".format(str(self.timestamp))
