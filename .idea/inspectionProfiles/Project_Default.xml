@@ -21,6 +21,11 @@
           <option value="dist_x" />
           <option value="dist_y" />
           <option value="length" />
+          <option value="device" />
+          <option value="status" />
+          <option value="experiment" />
+          <option value="protocol" />
+          <option value="trials" />
         </list>
       </option>
     </inspection_tool>
