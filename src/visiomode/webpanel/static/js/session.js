@@ -33,7 +33,7 @@ var status_text = document.getElementById('status-text');
 
 
 session_button.onclick = function () {
-    if (form.reportValidity() && (session_status === "inactive")) {
+    if (form.reportValidity() && (session_status !== "active")) {
         // Start session
         let fields = [...form.getElementsByClassName('form-control')];
         let request = fields.reduce((_, x) => ({..._, [x.id]: x.value}), {});
