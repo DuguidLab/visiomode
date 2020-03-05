@@ -25,7 +25,7 @@ class SessionNamespace(sock.Namespace):
 
         # Subscribe to Redis session status updates.
         self.session_sub = rds.pubsub()
-        self.session_sub.psubscribe(**{"__key*__:session": self.update_status})
+        self.session_sub.psubscribe(**{"__key*__:status": self.update_status})
         self.session_thread = self.session_sub.run_in_thread(sleep_time=0.01)
 
     def on_connect(self):
@@ -43,19 +43,20 @@ class SessionNamespace(sock.Namespace):
         """
         print("disconnected")
 
-    def on_session_start(self, request):
+    def on_session_start(self, request: dict):
         """Runs when the a frontend client submits a request to start a new session.
 
         Args:
             request: A dictionary with session parameters. Required keys are 'animal_id', 'experiment', 'protocol' and
                 'duration'.
         """
-        rds.mset({'session': 'active'})
-
+        print(request)
+        rds.mset({'status': 'active'})  # TODO make this an interminent state, GUI sets active
+        rds.mset(**request)
 
     def on_session_stop(self):
         """Runs when the a frontend client submits a request to stop the active session."""
-        rds.mset({'session': 'inactive'})
+        rds.mset({'status': 'stopped'})
 
     def on_message(self, data):
         """Generic message passing between frontend and backend, used for debugging."""
@@ -63,7 +64,7 @@ class SessionNamespace(sock.Namespace):
 
     def update_status(self, *args, **kwargs):
         """Pushes session status update to front-end."""
-        self.emit('status', rds.get('session').decode("utf-8"))
+        self.emit('status', rds.get('status').decode("utf-8"))
 
     def __enter__(self):
         return self
