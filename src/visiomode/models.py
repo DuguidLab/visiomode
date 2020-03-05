@@ -5,7 +5,7 @@
 #  Distributed under the terms of the MIT Licence.
 import dataclasses
 import json
-from typing import List
+import typing
 
 
 @dataclasses.dataclass
@@ -73,7 +73,7 @@ class Session(Base):
     duration: int
     device: str
     notes: str
-    trials: List[Trial] = dataclasses.field(default_factory=list)
+    trials: typing.List[Trial] = dataclasses.field(default_factory=list)
 
     def to_dict(self):
         """Returns class instance attributes as a dictionary.
