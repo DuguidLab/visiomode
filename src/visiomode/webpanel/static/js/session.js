@@ -21,7 +21,7 @@ socket.on('status', function(status) {
     session_status = status;
     if (session_status === 'active') {
         setStatusActive()
-    } else if (session_status === 'inactive') {
+    } else {
         setStatusInactive()
     }
 });
