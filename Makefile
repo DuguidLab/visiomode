@@ -5,6 +5,9 @@ PROJECT_NAME = "visiomode"
 PYTHON_INTERPRETER = python3
 export PYTHONPATH=$(shell pwd)/src
 
+install:
+	redis-cli config set notify-keyspace-events KEA
+
 run:
 	$(PYTHON_INTERPRETER) src/visiomode/webpanel/__init__.py
 	$(PYTHON_INTERPRETER) src/visiomode/gui/main.py

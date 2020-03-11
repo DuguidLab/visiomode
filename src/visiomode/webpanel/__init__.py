@@ -11,7 +11,6 @@ import redis
 import flask
 import flask_socketio as sock
 import visiomode.config as cfg
-import visiomode.webpanel.models as db
 import visiomode.webpanel.session as sess
 
 
@@ -28,8 +27,6 @@ def create_app():
     app.config.from_mapping({
         'SECRET_KEY': config.flask_key,
         'DEBUG': config.debug,
-        'SQLALCHEMY_DATABASE_URI': "sqlite:////" + os.path.join(app.instance_path, 'visiomode.sqlite'),
-        'SQLALCHEMY_TRACK_MODIFICATIONS': False,
     })
 
     # ensure that instance dir exists
@@ -38,11 +35,8 @@ def create_app():
     except OSError as exc:
         logging.warning("Could not create instance directory ({}) - {}".format(app.instance_path, str(exc)))
 
-    db.init_app(app)
-    # Initialise the database if it doesn't exist
-    if not os.path.exists(app.config['SQLALCHEMY_DATABASE_URI']):
-        with app.app_context():
-            db.init_db()
+    # Set active session status to inactive
+    rds.mset({'session': 'inactive'})
 
     @app.route('/')
     def index():
@@ -86,8 +80,9 @@ def runserver():
     """Runs the flask app in an integrated server."""
     app = create_app()
     socketio = sock.SocketIO(app)
-    socketio.on_namespace(sess.SessionNamespace('/session'))
-    socketio.run(app)
+    with sess.SessionNamespace('/session') as s:
+        socketio.on_namespace(s)
+        socketio.run(app)
 
 
 if __name__ == '__main__':

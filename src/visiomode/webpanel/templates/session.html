@@ -16,8 +16,8 @@
                                 <div class="row">
                                     <div class="col">
                                         <div class="form-group">
-                                            <label for="animal-id">Animal ID</label>
-                                            <input id="animal-id"
+                                            <label for="animal_id">Animal ID</label>
+                                            <input id="animal_id"
                                                    class="form-control mb-3"
                                                    type="text"
                                                    placeholder="animal id"
@@ -36,8 +36,8 @@
                                         </div>
                                     </div>
                                     <div class="col">
-                                        <label for="experiment-ref">Experiment Reference</label>
-                                        <input id="experiment-ref"
+                                        <label for="experiment">Experiment Reference</label>
+                                        <input id="experiment"
                                                class="form-control mb-3"
                                                type="text"
                                                placeholder="experiment id"
@@ -72,15 +72,15 @@
                             <div class="row">
                                 <div class="col text-center" style="font-size: 18px;padding-bottom: 17px;">
                                                 <span id="status-text" class="flash animated mr-2" style="font-size: 20px;">
-                                                    <i id="status-icon" class="fas fa-circle text-danger" style="font-size: 18px;"></i>&nbsp;Not Running</span>
+                                                    <i id="status-icon" class="fas fa-circle text-warning" style="font-size: 18px;"></i>&nbsp;Waiting...</span>
                                 </div>
                             </div>
                             <div class="row">
                                 <div class="col">
                                     <div class="progress" style="min-height: 20px;">
                                         <div class="progress-bar bg-dark progress-bar-striped"
-                                             aria-valuenow="79" aria-valuemin="0" aria-valuemax="100"
-                                             style="width: 79%;">79%
+                                             aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"
+                                             style="width: 0%;">0%
                                         </div>
                                     </div>
                                 </div>
@@ -92,7 +92,7 @@
                             </div>
                             <div class="row">
                                 <div class="col">
-                                    <button class="btn btn-success btn-block btn-lg" id="session-control-btn">Start</button>
+                                    <button class="btn btn-light btn-block btn-lg" id="session-control-btn">Waiting...</button>
                                 </div>
                             </div>
                         </div>

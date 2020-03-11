@@ -4,15 +4,26 @@
  * Distributed under the terms of the MIT Licence.
  */
 
-var socket = io.connect('/session');
+let socket = io.connect('/session');
+
+let session_status;
 
 socket.on('connect', function () {
     socket.emit('message', 'hello');
-    console.log('hi!');
+    console.log('connected');
 });
 
 socket.on('callback', function (msg) {
     console.log(msg);
+});
+
+socket.on('status', function(status) {
+    session_status = status;
+    if (session_status === 'active') {
+        setStatusActive()
+    } else {
+        setStatusInactive()
+    }
 });
 
 var form = document.getElementById('session-form');
@@ -20,23 +31,23 @@ var session_button = document.getElementById('session-control-btn');
 var status_icon = document.getElementById('status-icon');
 var status_text = document.getElementById('status-text');
 
-var session_status = "inactive"; // TODO read from Redis
 
 session_button.onclick = function () {
-    if (form.reportValidity() && (session_status === "inactive")) {
+    if (form.reportValidity() && (session_status !== "active")) {
         // Start session
         let fields = [...form.getElementsByClassName('form-control')];
         let request = fields.reduce((_, x) => ({..._, [x.id]: x.value}), {});
 
-        socket.emit('message', request);
+        socket.emit('session_start', request);
         console.log('session start request');
 
-        setStatusActive();
+        setStatusWaiting();
     } else if (session_status === "active") {
         // Stop session
-        socket.emit('message', 'stop');
+        socket.emit('session_stop');
         console.log('session stop request');
-        setStatusInactive();
+
+        setStatusWaiting();
     }
     return false;
 };
@@ -50,8 +61,6 @@ function setStatusActive () {
 
     status_icon.className = "fas fa-circle text-success";
     status_text.childNodes[2].nodeValue = " Running";
-
-    session_status = "active";
 
     // disable input fields
     let fields = form.getElementsByClassName('form-control');
@@ -71,12 +80,26 @@ function setStatusInactive () {
     status_icon.className = "fas fa-circle text-danger";
     status_text.childNodes[2].nodeValue = " Not Running";
 
-    session_status = "inactive";
-
     // enable input fields
     let fields = form.getElementsByClassName('form-control');
     for (var i = 0; i < fields.length; i++)
     {
         fields[i].disabled = false;
+    }
+}
+
+
+function setStatusWaiting () {
+    session_button.className = "btn btn-light btn-block btn-lg";
+    session_button.textContent = "Waiting...";
+
+    status_icon.className = "fas fa-circle text-warning";
+    status_text.childNodes[2].nodeValue = " Waiting";
+
+    // enable input fields
+    let fields = form.getElementsByClassName('form-control');
+    for (var i = 0; i < fields.length; i++)
+    {
+        fields[i].disabled = true;
     }
 }
