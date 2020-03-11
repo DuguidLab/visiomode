@@ -52,7 +52,7 @@ class SessionNamespace(sock.Namespace):
         """
         print(request)
         rds.mset({'status': 'active'})  # TODO make this an interminent state, GUI sets active
-        rds.mset(**request)
+        rds.mset(request)
 
     def on_session_stop(self):
         """Runs when the a frontend client submits a request to stop the active session."""
