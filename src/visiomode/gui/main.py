@@ -23,18 +23,21 @@ class RedisEventHandler(pyglet.event.EventDispatcher):
     def get_status(self, *args, **kwargs):
         status = rds.get('status').decode("utf8")
         print("Status is {}".format(status))
-        #self.dispatch_event('on_status_update')
+        self.dispatch_event('on_status_update')
+
+
+RedisEventHandler.register_event_type('on_status_update')
 
 
 def main():
     # Dummy hello world pyglet window
     window = pyglet.window.Window()
+    redis_handler = RedisEventHandler()
     label = pyglet.text.Label('Hello, world',
                               font_name='Times New Roman',
                               font_size=36,
                               x=window.width // 2, y=window.height // 2,
                               anchor_x='center', anchor_y='center')
-    r = RedisEventHandler()
 
     @window.event
     def on_draw():
