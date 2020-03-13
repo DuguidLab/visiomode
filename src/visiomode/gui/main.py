@@ -31,18 +31,25 @@ RedisEventHandler.register_event_type('on_status_update')
 
 def main():
     # Dummy hello world pyglet window
-    window = pyglet.window.Window()
+    window = pyglet.window.Window(resizable=True)
+    main_batch = pyglet.graphics.Batch()
+
     redis_handler = RedisEventHandler()
+
     label = pyglet.text.Label('Hello, world',
                               font_name='Times New Roman',
                               font_size=36,
                               x=window.width // 2, y=window.height // 2,
-                              anchor_x='center', anchor_y='center')
+                              anchor_x='center', anchor_y='center', batch=main_batch)
+
+    @redis_handler.event
+    def on_status_update():
+        print(label.text)
 
     @window.event
     def on_draw():
         window.clear()
-        label.draw()
+        main_batch.draw()
 
     pyglet.app.run()
 
