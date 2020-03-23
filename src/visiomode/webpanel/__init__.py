@@ -36,7 +36,7 @@ def create_app():
         logging.warning("Could not create instance directory ({}) - {}".format(app.instance_path, str(exc)))
 
     # Set active session status to inactive
-    rds.mset({'session': 'inactive'})
+    rds.mset({'status': 'inactive'})
 
     @app.route('/')
     def index():
