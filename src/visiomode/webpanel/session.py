@@ -51,7 +51,7 @@ class SessionNamespace(sock.Namespace):
                 'duration'.
         """
         print(request)
-        rds.mset({'status': 'active'})  # TODO make this an interminent state, GUI sets active
+        rds.mset({'status': 'started'})
         rds.mset(request)
 
     def on_session_stop(self):
