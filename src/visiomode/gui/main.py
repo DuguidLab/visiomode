@@ -7,9 +7,8 @@
 import pyglet
 import redis
 import visiomode.config as cfg
-from visiomode.gui.events import RedisEventDispatch
 
-import faulthandler
+import faulthandler  # report segmentation faults as tracebacks
 faulthandler.enable()
 
 config = cfg.Config()
@@ -34,19 +33,19 @@ def main():
         if button == pyglet.window.mouse.LEFT:
             print('The left mouse button was pressed.')
 
-
     @window.event
     def on_draw():
         window.clear()
         main_batch.draw()
-        #label.draw()
 
     def update_status(dt):
         if not session_sub.get_message():
             return
         status = rds.get('status').decode("utf8")
         if status == 'test':
-            label.delete()
+            label.text = 'something'
+        if status == 'started':
+            label.text = 'started!'
 
     pyglet.clock.schedule_interval(update_status, 1 / 60)
     pyglet.app.run()
