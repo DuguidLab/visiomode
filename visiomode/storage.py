@@ -17,6 +17,7 @@ class RedisClient(redis.Redis):
         config = cfg.Config()
         super(RedisClient, self).__init__(host=config.redis_host, port=config.redis_port, charset="utf-8",
                                           decode_responses=True, *args, **kwargs)
+        self.config_set('notify-keyspace-events', 'AKE')
 
     def get_status(self):
         return self.get('status')
@@ -28,12 +29,10 @@ class RedisClient(redis.Redis):
         pubsub = self.pubsub()
         status_key = "__key*__:status"
 
-        if callback:
-            pubsub.psubscribe(**{status_key: callback})
-        else:
-            pubsub.psubscribe(status_key)
-
         if threaded:
+            pubsub.psubscribe(**{status_key: callback})
             return pubsub.run_in_thread(sleep_time=thread_sleep, daemon=True)
+
+        pubsub.psubscribe(status_key)
 
         return pubsub

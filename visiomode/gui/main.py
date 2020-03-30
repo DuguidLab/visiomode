@@ -5,22 +5,19 @@
 #  Distributed under the terms of the MIT Licence.
 
 import pyglet
-import redis
-import visiomode.config as cfg
+import visiomode.storage as storage
 
 import faulthandler  # report segmentation faults as tracebacks
 faulthandler.enable()
 
-config = cfg.Config()
-rds = redis.Redis(host=config.redis_host, port=config.redis_port)
+rds = storage.RedisClient()
 
 
 def main():
     window = pyglet.window.Window(resizable=True)
     main_batch = pyglet.graphics.Batch()
 
-    session_sub = rds.pubsub()
-    session_sub.psubscribe("__key*__:status")
+    session_sub = rds.subscribe_status(threaded=False)
 
     label = pyglet.text.Label('Hello, world',
                               font_name='Times New Roman',
@@ -41,7 +38,7 @@ def main():
     def update_status(dt):
         if not session_sub.get_message():
             return
-        status = rds.get('status').decode("utf8")
+        status = rds.get_status()
         if status == 'test':
             label.text = 'something'
         if status == 'started':
