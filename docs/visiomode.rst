@@ -7,7 +7,7 @@ Subpackages
 .. toctree::
 
    visiomode.gui
-   visiomode.webapp
+   visiomode.webpanel
 
 Submodules
 ----------

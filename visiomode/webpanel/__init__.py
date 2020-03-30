@@ -22,6 +22,7 @@ def create_app():
     """
     config = cfg.Config()
     rds = redis.Redis(host=config.redis_host, port=config.redis_port)
+    rds.config_set('notify-keyspace-events', 'AKE')
 
     app = flask.Flask(__name__)
     app.config.from_mapping({
@@ -36,7 +37,7 @@ def create_app():
         logging.warning("Could not create instance directory ({}) - {}".format(app.instance_path, str(exc)))
 
     # Set active session status to inactive
-    rds.mset({'session': 'inactive'})
+    rds.mset({'status': 'inactive'})
 
     @app.route('/')
     def index():
