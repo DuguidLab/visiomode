@@ -34,6 +34,6 @@ class RedisClient(redis.Redis):
             pubsub.psubscribe(status_key)
 
         if threaded:
-            return pubsub.run_in_thread(sleep_time=0.01)
+            return pubsub.run_in_thread(sleep_time=thread_sleep, daemon=True)
 
         return pubsub
