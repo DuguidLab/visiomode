@@ -128,7 +128,7 @@ dmypy.json
 .pyre/
 
 .vagrant/
-/src/visiomode/webpanel/instance/
+/visiomode/webpanel/instance/
 
 .anaconda
 /node_modules/
