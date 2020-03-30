@@ -29,12 +29,10 @@ class RedisClient(redis.Redis):
         pubsub = self.pubsub()
         status_key = "__key*__:status"
 
-        if callback:
-            pubsub.psubscribe(**{status_key: callback})
-        else:
-            pubsub.psubscribe(status_key)
-
         if threaded:
+            pubsub.psubscribe(**{status_key: callback})
             return pubsub.run_in_thread(sleep_time=thread_sleep, daemon=True)
+
+        pubsub.psubscribe(status_key)
 
         return pubsub
