@@ -17,6 +17,7 @@ class RedisClient(redis.Redis):
         config = cfg.Config()
         super(RedisClient, self).__init__(host=config.redis_host, port=config.redis_port, charset="utf-8",
                                           decode_responses=True, *args, **kwargs)
+        self.config_set('notify-keyspace-events', 'AKE')
 
     def get_status(self):
         return self.get('status')
