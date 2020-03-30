@@ -7,10 +7,10 @@
 import os
 import logging
 
-import redis
 import flask
 import flask_socketio as sock
 import visiomode.config as cfg
+import visiomode.storage as storage
 import visiomode.webpanel.session as sess
 
 
@@ -21,8 +21,7 @@ def create_app():
         Flask app object
     """
     config = cfg.Config()
-    rds = redis.Redis(host=config.redis_host, port=config.redis_port)
-    rds.config_set('notify-keyspace-events', 'AKE')
+    rds = storage.RedisClient()
 
     app = flask.Flask(__name__)
     app.config.from_mapping({
@@ -37,7 +36,7 @@ def create_app():
         logging.warning("Could not create instance directory ({}) - {}".format(app.instance_path, str(exc)))
 
     # Set active session status to inactive
-    rds.mset({'status': 'inactive'})
+    rds.set_status(storage.INACTIVE)
 
     @app.route('/')
     def index():
@@ -81,9 +80,8 @@ def runserver():
     """Runs the flask app in an integrated server."""
     app = create_app()
     socketio = sock.SocketIO(app)
-    with sess.SessionNamespace('/session') as s:
-        socketio.on_namespace(s)
-        socketio.run(app)
+    socketio.on_namespace(sess.SessionNamespace('/session'))
+    socketio.run(app)
 
 
 if __name__ == '__main__':

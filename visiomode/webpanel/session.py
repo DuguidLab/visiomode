@@ -7,10 +7,9 @@
 import redis
 import flask_socketio as sock
 import visiomode.config as cfg
+import visiomode.storage as storage
 
-
-config = cfg.Config()
-rds = redis.Redis(host=config.redis_host, port=config.redis_port)
+rds = storage.RedisClient()
 
 
 class SessionNamespace(sock.Namespace):
@@ -24,9 +23,7 @@ class SessionNamespace(sock.Namespace):
         super().__init__(*args, **kwargs)
 
         # Subscribe to Redis session status updates.
-        self.session_sub = rds.pubsub()
-        self.session_sub.psubscribe(**{"__key*__:status": self.update_status})
-        self.session_thread = self.session_sub.run_in_thread(sleep_time=0.01)
+        self.session_sub = rds.subscribe_status(callback=self.update_status, threaded=True)
 
     def on_connect(self):
         """Runs when a frontend client navigates to the session page.
@@ -51,12 +48,12 @@ class SessionNamespace(sock.Namespace):
                 'duration'.
         """
         print(request)
-        rds.mset({'status': 'started'})
-        rds.mset(request)
+        rds.set_status(storage.STARTED)
+        rds.mset(request)  # TODO - Abstract session request parsing
 
     def on_session_stop(self):
         """Runs when the a frontend client submits a request to stop the active session."""
-        rds.mset({'status': 'stopped'})
+        rds.set_status(storage.STOPPED)
 
     def on_message(self, data):
         """Generic message passing between frontend and backend, used for debugging."""
@@ -64,14 +61,4 @@ class SessionNamespace(sock.Namespace):
 
     def update_status(self, *args, **kwargs):
         """Pushes session status update to front-end."""
-        self.emit('status', rds.get('status').decode("utf-8"))
-
-    def __enter__(self):
-        return self
-
-    def __exit__(self, exc_type, exc_value, traceback):
-        """Cleans up resources before instance is destroyed.
-
-        Stop the Redis listener thread to allow the class to be garbage collected.
-        """
-        self.session_thread.stop()
+        self.emit('status', rds.get_status())
