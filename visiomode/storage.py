@@ -5,25 +5,31 @@
 import redis
 import visiomode.config as cfg
 
-ACTIVE = 'active'
-STARTED = 'started'
-STOPPED = 'stopped'
-INACTIVE = 'inactive'
-ERROR = 'error'
+ACTIVE = "active"
+STARTED = "started"
+STOPPED = "stopped"
+INACTIVE = "inactive"
+ERROR = "error"
 
 
 class RedisClient(redis.Redis):
     def __init__(self, *args, **kwargs):
         config = cfg.Config()
-        super(RedisClient, self).__init__(host=config.redis_host, port=config.redis_port, charset="utf-8",
-                                          decode_responses=True, *args, **kwargs)
-        self.config_set('notify-keyspace-events', 'AKE')
+        super(RedisClient, self).__init__(
+            host=config.redis_host,
+            port=config.redis_port,
+            charset="utf-8",
+            decode_responses=True,
+            *args,
+            **kwargs
+        )
+        self.config_set("notify-keyspace-events", "AKE")
 
     def get_status(self):
-        return self.get('status')
+        return self.get("status")
 
     def set_status(self, status):
-        self.mset({'status': status})
+        self.mset({"status": status})
 
     def subscribe_status(self, callback=None, threaded=True, thread_sleep=0.01):
         pubsub = self.pubsub()

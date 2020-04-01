@@ -13,6 +13,7 @@ import typing
 @dataclasses.dataclass
 class Base:
     """Base model class."""
+
     def to_dict(self):
         """Returns class instance attributes as a dictionary."""
         return dataclasses.asdict(self)
@@ -37,6 +38,7 @@ class Trial(Base):
         dist_y: Float representing the distance travelled while touching the screen in the y-axis.
         timestamp: String trial date and time (ISO format). Defaults to current date and time.
     """
+
     outcome: str
     iti: int
     reaction_time: int
@@ -66,6 +68,7 @@ class Session(Base):
         device: String hostname of the device running the session. Defaults to the hostname provided by the socket lib.
         trials: A mutable list of session trials; each trial is an instance of the Trial dataclass.
     """
+
     status: str
     animal_id: str
     experiment: str
