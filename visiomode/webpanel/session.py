@@ -19,18 +19,21 @@ class SessionNamespace(sock.Namespace):
         session_sub: Redis session channel.
         session_thread: Status update thread; listens for updates on the session channel.
     """
+
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
         # Subscribe to Redis session status updates.
-        self.session_sub = rds.subscribe_status(callback=self.update_status, threaded=True)
+        self.session_sub = rds.subscribe_status(
+            callback=self.update_status, threaded=True
+        )
 
     def on_connect(self):
         """Runs when a frontend client navigates to the session page.
 
         Corresponds to SocketIO `connect` event. Pushes current session status to frontend.
         """
-        print('connected')
+        print("connected")
         self.update_status()
 
     def on_disconnect(self):
@@ -61,4 +64,4 @@ class SessionNamespace(sock.Namespace):
 
     def update_status(self, *args, **kwargs):
         """Pushes session status update to front-end."""
-        self.emit('status', rds.get_status())
+        self.emit("status", rds.get_status())

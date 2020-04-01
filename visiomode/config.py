@@ -9,8 +9,8 @@ import yaml
 import logging
 
 
-DEFAULT_PATH = '/etc/visiomode/config.yaml'
-CONFIG_PARAMS = ('debug', 'redis_port', 'redis_host', 'flask_key')
+DEFAULT_PATH = "/etc/visiomode/config.yaml"
+CONFIG_PARAMS = ("debug", "redis_port", "redis_host", "flask_key")
 
 
 class Config:
@@ -18,10 +18,11 @@ class Config:
 
     Defaults to development settings unless initialised with a valid path to a config YAML.
     """
+
     redis_port = 6379
-    redis_host = 'localhost'
+    redis_host = "localhost"
     debug = True
-    flask_key = 'dev'
+    flask_key = "dev"
 
     def __init__(self, path=DEFAULT_PATH):
         """Initialises Config with a path to a configuration file.
@@ -46,6 +47,8 @@ class Config:
             config = yaml.safe_load(f)
             for key, value in config.items():
                 if key not in CONFIG_PARAMS:
-                    logging.info("{} is not a valid config parameter, skipping...".format(key))
+                    logging.info(
+                        "{} is not a valid config parameter, skipping...".format(key)
+                    )
                     continue
                 setattr(self, key, value)
