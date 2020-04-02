@@ -50,9 +50,8 @@ class SessionNamespace(sock.Namespace):
             request: A dictionary with session parameters. Required keys are 'animal_id', 'experiment', 'protocol' and
                 'duration'.
         """
+        rds.request_session(request)
         print(request)
-        rds.set_status(storage.STARTED)
-        rds.mset(request)  # TODO - Abstract session request parsing
 
     def on_session_stop(self):
         """Runs when the a frontend client submits a request to stop the active session."""

@@ -10,6 +10,12 @@ STARTED = "started"
 STOPPED = "stopped"
 INACTIVE = "inactive"
 ERROR = "error"
+REQUIRED_SESSION_KEYS = (
+    "animal_id",
+    "experiment",
+    "protocol",
+    "duration",
+)
 
 
 class RedisClient(redis.Redis):
@@ -42,3 +48,26 @@ class RedisClient(redis.Redis):
         pubsub.psubscribe(status_key)
 
         return pubsub
+
+    def request_session(self, request: dict):
+        """Submits a request for a new experimental session to Redis
+
+        Args:
+            request:
+        """
+        for key in REQUIRED_SESSION_KEYS:
+            if key not in request.keys():
+                raise SessionRequestError("Missing required key - {}".format(key))
+        self.hmset("session_request", request)
+        self.set_status(STARTED)  # TODO should this be 'requested' instead?
+
+    def get_session_request(self):
+        return self.hgetall("session_request")
+
+
+class RedisClientError(Exception):
+    pass
+
+
+class SessionRequestError(RedisClientError):
+    pass
