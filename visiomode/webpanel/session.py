@@ -51,6 +51,7 @@ class SessionNamespace(sock.Namespace):
                 'duration'.
         """
         rds.request_session(request)
+        rds.set_status(storage.STARTED)
         print(request)
 
     def on_session_stop(self):

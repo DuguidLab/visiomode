@@ -59,7 +59,6 @@ class RedisClient(redis.Redis):
             if key not in request.keys():
                 raise SessionRequestError("Missing required key - {}".format(key))
         self.hmset("session_request", request)
-        self.set_status(STARTED)  # TODO should this be 'requested' instead?
 
     def get_session_request(self):
         return self.hgetall("session_request")
