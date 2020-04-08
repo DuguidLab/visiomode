@@ -2,18 +2,18 @@
 
 PROJECT_DIR := $(shell dirname $(realpath $(lastword $(MAKEFILE_LIST))))
 PROJECT_NAME = "visiomode"
-PYTHON_INTERPRETER = python3
+PYTHON_INTERPRETER = ipython3
 export PYTHONPATH=$(shell pwd)
 
 install:
 	redis-cli config set notify-keyspace-events KEA
 
 run:
-	$(PYTHON_INTERPRETER) visiomode/webpanel/__init__.py
+	$(PYTHON_INTERPRETER) visiomode/webpanel/__init__.py &
 	$(PYTHON_INTERPRETER) visiomode/gui/main.py
 
 requirements:
-	$(PYTHON_INTERPRETER) -m pip install -U pip setuptools wheel
+	#$(PYTHON_INTERPRETER) -m pip install -U pip setuptools wheel
 	$(PYTHON_INTERPRETER) -m pip install -r requirements.txt
 
 webserver:
