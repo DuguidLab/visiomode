@@ -6,6 +6,7 @@
 
 import pyglet
 import visiomode.storage as storage
+import visiomode.models as models
 
 import faulthandler  # report segmentation faults as tracebacks
 
@@ -18,7 +19,8 @@ def main():
     window = pyglet.window.Window(resizable=True)
     main_batch = pyglet.graphics.Batch()
 
-    session_sub = rds.subscribe_status(threaded=False)
+    status_sub = rds.subscribe_status(threaded=False)
+    session = None
 
     label = pyglet.text.Label(
         "Hello, world",
@@ -42,13 +44,14 @@ def main():
         main_batch.draw()
 
     def update_status(dt):
-        if not session_sub.get_message():
+        if not status_sub.get_message():
             return
         status = rds.get_status()
         if status == "test":
             label.text = "something"
-        if status == "started":
+        if status == "requested":
             label.text = "started!"
+            # session = models.Session()
 
     pyglet.clock.schedule_interval(update_status, 1 / 60)
     pyglet.app.run()
