@@ -1,6 +1,7 @@
 #  This file is part of visiomode.
 #  Copyright (c) 2020 Constantinos Eleftheriou <Constantinos.Eleftheriou@ed.ac.uk>
 #  Distributed under the terms of the MIT Licence.
+import pytest
 import visiomode.storage as storage
 
 
@@ -33,3 +34,8 @@ class TestRedisClient:
         status_sub = self.rds.subscribe_status(callback=callback, threaded=True)
         # change the status - if update is picked up the callback should pop up
         self.rds.set_status("stopped")
+
+    def test_invalid_status(self):
+        """Test whether setting an invalid key will raise the appropriate error."""
+        with pytest.raises(storage.InvalidStatusCodeError):
+            self.rds.set_status("noddy_key")
