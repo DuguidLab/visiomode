@@ -71,17 +71,17 @@ class RedisClient(redis.Redis):
             )
         self.mset({STATUS_KEY: status})
 
-    def subscribe_status(self, callback=None, threaded=True, thread_sleep=0.01):
+    def subscribe_status(self, threaded=True, callback=None, thread_sleep=0.01):
         """Sets up a subscription to session status updates.
 
         The subscriber can either run as a daemon with a callback function on every update, or alternatively the
         user can check for updates manually.
 
         Args:
-            callback: If the subscriber is threaded, this specifies the function to be called every time a
-                status update is published. Required if `threaded=True`, otherwise it's ignored.
             threaded: Boolean that specifies whether the subscriber should run in a separate thread as a deamon.
                 If True, a `callback` function must be supplied to the call.
+            callback: If the subscriber is threaded, this specifies the function to be called every time a
+                status update is published. Required if `threaded=True`, otherwise it's ignored.
             thread_sleep: Float that specifies how often the daemon should check for an update. Required if
                 `threaded=True`, otherwise it's ignored.
 
