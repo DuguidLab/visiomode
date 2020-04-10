@@ -9,7 +9,7 @@ class TestRedisClient:
 
     def test_status_updating(self):
         """Test getting and setting status"""
-        status = "test"
+        status = "active"
         self.rds.set_status(status)
         assert self.rds.get_status() == status
 
@@ -18,7 +18,7 @@ class TestRedisClient:
         # subscribe
         status_sub = self.rds.subscribe_status(threaded=False)
         # change the status
-        self.rds.set_status("test")
+        self.rds.set_status("active")
         # see if the change was picked up, if not get_message will return None
         assert status_sub.get_message()
 
@@ -32,4 +32,4 @@ class TestRedisClient:
         # subscribe
         status_sub = self.rds.subscribe_status(callback=callback, threaded=True)
         # change the status - if update is picked up the callback should pop up
-        self.rds.set_status("test")
+        self.rds.set_status("stopped")
