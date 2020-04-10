@@ -55,7 +55,7 @@ class SessionNamespace(sock.Namespace):
 
     def on_session_stop(self):
         """Runs when the a frontend client submits a request to stop the active session."""
-        rds.set_status(storage.STOPPED)
+        rds.request_session_stop()
 
     def on_message(self, data):
         """Generic message passing between frontend and backend, used for debugging."""

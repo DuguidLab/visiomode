@@ -71,6 +71,9 @@ class RedisClient(redis.Redis):
     def get_session_request(self):
         return self.hgetall(SESSION_REQUEST_KEY)
 
+    def request_session_stop(self):
+        self.set_status(STOPPED)
+
 
 class RedisClientError(Exception):
     pass
