@@ -35,7 +35,7 @@ class RedisClient(redis.Redis):
         self.config_set("notify-keyspace-events", "AKE")
 
     def get_status(self):
-        return self.get("status")
+        return self.get(STATUS_KEY)
 
     def set_status(self, status):
         if status not in STATUS_CODES:
