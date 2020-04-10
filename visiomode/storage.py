@@ -10,6 +10,9 @@ REQUESTED = "requested"
 STOPPED = "stopped"
 INACTIVE = "inactive"
 ERROR = "error"
+STATUS_CODES = (ACTIVE, REQUESTED, STOPPED, INACTIVE, ERROR)
+STATUS_KEY = "status"
+SESSION_REQUEST_KEY = "session_request"
 REQUIRED_SESSION_KEYS = (
     "animal_id",
     "experiment",
@@ -35,11 +38,15 @@ class RedisClient(redis.Redis):
         return self.get("status")
 
     def set_status(self, status):
-        self.mset({"status": status})
+        if status not in STATUS_CODES:
+            raise InvalidStatusCodeError(
+                "Valid status codes are: {}".format(STATUS_CODES)
+            )
+        self.mset({STATUS_KEY: status})
 
     def subscribe_status(self, callback=None, threaded=True, thread_sleep=0.01):
         pubsub = self.pubsub()
-        status_key = "__key*__:status"
+        status_key = "__key*__:" + STATUS_KEY
 
         if threaded:
             pubsub.psubscribe(**{status_key: callback})
@@ -58,11 +65,11 @@ class RedisClient(redis.Redis):
         for key in REQUIRED_SESSION_KEYS:
             if key not in request.keys():
                 raise SessionRequestError("Missing required key - {}".format(key))
-        self.hmset("session_request", request)
+        self.hmset(SESSION_REQUEST_KEY, request)
         self.set_status(REQUESTED)
 
     def get_session_request(self):
-        return self.hgetall("session_request")
+        return self.hgetall(SESSION_REQUEST_KEY)
 
 
 class RedisClientError(Exception):
@@ -70,4 +77,8 @@ class RedisClientError(Exception):
 
 
 class SessionRequestError(RedisClientError):
+    pass
+
+
+class InvalidStatusCodeError(RedisClientError):
     pass
