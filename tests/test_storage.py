@@ -39,3 +39,41 @@ class TestRedisClient:
         """Test whether setting an invalid key will raise the appropriate error."""
         with pytest.raises(storage.InvalidStatusCodeError):
             self.rds.set_status("noddy_key")
+
+    def test_session_request(self):
+        """Test session request submission and retrieval"""
+
+        # required keys are 'animal_id', 'experiment', 'protocol' and 'duration'.
+        request = {
+            "animal_id": "test123",
+            "experiment": "some exp",
+            "protocol": "some protocol",
+            "duration": 30,
+        }
+        self.rds.request_session(request)
+        assert self.rds.get_session_request()
+
+    def test_session_request_status(self):
+        """Test whether session request submission triggers the right status"""
+
+        # required keys are 'animal_id', 'experiment', 'protocol' and 'duration'.
+        request = {
+            "animal_id": "test123",
+            "experiment": "some exp",
+            "protocol": "some protocol",
+            "duration": 30,
+        }
+        self.rds.request_session(request)
+        assert self.rds.get_status() == storage.REQUESTED
+
+    def test_session_request_missing_key(self):
+        """Test whether submitting a session request will fail with the right error
+        if it's missing one of the required keys"""
+        request = {"not_the_right_key": "botched"}
+        with pytest.raises(storage.SessionRequestError):
+            self.rds.request_session(request)
+
+    def test_session_request_stop(self):
+        """Test requesting to stop an active session"""
+        self.rds.request_session_stop()
+        assert self.rds.get_status() == storage.STOPPED
