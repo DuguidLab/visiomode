@@ -7,12 +7,13 @@
 import redis
 import visiomode.config as cfg
 
+DEBUG = "test"
 ACTIVE = "active"
 REQUESTED = "requested"
 STOPPED = "stopped"
 INACTIVE = "inactive"
 ERROR = "error"
-STATUS_CODES = (ACTIVE, REQUESTED, STOPPED, INACTIVE, ERROR)
+STATUS_CODES = (DEBUG, ACTIVE, REQUESTED, STOPPED, INACTIVE, ERROR)
 STATUS_KEY = "status"
 SESSION_REQUEST_KEY = "session_request"
 REQUIRED_SESSION_KEYS = (
