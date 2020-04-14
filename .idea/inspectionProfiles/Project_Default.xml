@@ -26,6 +26,7 @@
           <option value="experiment" />
           <option value="protocol" />
           <option value="trials" />
+          <option value="complete" />
         </list>
       </option>
     </inspection_tool>

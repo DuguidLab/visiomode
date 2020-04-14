@@ -58,22 +58,22 @@ class Session(Base):
     """Session model class.
 
     Attributes:
-        status: A string holding the current session status, i.e. active or inactive.
         animal_id: String representing the animal identifier.
         experiment: A string holding the experiment identifier.
         protocol: A string holding the protocol identifier.
         duration: Integer representing the session duration in minutes.
+        complete: Boolean value indicating whether or not a session was completed
         timestamp: A string with the session start date and time (ISO format). Defaults to current date and time.
         notes: String with additional session notes. Defaults to empty string
         device: String hostname of the device running the session. Defaults to the hostname provided by the socket lib.
         trials: A mutable list of session trials; each trial is an instance of the Trial dataclass.
     """
 
-    status: str
     animal_id: str
     experiment: str
     protocol: str
     duration: int
+    complete: bool = False
     timestamp: str = datetime.datetime.now().isoformat()
     notes: str = ""
     device: str = socket.gethostname()
