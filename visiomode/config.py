@@ -16,7 +16,8 @@ CONFIG_PARAMS = ("debug", "redis_port", "redis_host", "flask_key")
 class Config:
     """Configuration class for visiomode components.
 
-    Defaults to development settings unless initialised with a valid path to a config YAML.
+    Defaults to development settings unless initialised with a valid path to a config YAML, or the file specified by
+    DEFAULT_PATH exists.
     """
 
     redis_port = 6379
