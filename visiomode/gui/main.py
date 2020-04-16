@@ -7,6 +7,7 @@
 import pygame
 import pygame.locals
 import visiomode.storage as storage
+import visiomode.gui.stimuli as stim
 
 import faulthandler  # report segmentation faults as tracebacks
 
@@ -45,21 +46,24 @@ def main():
         if status_sub.get_message():
             status = rds.get_status()
             print("updating...")
+            background.fill((250, 250, 250))
             if status == storage.DEBUG:
                 text = font.render("Debug", 1, (10, 10, 10))
+                background.blit(text, textpos)
             if status == storage.REQUESTED:
-                text = font.render("Started!", 1, (10, 10, 10))
-                # get request
+                # text = font.render("Started!", 1, (10, 10, 10))
                 request = rds.get_session_request()
                 print(request)
+
+                gratingsprite = pygame.sprite.RenderPlain(stim.Grating(0, 0))
+                gratingsprite.draw(screen)
+
                 rds.set_status(storage.ACTIVE)
-            background.fill((250, 250, 250))
-            background.blit(text, textpos)
         for event in pygame.event.get():
             if event.type == pygame.locals.QUIT:
                 return
 
-        screen.blit(background, (0, 0))
+        # screen.blit(background, (0, 0))
         pygame.display.flip()
 
 
