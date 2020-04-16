@@ -4,8 +4,7 @@
 #  Copyright (c) 2020 Constantinos Eleftheriou <Constantinos.Eleftheriou@ed.ac.uk>
 #  Distributed under the terms of the MIT Licence.
 
-import pygame
-import pygame.locals
+import pygame as pg
 import visiomode.storage as storage
 import visiomode.gui.stimuli as stim
 
@@ -21,25 +20,27 @@ def main():
     status_sub = rds.subscribe_status(threaded=False)
 
     # Initialise screen
-    pygame.init()
-    screen = pygame.display.set_mode((600, 400))
-    pygame.display.set_caption("Basic Pygame program")
+    pg.init()
+    screen = pg.display.set_mode((600, 400))
+    pg.display.set_caption("Basic Pygame program")
 
     # Fill background
-    background = pygame.Surface(screen.get_size())
+    background = pg.Surface(screen.get_size())
     background = background.convert()
     background.fill((250, 250, 250))
 
     # Display some text
-    font = pygame.font.Font(None, 36)
+    font = pg.font.Font(None, 36)
     text = font.render("Hello There", 1, (10, 10, 10))
     textpos = text.get_rect()
     textpos.centerx = background.get_rect().centerx
     background.blit(text, textpos)
 
+    target = None
+
     # Blit everything to the screen
     screen.blit(background, (0, 0))
-    pygame.display.flip()
+    pg.display.flip()
 
     # Event loop
     while 1:
@@ -55,16 +56,28 @@ def main():
                 request = rds.get_session_request()
                 print(request)
 
-                gratingsprite = pygame.sprite.RenderPlain(stim.Grating(0, 0))
-                gratingsprite.draw(screen)
+                target = pg.sprite.RenderClear(stim.Grating(0, 0))
+                target.draw(screen)
 
                 rds.set_status(storage.ACTIVE)
-        for event in pygame.event.get():
-            if event.type == pygame.locals.QUIT:
+            if status == storage.STOPPED:
+                print("stopping...")
+                if target:
+                    target.clear(screen, background)
+
+                rds.set_status(storage.INACTIVE)
+        for event in pg.event.get():
+            if event.type == pg.QUIT:
                 return
+            if event.type == pg.MOUSEBUTTONUP:
+                if target:
+                    for sprite in target.sprites():
+                        if sprite.rect.collidepoint(event.pos):
+                            print("hit!")
+                            target.clear(screen, background)
 
         # screen.blit(background, (0, 0))
-        pygame.display.flip()
+        pg.display.flip()
 
 
 if __name__ == "__main__":
