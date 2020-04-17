@@ -27,13 +27,14 @@ def main():
     # Fill background
     background = pg.Surface(screen.get_size())
     background = background.convert()
-    background.fill((250, 250, 250))
+    background.fill((0, 0, 0))
 
     # Display some text
     font = pg.font.Font(None, 36)
-    text = font.render("Hello There", 1, (10, 10, 10))
+    text = font.render("Ready", 1, (255, 255, 255))
     textpos = text.get_rect()
     textpos.centerx = background.get_rect().centerx
+    textpos.centery = background.get_rect().centery
     background.blit(text, textpos)
 
     target = None
