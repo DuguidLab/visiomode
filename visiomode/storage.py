@@ -33,7 +33,7 @@ class RedisClient(redis.Redis):
     def __init__(self, *args, **kwargs):
         """Initialises connection to Redis server."""
         _config = cfg.Config()
-        super(RedisClient, self).__init__(
+        super().__init__(
             host=_config.redis_host,
             port=_config.redis_port,
             charset="utf-8",
