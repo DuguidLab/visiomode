@@ -24,12 +24,12 @@ def load_image(name):
 
 class BaseStimulus(pygame.sprite.Sprite):
     def __init__(self, *args):
-        super(BaseStimulus, self).__init__(*args)
+        super().__init__(*args)
 
 
 class Grating(BaseStimulus):
     def __init__(self, x, y, *args):
-        super(Grating, self).__init__(*args)
+        super().__init__(*args)
         self.image, self.rect = load_image("target.jpg")
         screen = pygame.display.get_surface()
         self.area = screen.get_rect()
