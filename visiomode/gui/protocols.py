@@ -13,23 +13,34 @@ def get_protocol(protocol_id, *args, **kwargs):
 
 
 class Protocol(object):
-    def __init__(self, screen):
+    def __init__(self, screen, duration):
         self.screen = screen
-        self.running = True
+        self.is_running = False
 
-        self._timer_thread = threading.Thread(target=self._timer)
+        self._timer_thread = threading.Thread(
+            target=self._timer, args=[duration], daemon=True
+        )
+
+    def start(self):
+        """Start the protocol"""
+        self.is_running = True
         self._timer_thread.run()
+
+    def stop(self):
+        self.is_running = False
 
     def _timer(self, duration):
         start_time = time.time()
         while time.time() - start_time < duration:
-            continue
-        self.running = False
+            # If the session has been stopped externally, stop timer
+            if not self.is_running:
+                return
+        self.is_running = False
 
 
 class Task(Protocol):
-    def __init__(self, screen):
-        super().__init__(screen)
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
 
 
 class Presentation(Protocol):
@@ -37,5 +48,5 @@ class Presentation(Protocol):
 
 
 class SingleTarget(Task):
-    def __init__(self, screen):
-        super().__init__(screen)
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
