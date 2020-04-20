@@ -6,10 +6,11 @@
 import time
 import threading
 import pygame as pg
+import visiomode.gui.stimuli as stim
 
 
-def get_protocol(protocol_id, *args, **kwargs):
-    return
+def get_protocol(protocol_id, screen, request):
+    return SingleTarget(screen, request["duration"])
 
 
 class Protocol(object):
@@ -24,18 +25,18 @@ class Protocol(object):
     def start(self):
         """Start the protocol"""
         self.is_running = True
-        self._timer_thread.run()
+        self._timer_thread.start()
 
     def stop(self):
         self.is_running = False
 
     def _timer(self, duration):
         start_time = time.time()
-        while time.time() - start_time < duration:
+        while time.time() - start_time < float(duration):
             # If the session has been stopped externally, stop timer
             if not self.is_running:
                 return
-        self.is_running = False
+        self.stop()
 
 
 class Task(Protocol):
@@ -50,3 +51,26 @@ class Presentation(Protocol):
 class SingleTarget(Task):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
+
+        self.background = pg.Surface(self.screen.get_size())
+        self.background = self.background.convert()
+        self.background.fill((0, 0, 0))
+        self.target = pg.sprite.RenderClear(stim.Grating(0, 0))
+
+    def start(self):
+        self.target.draw(self.screen)
+        super().start()
+
+    def stop(self):
+        print("stop")
+        self.target.clear(self.screen, self.background)
+        super().stop()
+        print(self.is_running)
+
+    def handle_events(self, events):
+        for event in events:
+            if event.type == pg.MOUSEBUTTONUP:
+                for sprite in self.target.sprites():
+                    if sprite.rect.collidepoint(event.pos):
+                        print("hit!")
+                        self.target.clear(self.screen, self.background)
