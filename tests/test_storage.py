@@ -66,13 +66,6 @@ class TestRedisClient:
         self.rds.request_session(request)
         assert self.rds.get_status() == storage.REQUESTED
 
-    def test_session_request_missing_key(self):
-        """Test whether submitting a session request will fail with the right error
-        if it's missing one of the required keys"""
-        request = {"not_the_right_key": "botched"}
-        with pytest.raises(storage.SessionRequestError):
-            self.rds.request_session(request)
-
     def test_session_request_stop(self):
         """Test requesting to stop an active session"""
         self.rds.request_session_stop()
