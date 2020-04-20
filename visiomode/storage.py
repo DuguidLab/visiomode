@@ -16,12 +16,6 @@ ERROR = "error"
 STATUS_CODES = (DEBUG, ACTIVE, REQUESTED, STOPPED, INACTIVE, ERROR)
 STATUS_KEY = "status"
 SESSION_REQUEST_KEY = "session_request"
-REQUIRED_SESSION_KEYS = (
-    "animal_id",
-    "experiment",
-    "protocol",
-    "duration",
-)
 
 
 class RedisClient(redis.Redis):
@@ -128,9 +122,6 @@ class RedisClient(redis.Redis):
         Raises:
             SessionRequestError: Raised if one of the required keys hasn't been supplied.
         """
-        for key in REQUIRED_SESSION_KEYS:
-            if key not in request.keys():
-                raise SessionRequestError("Missing required key - {}".format(key))
         self.hmset(SESSION_REQUEST_KEY, request)
         self.set_status(REQUESTED)
 

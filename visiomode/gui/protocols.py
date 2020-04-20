@@ -14,7 +14,17 @@ def get_protocol(protocol_id, screen, request):
 
 
 class Protocol(object):
+    REQUIRED_ATTRS = (
+        "animal_id",
+        "experiment",
+        "protocol",
+        "duration",
+    )
+
     def __init__(self, screen, request):
+        for key in self.REQUIRED_ATTRS:
+            if key not in request.keys():
+                raise InvalidProtocol("Missing required key - {}".format(key))
         self.screen = screen
         self.is_running = False
 
@@ -33,7 +43,7 @@ class Protocol(object):
     def _timer(self, duration: float):
         start_time = time.time()
         while time.time() - start_time < duration:
-            # If the session has been stopped externally, stop timer
+            # If the session has been stopped, stop timer
             if not self.is_running:
                 return
         self.stop()
@@ -42,6 +52,9 @@ class Protocol(object):
 class Task(Protocol):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
+
+    def _iti_timer(self):
+        return
 
 
 class Presentation(Protocol):
@@ -74,3 +87,7 @@ class SingleTarget(Task):
                     if sprite.rect.collidepoint(event.pos):
                         print("hit!")
                         self.target.clear(self.screen, self.background)
+
+
+class InvalidProtocol(Exception):
+    pass
