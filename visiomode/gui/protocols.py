@@ -10,16 +10,16 @@ import visiomode.gui.stimuli as stim
 
 
 def get_protocol(protocol_id, screen, request):
-    return SingleTarget(screen, request["duration"])
+    return SingleTarget(screen, request)
 
 
 class Protocol(object):
-    def __init__(self, screen, duration):
+    def __init__(self, screen, request):
         self.screen = screen
         self.is_running = False
 
         self._timer_thread = threading.Thread(
-            target=self._timer, args=[duration], daemon=True
+            target=self._timer, args=[float(request["duration"])], daemon=True
         )
 
     def start(self):
@@ -30,9 +30,9 @@ class Protocol(object):
     def stop(self):
         self.is_running = False
 
-    def _timer(self, duration):
+    def _timer(self, duration: float):
         start_time = time.time()
-        while time.time() - start_time < float(duration):
+        while time.time() - start_time < duration:
             # If the session has been stopped externally, stop timer
             if not self.is_running:
                 return
