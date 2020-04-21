@@ -5,8 +5,14 @@
 #  Distributed under the terms of the MIT Licence.
 import time
 import threading
+import queue
 import pygame as pg
 import visiomode.gui.stimuli as stim
+
+
+HIT = "hit"
+MISS = "miss"
+PRECUED = "precued"
 
 
 def get_protocol(protocol_id, screen, request):
@@ -50,11 +56,48 @@ class Protocol(object):
 
 
 class Task(Protocol):
+    # REQUIRED_ATTRS = Protocol.REQUIRED_ATTRS + ("iti",)
+
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
-    def _iti_timer(self):
-        return
+        self.iti = 3  # TODO embed in request
+        self.stim_duration = 2  # TODO embed in request
+
+        self._response_q = queue.Queue()
+
+        self._session_thread = threading.Thread(
+            target=self._session_runner, daemon=True
+        )
+
+    def start(self):
+        super().start()
+        self._session_thread.start()
+
+    def show_stim(self):
+        pass
+
+    def hide_stim(self):
+        pass
+
+    def _session_runner(self):
+        while self.is_running:
+            self.hide_stim()
+            iti_start = time.time()
+            while time.time() - iti_start < self.iti:
+                if not self._response_q.empty():
+                    print("precued")
+                    self._response_q.get()
+                    break
+            else:
+                self.show_stim()
+                stim_start = time.time()
+                while time.time() - stim_start < self.stim_duration:
+                    if not self._response_q.empty():
+                        response = self._response_q.get()
+                        print("hit")
+                        print(response)
+                        break
 
 
 class Presentation(Protocol):
@@ -68,25 +111,29 @@ class SingleTarget(Task):
         self.background = pg.Surface(self.screen.get_size())
         self.background = self.background.convert()
         self.background.fill((0, 0, 0))
+        self.screen.blit(self.background, (0, 0))
         self.target = pg.sprite.RenderClear(stim.Grating(0, 0))
-
-    def start(self):
-        self.target.draw(self.screen)
-        super().start()
 
     def stop(self):
         print("stop")
         self.target.clear(self.screen, self.background)
         super().stop()
-        print(self.is_running)
+
+    def show_stim(self):
+        self.target.draw(self.screen)
+
+    def hide_stim(self):
+        self.target.clear(self.screen, self.background)
 
     def handle_events(self, events):
         for event in events:
             if event.type == pg.MOUSEBUTTONUP:
                 for sprite in self.target.sprites():
                     if sprite.rect.collidepoint(event.pos):
-                        print("hit!")
-                        self.target.clear(self.screen, self.background)
+                        self._response_q.put(("hit", event))
+                        break
+                else:
+                    self._response_q.put(("precued", event))
 
 
 class InvalidProtocol(Exception):
