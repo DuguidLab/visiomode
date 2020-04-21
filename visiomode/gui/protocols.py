@@ -5,8 +5,14 @@
 #  Distributed under the terms of the MIT Licence.
 import time
 import threading
+import queue
 import pygame as pg
 import visiomode.gui.stimuli as stim
+
+
+HIT = "hit"
+MISS = "miss"
+PRECUED = "precued"
 
 
 def get_protocol(protocol_id, screen, request):
@@ -50,11 +56,38 @@ class Protocol(object):
 
 
 class Task(Protocol):
+    # REQUIRED_ATTRS = Protocol.REQUIRED_ATTRS + ("iti",)
+
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
-    def _iti_timer(self):
-        return
+        self.iti = 0.15  # TODO embed in request
+        self.stim_duration = 0.30  # TODO embed in request
+
+        self._response_q = queue.Queue()
+
+    def start(self):
+        self._session_runner()
+        super().start()
+
+    def show_stim(self):
+        pass
+
+    def hide_stim(self):
+        pass
+
+    def _session_runner(self):
+        while self.is_running:
+            iti_start = time.time()
+            while time.time() - iti_start < self.iti:
+                self.hide_stim()
+                if not self._response_q.empty():
+                    break
+            else:
+                self.show_stim()
+                stim_start = time.time()
+                while time.time() - stim_start < self.stim_duration:
+                    pass
 
 
 class Presentation(Protocol):
@@ -71,7 +104,6 @@ class SingleTarget(Task):
         self.target = pg.sprite.RenderClear(stim.Grating(0, 0))
 
     def start(self):
-        self.target.draw(self.screen)
         super().start()
 
     def stop(self):
@@ -80,13 +112,19 @@ class SingleTarget(Task):
         super().stop()
         print(self.is_running)
 
+    def show_stim(self):
+        self.target.draw(self.screen)
+
+    def hide_stim(self):
+        self.target.clear(self.screen, self.background)
+
     def handle_events(self, events):
         for event in events:
             if event.type == pg.MOUSEBUTTONUP:
                 for sprite in self.target.sprites():
                     if sprite.rect.collidepoint(event.pos):
                         print("hit!")
-                        self.target.clear(self.screen, self.background)
+                        self._response_q.put(event)
 
 
 class InvalidProtocol(Exception):
