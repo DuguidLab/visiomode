@@ -61,14 +61,18 @@ class Task(Protocol):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
-        self.iti = 0.15  # TODO embed in request
-        self.stim_duration = 0.30  # TODO embed in request
+        self.iti = 3  # TODO embed in request
+        self.stim_duration = 2  # TODO embed in request
 
         self._response_q = queue.Queue()
 
+        self._session_thread = threading.Thread(
+            target=self._session_runner, daemon=True
+        )
+
     def start(self):
-        self._session_runner()
         super().start()
+        self._session_thread.start()
 
     def show_stim(self):
         pass
@@ -78,16 +82,22 @@ class Task(Protocol):
 
     def _session_runner(self):
         while self.is_running:
+            self.hide_stim()
             iti_start = time.time()
             while time.time() - iti_start < self.iti:
-                self.hide_stim()
                 if not self._response_q.empty():
+                    print("precued")
+                    self._response_q.get()
                     break
             else:
                 self.show_stim()
                 stim_start = time.time()
                 while time.time() - stim_start < self.stim_duration:
-                    pass
+                    if not self._response_q.empty():
+                        response = self._response_q.get()
+                        print("hit")
+                        print(response)
+                        break
 
 
 class Presentation(Protocol):
@@ -101,16 +111,13 @@ class SingleTarget(Task):
         self.background = pg.Surface(self.screen.get_size())
         self.background = self.background.convert()
         self.background.fill((0, 0, 0))
+        self.screen.blit(self.background, (0, 0))
         self.target = pg.sprite.RenderClear(stim.Grating(0, 0))
-
-    def start(self):
-        super().start()
 
     def stop(self):
         print("stop")
         self.target.clear(self.screen, self.background)
         super().stop()
-        print(self.is_running)
 
     def show_stim(self):
         self.target.draw(self.screen)
@@ -123,8 +130,10 @@ class SingleTarget(Task):
             if event.type == pg.MOUSEBUTTONUP:
                 for sprite in self.target.sprites():
                     if sprite.rect.collidepoint(event.pos):
-                        print("hit!")
-                        self._response_q.put(event)
+                        self._response_q.put(("hit", event))
+                        break
+                else:
+                    self._response_q.put(("precued", event))
 
 
 class InvalidProtocol(Exception):
