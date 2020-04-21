@@ -35,11 +35,28 @@ class BaseStimulus(pg.sprite.Sprite):
 class Grating(BaseStimulus):
     def __init__(self, x, y, *args):
         super().__init__(*args)
-        array = np.zeros((600, 400, 3), np.int32)
-        array[:] = (0, 0, 0)
-        array[:, ::5] = (255, 255, 255)
+
+        theta = np.pi / 4
+        omega = [np.cos(theta), np.sin(theta)]
+
+        array = self.gen_sinusoid((400, 600), 1, omega, np.pi / 2)
         self.image = pg.surfarray.make_surface(array)
         self.rect = self.image.get_rect()
         # self.image, self.rect = load_image("target.jpg")
         screen = pg.display.get_surface()
         self.area = screen.get_rect()
+
+    @staticmethod
+    def gen_sinusoid(sz, a, omega, rho):
+        """http://vision.psych.umn.edu/users/kersten
+        /kersten-lab/courses/Psy5036W2017/Lectures/17_PythonForVision/Demos/html/2b.Gabor.html"""
+        # Generate Sinusoid grating
+        # sz: size of generated image (width, height)
+        radius = (int(sz[0] / 2.0), int(sz[1] / 2.0))
+        [x, y] = np.meshgrid(
+            range(-radius[0], radius[0] + 1), range(-radius[1], radius[1] + 1),
+        )
+
+        sinusoid = a * np.cos(omega[0] * x + omega[1] * y + rho)
+        print(sinusoid.astype(np.int8))
+        return sinusoid
