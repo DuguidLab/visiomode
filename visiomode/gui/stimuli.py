@@ -27,13 +27,19 @@ def load_image(name):
     return image, image.get_rect()
 
 
+def normalise_array(array: np.array):
+    """Cast array to a UINT8 image matrix"""
+    image = ((array - array.min()) / (array.max() - array.min())) * 255
+    return image.astype(np.uint8)
+
+
 class BaseStimulus(pg.sprite.Sprite):
     def __init__(self, *args):
         super().__init__(*args)
 
 
 class Grating(BaseStimulus):
-    def __init__(self, x, y, *args):
+    def __init__(self, *args):
         super().__init__(*args)
 
         theta = np.pi / 4
@@ -58,14 +64,4 @@ class Grating(BaseStimulus):
         sinusoid = np.array(
             [[y[j] for j in range(400)] for i in range(600)]
         )  # create 2-D array of sine-wave
-        return np.stack((Grating.norm8(sinusoid),) * 3, axis=-1)
-
-    @staticmethod
-    def norm8(I):
-        mn = I.min()
-        mx = I.max()
-
-        mx -= mn
-
-        I = ((I - mn) / mx) * 255
-        return I.astype(np.uint8)
+        return np.stack((normalise_array(sinusoid),) * 3, axis=-1)

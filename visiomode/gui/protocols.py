@@ -112,7 +112,7 @@ class SingleTarget(Task):
         self.background = self.background.convert()
         self.background.fill((0, 0, 0))
         self.screen.blit(self.background, (0, 0))
-        self.target = pg.sprite.RenderClear(stim.Grating(0, 0))
+        self.target = pg.sprite.RenderClear(stim.Grating())
 
     def stop(self):
         print("stop")
