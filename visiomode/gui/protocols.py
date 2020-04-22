@@ -90,6 +90,8 @@ class Task(Protocol):
                     self._response_q.get()
                     break
             else:
+                if not self.is_running:
+                    return
                 self.show_stim()
                 stim_start = time.time()
                 while time.time() - stim_start < self.stim_duration:
@@ -116,8 +118,8 @@ class SingleTarget(Task):
 
     def stop(self):
         print("stop")
-        self.target.clear(self.screen, self.background)
         super().stop()
+        self.target.clear(self.screen, self.background)
 
     def show_stim(self):
         self.target.draw(self.screen)
