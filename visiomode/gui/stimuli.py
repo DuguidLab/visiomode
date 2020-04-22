@@ -48,15 +48,24 @@ class Grating(BaseStimulus):
 
     @staticmethod
     def gen_sinusoid(sz, a, omega, rho):
-        """http://vision.psych.umn.edu/users/kersten
-        /kersten-lab/courses/Psy5036W2017/Lectures/17_PythonForVision/Demos/html/2b.Gabor.html"""
-        # Generate Sinusoid grating
-        # sz: size of generated image (width, height)
-        radius = (int(sz[0] / 2.0), int(sz[1] / 2.0))
-        [x, y] = np.meshgrid(
-            range(-radius[0], radius[0] + 1), range(-radius[1], radius[1] + 1),
-        )
+        x = np.arange(400)  # generate 1-D sine wave of required period
+        y = np.sin(2 * np.pi * x / 20)
 
-        sinusoid = a * np.cos(omega[0] * x + omega[1] * y + rho)
-        print(sinusoid.astype(np.int8))
-        return sinusoid
+        y += max(
+            y
+        )  # offset sine wave by the max value to go out of negative range of sine
+
+        sinusoid = np.array(
+            [[y[j] for j in range(400)] for i in range(600)]
+        )  # create 2-D array of sine-wave
+        return np.stack((Grating.norm8(sinusoid),) * 3, axis=-1)
+
+    @staticmethod
+    def norm8(I):
+        mn = I.min()
+        mx = I.max()
+
+        mx -= mn
+
+        I = ((I - mn) / mx) * 255
+        return I.astype(np.uint8)
