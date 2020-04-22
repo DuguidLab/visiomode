@@ -45,7 +45,7 @@ class Grating(BaseStimulus):
         theta = np.pi / 4
         omega = [np.cos(theta), np.sin(theta)]
 
-        array = self.gen_sinusoid((400, 600), 1, omega, np.pi / 2)
+        array = self.gen_sinusoid()
         self.image = pg.surfarray.make_surface(array)
         self.rect = self.image.get_rect()
         # self.image, self.rect = load_image("target.jpg")
@@ -53,8 +53,8 @@ class Grating(BaseStimulus):
         self.area = screen.get_rect()
 
     @staticmethod
-    def gen_sinusoid(sz, a, omega, rho):
-        x = np.arange(400)  # generate 1-D sine wave of required period
+    def gen_sinusoid():
+        x = np.arange(600)  # generate 1-D sine wave of required period
         y = np.sin(2 * np.pi * x / 20)
 
         y += max(
