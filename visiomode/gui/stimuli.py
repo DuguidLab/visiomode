@@ -42,18 +42,14 @@ class Grating(BaseStimulus):
     def __init__(self, *args):
         super().__init__(*args)
 
-        theta = np.pi / 4
-        omega = [np.cos(theta), np.sin(theta)]
-
-        array = self.gen_sinusoid(600, 400)
+        array = self.sinusoid(600, 400)
         self.image = pg.surfarray.make_surface(array)
         self.rect = self.image.get_rect()
-        # self.image, self.rect = load_image("target.jpg")
         screen = pg.display.get_surface()
         self.area = screen.get_rect()
 
     @staticmethod
-    def gen_sinusoid(width, height, period=20):
+    def sinusoid(width, height, period=20):
         # generate 1-D sine wave of required period
         x = np.arange(width)
         y = np.sin(2 * np.pi * x / period)
