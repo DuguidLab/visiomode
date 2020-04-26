@@ -9,7 +9,6 @@ import queue
 import pygame as pg
 import visiomode.gui.stimuli as stim
 
-
 HIT = "hit"
 MISS = "miss"
 PRECUED = "precued"
@@ -90,6 +89,7 @@ class Task(Protocol):
                     self._response_q.get()
                     break
             else:
+                # To prevent stimulus showing after the session has ended, check if the session is still running.
                 if not self.is_running:
                     return
                 self.show_stim()
