@@ -27,13 +27,13 @@ def load_image(name):
     return image, image.get_rect()
 
 
-def normalise_array(array: np.array):
+def normalise_array(array: np.ndarray) -> np.ndarray:
     """Cast array to a UINT8 image matrix."""
-    image = ((array - array.min()) / (array.max() - array.min())) * 255
+    image = ((array - np.min(array)) / (np.max(array) - np.min(array))) * 255
     return image.astype(np.uint8)
 
 
-def grayscale_array(array: np.array):
+def grayscale_array(array: np.ndarray) -> np.ndarray:
     """Convert a 2D array to 3D array of grayscale values."""
     return np.stack((normalise_array(array),) * 3, axis=-1)
 
