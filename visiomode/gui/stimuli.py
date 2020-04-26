@@ -28,9 +28,14 @@ def load_image(name):
 
 
 def normalise_array(array: np.array):
-    """Cast array to a UINT8 image matrix"""
+    """Cast array to a UINT8 image matrix."""
     image = ((array - array.min()) / (array.max() - array.min())) * 255
     return image.astype(np.uint8)
+
+
+def grayscale_array(array: np.array):
+    """Convert a 2D array to 3D array of grayscale values."""
+    return np.stack((normalise_array(array),) * 3, axis=-1)
 
 
 class BaseStimulus(pg.sprite.Sprite):
@@ -59,4 +64,4 @@ class Grating(BaseStimulus):
 
         # create 2-D array of sine-wave
         sinusoid = np.array([[y[j] for j in range(height)] for i in range(width)])
-        return np.stack((normalise_array(sinusoid),) * 3, axis=-1)
+        return grayscale_array(sinusoid)
