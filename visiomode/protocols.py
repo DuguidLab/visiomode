@@ -7,8 +7,7 @@ import time
 import threading
 import queue
 import pygame as pg
-import visiomode.gui.stimuli as stim
-
+import stimuli as stim
 
 HIT = "hit"
 MISS = "miss"
@@ -90,6 +89,9 @@ class Task(Protocol):
                     self._response_q.get()
                     break
             else:
+                # To prevent stimulus showing after the session has ended, check if the session is still running.
+                if not self.is_running:
+                    return
                 self.show_stim()
                 stim_start = time.time()
                 while time.time() - stim_start < self.stim_duration:
@@ -112,12 +114,12 @@ class SingleTarget(Task):
         self.background = self.background.convert()
         self.background.fill((0, 0, 0))
         self.screen.blit(self.background, (0, 0))
-        self.target = pg.sprite.RenderClear(stim.Grating(0, 0))
+        self.target = pg.sprite.RenderClear(stim.Grating())
 
     def stop(self):
         print("stop")
-        self.target.clear(self.screen, self.background)
         super().stop()
+        self.target.clear(self.screen, self.background)
 
     def show_stim(self):
         self.target.draw(self.screen)
