@@ -6,7 +6,8 @@
 
 import pygame as pg
 import visiomode.storage as storage
-import protocols as protocols
+import visiomode.webpanel as webpanel
+import visiomode.protocols as protocols
 
 import faulthandler  # report segmentation faults as tracebacks
 
@@ -16,13 +17,17 @@ rds = storage.RedisClient()
 
 
 def main():
+    """Application entry point"""
     # Subscribe to Redis status updates
     status_sub = rds.subscribe_status(threaded=False)
+
+    # Initialise webpanel, run in background
+    webpanel.runserver(threaded=True)
 
     # Initialise screen
     pg.init()
     screen = pg.display.set_mode((600, 400))
-    pg.display.set_caption("Basic Pygame program")
+    pg.display.set_caption("Visiomode")
 
     # Fill background
     background = pg.Surface(screen.get_size())
