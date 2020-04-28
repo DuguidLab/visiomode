@@ -1,16 +1,17 @@
+<p align="center">
+  <img width="250" height="250" src="./resources/visiomode_logo_icon.png"  alt="logo"/>
+</p>
+
 # Visiomode
 
 
-<p align="center">
-  <img width="450" height="450" src="./resources/visiomode_logo_icon.png"  alt="logo"/>
-</p>
-
-master → 
+Project Status: 
+- master → 
  [![Build Status](https://travis-ci.com/celefthe/visiomode.svg?token=hMvCpbzh7tYAgFpNy6BK&branch=master)](https://travis-ci.com/celefthe/visiomode) 
 [![codecov](https://codecov.io/gh/celefthe/visiomode/branch/master/graph/badge.svg?token=1O1WDTTHOH)](https://codecov.io/gh/celefthe/visiomode) 
 [![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
  
-develop → 
+- develop → 
  [![Build Status](https://travis-ci.com/celefthe/visiomode.svg?token=hMvCpbzh7tYAgFpNy6BK&branch=develop)](https://travis-ci.com/celefthe/visiomode) 
 [![codecov](https://codecov.io/gh/celefthe/visiomode/branch/develop/graph/badge.svg?token=1O1WDTTHOH)](https://codecov.io/gh/celefthe/visiomode) 
 [![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
