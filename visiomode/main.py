@@ -6,7 +6,7 @@
 
 import pygame as pg
 import visiomode.storage as storage
-import visiomode.gui.protocols as protocols
+import protocols as protocols
 
 import faulthandler  # report segmentation faults as tracebacks
 
