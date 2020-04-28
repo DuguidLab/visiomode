@@ -1,8 +1,9 @@
-# Visiomode
-
 <p align="center">
-  <img width="250" height="250" src="./resources/visiomode_logo_icon.png"  alt="logo"/>
+  <img width="125" height="125" src="./resources/visiomode_logo_icon.png"  alt="logo"/>
 </p>
+
+
+<h1 align="center">Visiomode</h1>
 
  [![Build Status](https://travis-ci.com/celefthe/visiomode.svg?token=hMvCpbzh7tYAgFpNy6BK&branch=master)](https://travis-ci.com/celefthe/visiomode) 
 [![codecov](https://codecov.io/gh/celefthe/visiomode/branch/master/graph/badge.svg?token=1O1WDTTHOH)](https://codecov.io/gh/celefthe/visiomode) 
