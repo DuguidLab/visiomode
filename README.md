@@ -14,4 +14,6 @@ Visiomode is an open-source platform for rodent touchscreen-based visuomotor tas
 
 ## Funders
 
-![SIDB](./resources/sidb.jpg)
+<p align="center">
+  <img width="250" src="./resources/sidb.jpg"  alt="logo"/>
+</p>
