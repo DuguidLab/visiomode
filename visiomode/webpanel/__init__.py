@@ -87,7 +87,10 @@ def runserver(threaded=False):
     socketio.on_namespace(sess.SessionNamespace("/session"))
     if threaded:
         thread = threading.Thread(
-            target=socketio.run, args=(app,), kwargs={"use_reloader": False}
+            target=socketio.run,
+            args=(app,),
+            kwargs={"use_reloader": False},
+            daemon=True,
         )
         return thread.start()
     socketio.run(app)
