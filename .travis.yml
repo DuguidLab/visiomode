@@ -5,7 +5,17 @@ language: python
 python:
   - "3.7"
 install:
-  - pip install -r requirements.txt
+    - wget https://repo.continuum.io/miniconda/Miniconda3-latest-Linux-x86_64.sh -O miniconda.sh;
+    - bash miniconda.sh -b -p $HOME/miniconda
+    - source "$HOME/miniconda/etc/profile.d/conda.sh"
+    - hash -r
+    - conda config --set always_yes yes --set changeps1 no
+    - conda update -q conda
+    - conda info -a  # debug conda issues
+
+    # Replace dep1 dep2 ... with your dependencies
+    - conda conda env create -f dev-environment.yml
+    - conda activate visiomode
 script:
   - coverage run -m pytest
 after_success:
