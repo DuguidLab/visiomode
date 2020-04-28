@@ -39,14 +39,23 @@ def main():
     text = font.render("Ready", 1, (255, 255, 255))
     textpos = text.get_rect()
     textpos.centerx = background.get_rect().centerx
-    textpos.centery = background.get_rect().centery
+    textpos.centery = background.get_rect().centery + 60
     background.blit(text, textpos)
 
-    protocol = None
+    # Loading screen - wait until webpanel comes online
+    loading_icon = pg.image.load("visiomode/res/loading.png")
+    loading_icon = pg.transform.smoothscale(loading_icon, (100, 100))
+    loading_icon_pos = loading_icon.get_rect()
+    loading_icon_pos.centerx = background.get_rect().centerx
+    loading_icon_pos.centery = background.get_rect().centery - 40
+
+    background.blit(loading_icon, loading_icon_pos)
 
     # Blit everything to the screen
     screen.blit(background, (0, 0))
     pg.display.flip()
+
+    protocol = None
 
     # Event loop
     while True:
