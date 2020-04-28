@@ -13,8 +13,7 @@ install:
     - conda update -q conda
     - conda info -a  # debug conda issues
 
-    # Replace dep1 dep2 ... with your dependencies
-    - conda conda env create -f dev-environment.yml
+    - conda env create -f dev-environment.yml
     - conda activate visiomode
 script:
   - coverage run -m pytest
