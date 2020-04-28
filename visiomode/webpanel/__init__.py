@@ -6,6 +6,7 @@
 
 import os
 import logging
+import threading
 
 import flask
 import flask_socketio as sock
@@ -79,11 +80,16 @@ def create_app():
     return app
 
 
-def runserver():
+def runserver(threaded=False):
     """Runs the flask app in an integrated server."""
     app = create_app()
     socketio = sock.SocketIO(app)
     socketio.on_namespace(sess.SessionNamespace("/session"))
+    if threaded:
+        thread = threading.Thread(
+            target=socketio.run, args=(app,), kwargs={"use_reloader": False}
+        )
+        return thread.start()
     socketio.run(app)
 
 
