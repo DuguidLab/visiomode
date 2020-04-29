@@ -15,6 +15,8 @@ faulthandler.enable()
 
 rds = storage.RedisClient()
 
+clock = pg.time.Clock()
+
 
 def main():
     """Application entry point"""
@@ -24,15 +26,17 @@ def main():
     # Initialise webpanel, run in background
     webpanel.runserver(threaded=True)
 
-    # Initialise screen
+    # Initialise GUI
     pg.init()
-    screen = pg.display.set_mode((600, 400))
-    pg.display.set_caption("Visiomode")
 
     # Set app icon
     # Dimensions should be 512x512, 300 ppi for retina
     icon = pg.image.load("visiomode/res/icon.png")
     pg.display.set_icon(icon)
+
+    # Initialise screen
+    screen = pg.display.set_mode((600, 400))
+    pg.display.set_caption("Visiomode")
 
     # Fill background
     background = pg.Surface(screen.get_size())
@@ -52,17 +56,26 @@ def main():
     # Loading screen - wait until webpanel comes online
     loading_img = pg.image.load("visiomode/res/loading.png")
     loading_img = pg.transform.smoothscale(loading_img, (100, 100))
-    loading_icon_pos = loading_img.get_rect()
-    loading_icon_pos.centerx = background.get_rect().centerx
-    loading_icon_pos.centery = (
+    loading_img_pos = loading_img.get_rect()
+    loading_img_pos.centerx = background.get_rect().centerx
+    loading_img_pos.centery = (
         background.get_rect().centery - 40
     )  # TODO calculate offset at runtime
 
-    background.blit(loading_img, loading_icon_pos)
+    background.blit(loading_img, loading_img_pos)
 
     # Blit everything to the screen
     screen.blit(background, (0, 0))
     pg.display.flip()
+
+    # done = False
+    # angle = 0
+    # while not done:
+    #     angle += 1
+    #     image = pg.transform.rotate(loading_img, angle)
+    #     background.blit(image, loading_img_pos)
+    #     screen.blit(background, (0, 0))
+    #     pg.display.flip()
 
     protocol = None
 
