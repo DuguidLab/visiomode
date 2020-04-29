@@ -9,9 +9,6 @@ import visiomode.storage as storage
 import visiomode.webpanel as webpanel
 import visiomode.protocols as protocols
 
-import faulthandler  # report segmentation faults as tracebacks
-
-faulthandler.enable()
 
 rds = storage.RedisClient()
 
