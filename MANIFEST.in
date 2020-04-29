@@ -1,0 +1,3 @@
+recursive-include visiomode/webpanel/templates *
+recursive-include visiomode/webpanel/static *
+recursive-include visiomode/res *
