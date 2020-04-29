@@ -29,6 +29,11 @@ def main():
     screen = pg.display.set_mode((600, 400))
     pg.display.set_caption("Visiomode")
 
+    # Set app icon
+    # Dimensions should be 512x512, 300 ppi for retina
+    icon = pg.image.load("visiomode/res/icon.png")
+    pg.display.set_icon(icon)
+
     # Fill background
     background = pg.Surface(screen.get_size())
     background = background.convert()
@@ -39,17 +44,21 @@ def main():
     text = font.render("Ready", 1, (255, 255, 255))
     textpos = text.get_rect()
     textpos.centerx = background.get_rect().centerx
-    textpos.centery = background.get_rect().centery + 60
+    textpos.centery = (
+        background.get_rect().centery + 60
+    )  # TODO calculate offset at runtime
     background.blit(text, textpos)
 
     # Loading screen - wait until webpanel comes online
-    loading_icon = pg.image.load("visiomode/res/loading.png")
-    loading_icon = pg.transform.smoothscale(loading_icon, (100, 100))
-    loading_icon_pos = loading_icon.get_rect()
+    loading_img = pg.image.load("visiomode/res/loading.png")
+    loading_img = pg.transform.smoothscale(loading_img, (100, 100))
+    loading_icon_pos = loading_img.get_rect()
     loading_icon_pos.centerx = background.get_rect().centerx
-    loading_icon_pos.centery = background.get_rect().centery - 40
+    loading_icon_pos.centery = (
+        background.get_rect().centery - 40
+    )  # TODO calculate offset at runtime
 
-    background.blit(loading_icon, loading_icon_pos)
+    background.blit(loading_img, loading_icon_pos)
 
     # Blit everything to the screen
     screen.blit(background, (0, 0))
