@@ -45,7 +45,7 @@ def main():
 
     # Display some text
     font = pg.font.Font(None, 36)
-    text = font.render("Ready", 1, (255, 255, 255))
+    text = font.render("Loading...", 1, (255, 255, 255))
     textpos = text.get_rect()
     textpos.centerx = background.get_rect().centerx
     textpos.centery = (
@@ -68,14 +68,43 @@ def main():
     screen.blit(background, (0, 0))
     pg.display.flip()
 
-    # done = False
-    # angle = 0
-    # while not done:
-    #     angle += 1
-    #     image = pg.transform.rotate(loading_img, angle)
-    #     background.blit(image, loading_img_pos)
-    #     screen.blit(background, (0, 0))
-    #     pg.display.flip()
+    def rotate(image, rect, angle):
+        """Rotate the image while keeping its center."""
+        # Rotate the original image without modifying it.
+        new_image = pg.transform.rotozoom(image, angle, 1)
+        # Get a new rect with the center of the old rect.
+        rect = new_image.get_rect(center=rect.center)
+        return new_image, rect
+
+    angle = 0
+    while angle != 1080:
+        events = pg.event.get()
+        for event in events:
+            if event.type == pg.QUIT:
+                return
+
+        angle += 5
+
+        image, rect = rotate(loading_img, loading_img_pos, angle)
+
+        background.blit(image, rect)
+        screen.blit(background, (0, 0))
+        pg.display.flip()
+        clock.tick(100)
+
+    text.fill((0, 0, 0))
+    background.blit(text, textpos)
+    text = font.render("Ready", 1, (255, 255, 255))
+
+    textpos = text.get_rect()
+    textpos.centerx = background.get_rect().centerx
+    textpos.centery = (
+        background.get_rect().centery + 60
+    )  # TODO calculate offset at runtime
+    background.blit(text, textpos)
+    screen.blit(background, (0, 0))
+
+    pg.display.flip()
 
     protocol = None
 
