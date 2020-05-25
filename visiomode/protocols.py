@@ -7,7 +7,7 @@ import time
 import threading
 import queue
 import pygame as pg
-import stimuli as stim
+import visiomode.stimuli as stim
 
 HIT = "hit"
 MISS = "miss"
