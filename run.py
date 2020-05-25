@@ -8,4 +8,4 @@ import visiomode.core
 
 faulthandler.enable()
 
-visiomode.core.main()
+visiomode.core.Visiomode()
