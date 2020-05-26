@@ -146,7 +146,3 @@ def rotate(image, rect, angle):
     # Get a new rect with the center of the old rect.
     rect = new_image.get_rect(center=rect.center)
     return new_image, rect
-
-
-def show_text(screen, background, text):
-    pass
