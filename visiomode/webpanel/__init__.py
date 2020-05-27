@@ -12,6 +12,7 @@ import flask
 import flask_socketio as sock
 import visiomode.config as cfg
 import visiomode.storage as storage
+import visiomode.protocols as protocols
 import visiomode.webpanel.session as sess
 
 
@@ -50,7 +51,11 @@ def create_app():
     @app.route("/session")
     def session():
         """Session page."""
-        return flask.render_template("session.html")
+        return flask.render_template(
+            "session.html",
+            tasks=protocols.Task.__subclasses__(),
+            presentations=protocols.Presentation.__subclasses__(),
+        )
 
     @app.route("/history")
     def history():
