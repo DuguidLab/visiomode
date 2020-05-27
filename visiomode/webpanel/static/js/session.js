@@ -4,6 +4,7 @@
  * Distributed under the terms of the MIT Licence.
  */
 
+/// Websocket communication with backend
 let socket = io.connect('/session');
 
 let session_status;
@@ -26,10 +27,10 @@ socket.on('status', function(status) {
     }
 });
 
-var form = document.getElementById('session-form');
-var session_button = document.getElementById('session-control-btn');
-var status_icon = document.getElementById('status-icon');
-var status_text = document.getElementById('status-text');
+let form = document.getElementById('session-form');
+let session_button = document.getElementById('session-control-btn');
+let status_icon = document.getElementById('status-icon');
+let status_text = document.getElementById('status-text');
 
 
 session_button.onclick = function () {
@@ -64,7 +65,7 @@ function setStatusActive () {
 
     // disable input fields
     let fields = form.getElementsByClassName('form-control');
-    for (var i = 0; i < fields.length; i++)
+    for (let i = 0; i < fields.length; i++)
     {
         fields[i].disabled = true;
     }
@@ -82,7 +83,7 @@ function setStatusInactive () {
 
     // enable input fields
     let fields = form.getElementsByClassName('form-control');
-    for (var i = 0; i < fields.length; i++)
+    for (let i = 0; i < fields.length; i++)
     {
         fields[i].disabled = false;
     }
@@ -98,8 +99,12 @@ function setStatusWaiting () {
 
     // enable input fields
     let fields = form.getElementsByClassName('form-control');
-    for (var i = 0; i < fields.length; i++)
+    for (let i = 0; i < fields.length; i++)
     {
         fields[i].disabled = true;
     }
 }
+
+
+/// Dynamic form updates for protocol / stimulus selection
+
