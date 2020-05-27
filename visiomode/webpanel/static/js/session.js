@@ -108,3 +108,7 @@ function setStatusWaiting () {
 
 /// Dynamic form updates for protocol / stimulus selection
 
+// load available protocols
+
+
+// load available stimuli

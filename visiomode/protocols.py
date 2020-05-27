@@ -25,6 +25,7 @@ class Protocol(object):
         "protocol",
         "duration",
     )
+    FORM_PATH = "protocols/protocol.html"
 
     def __init__(self, screen, request):
         for key in self.REQUIRED_ATTRS:

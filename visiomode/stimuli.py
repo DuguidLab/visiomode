@@ -35,11 +35,15 @@ def grayscale_array(array: np.ndarray) -> np.ndarray:
 
 
 class BaseStimulus(pg.sprite.Sprite):
+    FORM_PATH = "stimuli/stimulus.html"
+
     def __init__(self, *args):
         super().__init__(*args)
 
 
 class Grating(BaseStimulus):
+    FORM_PATH = "stimuli/grating.html"
+
     def __init__(self, *args):
         super().__init__(*args)
 
