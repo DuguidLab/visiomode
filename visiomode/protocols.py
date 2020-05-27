@@ -3,6 +3,7 @@
 #  This file is part of visiomode.
 #  Copyright (c) 2020 Constantinos Eleftheriou <Constantinos.Eleftheriou@ed.ac.uk>
 #  Distributed under the terms of the MIT Licence.
+import re
 import time
 import threading
 import queue
@@ -19,16 +20,16 @@ def get_protocol(protocol_id, screen, request):
 
 
 class Protocol(object):
-    REQUIRED_ATTRS = (
+    requred_attrs = (
         "animal_id",
         "experiment",
         "protocol",
         "duration",
     )
-    FORM_PATH = "protocols/protocol.html"
+    form_path = "protocols/protocol.html"
 
     def __init__(self, screen, request):
-        for key in self.REQUIRED_ATTRS:
+        for key in self.requred_attrs:
             if key not in request.keys():
                 raise InvalidProtocol("Missing required key - {}".format(key))
         self.screen = screen
@@ -54,10 +55,13 @@ class Protocol(object):
                 return
         self.stop()
 
+    @classmethod
+    def get_common_name(cls):
+        """"Return the human-readable, space-separated name for the class."""
+        return re.sub(r"((?<=[a-z])[A-Z]|(?<!\A)[A-Z](?=[a-z]))", r" \1", cls.__name__)
+
 
 class Task(Protocol):
-    # REQUIRED_ATTRS = Protocol.REQUIRED_ATTRS + ("iti",)
-
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
