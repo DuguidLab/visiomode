@@ -60,6 +60,11 @@ class Protocol(object):
         """"Return the human-readable, space-separated name for the class."""
         return re.sub(r"((?<=[a-z])[A-Z]|(?<!\A)[A-Z](?=[a-z]))", r" \1", cls.__name__)
 
+    @classmethod
+    def get_children(cls):
+        """Return all inheriting children as a list."""
+        return cls.__subclasses__()
+
 
 class Task(Protocol):
     def __init__(self, *args, **kwargs):

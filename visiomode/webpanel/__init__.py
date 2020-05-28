@@ -53,8 +53,8 @@ def create_app():
         """Session page."""
         return flask.render_template(
             "session.html",
-            tasks=protocols.Task.__subclasses__(),
-            presentations=protocols.Presentation.__subclasses__(),
+            tasks=protocols.Task.get_children(),
+            presentations=protocols.Presentation.get_children(),
         )
 
     @app.route("/history")
