@@ -54,9 +54,19 @@
                                     <div class="col">
                                         <div><a class="btn btn-outline-primary btn-block" data-toggle="collapse"
                                                 aria-expanded="false" aria-controls="collapse-1"
-                                                href="#collapse-1" role="button">More Options</a>
-                                            <div class="collapse" id="collapse-1">
-                                                <p>Collapse content.</p>
+                                                href="#collapse-options" role="button">More Options</a>
+                                            <div class="collapse" id="collapse-options" style="margin-top: 10px">
+                                                <div class="row">
+                                                    <div class="col">
+                                                        <label for="stimulus">Stimulus</label>
+                                                        <select id="stimulus" class="form-control mb-3">
+                                                            {% for stimulus in stimuli %}
+                                                                <option value="{{ stimulus }}">{{ stimulus.get_common_name() }}</option>
+                                                            {% endfor %}
+                                                        </select>
+                                                    </div>
+                                                    <div class="col"></div>
+                                                </div>
                                                 <div id="stimulus-options"></div>
                                                 <div id="protocol-options"></div>
                                             </div>

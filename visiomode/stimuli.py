@@ -4,6 +4,7 @@
 #  Copyright (c) 2020 Constantinos Eleftheriou <Constantinos.Eleftheriou@ed.ac.uk>
 #  Distributed under the terms of the MIT Licence.
 import os
+import re
 import numpy as np
 import pygame as pg
 
@@ -39,6 +40,16 @@ class BaseStimulus(pg.sprite.Sprite):
 
     def __init__(self, *args):
         super().__init__(*args)
+
+    @classmethod
+    def get_common_name(cls):
+        """"Return the human-readable, space-separated name for the class."""
+        return re.sub(r"((?<=[a-z])[A-Z]|(?<!\A)[A-Z](?=[a-z]))", r" \1", cls.__name__)
+
+    @classmethod
+    def get_children(cls):
+        """Return all inheriting children as a list."""
+        return cls.__subclasses__()
 
 
 class Grating(BaseStimulus):

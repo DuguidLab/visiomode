@@ -13,6 +13,7 @@ import flask_socketio as sock
 import visiomode.config as cfg
 import visiomode.storage as storage
 import visiomode.protocols as protocols
+import visiomode.stimuli as stimuli
 import visiomode.webpanel.session as sess
 
 
@@ -55,6 +56,7 @@ def create_app():
             "session.html",
             tasks=protocols.Task.get_children(),
             presentations=protocols.Presentation.get_children(),
+            stimuli=stimuli.BaseStimulus.get_children(),
         )
 
     @app.route("/history")
