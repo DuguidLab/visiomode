@@ -5,6 +5,7 @@
 #  Distributed under the terms of the MIT Licence.
 import os
 import re
+import flask
 import numpy as np
 import pygame as pg
 
@@ -36,7 +37,7 @@ def grayscale_array(array: np.ndarray) -> np.ndarray:
 
 
 class BaseStimulus(pg.sprite.Sprite):
-    FORM_PATH = "stimuli/stimulus.html"
+    form_path = "stimuli/stimulus.html"
 
     def __init__(self, *args):
         super().__init__(*args)
@@ -51,9 +52,17 @@ class BaseStimulus(pg.sprite.Sprite):
         """Return all inheriting children as a list."""
         return cls.__subclasses__()
 
+    @classmethod
+    def get_identifier(cls):
+        return cls.__name__.lower()
+
+    @classmethod
+    def get_form(cls):
+        return flask.render_template(cls.form_path)
+
 
 class Grating(BaseStimulus):
-    FORM_PATH = "stimuli/grating.html"
+    form_path = "stimuli/grating.html"
 
     def __init__(self, *args):
         super().__init__(*args)

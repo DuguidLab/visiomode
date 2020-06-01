@@ -1,11 +1,26 @@
 <div class="row">
     <div class="col">
-        <label for="stimulus">Stimulus Type</label>
+        <label for="stimulus">Target</label>
         <select id="stimulus" class="form-control mb-3">
             {% for stimulus in stimuli %}
-                <option value="{{ stimulus }}">{{ stimulus.get_common_name() }}</option>
+                <option value="{{ stimulus.get_identifier() }}">{{ stimulus.get_common_name() }}</option>
             {% endfor %}
         </select>
     </div>
     <div class="col"></div>
 </div>
+<div class="row">
+    <div id="test-stim" class="col"></div>
+    <div class="col"></div>
+</div>
+
+<script>
+    stim_selector = document.getElementById('stimulus');
+
+    stim_selector.onchange = function () {
+        $.get("/api/stimulus-form/" + stim_selector.value).done(function (data) {
+            $('#test-stim').html(data);
+        })
+    }
+    stim_selector.onchange();
+</script>

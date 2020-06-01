@@ -87,6 +87,14 @@ def create_app():
                 return protocol.get_form()
         return "No Additional Options"
 
+    @app.route("/api/stimulus-form/<stimulus_id>")
+    def get_stimulus_form(stimulus_id):
+        stims = stimuli.BaseStimulus.get_children()
+        for stimulus in stims:
+            if stimulus.get_identifier() == stimulus_id:
+                return stimulus.get_form()
+        return "No Additional Options"
+
     @app.errorhandler(404)
     def page_not_found(e):
         """404 page not found redirect."""
