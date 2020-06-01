@@ -103,7 +103,7 @@ function setStatusWaiting() {
 }
 
 
-/// Dynamic form updates for protocol / stimulus selection
+/// Dynamic form updates for protocol selection
 
 // load protocol options on select
 protocol_selector = document.getElementById('protocol');
