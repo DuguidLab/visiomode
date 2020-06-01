@@ -110,7 +110,6 @@ protocol_selector = document.getElementById('protocol');
 
 protocol_selector.onchange = function () {
     $.get("/protocol-form/" + protocol_selector.value).done(function (data) {
-        console.log("Im here");
         $('#protocol-options').html(data);
     })
 }
