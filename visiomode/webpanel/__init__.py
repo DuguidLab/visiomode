@@ -79,7 +79,7 @@ def create_app():
         """About page."""
         return flask.render_template("about.html")
 
-    @app.route("/protocol-form/<protocol_id>")
+    @app.route("/api/protocol-form/<protocol_id>")
     def get_protocol_form(protocol_id):
         prots = protocols.Task.get_children() + protocols.Presentation.get_children()
         for protocol in prots:

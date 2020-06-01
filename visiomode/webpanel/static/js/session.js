@@ -109,7 +109,7 @@ function setStatusWaiting() {
 protocol_selector = document.getElementById('protocol');
 
 protocol_selector.onchange = function () {
-    $.get("/protocol-form/" + protocol_selector.value).done(function (data) {
+    $.get("/api/protocol-form/" + protocol_selector.value).done(function (data) {
         $('#protocol-options').html(data);
     })
 }
