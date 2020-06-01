@@ -1,0 +1,11 @@
+<div class="row">
+    <div class="col">
+        <label for="stimulus">Stimulus Type</label>
+        <select id="stimulus" class="form-control mb-3">
+            {% for stimulus in stimuli %}
+                <option value="{{ stimulus }}">{{ stimulus.get_common_name() }}</option>
+            {% endfor %}
+        </select>
+    </div>
+    <div class="col"></div>
+</div>

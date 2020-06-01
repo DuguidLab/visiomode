@@ -18,7 +18,7 @@ socket.on('callback', function (msg) {
     console.log(msg);
 });
 
-socket.on('status', function(status) {
+socket.on('status', function (status) {
     session_status = status;
     if (session_status === 'active') {
         setStatusActive()
@@ -54,7 +54,7 @@ session_button.onclick = function () {
 };
 
 
-function setStatusActive () {
+function setStatusActive() {
     console.log("Session is running");
 
     session_button.className = "btn btn-danger btn-block btn-lg";
@@ -65,14 +65,13 @@ function setStatusActive () {
 
     // disable input fields
     let fields = form.getElementsByClassName('form-control');
-    for (let i = 0; i < fields.length; i++)
-    {
+    for (let i = 0; i < fields.length; i++) {
         fields[i].disabled = true;
     }
 }
 
 
-function setStatusInactive () {
+function setStatusInactive() {
     console.log("No active session");
 
     session_button.className = "btn btn-success btn-block btn-lg";
@@ -83,14 +82,13 @@ function setStatusInactive () {
 
     // enable input fields
     let fields = form.getElementsByClassName('form-control');
-    for (let i = 0; i < fields.length; i++)
-    {
+    for (let i = 0; i < fields.length; i++) {
         fields[i].disabled = false;
     }
 }
 
 
-function setStatusWaiting () {
+function setStatusWaiting() {
     session_button.className = "btn btn-light btn-block btn-lg";
     session_button.textContent = "Waiting...";
 
@@ -99,8 +97,7 @@ function setStatusWaiting () {
 
     // enable input fields
     let fields = form.getElementsByClassName('form-control');
-    for (let i = 0; i < fields.length; i++)
-    {
+    for (let i = 0; i < fields.length; i++) {
         fields[i].disabled = true;
     }
 }
@@ -108,7 +105,14 @@ function setStatusWaiting () {
 
 /// Dynamic form updates for protocol / stimulus selection
 
-// load available protocols
+// load protocol options on select
+protocol_selector = document.getElementById('protocol');
 
+protocol_selector.onchange = function () {
+    $.get("/protocol-form/" + protocol_selector.value).done(function (data) {
+        console.log("Im here");
+        $('#protocol-options').html(data);
+    })
+}
 
-// load available stimuli
+protocol_selector.onchange()

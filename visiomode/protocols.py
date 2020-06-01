@@ -7,6 +7,7 @@ import re
 import time
 import threading
 import queue
+import flask
 import pygame as pg
 import visiomode.stimuli as stim
 
@@ -65,6 +66,16 @@ class Protocol(object):
         """Return all inheriting children as a list."""
         return cls.__subclasses__()
 
+    @classmethod
+    def get_identifier(cls):
+        return cls.__name__.lower()
+
+    @classmethod
+    def get_form(cls):
+        return flask.render_template(
+            cls.form_path, stimuli=stim.BaseStimulus.get_children()
+        )
+
 
 class Task(Protocol):
     def __init__(self, *args, **kwargs):
@@ -117,6 +128,8 @@ class Presentation(Protocol):
 
 
 class SingleTarget(Task):
+    form_path = "protocols/single_target.html"
+
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 

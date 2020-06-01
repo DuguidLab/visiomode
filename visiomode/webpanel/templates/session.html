@@ -26,12 +26,12 @@
                                             <select id="protocol" class="form-control mb-3">
                                                 <optgroup label="Tasks">
                                                     {% for task in tasks %}
-                                                        <option value="{{ task }}">{{ task.get_common_name() }}</option>
+                                                        <option value="{{ task.get_identifier() }}">{{ task.get_common_name() }}</option>
                                                     {% endfor %}
                                                 </optgroup>
                                                 <optgroup label="Presentations">
                                                     {% for present in presentations %}
-                                                        <option value="{{ present }}">{{ present.get_common_name() }}</option>
+                                                        <option value="{{ present.get_identifier() }}">{{ present.get_common_name() }}</option>
                                                     {% endfor %}
                                                 </optgroup>
                                             </select>
@@ -56,17 +56,6 @@
                                                 aria-expanded="false" aria-controls="collapse-1"
                                                 href="#collapse-options" role="button">More Options</a>
                                             <div class="collapse" id="collapse-options" style="margin-top: 10px">
-                                                <div class="row">
-                                                    <div class="col">
-                                                        <label for="stimulus">Stimulus</label>
-                                                        <select id="stimulus" class="form-control mb-3">
-                                                            {% for stimulus in stimuli %}
-                                                                <option value="{{ stimulus }}">{{ stimulus.get_common_name() }}</option>
-                                                            {% endfor %}
-                                                        </select>
-                                                    </div>
-                                                    <div class="col"></div>
-                                                </div>
                                                 <div id="stimulus-options"></div>
                                                 <div id="protocol-options"></div>
                                             </div>
