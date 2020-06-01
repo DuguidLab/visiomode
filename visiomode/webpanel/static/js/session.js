@@ -114,4 +114,4 @@ protocol_selector.onchange = function () {
     })
 }
 
-protocol_selector.onchange()
+protocol_selector.onchange();
