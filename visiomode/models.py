@@ -96,7 +96,7 @@ class Session(Base):
             + "_exp-"
             + self.experiment
             + "_date-"
-            + self.timestamp
+            + self.timestamp.replace(":", "").replace("-", "").replace(".", "")
         )
         f_path = path + os.sep + session_id
         with open(f_path, "w", encoding="utf-8") as f:
