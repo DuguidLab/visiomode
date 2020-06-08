@@ -17,8 +17,8 @@ PRECUED = "precued"
 
 
 def get_protocol(protocol_id):
-    prots = Task.get_children() + Presentation.get_children()
-    for Protocol in prots:
+    protocols = Task.get_children() + Presentation.get_children()
+    for Protocol in protocols:
         if Protocol.get_identifier() == protocol_id:
             return Protocol
 
