@@ -5,6 +5,7 @@
 #  Distributed under the terms of the MIT Licence.
 
 import pygame as pg
+import visiomode.config as conf
 import visiomode.models as models
 import visiomode.storage as storage
 import visiomode.webpanel as webpanel
@@ -15,6 +16,7 @@ class Visiomode:
     def __init__(self):
         self.rds = storage.RedisClient()
         self.clock = pg.time.Clock()
+        self.config = conf.Config()
 
         # Subscribe to Redis status updates
         status_sub = self.rds.subscribe_status(threaded=False)
@@ -129,12 +131,17 @@ class Visiomode:
 
                 self.rds.set_status(storage.INACTIVE)
 
+                session.save(self.config.data_dir)
+
                 protocol = None
+                session = None
             events = pg.event.get()
             if protocol and protocol.is_running:
                 protocol.handle_events(events)
             for event in events:
                 if event.type == pg.QUIT:
+                    if session:
+                        session.save(self.config.data_dir)
                     return
 
             pg.display.flip()
