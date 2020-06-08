@@ -131,6 +131,7 @@ class Visiomode:
 
                 self.rds.set_status(storage.INACTIVE)
 
+                session.complete = True
                 session.save(self.config.data_dir)
 
                 protocol = None
