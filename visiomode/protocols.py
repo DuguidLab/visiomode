@@ -21,18 +21,9 @@ def get_protocol(protocol_id, screen, request):
 
 
 class Protocol(object):
-    requred_attrs = (
-        "animal_id",
-        "experiment",
-        "protocol",
-        "duration",
-    )
     form_path = "protocols/protocol.html"
 
     def __init__(self, screen, request):
-        for key in self.requred_attrs:
-            if key not in request.keys():
-                raise InvalidProtocol("Missing required key - {}".format(key))
         self.screen = screen
         self.is_running = False
 
