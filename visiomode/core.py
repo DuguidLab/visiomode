@@ -155,9 +155,8 @@ class Visiomode:
             protocol=request.pop("protocol"),
             duration=float(request.pop("duration")),
         )
-        protocol = protocols.get_protocol(
-            session.protocol, self.screen, session.duration, **request
-        )
+        Protocol = protocols.get_protocol(session.protocol)
+        protocol = Protocol(self.screen, session.duration, **request)
         return session, protocol
 
 

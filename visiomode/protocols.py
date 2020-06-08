@@ -16,14 +16,14 @@ MISS = "miss"
 PRECUED = "precued"
 
 
-def get_protocol(protocol_id, screen, duration, *args, **kwargs):
+def get_protocol(protocol_id):
     prots = Task.get_children() + Presentation.get_children()
-    for protocol in prots:
-        if protocol.get_identifier() == protocol_id:
-            return protocol(screen, duration, *args, **kwargs)
+    for Protocol in prots:
+        if Protocol.get_identifier() == protocol_id:
+            return Protocol
 
 
-class Protocol(object):
+class BaseProtocol(object):
     form_path = "protocols/protocol.html"
 
     def __init__(self, screen, duration: float, *args, **kwargs):
@@ -71,7 +71,7 @@ class Protocol(object):
         )
 
 
-class Task(Protocol):
+class Task(BaseProtocol):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
@@ -117,7 +117,7 @@ class Task(Protocol):
                         break
 
 
-class Presentation(Protocol):
+class Presentation(BaseProtocol):
     pass
 
 
