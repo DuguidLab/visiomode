@@ -5,6 +5,7 @@
 #  Distributed under the terms of the MIT Licence.
 
 import pygame as pg
+import visiomode.models as models
 import visiomode.storage as storage
 import visiomode.webpanel as webpanel
 import visiomode.protocols as protocols
@@ -95,6 +96,7 @@ class Visiomode:
         pg.display.flip()
 
         protocol = None
+        session = None
 
         # Event loop
         while True:
@@ -105,11 +107,10 @@ class Visiomode:
                     text = self.font.render("Debug", 1, (10, 10, 10))
                     self.background.blit(text, textpos)
                 if status == storage.REQUESTED:
-                    # text = font.render("Started!", 1, (10, 10, 10))
                     request = self.rds.get_session_request()
                     print(request)
 
-                    protocol = protocols.get_protocol(1, self.screen, request)
+                    session, protocol = self.parse_request(request)
 
                     protocol.start()
 
@@ -137,6 +138,17 @@ class Visiomode:
                     return
 
             pg.display.flip()
+
+    def parse_request(self, request: dict):
+        """Parse new session request parameters."""
+        session = models.Session(
+            animal_id=request.pop("animal_id"),
+            experiment=request.pop("experiment"),
+            protocol=request.pop("protocol"),
+            duration=float(request.pop("duration")),
+        )
+        protocol = protocols.get_protocol(session.protocol, self.screen, request)
+        return session, protocol
 
 
 def rotate(image, rect, angle):
