@@ -24,6 +24,7 @@ class Config:
     redis_host = "localhost"
     debug = True
     flask_key = "dev"
+    data_dir = "instance"
 
     def __init__(self, path=DEFAULT_PATH):
         """Initialises Config with a path to a configuration file.

@@ -4,6 +4,7 @@
  * Distributed under the terms of the MIT Licence.
  */
 
+/// Websocket communication with backend
 let socket = io.connect('/session');
 
 let session_status;
@@ -17,7 +18,7 @@ socket.on('callback', function (msg) {
     console.log(msg);
 });
 
-socket.on('status', function(status) {
+socket.on('status', function (status) {
     session_status = status;
     if (session_status === 'active') {
         setStatusActive()
@@ -26,10 +27,10 @@ socket.on('status', function(status) {
     }
 });
 
-var form = document.getElementById('session-form');
-var session_button = document.getElementById('session-control-btn');
-var status_icon = document.getElementById('status-icon');
-var status_text = document.getElementById('status-text');
+let form = document.getElementById('session-form');
+let session_button = document.getElementById('session-control-btn');
+let status_icon = document.getElementById('status-icon');
+let status_text = document.getElementById('status-text');
 
 
 session_button.onclick = function () {
@@ -53,7 +54,7 @@ session_button.onclick = function () {
 };
 
 
-function setStatusActive () {
+function setStatusActive() {
     console.log("Session is running");
 
     session_button.className = "btn btn-danger btn-block btn-lg";
@@ -64,14 +65,13 @@ function setStatusActive () {
 
     // disable input fields
     let fields = form.getElementsByClassName('form-control');
-    for (var i = 0; i < fields.length; i++)
-    {
+    for (let i = 0; i < fields.length; i++) {
         fields[i].disabled = true;
     }
 }
 
 
-function setStatusInactive () {
+function setStatusInactive() {
     console.log("No active session");
 
     session_button.className = "btn btn-success btn-block btn-lg";
@@ -82,14 +82,13 @@ function setStatusInactive () {
 
     // enable input fields
     let fields = form.getElementsByClassName('form-control');
-    for (var i = 0; i < fields.length; i++)
-    {
+    for (let i = 0; i < fields.length; i++) {
         fields[i].disabled = false;
     }
 }
 
 
-function setStatusWaiting () {
+function setStatusWaiting() {
     session_button.className = "btn btn-light btn-block btn-lg";
     session_button.textContent = "Waiting...";
 
@@ -98,8 +97,21 @@ function setStatusWaiting () {
 
     // enable input fields
     let fields = form.getElementsByClassName('form-control');
-    for (var i = 0; i < fields.length; i++)
-    {
+    for (let i = 0; i < fields.length; i++) {
         fields[i].disabled = true;
     }
 }
+
+
+/// Dynamic form updates for protocol selection
+
+// load protocol options on select
+protocol_selector = document.getElementById('protocol');
+
+protocol_selector.onchange = function () {
+    $.get("/api/protocol-form/" + protocol_selector.value).done(function (data) {
+        $('#protocol-options').html(data);
+    })
+}
+
+protocol_selector.onchange();

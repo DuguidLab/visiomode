@@ -4,6 +4,8 @@
 #  Copyright (c) 2020 Constantinos Eleftheriou <Constantinos.Eleftheriou@ed.ac.uk>
 #  Distributed under the terms of the MIT Licence.
 import os
+import re
+import flask
 import numpy as np
 import pygame as pg
 
@@ -35,11 +37,33 @@ def grayscale_array(array: np.ndarray) -> np.ndarray:
 
 
 class BaseStimulus(pg.sprite.Sprite):
+    form_path = "stimuli/stimulus.html"
+
     def __init__(self, *args):
         super().__init__(*args)
 
+    @classmethod
+    def get_common_name(cls):
+        """"Return the human-readable, space-separated name for the class."""
+        return re.sub(r"((?<=[a-z])[A-Z]|(?<!\A)[A-Z](?=[a-z]))", r" \1", cls.__name__)
+
+    @classmethod
+    def get_children(cls):
+        """Return all inheriting children as a list."""
+        return cls.__subclasses__()
+
+    @classmethod
+    def get_identifier(cls):
+        return cls.__name__.lower()
+
+    @classmethod
+    def get_form(cls):
+        return flask.render_template(cls.form_path)
+
 
 class Grating(BaseStimulus):
+    form_path = "stimuli/grating.html"
+
     def __init__(self, *args):
         super().__init__(*args)
 

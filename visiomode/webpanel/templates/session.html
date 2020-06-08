@@ -25,12 +25,14 @@
                                             <label for="protocol">Protocol</label>
                                             <select id="protocol" class="form-control mb-3">
                                                 <optgroup label="Tasks">
-                                                    <option value="12" selected="">Single Target</option>
-                                                    <option value="13">Visual Discrimination</option>
+                                                    {% for task in tasks %}
+                                                        <option value="{{ task.get_identifier() }}">{{ task.get_common_name() }}</option>
+                                                    {% endfor %}
                                                 </optgroup>
-                                                <optgroup label="Stimuli">
-                                                    <option value="">Single Grating</option>
-                                                    <option value="">Double Grating</option>
+                                                <optgroup label="Presentations">
+                                                    {% for present in presentations %}
+                                                        <option value="{{ present.get_identifier() }}">{{ present.get_common_name() }}</option>
+                                                    {% endfor %}
                                                 </optgroup>
                                             </select>
                                         </div>
@@ -52,9 +54,9 @@
                                     <div class="col">
                                         <div><a class="btn btn-outline-primary btn-block" data-toggle="collapse"
                                                 aria-expanded="false" aria-controls="collapse-1"
-                                                href="#collapse-1" role="button">More Options</a>
-                                            <div class="collapse" id="collapse-1">
-                                                <p>Collapse content.</p>
+                                                href="#collapse-options" role="button">More Options</a>
+                                            <div class="collapse" id="collapse-options" style="margin-top: 10px">
+                                                <div id="protocol-options"></div>
                                             </div>
                                         </div>
                                     </div>
@@ -71,8 +73,10 @@
                         <div class="card-body" style="min-height: 178px;">
                             <div class="row">
                                 <div class="col text-center" style="font-size: 18px;padding-bottom: 17px;">
-                                                <span id="status-text" class="flash animated mr-2" style="font-size: 20px;">
-                                                    <i id="status-icon" class="fas fa-circle text-warning" style="font-size: 18px;"></i>&nbsp;Waiting...</span>
+                                                <span id="status-text" class="flash animated mr-2"
+                                                      style="font-size: 20px;">
+                                                    <i id="status-icon" class="fas fa-circle text-warning"
+                                                       style="font-size: 18px;"></i>&nbsp;Waiting...</span>
                                 </div>
                             </div>
                             <div class="row">
@@ -92,7 +96,8 @@
                             </div>
                             <div class="row">
                                 <div class="col">
-                                    <button class="btn btn-light btn-block btn-lg" id="session-control-btn">Waiting...</button>
+                                    <button class="btn btn-light btn-block btn-lg" id="session-control-btn">Waiting...
+                                    </button>
                                 </div>
                             </div>
                         </div>

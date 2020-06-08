@@ -12,6 +12,8 @@ import flask
 import flask_socketio as sock
 import visiomode.config as cfg
 import visiomode.storage as storage
+import visiomode.protocols as protocols
+import visiomode.stimuli as stimuli
 import visiomode.webpanel.session as sess
 
 
@@ -50,7 +52,12 @@ def create_app():
     @app.route("/session")
     def session():
         """Session page."""
-        return flask.render_template("session.html")
+        return flask.render_template(
+            "session.html",
+            tasks=protocols.Task.get_children(),
+            presentations=protocols.Presentation.get_children(),
+            stimuli=stimuli.BaseStimulus.get_children(),
+        )
 
     @app.route("/history")
     def history():
@@ -71,6 +78,21 @@ def create_app():
     def about():
         """About page."""
         return flask.render_template("about.html")
+
+    @app.route("/api/protocol-form/<protocol_id>")
+    def get_protocol_form(protocol_id):
+        protocol = protocols.get_protocol(protocol_id)
+        if protocol:
+            return protocol.get_form()
+        return "No Additional Options"
+
+    @app.route("/api/stimulus-form/<stimulus_id>")
+    def get_stimulus_form(stimulus_id):
+        stims = stimuli.BaseStimulus.get_children()
+        for stimulus in stims:
+            if stimulus.get_identifier() == stimulus_id:
+                return stimulus.get_form()
+        return "No Additional Options"
 
     @app.errorhandler(404)
     def page_not_found(e):

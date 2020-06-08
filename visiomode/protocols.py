@@ -3,9 +3,11 @@
 #  This file is part of visiomode.
 #  Copyright (c) 2020 Constantinos Eleftheriou <Constantinos.Eleftheriou@ed.ac.uk>
 #  Distributed under the terms of the MIT Licence.
+import re
 import time
 import threading
 import queue
+import flask
 import pygame as pg
 import visiomode.stimuli as stim
 
@@ -14,27 +16,22 @@ MISS = "miss"
 PRECUED = "precued"
 
 
-def get_protocol(protocol_id, screen, request):
-    return SingleTarget(screen, request)
+def get_protocol(protocol_id):
+    prots = Task.get_children() + Presentation.get_children()
+    for Protocol in prots:
+        if Protocol.get_identifier() == protocol_id:
+            return Protocol
 
 
-class Protocol(object):
-    REQUIRED_ATTRS = (
-        "animal_id",
-        "experiment",
-        "protocol",
-        "duration",
-    )
+class BaseProtocol(object):
+    form_path = "protocols/protocol.html"
 
-    def __init__(self, screen, request):
-        for key in self.REQUIRED_ATTRS:
-            if key not in request.keys():
-                raise InvalidProtocol("Missing required key - {}".format(key))
+    def __init__(self, screen, duration: float, *args, **kwargs):
         self.screen = screen
         self.is_running = False
 
         self._timer_thread = threading.Thread(
-            target=self._timer, args=[float(request["duration"])], daemon=True
+            target=self._timer, args=[duration], daemon=True
         )
 
     def start(self):
@@ -53,10 +50,28 @@ class Protocol(object):
                 return
         self.stop()
 
+    @classmethod
+    def get_common_name(cls):
+        """"Return the human-readable, space-separated name for the class."""
+        return re.sub(r"((?<=[a-z])[A-Z]|(?<!\A)[A-Z](?=[a-z]))", r" \1", cls.__name__)
 
-class Task(Protocol):
-    # REQUIRED_ATTRS = Protocol.REQUIRED_ATTRS + ("iti",)
+    @classmethod
+    def get_children(cls):
+        """Return all inheriting children as a list."""
+        return cls.__subclasses__()
 
+    @classmethod
+    def get_identifier(cls):
+        return cls.__name__.lower()
+
+    @classmethod
+    def get_form(cls):
+        return flask.render_template(
+            cls.form_path, stimuli=stim.BaseStimulus.get_children()
+        )
+
+
+class Task(BaseProtocol):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
@@ -102,11 +117,13 @@ class Task(Protocol):
                         break
 
 
-class Presentation(Protocol):
+class Presentation(BaseProtocol):
     pass
 
 
 class SingleTarget(Task):
+    form_path = "protocols/single_target.html"
+
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 

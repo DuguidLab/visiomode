@@ -3,6 +3,7 @@
 #  This file is part of visiomode.
 #  Copyright (c) 2020 Constantinos Eleftheriou <Constantinos.Eleftheriou@ed.ac.uk>
 #  Distributed under the terms of the MIT Licence.
+import os
 import dataclasses
 import datetime
 import socket
@@ -18,7 +19,7 @@ class Base:
         """Returns class instance attributes as a dictionary."""
         return dataclasses.asdict(self)
 
-    def to_json(self):
+    def to_json(self, path=None):
         """Returns class instance attributes as JSON."""
         return json.dumps(self.to_dict())
 
@@ -72,7 +73,7 @@ class Session(Base):
     animal_id: str
     experiment: str
     protocol: str
-    duration: int
+    duration: float
     complete: bool = False
     timestamp: str = datetime.datetime.now().isoformat()
     notes: str = ""
@@ -86,6 +87,20 @@ class Session(Base):
         """
         self.trials = [trial.to_dict() for trial in self.trials if self.trials]
         return dataclasses.asdict(self)
+
+    def save(self, path):
+        """Save session to json file."""
+        session_id = (
+            "sub-"
+            + self.animal_id
+            + "_exp-"
+            + self.experiment
+            + "_date-"
+            + self.timestamp.replace(":", "").replace("-", "").replace(".", "")
+        )
+        f_path = path + os.sep + session_id
+        with open(f_path, "w", encoding="utf-8") as f:
+            json.dump(self.to_dict(), f)
 
     def __repr__(self):
         return "<Session {}>".format(str(self.timestamp))
