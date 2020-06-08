@@ -16,8 +16,8 @@ MISS = "miss"
 PRECUED = "precued"
 
 
-def get_protocol(protocol_id, screen, request):
-    return SingleTarget(screen, float(request["duration"]))
+def get_protocol(protocol_id, screen, duration, *args, **kwargs):
+    return SingleTarget(screen, duration)
 
 
 class Protocol(object):
