@@ -17,13 +17,16 @@ PRECUED = "precued"
 
 
 def get_protocol(protocol_id, screen, duration, *args, **kwargs):
-    return SingleTarget(screen, duration)
+    prots = Task.get_children() + Presentation.get_children()
+    for protocol in prots:
+        if protocol.get_identifier() == protocol_id:
+            return protocol(screen, duration, *args, **kwargs)
 
 
 class Protocol(object):
     form_path = "protocols/protocol.html"
 
-    def __init__(self, screen, duration: float):
+    def __init__(self, screen, duration: float, *args, **kwargs):
         self.screen = screen
         self.is_running = False
 
