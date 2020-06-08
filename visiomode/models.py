@@ -72,7 +72,7 @@ class Session(Base):
     animal_id: str
     experiment: str
     protocol: str
-    duration: int
+    duration: float
     complete: bool = False
     timestamp: str = datetime.datetime.now().isoformat()
     notes: str = ""

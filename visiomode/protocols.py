@@ -17,18 +17,18 @@ PRECUED = "precued"
 
 
 def get_protocol(protocol_id, screen, request):
-    return SingleTarget(screen, request)
+    return SingleTarget(screen, float(request["duration"]))
 
 
 class Protocol(object):
     form_path = "protocols/protocol.html"
 
-    def __init__(self, screen, request):
+    def __init__(self, screen, duration: float):
         self.screen = screen
         self.is_running = False
 
         self._timer_thread = threading.Thread(
-            target=self._timer, args=[float(request["duration"])], daemon=True
+            target=self._timer, args=[duration], daemon=True
         )
 
     def start(self):
