@@ -81,10 +81,9 @@ def create_app():
 
     @app.route("/api/protocol-form/<protocol_id>")
     def get_protocol_form(protocol_id):
-        prots = protocols.Task.get_children() + protocols.Presentation.get_children()
-        for protocol in prots:
-            if protocol.get_identifier() == protocol_id:
-                return protocol.get_form()
+        protocol = protocols.get_protocol(protocol_id)
+        if protocol:
+            return protocol.get_form()
         return "No Additional Options"
 
     @app.route("/api/stimulus-form/<stimulus_id>")
