@@ -138,14 +138,14 @@ class Task(BaseProtocol):
             trial = models.Trial(
                 outcome=trial_outcome,
                 iti=self.iti,
-                reaction_time=touchdown_response.time - stim_time,
-                duration=touchup_response.time - touchdown_response.time,
+                reaction_time=touchdown_response.timestamp - stim_time,
+                duration=touchup_response.timestamp - touchdown_response.timestamp,
                 pos_x=touchdown_response.x,
                 pos_y=touchdown_response.y,
                 dist_x=touchup_response.x - touchdown_response.x,
                 dist_y=touchup_response.y - touchdown_response.y,
                 timestamp=datetime.datetime.fromtimestamp(
-                    touchdown_response.time
+                    touchdown_response.timestamp
                 ).isoformat(),
             )
             self.trials.append(trial)
