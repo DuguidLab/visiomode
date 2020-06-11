@@ -6,6 +6,7 @@
 import re
 import collections
 import time
+import datetime
 import threading
 import queue
 import flask
@@ -80,7 +81,7 @@ class Task(BaseProtocol):
         self.iti = 3  # TODO embed in request
         self.stim_duration = 2  # TODO embed in request
 
-        self.events = []
+        self.trials = []
 
         self._response_q = queue.Queue()
 
@@ -102,6 +103,10 @@ class Task(BaseProtocol):
         while self.is_running:
             self.hide_stim()
             iti_start = time.time()
+            touchdown_response = None
+            touchup_response = None
+            trial_outcome = str()
+            stim_time = iti_start  # default to start of ITI until stimulus shows up
             while time.time() - iti_start < self.iti:
                 if not self._response_q.empty():
                     response = self._response_q.get()
@@ -109,8 +114,10 @@ class Task(BaseProtocol):
                     if response.event_type in TOUCHDOWN:
                         print("precued")
                         print(response)
+                        touchdown_response = response
                     # On touchup, register the trial and reset the ITI by breaking out of loop
                     if response.event_type in TOUCHUP:
+                        touchup_response = response
                         break
             else:
                 # To prevent stimulus showing after the session has ended, check if the session is still running.
@@ -124,8 +131,24 @@ class Task(BaseProtocol):
                         if response.event_type in TOUCHDOWN:
                             print("hit")
                             print(response)
+                            touchdown_response = response
                         if response.event_type in TOUCHUP:
+                            touchup_response = response
                             break
+            trial = models.Trial(
+                outcome=trial_outcome,
+                iti=self.iti,
+                reaction_time=touchdown_response.time - stim_time,
+                duration=touchup_response.time - touchdown_response.time,
+                pos_x=touchdown_response.x,
+                pos_y=touchdown_response.y,
+                dist_x=touchup_response.x - touchdown_response.x,
+                dist_y=touchup_response.y - touchdown_response.y,
+                timestamp=datetime.datetime.fromtimestamp(
+                    touchdown_response.time
+                ).isoformat(),
+            )
+            self.trials.append(trial)
 
 
 class Presentation(BaseProtocol):
