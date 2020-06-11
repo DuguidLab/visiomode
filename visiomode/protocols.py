@@ -14,6 +14,11 @@ import visiomode.stimuli as stim
 HIT = "hit"
 MISS = "miss"
 PRECUED = "precued"
+ON_TARGET = "on_target"
+ON_DISTRACTOR = "on_distractor"
+ON_BLANK = "on_blank"
+TOUCH_DOWN = "touch_down"
+TOUCH_LIFT = "touch_lift"
 
 
 def get_protocol(protocol_id):
@@ -78,6 +83,8 @@ class Task(BaseProtocol):
         self.iti = 3  # TODO embed in request
         self.stim_duration = 2  # TODO embed in request
 
+        self.events = []
+
         self._response_q = queue.Queue()
 
         self._session_thread = threading.Thread(
@@ -101,7 +108,8 @@ class Task(BaseProtocol):
             while time.time() - iti_start < self.iti:
                 if not self._response_q.empty():
                     print("precued")
-                    self._response_q.get()
+                    response = self._response_q.get()
+                    self.events.append(response)
                     break
             else:
                 # To prevent stimulus showing after the session has ended, check if the session is still running.
@@ -149,10 +157,10 @@ class SingleTarget(Task):
             if event.type == pg.MOUSEBUTTONUP:
                 for sprite in self.target.sprites():
                     if sprite.rect.collidepoint(event.pos):
-                        self._response_q.put(("hit", event))
+                        self._response_q.put((TOUCH_LIFT, ON_TARGET, event.pos))
                         break
                 else:
-                    self._response_q.put(("precued", event))
+                    self._response_q.put((TOUCH_LIFT, ON_TARGET, event.pos))
 
 
 class InvalidProtocol(Exception):
