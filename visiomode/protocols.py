@@ -112,8 +112,7 @@ class Task(BaseProtocol):
                     response = self._response_q.get()
                     # If touchdown, log trial as precued
                     if response.event_type in TOUCHDOWN:
-                        print("precued")
-                        print(response)
+                        trial_outcome = PRECUED
                         touchdown_response = response
                     # On touchup, register the trial and reset the ITI by breaking out of loop
                     if response.event_type in TOUCHUP:
@@ -129,8 +128,7 @@ class Task(BaseProtocol):
                     if not self._response_q.empty():
                         response = self._response_q.get()
                         if response.event_type in TOUCHDOWN:
-                            print("hit")
-                            print(response)
+                            trial_outcome = HIT if response.on_target else MISS
                             touchdown_response = response
                         if response.event_type in TOUCHUP:
                             touchup_response = response
@@ -148,6 +146,7 @@ class Task(BaseProtocol):
                     touchdown_response.timestamp
                 ).isoformat(),
             )
+            print(trial)
             self.trials.append(trial)
 
 
