@@ -11,6 +11,7 @@ import queue
 import flask
 import pygame as pg
 import visiomode.stimuli as stim
+import visiomode.models as models
 
 HIT = "hit"
 MISS = "miss"
@@ -103,10 +104,14 @@ class Task(BaseProtocol):
             iti_start = time.time()
             while time.time() - iti_start < self.iti:
                 if not self._response_q.empty():
-                    print("precued")
                     response = self._response_q.get()
-                    print(response)
-                    break
+                    # If touchdown, log trial as precued
+                    if response.event_type in TOUCHDOWN:
+                        print("precued")
+                        print(response)
+                    # On touchup, register the trial and reset the ITI by breaking out of loop
+                    if response.event_type in TOUCHUP:
+                        break
             else:
                 # To prevent stimulus showing after the session has ended, check if the session is still running.
                 if not self.is_running:
@@ -116,9 +121,11 @@ class Task(BaseProtocol):
                 while time.time() - stim_start < self.stim_duration:
                     if not self._response_q.empty():
                         response = self._response_q.get()
-                        print("hit")
-                        print(response)
-                        break
+                        if response.event_type in TOUCHDOWN:
+                            print("hit")
+                            print(response)
+                        if response.event_type in TOUCHUP:
+                            break
 
 
 class Presentation(BaseProtocol):
