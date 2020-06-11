@@ -132,6 +132,7 @@ class Visiomode:
                 self.rds.set_status(storage.INACTIVE)
 
                 session.complete = True
+                session.trials = protocol.trials
                 session.save(self.config.data_dir)
 
                 protocol = None
@@ -142,6 +143,7 @@ class Visiomode:
             for event in events:
                 if event.type == pg.QUIT:
                     if session:
+                        session.trials = protocol.trials
                         session.save(self.config.data_dir)
                     return
 
