@@ -4,23 +4,26 @@
 #  Copyright (c) 2020 Constantinos Eleftheriou <Constantinos.Eleftheriou@ed.ac.uk>
 #  Distributed under the terms of the MIT Licence.
 import re
+import collections
 import time
+import datetime
 import threading
 import queue
 import flask
 import pygame as pg
 import visiomode.stimuli as stim
+import visiomode.models as models
 
 HIT = "hit"
 MISS = "miss"
 PRECUED = "precued"
 
+TOUCHDOWN = (pg.MOUSEBUTTONDOWN, pg.FINGERDOWN)
+TOUCHUP = (pg.MOUSEBUTTONUP, pg.FINGERUP)
 
-def get_protocol(protocol_id):
-    prots = Task.get_children() + Presentation.get_children()
-    for Protocol in prots:
-        if Protocol.get_identifier() == protocol_id:
-            return Protocol
+TouchEvent = collections.namedtuple(
+    "TouchEvent", ["event_type", "on_target", "x", "y", "timestamp"]
+)
 
 
 class BaseProtocol(object):
@@ -78,6 +81,8 @@ class Task(BaseProtocol):
         self.iti = 3  # TODO embed in request
         self.stim_duration = 2  # TODO embed in request
 
+        self.trials = []
+
         self._response_q = queue.Queue()
 
         self._session_thread = threading.Thread(
@@ -98,11 +103,21 @@ class Task(BaseProtocol):
         while self.is_running:
             self.hide_stim()
             iti_start = time.time()
+            touchdown_response = None
+            touchup_response = None
+            trial_outcome = str()
+            stim_time = iti_start  # default to start of ITI until stimulus shows up
             while time.time() - iti_start < self.iti:
                 if not self._response_q.empty():
-                    print("precued")
-                    self._response_q.get()
-                    break
+                    response = self._response_q.get()
+                    # If touchdown, log trial as precued
+                    if response.event_type in TOUCHDOWN:
+                        trial_outcome = PRECUED
+                        touchdown_response = response
+                    # On touchup, register the trial and reset the ITI by breaking out of loop
+                    if response.event_type in TOUCHUP:
+                        touchup_response = response
+                        break
             else:
                 # To prevent stimulus showing after the session has ended, check if the session is still running.
                 if not self.is_running:
@@ -112,9 +127,27 @@ class Task(BaseProtocol):
                 while time.time() - stim_start < self.stim_duration:
                     if not self._response_q.empty():
                         response = self._response_q.get()
-                        print("hit")
-                        print(response)
-                        break
+                        if response.event_type in TOUCHDOWN:
+                            trial_outcome = HIT if response.on_target else MISS
+                            touchdown_response = response
+                        if response.event_type in TOUCHUP:
+                            touchup_response = response
+                            break
+            trial = models.Trial(
+                outcome=trial_outcome,
+                iti=self.iti,
+                reaction_time=touchdown_response.timestamp - stim_time,
+                duration=touchup_response.timestamp - touchdown_response.timestamp,
+                pos_x=touchdown_response.x,
+                pos_y=touchdown_response.y,
+                dist_x=touchup_response.x - touchdown_response.x,
+                dist_y=touchup_response.y - touchdown_response.y,
+                timestamp=datetime.datetime.fromtimestamp(
+                    touchdown_response.timestamp
+                ).isoformat(),
+            )
+            print(trial)
+            self.trials.append(trial)
 
 
 class Presentation(BaseProtocol):
@@ -146,13 +179,28 @@ class SingleTarget(Task):
 
     def handle_events(self, events):
         for event in events:
-            if event.type == pg.MOUSEBUTTONUP:
+            if event.type in TOUCHDOWN or event.type in TOUCHUP:
+                on_target = False
                 for sprite in self.target.sprites():
                     if sprite.rect.collidepoint(event.pos):
-                        self._response_q.put(("hit", event))
+                        on_target = True
                         break
-                else:
-                    self._response_q.put(("precued", event))
+                self._response_q.put(
+                    TouchEvent(
+                        event_type=event.type,
+                        on_target=on_target,
+                        x=event.pos[0],
+                        y=event.pos[1],
+                        timestamp=time.time(),
+                    )
+                )
+
+
+def get_protocol(protocol_id):
+    protocols = Task.get_children() + Presentation.get_children()
+    for Protocol in protocols:
+        if Protocol.get_identifier() == protocol_id:
+            return Protocol
 
 
 class InvalidProtocol(Exception):
