@@ -4,6 +4,7 @@
 #  Copyright (c) 2020 Constantinos Eleftheriou <Constantinos.Eleftheriou@ed.ac.uk>
 #  Distributed under the terms of the MIT Licence.
 import re
+import collections
 import time
 import threading
 import queue
@@ -19,6 +20,10 @@ ON_DISTRACTOR = "on_distractor"
 ON_BLANK = "on_blank"
 TOUCH_DOWN = "touch_down"
 TOUCH_LIFT = "touch_lift"
+
+TouchResponse = collections.namedtuple(
+    "TouchResponse", ["type", "action", "x", "y", "timestamp"]
+)
 
 
 class BaseProtocol(object):
@@ -150,10 +155,26 @@ class SingleTarget(Task):
             if event.type == pg.MOUSEBUTTONUP:
                 for sprite in self.target.sprites():
                     if sprite.rect.collidepoint(event.pos):
-                        self._response_q.put((TOUCH_LIFT, ON_TARGET, event.pos))
+                        self._response_q.put(
+                            TouchResponse(
+                                TOUCH_LIFT,
+                                ON_TARGET,
+                                event.pos[0],
+                                event.pos[1],
+                                time.time(),
+                            )
+                        )
                         break
                 else:
-                    self._response_q.put((TOUCH_LIFT, ON_TARGET, event.pos))
+                    self._response_q.put(
+                        TouchResponse(
+                            TOUCH_LIFT,
+                            ON_BLANK,
+                            event.pos[0],
+                            event.pos[1],
+                            time.time(),
+                        )
+                    )
 
 
 def get_protocol(protocol_id):
