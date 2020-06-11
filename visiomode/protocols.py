@@ -15,12 +15,12 @@ import visiomode.stimuli as stim
 HIT = "hit"
 MISS = "miss"
 PRECUED = "precued"
-ON_TARGET = "on_target"
-ON_DISTRACTOR = "on_distractor"
-ON_BLANK = "on_blank"
 
-TouchResponse = collections.namedtuple(
-    "TouchResponse", ["action", "x", "y", "dist_x", "dist_y", "duration"]
+TOUCHDOWN = (pg.MOUSEBUTTONDOWN, pg.FINGERDOWN)
+TOUCHUP = (pg.MOUSEBUTTONUP, pg.FINGERUP)
+
+TouchEvent = collections.namedtuple(
+    "TouchEvent", ["event_type", "on_target", "x", "y", "timestamp"]
 )
 
 
@@ -137,9 +137,6 @@ class SingleTarget(Task):
         self.screen.blit(self.background, (0, 0))
         self.target = pg.sprite.RenderClear(stim.Grating())
 
-        self._last_touchdown = time.time()
-        self._last_pos = (0, 0)
-
     def stop(self):
         print("stop")
         super().stop()
@@ -153,34 +150,21 @@ class SingleTarget(Task):
 
     def handle_events(self, events):
         for event in events:
-            if event.type == pg.MOUSEBUTTONDOWN:
-                self._last_touchdown = time.time()
-                self._last_pos = event.pos
-            if event.type == pg.MOUSEBUTTONUP:
+            if event.type in TOUCHDOWN or event.type in TOUCHUP:
+                on_target = False
                 for sprite in self.target.sprites():
                     if sprite.rect.collidepoint(event.pos):
-                        self._response_q.put(
-                            TouchResponse(
-                                ON_TARGET,
-                                event.pos[0],
-                                event.pos[1],
-                                event.pos[0] - self._last_pos[0],
-                                event.pos[1] - self._last_pos[1],
-                                time.time() - self._last_touchdown,
-                            )
-                        )
+                        on_target = True
                         break
-                else:
-                    self._response_q.put(
-                        TouchResponse(
-                            ON_BLANK,
-                            event.pos[0],
-                            event.pos[1],
-                            event.pos[0] - self._last_pos[0],
-                            event.pos[1] - self._last_pos[1],
-                            time.time() - self._last_touchdown,
-                        )
+                self._response_q.put(
+                    TouchEvent(
+                        event_type=event.type,
+                        on_target=on_target,
+                        x=event.pos[0],
+                        y=event.pos[1],
+                        timestamp=time.time(),
                     )
+                )
 
 
 def get_protocol(protocol_id):
