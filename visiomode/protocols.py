@@ -21,13 +21,6 @@ TOUCH_DOWN = "touch_down"
 TOUCH_LIFT = "touch_lift"
 
 
-def get_protocol(protocol_id):
-    protocols = Task.get_children() + Presentation.get_children()
-    for Protocol in protocols:
-        if Protocol.get_identifier() == protocol_id:
-            return Protocol
-
-
 class BaseProtocol(object):
     form_path = "protocols/protocol.html"
 
@@ -161,6 +154,13 @@ class SingleTarget(Task):
                         break
                 else:
                     self._response_q.put((TOUCH_LIFT, ON_TARGET, event.pos))
+
+
+def get_protocol(protocol_id):
+    protocols = Task.get_children() + Presentation.get_children()
+    for Protocol in protocols:
+        if Protocol.get_identifier() == protocol_id:
+            return Protocol
 
 
 class InvalidProtocol(Exception):
