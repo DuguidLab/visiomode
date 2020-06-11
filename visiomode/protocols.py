@@ -20,7 +20,7 @@ ON_DISTRACTOR = "on_distractor"
 ON_BLANK = "on_blank"
 
 TouchResponse = collections.namedtuple(
-    "TouchResponse", ["action", "x", "y", "duration"]
+    "TouchResponse", ["action", "x", "y", "dist_x", "dist_y", "duration"]
 )
 
 
@@ -105,7 +105,7 @@ class Task(BaseProtocol):
                 if not self._response_q.empty():
                     print("precued")
                     response = self._response_q.get()
-                    self.events.append(response)
+                    print(response)
                     break
             else:
                 # To prevent stimulus showing after the session has ended, check if the session is still running.
@@ -138,6 +138,7 @@ class SingleTarget(Task):
         self.target = pg.sprite.RenderClear(stim.Grating())
 
         self._last_touchdown = time.time()
+        self._last_pos = (0, 0)
 
     def stop(self):
         print("stop")
@@ -154,6 +155,7 @@ class SingleTarget(Task):
         for event in events:
             if event.type == pg.MOUSEBUTTONDOWN:
                 self._last_touchdown = time.time()
+                self._last_pos = event.pos
             if event.type == pg.MOUSEBUTTONUP:
                 for sprite in self.target.sprites():
                     if sprite.rect.collidepoint(event.pos):
@@ -162,6 +164,8 @@ class SingleTarget(Task):
                                 ON_TARGET,
                                 event.pos[0],
                                 event.pos[1],
+                                event.pos[0] - self._last_pos[0],
+                                event.pos[1] - self._last_pos[1],
                                 time.time() - self._last_touchdown,
                             )
                         )
@@ -172,6 +176,8 @@ class SingleTarget(Task):
                             ON_BLANK,
                             event.pos[0],
                             event.pos[1],
+                            event.pos[0] - self._last_pos[0],
+                            event.pos[1] - self._last_pos[1],
                             time.time() - self._last_touchdown,
                         )
                     )
