@@ -18,11 +18,9 @@ PRECUED = "precued"
 ON_TARGET = "on_target"
 ON_DISTRACTOR = "on_distractor"
 ON_BLANK = "on_blank"
-TOUCH_DOWN = "touch_down"
-TOUCH_LIFT = "touch_lift"
 
 TouchResponse = collections.namedtuple(
-    "TouchResponse", ["type", "action", "x", "y", "timestamp"]
+    "TouchResponse", ["action", "x", "y", "duration"]
 )
 
 
@@ -139,6 +137,8 @@ class SingleTarget(Task):
         self.screen.blit(self.background, (0, 0))
         self.target = pg.sprite.RenderClear(stim.Grating())
 
+        self._last_touchdown = time.time()
+
     def stop(self):
         print("stop")
         super().stop()
@@ -152,27 +152,27 @@ class SingleTarget(Task):
 
     def handle_events(self, events):
         for event in events:
+            if event.type == pg.MOUSEBUTTONDOWN:
+                self._last_touchdown = time.time()
             if event.type == pg.MOUSEBUTTONUP:
                 for sprite in self.target.sprites():
                     if sprite.rect.collidepoint(event.pos):
                         self._response_q.put(
                             TouchResponse(
-                                TOUCH_LIFT,
                                 ON_TARGET,
                                 event.pos[0],
                                 event.pos[1],
-                                time.time(),
+                                time.time() - self._last_touchdown,
                             )
                         )
                         break
                 else:
                     self._response_q.put(
                         TouchResponse(
-                            TOUCH_LIFT,
                             ON_BLANK,
                             event.pos[0],
                             event.pos[1],
-                            time.time(),
+                            time.time() - self._last_touchdown,
                         )
                     )
 
