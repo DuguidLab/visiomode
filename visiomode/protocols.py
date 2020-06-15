@@ -29,7 +29,7 @@ TouchEvent = collections.namedtuple(
 class BaseProtocol(object):
     form_path = "protocols/protocol.html"
 
-    def __init__(self, screen, duration: float, *args, **kwargs):
+    def __init__(self, screen, duration: float):
         self.screen = screen
         self.is_running = False
 
@@ -75,11 +75,11 @@ class BaseProtocol(object):
 
 
 class Task(BaseProtocol):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+    def __init__(self, screen, duration, iti, stim_duration, *args, **kwargs):
+        super().__init__(screen, duration)
 
-        self.iti = 3  # TODO embed in request
-        self.stim_duration = 2  # TODO embed in request
+        self.iti = float(iti) / 1000  # ms to s
+        self.stim_duration = float(stim_duration) / 1000  # ms to s
 
         self.trials = []
 

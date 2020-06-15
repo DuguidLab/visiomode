@@ -1,5 +1,19 @@
 <div class="row">
     <div class="col">
+        <label for="iti">Inter-Trial Interval (ms)</label>
+        <input id="iti" class="form-control mb-3"
+               type="number" value="3000"
+               min="0" step="100">
+    </div>
+    <div class="col">
+        <label for="stim_duration">Stimulus Interval (ms)</label>
+        <input id="stim_duration" class="form-control mb-3"
+               type="number" value="2000"
+               min="0" step="100">
+    </div>
+</div>
+<div class="row">
+    <div class="col">
         <label for="target">Target</label>
         <select id="target" class="form-control mb-3">
             {% for stimulus in stimuli %}
