@@ -135,21 +135,25 @@ class Task(BaseProtocol):
                         if response.event_type in TOUCHUP:
                             touchup_response = response
                             break
-            trial = models.Trial(
-                outcome=trial_outcome,
-                iti=self.iti,
-                reaction_time=touchdown_response.timestamp - stim_time,
-                duration=touchup_response.timestamp - touchdown_response.timestamp,
-                pos_x=touchdown_response.x,
-                pos_y=touchdown_response.y,
-                dist_x=touchup_response.x - touchdown_response.x,
-                dist_y=touchup_response.y - touchdown_response.y,
-                timestamp=datetime.datetime.fromtimestamp(
-                    touchdown_response.timestamp
-                ).isoformat(),
-            )
-            print(trial)
-            self.trials.append(trial)
+            # Touchup events from the previous session can sometimes leak through (e.g. if touchup is after
+            # session has ended). Prevent this crashing everything by checking for both touchup and touchdown
+            # objects exist before creating a trial.
+            if touchup_response and touchdown_response:
+                trial = models.Trial(
+                    outcome=trial_outcome,
+                    iti=self.iti,
+                    reaction_time=touchdown_response.timestamp - stim_time,
+                    duration=touchup_response.timestamp - touchdown_response.timestamp,
+                    pos_x=touchdown_response.x,
+                    pos_y=touchdown_response.y,
+                    dist_x=touchup_response.x - touchdown_response.x,
+                    dist_y=touchup_response.y - touchdown_response.y,
+                    timestamp=datetime.datetime.fromtimestamp(
+                        touchdown_response.timestamp
+                    ).isoformat(),
+                )
+                print(trial)
+                self.trials.append(trial)
 
 
 class Presentation(BaseProtocol):
