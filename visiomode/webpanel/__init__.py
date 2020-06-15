@@ -11,7 +11,7 @@ import threading
 import flask
 import flask_socketio as sock
 import visiomode.config as cfg
-import visiomode.storage as storage
+import visiomode.messaging as messaging
 import visiomode.protocols as protocols
 import visiomode.stimuli as stimuli
 import visiomode.webpanel.session as sess
@@ -24,7 +24,7 @@ def create_app():
         Flask app object
     """
     config = cfg.Config()
-    rds = storage.RedisClient()
+    rds = messaging.RedisClient()
 
     app = flask.Flask(__name__)
     app.config.from_mapping({"SECRET_KEY": config.flask_key, "DEBUG": config.debug})
@@ -40,7 +40,7 @@ def create_app():
         )
 
     # Set active session status to inactive
-    rds.set_status(storage.INACTIVE)
+    rds.set_status(messaging.INACTIVE)
 
     @app.route("/")
     def index():

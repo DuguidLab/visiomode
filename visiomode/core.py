@@ -7,14 +7,14 @@
 import pygame as pg
 import visiomode.config as conf
 import visiomode.models as models
-import visiomode.storage as storage
+import visiomode.messaging as messaging
 import visiomode.webpanel as webpanel
 import visiomode.protocols as protocols
 
 
 class Visiomode:
     def __init__(self):
-        self.rds = storage.RedisClient()
+        self.rds = messaging.RedisClient()
         self.clock = pg.time.Clock()
         self.config = conf.Config()
 
@@ -105,10 +105,10 @@ class Visiomode:
             if status_sub.get_message():
                 status = self.rds.get_status()
                 print("updating...")
-                if status == storage.DEBUG:
+                if status == messaging.DEBUG:
                     text = self.font.render("Debug", 1, (10, 10, 10))
                     self.background.blit(text, textpos)
-                if status == storage.REQUESTED:
+                if status == messaging.REQUESTED:
                     request = self.rds.get_session_request()
                     print(request)
 
@@ -116,9 +116,9 @@ class Visiomode:
 
                     protocol.start()
 
-                    self.rds.set_status(storage.ACTIVE)
+                    self.rds.set_status(messaging.ACTIVE)
 
-                if status == storage.STOPPED:
+                if status == messaging.STOPPED:
                     print("stopping...")
 
                     if protocol and protocol.is_running:
@@ -129,7 +129,7 @@ class Visiomode:
                 self.background.blit(text, textpos)
                 self.screen.blit(self.background, (0, 0))
 
-                self.rds.set_status(storage.INACTIVE)
+                self.rds.set_status(messaging.INACTIVE)
 
                 session.complete = True
                 session.trials = protocol.trials

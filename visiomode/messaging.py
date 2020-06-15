@@ -1,4 +1,4 @@
-"""Session active storage and message broker module."""
+"""Session message broker module."""
 
 #  This file is part of visiomode.
 #  Copyright (c) 2020 Constantinos Eleftheriou <Constantinos.Eleftheriou@ed.ac.uk>
@@ -19,7 +19,7 @@ SESSION_REQUEST_KEY = "session_request"
 
 
 class RedisClient(redis.Redis):
-    """Client handler for Redis storage.
+    """Client handler for Redis messaging.
 
     Acts as a convenience layer over raw Redis calls and sanitises user input.
     """
