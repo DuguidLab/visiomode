@@ -27,9 +27,7 @@ def create_app():
     rds = storage.RedisClient()
 
     app = flask.Flask(__name__)
-    app.config.from_mapping(
-        {"SECRET_KEY": config.flask_key, "DEBUG": config.debug,}
-    )
+    app.config.from_mapping({"SECRET_KEY": config.flask_key, "DEBUG": config.debug})
 
     # ensure that instance dir exists
     try:
@@ -111,11 +109,11 @@ def runserver(threaded=False):
         thread = threading.Thread(
             target=socketio.run,
             args=(app,),
-            kwargs={"use_reloader": False},
+            kwargs={"use_reloader": False, "debug": True},
             daemon=True,
         )
         return thread.start()
-    socketio.run(app)
+    socketio.run(app, debug=True)
 
 
 if __name__ == "__main__":
