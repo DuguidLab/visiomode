@@ -133,3 +133,4 @@ dmypy.json
 .anaconda
 /node_modules/
 *.sublime-*
+.vscode/

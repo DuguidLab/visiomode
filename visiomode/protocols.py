@@ -26,10 +26,17 @@ TouchEvent = collections.namedtuple(
 )
 
 
+def get_protocol(protocol_id):
+    protocols = Task.get_children() + Presentation.get_children()
+    for Protocol in protocols:
+        if Protocol.get_identifier() == protocol_id:
+            return Protocol
+
+
 class BaseProtocol(object):
     form_path = "protocols/protocol.html"
 
-    def __init__(self, screen, duration: float, *args, **kwargs):
+    def __init__(self, screen, duration: float):
         self.screen = screen
         self.is_running = False
 
@@ -75,11 +82,11 @@ class BaseProtocol(object):
 
 
 class Task(BaseProtocol):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+    def __init__(self, screen, duration, iti, stim_duration, *args, **kwargs):
+        super().__init__(screen, duration)
 
-        self.iti = 3  # TODO embed in request
-        self.stim_duration = 2  # TODO embed in request
+        self.iti = float(iti) / 1000  # ms to s
+        self.stim_duration = float(stim_duration) / 1000  # ms to s
 
         self.trials = []
 
@@ -99,6 +106,11 @@ class Task(BaseProtocol):
     def hide_stim(self):
         pass
 
+    def get_stim(self):
+        # Protocol = protocols.get_protocol(session.protocol)
+        # protocol = Protocol(self.screen, session.duration, **request)
+        pass
+
     def _session_runner(self):
         while self.is_running:
             self.hide_stim()
@@ -107,7 +119,7 @@ class Task(BaseProtocol):
             touchup_response = None
             trial_outcome = str()
             stim_time = iti_start  # default to start of ITI until stimulus shows up
-            while time.time() - iti_start < self.iti:
+            while time.time() - iti_start < self.iti or touchdown_response:
                 if not self._response_q.empty():
                     response = self._response_q.get()
                     # If touchdown, log trial as precued
@@ -124,7 +136,9 @@ class Task(BaseProtocol):
                     return
                 self.show_stim()
                 stim_start = time.time()
-                while time.time() - stim_start < self.stim_duration:
+                while (
+                    time.time() - stim_start < self.stim_duration or touchdown_response
+                ):
                     if not self._response_q.empty():
                         response = self._response_q.get()
                         if response.event_type in TOUCHDOWN:
@@ -133,21 +147,25 @@ class Task(BaseProtocol):
                         if response.event_type in TOUCHUP:
                             touchup_response = response
                             break
-            trial = models.Trial(
-                outcome=trial_outcome,
-                iti=self.iti,
-                reaction_time=touchdown_response.timestamp - stim_time,
-                duration=touchup_response.timestamp - touchdown_response.timestamp,
-                pos_x=touchdown_response.x,
-                pos_y=touchdown_response.y,
-                dist_x=touchup_response.x - touchdown_response.x,
-                dist_y=touchup_response.y - touchdown_response.y,
-                timestamp=datetime.datetime.fromtimestamp(
-                    touchdown_response.timestamp
-                ).isoformat(),
-            )
-            print(trial)
-            self.trials.append(trial)
+            # Touchup events from the previous session can sometimes leak through (e.g. if touchup is after
+            # session has ended). Prevent this crashing everything by checking for both touchup and touchdown
+            # objects exist before creating a trial.
+            if touchup_response and touchdown_response:
+                trial = models.Trial(
+                    outcome=trial_outcome,
+                    iti=self.iti,
+                    reaction_time=touchdown_response.timestamp - stim_time,
+                    duration=touchup_response.timestamp - touchdown_response.timestamp,
+                    pos_x=touchdown_response.x,
+                    pos_y=touchdown_response.y,
+                    dist_x=touchup_response.x - touchdown_response.x,
+                    dist_y=touchup_response.y - touchdown_response.y,
+                    timestamp=datetime.datetime.fromtimestamp(
+                        touchdown_response.timestamp
+                    ).isoformat(),
+                )
+                print(trial)
+                self.trials.append(trial)
 
 
 class Presentation(BaseProtocol):
@@ -157,14 +175,16 @@ class Presentation(BaseProtocol):
 class SingleTarget(Task):
     form_path = "protocols/single_target.html"
 
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+    def __init__(self, target, **kwargs):
+        super().__init__(**kwargs)
 
         self.background = pg.Surface(self.screen.get_size())
         self.background = self.background.convert()
         self.background.fill((0, 0, 0))
         self.screen.blit(self.background, (0, 0))
-        self.target = pg.sprite.RenderClear(stim.Grating())
+
+        Target = stim.get_stimulus(target)
+        self.target = pg.sprite.RenderClear(Target(**kwargs))
 
     def stop(self):
         print("stop")
@@ -194,13 +214,6 @@ class SingleTarget(Task):
                         timestamp=time.time(),
                     )
                 )
-
-
-def get_protocol(protocol_id):
-    protocols = Task.get_children() + Presentation.get_children()
-    for Protocol in protocols:
-        if Protocol.get_identifier() == protocol_id:
-            return Protocol
 
 
 class InvalidProtocol(Exception):

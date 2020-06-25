@@ -2,11 +2,11 @@
 #  Copyright (c) 2020 Constantinos Eleftheriou <Constantinos.Eleftheriou@ed.ac.uk>
 #  Distributed under the terms of the MIT Licence.
 import pytest
-import visiomode.storage as storage
+import visiomode.messaging as messaging
 
 
 class TestRedisClient:
-    rds = storage.RedisClient()
+    rds = messaging.RedisClient()
 
     def test_status_updating(self):
         """Test getting and setting status"""
@@ -37,7 +37,7 @@ class TestRedisClient:
 
     def test_invalid_status(self):
         """Test whether setting an invalid key will raise the appropriate error."""
-        with pytest.raises(storage.InvalidStatusCodeError):
+        with pytest.raises(messaging.InvalidStatusCodeError):
             self.rds.set_status("noddy_key")
 
     def test_session_request(self):
@@ -64,9 +64,9 @@ class TestRedisClient:
             "duration": 30,
         }
         self.rds.request_session(request)
-        assert self.rds.get_status() == storage.REQUESTED
+        assert self.rds.get_status() == messaging.REQUESTED
 
     def test_session_request_stop(self):
         """Test requesting to stop an active session"""
         self.rds.request_session_stop()
-        assert self.rds.get_status() == storage.STOPPED
+        assert self.rds.get_status() == messaging.STOPPED

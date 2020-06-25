@@ -7,9 +7,9 @@
 import redis
 import flask_socketio as sock
 import visiomode.config as cfg
-import visiomode.storage as storage
+import visiomode.messaging as messaging
 
-rds = storage.RedisClient()
+rds = messaging.RedisClient()
 
 
 class SessionNamespace(sock.Namespace):
