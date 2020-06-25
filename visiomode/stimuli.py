@@ -10,6 +10,13 @@ import numpy as np
 import pygame as pg
 
 
+def get_stimulus(stimulus_id):
+    stimuli = BaseStimulus.get_children()
+    for Stimulus in stimuli:
+        if Stimulus.get_identifier() == stimulus_id:
+            return Stimulus
+
+
 def load_image(name):
     """ Load image and return image object"""
     fullname = os.path.join("visiomode/gui/res", name)
