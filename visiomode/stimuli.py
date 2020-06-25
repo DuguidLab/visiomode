@@ -39,8 +39,8 @@ def grayscale_array(array: np.ndarray) -> np.ndarray:
 class BaseStimulus(pg.sprite.Sprite):
     form_path = "stimuli/stimulus.html"
 
-    def __init__(self, *args):
-        super().__init__(*args)
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
 
     @classmethod
     def get_common_name(cls):
@@ -64,8 +64,8 @@ class BaseStimulus(pg.sprite.Sprite):
 class Grating(BaseStimulus):
     form_path = "stimuli/grating.html"
 
-    def __init__(self, *args):
-        super().__init__(*args)
+    def __init__(self, **kargs):
+        super().__init__(**kargs)
 
         array = self.sinusoid(600, 400)
         self.image = pg.surfarray.make_surface(array)
