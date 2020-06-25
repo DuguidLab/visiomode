@@ -30,7 +30,7 @@ class Trial(Base):
 
     Attributes:
         outcome: String descriptive of trial outcome, e.g. "hit", "miss", "pre-cued".
-        iti: Integer representing the "silent" time before the stimulus is presented in milliseconds.
+        iti: Float representing the "silent" time before the stimulus is presented in milliseconds.
         reaction_time: Integer representing the time between stimulus presentation and response in milliseconds.
         duration: Integer representing the duration of the touch in milliseconds.
         pos_x: Float representing the touch position in the x-axis.
@@ -41,7 +41,7 @@ class Trial(Base):
     """
 
     outcome: str
-    iti: int
+    iti: float
     reaction_time: int
     duration: int
     pos_x: float
