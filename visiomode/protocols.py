@@ -175,14 +175,16 @@ class Presentation(BaseProtocol):
 class SingleTarget(Task):
     form_path = "protocols/single_target.html"
 
-    def __init__(self, target, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+    def __init__(self, target, **kwargs):
+        super().__init__(**kwargs)
 
         self.background = pg.Surface(self.screen.get_size())
         self.background = self.background.convert()
         self.background.fill((0, 0, 0))
         self.screen.blit(self.background, (0, 0))
-        self.target = pg.sprite.RenderClear(stim.Grating(600, 400))
+
+        Target = stim.get_stimulus(target)
+        self.target = pg.sprite.RenderClear(Target(**kwargs))
 
     def stop(self):
         print("stop")

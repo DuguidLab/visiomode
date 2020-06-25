@@ -47,7 +47,7 @@ class BaseStimulus(pg.sprite.Sprite):
     form_path = "stimuli/stimulus.html"
 
     def __init__(self, **kwargs):
-        super().__init__(**kwargs)
+        super().__init__()
 
     @classmethod
     def get_common_name(cls):
@@ -74,14 +74,15 @@ class Grating(BaseStimulus):
     def __init__(self, width, height, period=20, **kwargs):
         super().__init__(**kwargs)
 
-        array = self.sinusoid(width, height, period)
+        array = self.sinusoid(int(width), int(height), int(period))
         self.image = pg.surfarray.make_surface(array)
         self.rect = self.image.get_rect()
+
         screen = pg.display.get_surface()
         self.area = screen.get_rect()
 
     @staticmethod
-    def sinusoid(width, height, period):
+    def sinusoid(width: int, height: int, period: int):
         # generate 1-D sine wave of required period
         x = np.arange(width)
         y = np.sin(2 * np.pi * x / period)
