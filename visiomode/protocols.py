@@ -26,6 +26,13 @@ TouchEvent = collections.namedtuple(
 )
 
 
+def get_protocol(protocol_id):
+    protocols = Task.get_children() + Presentation.get_children()
+    for Protocol in protocols:
+        if Protocol.get_identifier() == protocol_id:
+            return Protocol
+
+
 class BaseProtocol(object):
     form_path = "protocols/protocol.html"
 
@@ -99,6 +106,11 @@ class Task(BaseProtocol):
     def hide_stim(self):
         pass
 
+    def get_stim(self):
+        # Protocol = protocols.get_protocol(session.protocol)
+        # protocol = Protocol(self.screen, session.duration, **request)
+        pass
+
     def _session_runner(self):
         while self.is_running:
             self.hide_stim()
@@ -163,14 +175,14 @@ class Presentation(BaseProtocol):
 class SingleTarget(Task):
     form_path = "protocols/single_target.html"
 
-    def __init__(self, *args, **kwargs):
+    def __init__(self, target, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
         self.background = pg.Surface(self.screen.get_size())
         self.background = self.background.convert()
         self.background.fill((0, 0, 0))
         self.screen.blit(self.background, (0, 0))
-        self.target = pg.sprite.RenderClear(stim.Grating())
+        self.target = pg.sprite.RenderClear(stim.Grating(600, 400))
 
     def stop(self):
         print("stop")
@@ -200,13 +212,6 @@ class SingleTarget(Task):
                         timestamp=time.time(),
                     )
                 )
-
-
-def get_protocol(protocol_id):
-    protocols = Task.get_children() + Presentation.get_children()
-    for Protocol in protocols:
-        if Protocol.get_identifier() == protocol_id:
-            return Protocol
 
 
 class InvalidProtocol(Exception):
