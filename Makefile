@@ -19,6 +19,9 @@ requirements:
 webserver:
 	$(PYTHON_INTERPRETER) visiomode/webpanel/__init__.py
 
+lint:
+	pylint --extension-pkg-whitelist=pygame visiomode/
+
 
 .DEFAULT_GOAL := help
 
