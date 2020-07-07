@@ -119,7 +119,7 @@ class Task(BaseProtocol):
             touchup_response = None
             trial_outcome = str()
             stim_time = iti_start  # default to start of ITI until stimulus shows up
-            while time.time() - iti_start < self.iti or touchdown_response:
+            while (time.time() - iti_start < self.iti) or touchdown_response:
                 if not self._response_q.empty():
                     response = self._response_q.get()
                     # If touchdown, log trial as precued
@@ -137,8 +137,8 @@ class Task(BaseProtocol):
                 self.show_stim()
                 stim_start = time.time()
                 while (
-                    time.time() - stim_start < self.stim_duration or touchdown_response
-                ):
+                    time.time() - stim_start < self.stim_duration
+                ) or touchdown_response:
                     if not self._response_q.empty():
                         response = self._response_q.get()
                         if response.event_type in TOUCHDOWN:
@@ -195,6 +195,7 @@ class SingleTarget(Task):
         self.target.draw(self.screen)
 
     def hide_stim(self):
+        self.target.sprites()[0].rect.x += 20
         self.target.clear(self.screen, self.background)
 
     def handle_events(self, events):
