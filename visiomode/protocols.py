@@ -114,7 +114,7 @@ class Task(BaseProtocol):
             touchup_response = None
             trial_outcome = str()
             stim_time = iti_start  # default to start of ITI until stimulus shows up
-            while (time.time() - iti_start < self.iti) / get or touchdown_response:
+            while (time.time() - iti_start < self.iti) or touchdown_response:
                 if not self._response_q.empty():
                     response = self._response_q.get()
                     # If touchdown, log trial as precued
@@ -179,28 +179,23 @@ class SingleTarget(Task):
         self.screen.blit(self.background, (0, 0))
 
         Target = stim.get_stimulus(target)
-        self.target = pg.sprite.RenderClear(Target(**kwargs))
+        self.target = Target(background=self.background, **kwargs)
 
     def stop(self):
         print("stop")
         super().stop()
-        self.target.clear(self.screen, self.background)
+        self.hide_stim()
 
     def show_stim(self):
-        self.target.draw(self.screen)
+        self.target.show()
 
     def hide_stim(self):
-        self.target.sprites()[0].rect.x += 20
-        self.target.clear(self.screen, self.background)
+        self.target.hide()
 
     def handle_events(self, events):
         for event in events:
             if event.type in TOUCHDOWN or event.type in TOUCHUP:
-                on_target = False
-                for sprite in self.target.sprites():
-                    if sprite.rect.collidepoint(event.pos):
-                        on_target = True
-                        break
+                on_target = self.target.collision(event.pos)
                 self._response_q.put(
                     TouchEvent(
                         event_type=event.type,

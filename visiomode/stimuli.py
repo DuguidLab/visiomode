@@ -43,11 +43,28 @@ def grayscale_array(array: np.ndarray) -> np.ndarray:
     return np.stack((normalise_array(array),) * 3, axis=-1)
 
 
-class BaseStimulus(pg.sprite.Sprite):
+class BaseStimulus(pg.sprite.Group):
     form_path = "stimuli/stimulus.html"
 
-    def __init__(self, **kwargs):
+    def __init__(self, background, **kwargs):
         super().__init__()
+        self.screen = pg.display.get_surface()
+        self.background = background
+
+    def show(self):
+        self.draw(self.screen)
+
+    def hide(self):
+        self.clear(self.screen, self.background)
+
+    def update(self):
+        pass
+
+    def collision(self, pos):
+        for sprite in self.sprites():
+            if sprite.rect.collidepoint(pos):
+                return True
+        return False
 
     @classmethod
     def get_common_name(cls):
@@ -75,11 +92,12 @@ class Grating(BaseStimulus):
         super().__init__(**kwargs)
 
         array = self.sinusoid(int(width), int(height), int(period))
-        self.image = pg.surfarray.make_surface(array)
-        self.rect = self.image.get_rect()
+        sprite = pg.sprite.Sprite()
+        sprite.image = pg.surfarray.make_surface(array)
+        sprite.rect = sprite.image.get_rect()
+        sprite.area = self.screen.get_rect()
 
-        screen = pg.display.get_surface()
-        self.area = screen.get_rect()
+        self.add(sprite)
 
     @staticmethod
     def sinusoid(width: int, height: int, period: int):
