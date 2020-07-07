@@ -106,11 +106,6 @@ class Task(BaseProtocol):
     def hide_stim(self):
         pass
 
-    def get_stim(self):
-        # Protocol = protocols.get_protocol(session.protocol)
-        # protocol = Protocol(self.screen, session.duration, **request)
-        pass
-
     def _session_runner(self):
         while self.is_running:
             self.hide_stim()
@@ -119,7 +114,7 @@ class Task(BaseProtocol):
             touchup_response = None
             trial_outcome = str()
             stim_time = iti_start  # default to start of ITI until stimulus shows up
-            while (time.time() - iti_start < self.iti) or touchdown_response:
+            while (time.time() - iti_start < self.iti) / get or touchdown_response:
                 if not self._response_q.empty():
                     response = self._response_q.get()
                     # If touchdown, log trial as precued
