@@ -127,6 +127,7 @@ class MovingGrating(BaseStimulus):
     form_path = "stimuli/moving_grating.html"
 
     def __init__(self, background, width, height, period=20, freq=1.0, **kwargs):
+        # Default direction is upwards, use negative frequency for downwards
         super().__init__(background, **kwargs)
 
         self.height = int(height)
@@ -154,7 +155,7 @@ class MovingGrating(BaseStimulus):
             return
         for sprite in self.sprites():
             sprite.rect.move_ip(0, -self.px_per_cycle)
-            self.px_travelled += self.px_per_cycle
+            self.px_travelled += abs(self.px_per_cycle)
         if self.px_travelled >= self.height:
             for idx, sprite in enumerate(self.sprites()):
                 # reset offset position
