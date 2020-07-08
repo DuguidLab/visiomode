@@ -121,5 +121,16 @@ class MovingGrating(BaseStimulus):
 
         grating = Grating.sinusoid(int(width), height, period)
 
+        # To emulate the movement, we use two sprites that are offset by the screen width on the y axis.
+        # Then with every update, add or subtract y from both sprites. Reset to original position once
+        # an image has moved its entire height.
+        sprites = [pg.sprite.Sprite(), pg.sprite.Sprite()]
+        for sprite in sprites:
+            sprite.image = pg.surfarray.make_surface(grating)
+            sprite.rect = sprite.image.get_rect()
+            sprite.area = self.screen.get_rect()
+
+        self.add(sprites)
+
     def update(self):
         pass
