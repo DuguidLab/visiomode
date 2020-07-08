@@ -149,6 +149,8 @@ class Visiomode:
 
             pg.display.flip()
 
+            self.clock.tick(self.config.fps)
+
     def parse_request(self, request: dict):
         """Parse new session request parameters."""
         session = models.Session(
