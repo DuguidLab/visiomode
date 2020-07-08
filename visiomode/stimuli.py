@@ -91,7 +91,7 @@ class Grating(BaseStimulus):
     def __init__(self, background, width, height, period=20, **kwargs):
         super().__init__(background, **kwargs)
 
-        grating = self.sinusoid(int(width), int(height), int(period))
+        grating = Grating.sinusoid(int(width), int(height), int(period))
         sprite = pg.sprite.Sprite()
         sprite.image = pg.surfarray.make_surface(grating)
         sprite.rect = sprite.image.get_rect()
@@ -99,8 +99,8 @@ class Grating(BaseStimulus):
 
         self.add(sprite)
 
-    @staticmethod
-    def sinusoid(width: int, height: int, period: int):
+    @classmethod
+    def sinusoid(cls, width: int, height: int, period: int):
         # generate 1-D sine wave of required period
         x = np.arange(width)
         y = np.sin(2 * np.pi * x / period)
