@@ -134,4 +134,5 @@ class MovingGrating(BaseStimulus):
         self.add(sprites)
 
     def update(self):
-        pass
+        for sprite in self.sprites():
+            sprite.rect.move_ip(0, -1)
