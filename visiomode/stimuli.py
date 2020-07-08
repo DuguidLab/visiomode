@@ -129,12 +129,11 @@ class MovingGrating(BaseStimulus):
     def __init__(self, background, width, height, period=20, freq=1.0, **kwargs):
         super().__init__(background, **kwargs)
 
-        # self.px_per_cycle = (int(height) * float(freq)) * (1 / config.fps)
-        self.px_per_cycle = 5
-        self.px_travelled = 0
         self.height = int(height)
         self.width = int(width)
         self.period = int(period)
+        self.px_per_cycle = (self.height * (1 / config.fps)) * freq
+        self.px_travelled = 0
 
         grating = Grating.sinusoid(self.width, self.height, self.period)
 
