@@ -133,7 +133,7 @@ class MovingGrating(BaseStimulus):
         self.height = int(height)
         self.width = int(width)
         self.period = int(period)
-        self.px_per_cycle = (self.height / config.fps) * freq
+        self.px_per_cycle = (self.height / config.fps) * float(freq)
         self.px_travelled = 0
 
         grating = Grating.sinusoid(self.width, self.height, self.period)
@@ -155,7 +155,7 @@ class MovingGrating(BaseStimulus):
             return
         for sprite in self.sprites():
             sprite.rect.move_ip(0, -self.px_per_cycle)
-            self.px_travelled += abs(self.px_per_cycle)
+            self.px_travelled += self.px_per_cycle
         if self.px_travelled >= self.height:
             for idx, sprite in enumerate(self.sprites()):
                 # reset offset position
