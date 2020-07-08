@@ -139,7 +139,6 @@ class Visiomode:
                 session = None
             events = pg.event.get()
             if protocol and protocol.is_running:
-                protocol.update()
                 protocol.handle_events(events)
             for event in events:
                 if event.type == pg.QUIT:

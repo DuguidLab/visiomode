@@ -195,9 +195,6 @@ class SingleTarget(Task):
     def hide_stim(self):
         self.target.hide()
 
-    def update(self):
-        self.target.update()
-
     def handle_events(self, events):
         for event in events:
             if event.type in TOUCHDOWN or event.type in TOUCHUP:
@@ -211,6 +208,7 @@ class SingleTarget(Task):
                         timestamp=time.time(),
                     )
                 )
+        self.target.update()  # update stimulus drawing here since this is called on every iteration in the main loop
 
 
 class InvalidProtocol(Exception):
