@@ -125,9 +125,10 @@ class MovingGrating(BaseStimulus):
         # Then with every update, add or subtract y from both sprites. Reset to original position once
         # an image has moved its entire height.
         sprites = [pg.sprite.Sprite(), pg.sprite.Sprite()]
-        for sprite in sprites:
+        for idx, sprite in enumerate(sprites):
             sprite.image = pg.surfarray.make_surface(grating)
             sprite.rect = sprite.image.get_rect()
+            sprite.rect.y = sprite.rect.height * idx  # Generate y-offset
             sprite.area = self.screen.get_rect()
 
         self.add(sprites)
