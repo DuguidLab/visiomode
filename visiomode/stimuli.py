@@ -91,9 +91,9 @@ class Grating(BaseStimulus):
     def __init__(self, background, width, height, period=20, **kwargs):
         super().__init__(background, **kwargs)
 
-        array = self.sinusoid(int(width), int(height), int(period))
+        grating = self.sinusoid(int(width), int(height), int(period))
         sprite = pg.sprite.Sprite()
-        sprite.image = pg.surfarray.make_surface(array)
+        sprite.image = pg.surfarray.make_surface(grating)
         sprite.rect = sprite.image.get_rect()
         sprite.area = self.screen.get_rect()
 
@@ -114,10 +114,12 @@ class Grating(BaseStimulus):
 
 
 class MovingGrating(BaseStimulus):
-    form_path = "stimuli/grating.html"
+    form_path = "stimuli/moving_grating.html"
 
-    def __init__(self, background, **kwargs):
+    def __init__(self, background, width, height, period=20, **kwargs):
         super().__init__(background, **kwargs)
+
+        grating = Grating.sinusoid(int(width), height, period)
 
     def update(self):
         pass
