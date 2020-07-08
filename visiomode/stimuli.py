@@ -97,8 +97,11 @@ class Grating(BaseStimulus):
 
     def __init__(self, background, width, height, period=20, **kwargs):
         super().__init__(background, **kwargs)
+        self.height = int(height)
+        self.width = int(width)
+        self.period = int(period)
 
-        grating = Grating.sinusoid(int(width), int(height), int(period))
+        grating = Grating.sinusoid(self.width, self.height, self.period)
         sprite = pg.sprite.Sprite()
         sprite.image = pg.surfarray.make_surface(grating)
         sprite.rect = sprite.image.get_rect()
