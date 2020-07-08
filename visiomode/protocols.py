@@ -52,6 +52,9 @@ class BaseProtocol(object):
     def stop(self):
         self.is_running = False
 
+    def update(self):
+        pass
+
     def _timer(self, duration: float):
         start_time = time.time()
         while time.time() - start_time < duration:
@@ -191,6 +194,9 @@ class SingleTarget(Task):
 
     def hide_stim(self):
         self.target.hide()
+
+    def update(self):
+        self.target.update()
 
     def handle_events(self, events):
         for event in events:

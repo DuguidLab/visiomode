@@ -51,10 +51,14 @@ class BaseStimulus(pg.sprite.Group):
         self.screen = pg.display.get_surface()
         self.background = background
 
+        self.hidden = False
+
     def show(self):
+        self.hidden = False
         self.draw(self.screen)
 
     def hide(self):
+        self.hidden = True
         self.clear(self.screen, self.background)
 
     def update(self):
@@ -134,5 +138,8 @@ class MovingGrating(BaseStimulus):
         self.add(sprites)
 
     def update(self):
+        if self.hidden:
+            return
         for sprite in self.sprites():
             sprite.rect.move_ip(0, -1)
+        self.draw(self.screen)
