@@ -119,7 +119,7 @@ class MovingGrating(BaseStimulus):
     def __init__(self, background, width, height, period=20, **kwargs):
         super().__init__(background, **kwargs)
 
-        grating = Grating.sinusoid(int(width), height, period)
+        grating = Grating.sinusoid(int(width), int(height), int(period))
 
         # To emulate the movement, we use two sprites that are offset by the screen width on the y axis.
         # Then with every update, add or subtract y from both sprites. Reset to original position once
