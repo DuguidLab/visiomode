@@ -133,9 +133,11 @@ class MovingGrating(BaseStimulus):
         self.height = int(height)
         self.width = int(width)
         self.period = int(period)
-        self.px_per_cycle = (self.height / config.fps) * float(freq)
+        self.frequency = float(freq)
+        self.px_per_cycle = (self.height / config.fps) * abs(self.frequency)
         self.px_travelled = 0
-        # TODO allow both upward and downward direction
+        # Determine sign of direction based on frequency (negative => downwards, positive => upwards)
+        self.direction = (lambda x: (1, -1)[x < 0])(self.frequency)
 
         grating = Grating.sinusoid(self.width, self.height, self.period)
 
@@ -146,7 +148,7 @@ class MovingGrating(BaseStimulus):
         for idx, sprite in enumerate(sprites):
             sprite.image = pg.surfarray.make_surface(grating)
             sprite.rect = sprite.image.get_rect()
-            sprite.rect.y = sprite.rect.height * idx  # Generate y-offset
+            sprite.rect.y = sprite.rect.height * idx * self.direction  # offset
             sprite.area = self.screen.get_rect()
 
         self.add(sprites)
@@ -155,11 +157,11 @@ class MovingGrating(BaseStimulus):
         if self.hidden:
             return
         for sprite in self.sprites():
-            sprite.rect.move_ip(0, -self.px_per_cycle)
+            sprite.rect.move_ip(0, self.direction * -self.px_per_cycle)
             self.px_travelled += self.px_per_cycle
         if self.px_travelled >= self.height:
             for idx, sprite in enumerate(self.sprites()):
                 # reset offset position
-                sprite.rect.y = sprite.rect.height * idx
+                sprite.rect.y = sprite.rect.height * idx * self.direction
                 self.px_travelled = 0
         self.draw(self.screen)
