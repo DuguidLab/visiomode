@@ -253,7 +253,7 @@ class TwoAlternativeForcedChoice(Task):
 
     def hide_stim(self):
         self.target.hide()
-        self.distractor.show()
+        self.distractor.hide()
 
 
 class TwoIntervalForcedChoice(Task):
