@@ -93,6 +93,8 @@ class Task(BaseProtocol):
 
         self.trials = []
 
+        self.target = None
+
         self._response_q = queue.Queue()
 
         self._session_thread = threading.Thread(
@@ -108,6 +110,21 @@ class Task(BaseProtocol):
 
     def hide_stim(self):
         pass
+
+    def handle_events(self, events):
+        for event in events:
+            if event.type in TOUCHDOWN or event.type in TOUCHUP:
+                on_target = self.target.collision(event.pos)
+                self._response_q.put(
+                    TouchEvent(
+                        event_type=event.type,
+                        on_target=on_target,
+                        x=event.pos[0],
+                        y=event.pos[1],
+                        timestamp=time.time(),
+                    )
+                )
+        self.target.update()  # update stimulus drawing here since this is called on every iteration in the main loop
 
     def _session_runner(self):
         while self.is_running:
@@ -195,21 +212,6 @@ class SingleTarget(Task):
     def hide_stim(self):
         self.target.hide()
 
-    def handle_events(self, events):
-        for event in events:
-            if event.type in TOUCHDOWN or event.type in TOUCHUP:
-                on_target = self.target.collision(event.pos)
-                self._response_q.put(
-                    TouchEvent(
-                        event_type=event.type,
-                        on_target=on_target,
-                        x=event.pos[0],
-                        y=event.pos[1],
-                        timestamp=time.time(),
-                    )
-                )
-        self.target.update()  # update stimulus drawing here since this is called on every iteration in the main loop
-
 
 class TwoAlternativeForcedChoice(Task):
     form_path = "protocols/tafc.html"
@@ -247,24 +249,11 @@ class TwoAlternativeForcedChoice(Task):
 
     def show_stim(self):
         self.target.show()
+        self.distractor.show()
 
     def hide_stim(self):
         self.target.hide()
-
-    def handle_events(self, events):
-        for event in events:
-            if event.type in TOUCHDOWN or event.type in TOUCHUP:
-                on_target = self.target.collision(event.pos)
-                self._response_q.put(
-                    TouchEvent(
-                        event_type=event.type,
-                        on_target=on_target,
-                        x=event.pos[0],
-                        y=event.pos[1],
-                        timestamp=time.time(),
-                    )
-                )
-        self.target.update()
+        self.distractor.show()
 
 
 class TwoIntervalForcedChoice(Task):
