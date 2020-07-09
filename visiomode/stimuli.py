@@ -89,7 +89,7 @@ class BaseStimulus(pg.sprite.Group):
 
     @classmethod
     def get_form(cls):
-        return flask.render_template(cls.form_path)
+        return flask.render_template(cls.form_path, screen=pg.display.get_surface())
 
 
 class Grating(BaseStimulus):
@@ -135,6 +135,7 @@ class MovingGrating(BaseStimulus):
         self.period = int(period)
         self.px_per_cycle = (self.height / config.fps) * float(freq)
         self.px_travelled = 0
+        # TODO allow both upward and downward direction
 
         grating = Grating.sinusoid(self.width, self.height, self.period)
 

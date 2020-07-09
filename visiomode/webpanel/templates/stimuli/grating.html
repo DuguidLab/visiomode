@@ -2,13 +2,13 @@
     <div class="col">
         <label for="width">Width (px)</label>
         <input id="width" class="form-control mb-3"
-               type="number" value="600"
+               type="number" value={{ screen.get_width() }}
                min="0" step="10">
     </div>
     <div class="col">
         <label for="height">Height (px)</label>
         <input id="height" class="form-control mb-3"
-               type="number" value="400"
+               type="number" value={{ screen.get_height() }}
                min="0" step="10">
     </div>
 </div>
