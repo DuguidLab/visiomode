@@ -25,6 +25,7 @@ class Config:
     debug = True
     flask_key = "dev"
     data_dir = "instance"
+    fps = 60
 
     def __init__(self, path=DEFAULT_PATH):
         """Initialises Config with a path to a configuration file.

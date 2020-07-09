@@ -8,6 +8,9 @@ import re
 import flask
 import numpy as np
 import pygame as pg
+import visiomode.config as conf
+
+config = conf.Config()
 
 
 def get_stimulus(stimulus_id):
@@ -43,11 +46,32 @@ def grayscale_array(array: np.ndarray) -> np.ndarray:
     return np.stack((normalise_array(array),) * 3, axis=-1)
 
 
-class BaseStimulus(pg.sprite.Sprite):
+class BaseStimulus(pg.sprite.Group):
     form_path = "stimuli/stimulus.html"
 
-    def __init__(self, **kwargs):
+    def __init__(self, background, **kwargs):
         super().__init__()
+        self.screen = pg.display.get_surface()
+        self.background = background
+
+        self.hidden = False
+
+    def show(self):
+        self.hidden = False
+        self.draw(self.screen)
+
+    def hide(self):
+        self.hidden = True
+        self.clear(self.screen, self.background)
+
+    def update(self):
+        pass
+
+    def collision(self, pos):
+        for sprite in self.sprites():
+            if sprite.rect.collidepoint(pos):
+                return True
+        return False
 
     @classmethod
     def get_common_name(cls):
@@ -65,24 +89,28 @@ class BaseStimulus(pg.sprite.Sprite):
 
     @classmethod
     def get_form(cls):
-        return flask.render_template(cls.form_path)
+        return flask.render_template(cls.form_path, screen=pg.display.get_surface())
 
 
 class Grating(BaseStimulus):
     form_path = "stimuli/grating.html"
 
-    def __init__(self, width, height, period=20, **kwargs):
-        super().__init__(**kwargs)
+    def __init__(self, background, width, height, period=20, **kwargs):
+        super().__init__(background, **kwargs)
+        self.height = int(height)
+        self.width = int(width)
+        self.period = int(period)
 
-        array = self.sinusoid(int(width), int(height), int(period))
-        self.image = pg.surfarray.make_surface(array)
-        self.rect = self.image.get_rect()
+        grating = Grating.sinusoid(self.width, self.height, self.period)
+        sprite = pg.sprite.Sprite()
+        sprite.image = pg.surfarray.make_surface(grating)
+        sprite.rect = sprite.image.get_rect()
+        sprite.area = self.screen.get_rect()
 
-        screen = pg.display.get_surface()
-        self.area = screen.get_rect()
+        self.add(sprite)
 
-    @staticmethod
-    def sinusoid(width: int, height: int, period: int):
+    @classmethod
+    def sinusoid(cls, width: int, height: int, period: int):
         # generate 1-D sine wave of required period
         x = np.arange(width)
         y = np.sin(2 * np.pi * x / period)
@@ -93,3 +121,47 @@ class Grating(BaseStimulus):
         # create 2-D array of sine-wave
         sinusoid = np.array([[y[j] for j in range(height)] for i in range(width)])
         return grayscale_array(sinusoid)
+
+
+class MovingGrating(BaseStimulus):
+    form_path = "stimuli/moving_grating.html"
+
+    def __init__(self, background, width, height, period=20, freq=1.0, **kwargs):
+        # Default direction is upwards, use negative frequency for downwards
+        super().__init__(background, **kwargs)
+
+        self.height = int(height)
+        self.width = int(width)
+        self.period = int(period)
+        self.frequency = float(freq)
+        self.px_per_cycle = (self.height / config.fps) * abs(self.frequency)
+        self.px_travelled = 0
+        # Determine sign of direction based on frequency (negative => downwards, positive => upwards)
+        self.direction = (lambda x: (1, -1)[x < 0])(self.frequency)
+
+        grating = Grating.sinusoid(self.width, self.height, self.period)
+
+        # To emulate the movement, we use two sprites that are offset by the screen width on the y axis.
+        # Then with every update, add or subtract y from both sprites. Reset to original position once
+        # an image has moved its entire height.
+        sprites = [pg.sprite.Sprite(), pg.sprite.Sprite()]
+        for idx, sprite in enumerate(sprites):
+            sprite.image = pg.surfarray.make_surface(grating)
+            sprite.rect = sprite.image.get_rect()
+            sprite.rect.y = sprite.rect.height * idx * self.direction  # offset
+            sprite.area = self.screen.get_rect()
+
+        self.add(sprites)
+
+    def update(self):
+        if self.hidden:
+            return
+        for sprite in self.sprites():
+            sprite.rect.move_ip(0, self.direction * -self.px_per_cycle)
+            self.px_travelled += self.px_per_cycle
+        if self.px_travelled >= self.height:
+            for idx, sprite in enumerate(self.sprites()):
+                # reset offset position
+                sprite.rect.y = sprite.rect.height * idx * self.direction
+                self.px_travelled = 0
+        self.draw(self.screen)
