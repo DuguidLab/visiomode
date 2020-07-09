@@ -211,5 +211,65 @@ class SingleTarget(Task):
         self.target.update()  # update stimulus drawing here since this is called on every iteration in the main loop
 
 
+class TwoAlternativeForcedChoice(Task):
+    form_path = "protocols/tafc.html"
+
+    def __init__(self, target, distractor, sep_size=50, **kwargs):
+        super().__init__(**kwargs)
+
+        self.background = pg.Surface(self.screen.get_size())
+        self.background = self.background.convert()
+        self.background.fill((0, 0, 0))
+        self.screen.blit(self.background, (0, 0))
+
+        self.separator_size = int(sep_size)  # pixels
+
+        Target = stim.get_stimulus(target)
+        target_params = {
+            key.replace("t_", ""): kwargs[key]
+            for key in kwargs.keys()
+            if key.startswith("t_")
+        }
+        self.target = Target(background=self.background, **target_params)
+
+        Distractor = stim.get_stimulus(distractor)
+        distractor_params = {
+            key.replace("d_", ""): kwargs[key]
+            for key in kwargs.keys()
+            if key.startswith("d_")
+        }
+        self.distractor = Distractor(background=self.background, **distractor_params)
+
+    def stop(self):
+        print("stop")
+        super().stop()
+        self.hide_stim()
+
+    def show_stim(self):
+        self.target.show()
+
+    def hide_stim(self):
+        self.target.hide()
+
+    def handle_events(self, events):
+        for event in events:
+            if event.type in TOUCHDOWN or event.type in TOUCHUP:
+                on_target = self.target.collision(event.pos)
+                self._response_q.put(
+                    TouchEvent(
+                        event_type=event.type,
+                        on_target=on_target,
+                        x=event.pos[0],
+                        y=event.pos[1],
+                        timestamp=time.time(),
+                    )
+                )
+        self.target.update()
+
+
+class TwoIntervalForcedChoice(Task):
+    pass
+
+
 class InvalidProtocol(Exception):
     pass
