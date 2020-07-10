@@ -7,6 +7,7 @@ import re
 import collections
 import time
 import datetime
+import random
 import threading
 import queue
 import flask
@@ -212,8 +213,6 @@ class SingleTarget(Task):
 
         Target = stim.get_stimulus(target)
         self.target = Target(background=self.background, **kwargs)
-        self.target.set_centerx(0)
-        self.corrections = True
 
     def stop(self):
         print("stop")
@@ -262,12 +261,22 @@ class TwoAlternativeForcedChoice(Task):
         self.hide_stim()
 
     def show_stim(self):
+        if not self._correction_trial:
+            target_x, distr_x = self.shuffle_centerx()
+            self.target.set_centerx(target_x)
+            self.distractor.set_centerx(distr_x)
+
         self.target.show()
         self.distractor.show()
 
     def hide_stim(self):
         self.target.hide()
         self.distractor.hide()
+
+    def shuffle_centerx(self):
+        x1 = 0 - (self.separator_size / 2)
+        x2 = self.screen.get_size().get_width() + (self.separator_size / 2)
+        return random.sample([x1, x2], 2)
 
 
 class TwoIntervalForcedChoice(Task):
