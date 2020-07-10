@@ -83,9 +83,7 @@ class BaseProtocol(object):
 
 
 class Task(BaseProtocol):
-    def __init__(
-        self, screen, duration, iti, stim_duration, corrections="false", **kwargs
-    ):
+    def __init__(self, screen, duration, iti, stim_duration, **kwargs):
         super().__init__(screen, duration)
 
         self.iti = float(iti) / 1000  # ms to s
@@ -93,7 +91,7 @@ class Task(BaseProtocol):
 
         self.trials = []
 
-        self.corrections = True if corrections == "true" else False
+        self.corrections = False
         self._correction_trial = False
 
         self.target = None
@@ -226,13 +224,15 @@ class SingleTarget(Task):
 class TwoAlternativeForcedChoice(Task):
     form_path = "protocols/tafc.html"
 
-    def __init__(self, target, distractor, sep_size=50, **kwargs):
+    def __init__(self, target, distractor, sep_size=50, corrections="false", **kwargs):
         super().__init__(**kwargs)
 
         self.background = pg.Surface(self.screen.get_size())
         self.background = self.background.convert()
         self.background.fill((0, 0, 0))
         self.screen.blit(self.background, (0, 0))
+
+        self.corrections = True if corrections == "true" else False
 
         self.separator_size = int(sep_size)  # pixels
         print(kwargs)
