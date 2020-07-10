@@ -81,15 +81,19 @@ def create_app():
     def get_protocol_form(protocol_id):
         protocol = protocols.get_protocol(protocol_id)
         if protocol:
-            return protocol.get_form()
+            return flask.render_template(
+                protocol.get_form(), stimuli=stimuli.BaseStimulus.get_children()
+            )
         return "No Additional Options"
 
     @app.route("/api/stimulus-form/<stimulus_id>")
     def get_stimulus_form(stimulus_id):
         stims = stimuli.BaseStimulus.get_children()
+        # allow for multiple instances of the same stimulus on same page
+        idx = flask.request.args.get("idx")
         for stimulus in stims:
             if stimulus.get_identifier() == stimulus_id:
-                return stimulus.get_form()
+                return flask.render_template(stimulus.get_form(), idx=idx)
         return "No Additional Options"
 
     @app.errorhandler(404)
