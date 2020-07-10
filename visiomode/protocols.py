@@ -276,9 +276,11 @@ class TwoAlternativeForcedChoice(Task):
         self.distractor.update()
 
     def shuffle_centerx(self):
-        x1 = 0 - (self.separator_size / 2)
-        x2 = self.screen.get_width() + (self.separator_size / 2)
-        return random.sample([x1, x2], 2)
+        centers = [
+            0 - (self.separator_size / 2),
+            self.screen.get_width() + (self.separator_size / 2),
+        ]
+        return random.sample([centers], 2)
 
 
 class TwoIntervalForcedChoice(Task):
