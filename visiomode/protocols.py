@@ -96,6 +96,7 @@ class Task(BaseProtocol):
         self.trials = []
 
         self.corrections = corrections
+        self._correction_trial = False
 
         self.target = None
 
@@ -182,14 +183,16 @@ class Task(BaseProtocol):
                     timestamp=datetime.datetime.fromtimestamp(
                         touchdown_response.timestamp
                     ).isoformat(),
-                    correction=True
-                    if self.corrections
-                    and self.trials
-                    and self.trials[-1].outcome == MISS
-                    else False,
+                    correction=self._correction_trial,
                 )
                 print(trial.__dict__)
                 self.trials.append(trial)
+
+                # Correction trials
+                if self.corrections and trial.outcome == MISS:
+                    self._correction_trial = True
+                if self.corrections and self._correction_trial and trial.outcome == HIT:
+                    self._correction_trial = False
 
 
 class Presentation(BaseProtocol):
@@ -209,6 +212,8 @@ class SingleTarget(Task):
 
         Target = stim.get_stimulus(target)
         self.target = Target(background=self.background, **kwargs)
+        self.target.set_centerx(0)
+        self.corrections = True
 
     def stop(self):
         print("stop")
