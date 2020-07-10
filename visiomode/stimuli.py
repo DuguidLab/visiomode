@@ -73,6 +73,10 @@ class BaseStimulus(pg.sprite.Group):
                 return True
         return False
 
+    def set_centerx(self, centerx):
+        for sprite in self.sprites():
+            sprite.rect.centerx = centerx
+
     @classmethod
     def get_common_name(cls):
         """"Return the human-readable, space-separated name for the class."""
