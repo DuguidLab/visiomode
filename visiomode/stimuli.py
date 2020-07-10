@@ -54,6 +54,9 @@ class BaseStimulus(pg.sprite.Group):
         self.screen = pg.display.get_surface()
         self.background = background
 
+        self.height = self.screen.get_height()
+        self.width = self.screen.get_width()
+
         self.hidden = False
 
     def show(self):
@@ -93,16 +96,14 @@ class BaseStimulus(pg.sprite.Group):
 
     @classmethod
     def get_form(cls):
-        return flask.render_template(cls.form_path, screen=pg.display.get_surface())
+        return flask.render_template(cls.form_path)
 
 
 class Grating(BaseStimulus):
     form_path = "stimuli/grating.html"
 
-    def __init__(self, background, width, height, period=20, **kwargs):
+    def __init__(self, background, period=20, **kwargs):
         super().__init__(background, **kwargs)
-        self.height = int(height)
-        self.width = int(width)
         self.period = int(period)
 
         grating = Grating.sinusoid(self.width, self.height, self.period)
@@ -130,12 +131,10 @@ class Grating(BaseStimulus):
 class MovingGrating(BaseStimulus):
     form_path = "stimuli/moving_grating.html"
 
-    def __init__(self, background, width, height, period=20, freq=1.0, **kwargs):
+    def __init__(self, background, period=20, freq=1.0, **kwargs):
         # Default direction is upwards, use negative frequency for downwards
         super().__init__(background, **kwargs)
 
-        self.height = int(height)
-        self.width = int(width)
         self.period = int(period)
         self.frequency = float(freq)
         self.px_per_cycle = (self.height / config.fps) * abs(self.frequency)
