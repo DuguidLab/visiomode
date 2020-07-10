@@ -84,7 +84,7 @@ class BaseProtocol(object):
 
 class Task(BaseProtocol):
     def __init__(
-        self, screen, duration, iti, stim_duration, corrections=False, **kwargs
+        self, screen, duration, iti, stim_duration, corrections="false", **kwargs
     ):
         super().__init__(screen, duration)
 
@@ -93,7 +93,7 @@ class Task(BaseProtocol):
 
         self.trials = []
 
-        self.corrections = corrections
+        self.corrections = True if corrections == "true" else False
         self._correction_trial = False
 
         self.target = None
@@ -235,6 +235,7 @@ class TwoAlternativeForcedChoice(Task):
         self.screen.blit(self.background, (0, 0))
 
         self.separator_size = int(sep_size)  # pixels
+        print(kwargs)
 
         Target = stim.get_stimulus(target)
         target_params = {
@@ -270,9 +271,13 @@ class TwoAlternativeForcedChoice(Task):
         self.target.hide()
         self.distractor.hide()
 
+    def handle_events(self, events):
+        super().handle_events(events)
+        self.distractor.update()
+
     def shuffle_centerx(self):
         x1 = 0 - (self.separator_size / 2)
-        x2 = self.screen.get_size().get_width() + (self.separator_size / 2)
+        x2 = self.screen.get_width() + (self.separator_size / 2)
         return random.sample([x1, x2], 2)
 
 
