@@ -85,13 +85,17 @@ class BaseProtocol(object):
 
 
 class Task(BaseProtocol):
-    def __init__(self, screen, duration, iti, stim_duration, *args, **kwargs):
+    def __init__(
+        self, screen, duration, iti, stim_duration, corrections=False, **kwargs
+    ):
         super().__init__(screen, duration)
 
         self.iti = float(iti) / 1000  # ms to s
         self.stim_duration = float(stim_duration) / 1000  # ms to s
 
         self.trials = []
+
+        self.corrections = corrections
 
         self.target = None
 
@@ -178,8 +182,13 @@ class Task(BaseProtocol):
                     timestamp=datetime.datetime.fromtimestamp(
                         touchdown_response.timestamp
                     ).isoformat(),
+                    correction=True
+                    if self.corrections
+                    and self.trials
+                    and self.trials[-1].outcome == MISS
+                    else False,
                 )
-                print(trial)
+                print(trial.__dict__)
                 self.trials.append(trial)
 
 
