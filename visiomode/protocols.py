@@ -10,7 +10,6 @@ import datetime
 import random
 import threading
 import queue
-import flask
 import pygame as pg
 import visiomode.stimuli as stim
 import visiomode.models as models
@@ -80,9 +79,7 @@ class BaseProtocol(object):
 
     @classmethod
     def get_form(cls):
-        return flask.render_template(
-            cls.form_path, stimuli=stim.BaseStimulus.get_children()
-        )
+        return cls.form_path
 
 
 class Task(BaseProtocol):

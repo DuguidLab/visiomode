@@ -5,7 +5,6 @@
 #  Distributed under the terms of the MIT Licence.
 import os
 import re
-import flask
 import numpy as np
 import pygame as pg
 import visiomode.config as conf
@@ -96,7 +95,7 @@ class BaseStimulus(pg.sprite.Group):
 
     @classmethod
     def get_form(cls):
-        return flask.render_template(cls.form_path)
+        return cls.form_path
 
 
 class Grating(BaseStimulus):
