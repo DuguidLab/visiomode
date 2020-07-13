@@ -235,7 +235,6 @@ class TwoAlternativeForcedChoice(Task):
         self.corrections = True if corrections == "true" else False
 
         self.separator_size = int(sep_size)  # pixels
-        print(kwargs)
 
         Target = stim.get_stimulus(target)
         target_params = {
@@ -280,7 +279,7 @@ class TwoAlternativeForcedChoice(Task):
             0 - (self.separator_size / 2),
             self.screen.get_width() + (self.separator_size / 2),
         ]
-        return random.sample([centers], 2)
+        return random.sample(centers, 2)
 
 
 class TwoIntervalForcedChoice(Task):
