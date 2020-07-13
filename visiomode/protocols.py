@@ -235,6 +235,10 @@ class TwoAlternativeForcedChoice(Task):
         self.corrections = True if corrections == "true" else False
 
         self.separator_size = int(sep_size)  # pixels
+        self.separator = pg.Rect(
+            ((0, 0), (self.separator_size, self.screen.get_height()))
+        )
+        self.separator.centerx = self.screen.get_rect().centerx
 
         Target = stim.get_stimulus(target)
         target_params = {
@@ -271,6 +275,12 @@ class TwoAlternativeForcedChoice(Task):
         self.distractor.hide()
 
     def handle_events(self, events):
+        # ignore events on the background sprite if target and distractor are visible
+        for event in events:
+            if event.type in TOUCHDOWN or event.type in TOUCHUP:
+                if not self.target.hidden:  # if target is visible, so is the distractor
+                    if self.separator.collidepoint(*event.pos):
+                        return
         super().handle_events(events)
         self.distractor.update()
 
