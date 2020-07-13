@@ -101,11 +101,11 @@ class BaseStimulus(pg.sprite.Group):
 class Grating(BaseStimulus):
     form_path = "stimuli/grating.html"
 
-    def __init__(self, background, period=20, **kwargs):
+    def __init__(self, background, period=20, contrast=1.0, **kwargs):
         super().__init__(background, **kwargs)
         self.period = int(period)
 
-        grating = Grating.sinusoid(self.width, self.height, self.period)
+        grating = Grating.sinusoid(self.width, self.height, self.period, contrast)
         sprite = pg.sprite.Sprite()
         sprite.image = pg.surfarray.make_surface(grating)
         sprite.rect = sprite.image.get_rect()
@@ -114,7 +114,7 @@ class Grating(BaseStimulus):
         self.add(sprite)
 
     @classmethod
-    def sinusoid(cls, width: int, height: int, period: int):
+    def sinusoid(cls, width: int, height: int, period: int, contrast: float = 1.0):
         # generate 1-D sine wave of required period
         x = np.arange(width)
         y = np.sin(2 * np.pi * x / period)
@@ -124,7 +124,7 @@ class Grating(BaseStimulus):
 
         # create 2-D array of sine-wave
         sinusoid = np.array([[y[j] for j in range(height)] for i in range(width)])
-        return grayscale_array(sinusoid)
+        return grayscale_array(sinusoid, contrast)
 
 
 class MovingGrating(BaseStimulus):
