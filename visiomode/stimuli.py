@@ -34,15 +34,15 @@ def load_image(name):
     return image, image.get_rect()
 
 
-def normalise_array(array: np.ndarray) -> np.ndarray:
+def normalise_array(array, contrast=1.0):
     """Cast array to a UINT8 image matrix."""
-    image = ((array - np.min(array)) / (np.max(array) - np.min(array))) * 255
+    image = ((array - np.min(array)) / (np.max(array) - np.min(array))) * 255 * contrast
     return image.astype(np.uint8)
 
 
-def grayscale_array(array: np.ndarray) -> np.ndarray:
+def grayscale_array(array, contrast=1.0):
     """Convert a 2D array to 3D array of grayscale values."""
-    return np.stack((normalise_array(array),) * 3, axis=-1)
+    return np.stack((normalise_array(array, contrast),) * 3, axis=-1)
 
 
 class BaseStimulus(pg.sprite.Group):
