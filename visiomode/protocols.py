@@ -7,9 +7,9 @@ import re
 import collections
 import time
 import datetime
+import random
 import threading
 import queue
-import flask
 import pygame as pg
 import visiomode.stimuli as stim
 import visiomode.models as models
@@ -79,19 +79,22 @@ class BaseProtocol(object):
 
     @classmethod
     def get_form(cls):
-        return flask.render_template(
-            cls.form_path, stimuli=stim.BaseStimulus.get_children()
-        )
+        return cls.form_path
 
 
 class Task(BaseProtocol):
-    def __init__(self, screen, duration, iti, stim_duration, *args, **kwargs):
+    def __init__(self, screen, duration, iti, stim_duration, **kwargs):
         super().__init__(screen, duration)
 
         self.iti = float(iti) / 1000  # ms to s
         self.stim_duration = float(stim_duration) / 1000  # ms to s
 
         self.trials = []
+
+        self.corrections = False
+        self._correction_trial = False
+
+        self.target = None
 
         self._response_q = queue.Queue()
 
@@ -108,6 +111,21 @@ class Task(BaseProtocol):
 
     def hide_stim(self):
         pass
+
+    def handle_events(self, events):
+        for event in events:
+            if event.type in TOUCHDOWN or event.type in TOUCHUP:
+                on_target = self.target.collision(event.pos)
+                self._response_q.put(
+                    TouchEvent(
+                        event_type=event.type,
+                        on_target=on_target,
+                        x=event.pos[0],
+                        y=event.pos[1],
+                        timestamp=time.time(),
+                    )
+                )
+        self.target.update()  # update stimulus drawing here since this is called on every iteration in the main loop
 
     def _session_runner(self):
         while self.is_running:
@@ -161,9 +179,16 @@ class Task(BaseProtocol):
                     timestamp=datetime.datetime.fromtimestamp(
                         touchdown_response.timestamp
                     ).isoformat(),
+                    correction=self._correction_trial,
                 )
-                print(trial)
+                print(trial.__dict__)
                 self.trials.append(trial)
+
+                # Correction trials
+                if self.corrections and trial.outcome == MISS:
+                    self._correction_trial = True
+                if self.corrections and self._correction_trial and trial.outcome == HIT:
+                    self._correction_trial = False
 
 
 class Presentation(BaseProtocol):
@@ -195,20 +220,80 @@ class SingleTarget(Task):
     def hide_stim(self):
         self.target.hide()
 
+
+class TwoAlternativeForcedChoice(Task):
+    form_path = "protocols/tafc.html"
+
+    def __init__(self, target, distractor, sep_size=50, corrections="false", **kwargs):
+        super().__init__(**kwargs)
+
+        self.background = pg.Surface(self.screen.get_size())
+        self.background = self.background.convert()
+        self.background.fill((0, 0, 0))
+        self.screen.blit(self.background, (0, 0))
+
+        self.corrections = True if corrections == "true" else False
+
+        self.separator_size = int(sep_size)  # pixels
+        self.separator = pg.Rect(
+            ((0, 0), (self.separator_size, self.screen.get_height()))
+        )
+        self.separator.centerx = self.screen.get_rect().centerx
+
+        Target = stim.get_stimulus(target)
+        target_params = {
+            key.replace("t_", ""): kwargs[key]
+            for key in kwargs.keys()
+            if key.startswith("t_")
+        }
+        self.target = Target(background=self.background, **target_params)
+
+        Distractor = stim.get_stimulus(distractor)
+        distractor_params = {
+            key.replace("d_", ""): kwargs[key]
+            for key in kwargs.keys()
+            if key.startswith("d_")
+        }
+        self.distractor = Distractor(background=self.background, **distractor_params)
+
+    def stop(self):
+        print("stop")
+        super().stop()
+        self.hide_stim()
+
+    def show_stim(self):
+        if not self._correction_trial:
+            target_x, distr_x = self.shuffle_centerx()
+            self.target.set_centerx(target_x)
+            self.distractor.set_centerx(distr_x)
+
+        self.target.show()
+        self.distractor.show()
+
+    def hide_stim(self):
+        self.target.hide()
+        self.distractor.hide()
+
     def handle_events(self, events):
+        # ignore events on the background sprite if target and distractor are visible
         for event in events:
             if event.type in TOUCHDOWN or event.type in TOUCHUP:
-                on_target = self.target.collision(event.pos)
-                self._response_q.put(
-                    TouchEvent(
-                        event_type=event.type,
-                        on_target=on_target,
-                        x=event.pos[0],
-                        y=event.pos[1],
-                        timestamp=time.time(),
-                    )
-                )
-        self.target.update()  # update stimulus drawing here since this is called on every iteration in the main loop
+                if not self.target.hidden:  # if target is visible, so is the distractor
+                    if self.separator.collidepoint(*event.pos):
+                        return
+        super().handle_events(events)
+        self.distractor.update()
+
+    def shuffle_centerx(self):
+        centers = [
+            0 - (self.separator_size / 2),
+            self.screen.get_width() + (self.separator_size / 2),
+        ]
+        return random.sample(centers, 2)
+
+
+class TwoIntervalForcedChoice(Task):
+    pass
 
 
 class InvalidProtocol(Exception):

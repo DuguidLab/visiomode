@@ -38,6 +38,7 @@ class Trial(Base):
         dist_x: Float representing the distance travelled while touching the screen in the x-axis.
         dist_y: Float representing the distance travelled while touching the screen in the y-axis.
         timestamp: String trial date and time (ISO format). Defaults to current date and time.
+        correction: Boolean indicating whether or not trial is a correction trial. Defaults to False.
     """
 
     outcome: str
@@ -49,6 +50,7 @@ class Trial(Base):
     dist_x: float
     dist_y: float
     timestamp: str = datetime.datetime.now().isoformat()
+    correction: bool = False
 
     def __repr__(self):
         return "<Trial {}>".format(str(self.timestamp))
