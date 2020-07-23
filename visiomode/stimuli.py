@@ -36,7 +36,11 @@ def load_image(name):
 
 def normalise_array(array, contrast=1.0):
     """Cast array to a UINT8 image matrix."""
-    image = ((array - np.min(array)) / (np.max(array) - np.min(array))) * 255 * contrast
+    image = (
+        ((array - np.min(array)) / (np.max(array) - np.min(array)))
+        * 255
+        * float(contrast)
+    )
     return image.astype(np.uint8)
 
 
