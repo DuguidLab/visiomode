@@ -178,8 +178,9 @@ class MovingGrating(BaseStimulus):
 class SolidColour(BaseStimulus):
     form_path = "stimuli/solid_colour.html"
 
-    def __init__(self, background, rgb, **kwargs):
+    def __init__(self, background, colour, **kwargs):
         super().__init__(background, **kwargs)
+        rgb = pg.Color(colour)
 
         sprite = pg.sprite.Sprite()
         sprite.image = pg.Surface((self.width, self.height))
@@ -191,7 +192,9 @@ class SolidColour(BaseStimulus):
 
 
 class IsoluminantGray(SolidColour):
+    """Based gratings pixel value mean"""
+
     form_path = None
 
     def __init__(self, background, **kwargs):
-        super().__init__(background, rgb=(122, 122, 122), **kwargs)
+        super().__init__(background, colour=(127, 127, 127))
