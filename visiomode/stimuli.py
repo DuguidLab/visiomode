@@ -91,7 +91,9 @@ class BaseStimulus(pg.sprite.Group):
     @classmethod
     def get_children(cls):
         """Return all inheriting children as a list."""
-        return cls.__subclasses__()
+        for child in cls.__subclasses__():
+            yield from child.get_children()
+            yield child
 
     @classmethod
     def get_identifier(cls):
