@@ -1,13 +1,13 @@
 <div class="row">
     <div class="col">
-        <label for="{{ idx }}period">Period (cycles)</label>
-        <input id="{{ idx }}period" class="form-control mb-3"
+        <label for="{{ idx or '' }}period">Period (cycles)</label>
+        <input id="{{ idx or '' }}period" class="form-control mb-3"
                type="number" value="20"
                min="0" step="5">
     </div>
     <div class="col">
-        <label for="{{ idx }}contrast">Contrast</label>
-        <input id="{{ idx }}contrast" class="form-control mb-3"
+        <label for="{{ idx or '' }}contrast">Contrast</label>
+        <input id="{{ idx or '' }}contrast" class="form-control mb-3"
                type="number" value="1.0"
                min="0.0" max="1.0" step="0.1">
     </div>
