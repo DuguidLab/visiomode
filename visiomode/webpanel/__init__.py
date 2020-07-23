@@ -82,7 +82,7 @@ def create_app():
         protocol = protocols.get_protocol(protocol_id)
         if protocol:
             return flask.render_template(
-                protocol.get_form(), stimuli=stimuli.BaseStimulus.get_children()
+                protocol.get_form(), stimuli=list(stimuli.BaseStimulus.get_children()),
             )
         return "No Additional Options"
 
