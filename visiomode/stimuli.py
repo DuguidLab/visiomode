@@ -167,3 +167,23 @@ class MovingGrating(BaseStimulus):
                 sprite.rect.y = sprite.rect.height * idx * self.direction
                 self.px_travelled = 0
         self.draw(self.screen)
+
+
+class SolidColour(BaseStimulus):
+    form_path = "stimuli/solid_colour.html"
+
+    def __init__(self, background, rgb, **kwargs):
+        super().__init__(background, **kwargs)
+
+        sprite = pg.sprite.Sprite()
+        sprite.image = pg.Surface((self.width, self.height))
+        sprite.image.fill(rgb)
+        sprite.rect = sprite.image.get_rect()
+        sprite.area = self.screen.get_rect()
+
+        self.add(sprite)
+
+
+class IsoluminantGray(SolidColour):
+    def __init__(self, background, **kwargs):
+        super().__init__(background, rgb=(122, 122, 122), **kwargs)
