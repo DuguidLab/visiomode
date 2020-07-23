@@ -3,12 +3,21 @@
         <label for="{{ idx }}period">Period (cycles)</label>
         <input id="{{ idx }}period" class="form-control mb-3"
                type="number" value="20"
-               min="0" step="5">
+               min="1" step="1">
     </div>
+    <div class="col">
+        <label for="{{ idx }}contrast">Contrast</label>
+        <input id="{{ idx }}contrast" class="form-control mb-3"
+               type="number" value="1.0"
+               min="0.0" max="1.0" step="0.1">
+    </div>
+</div>
+<div class="row">
     <div class="col">
         <label for="{{ idx }}freq">Frequency (Hz)</label>
         <input id="{{ idx }}freq" class="form-control mb-3"
                type="number" value="1.0"
                min="-60.0" max="60.0" step="0.1">
     </div>
+    <div class="col"></div>
 </div>

@@ -27,7 +27,7 @@ TouchEvent = collections.namedtuple(
 
 
 def get_protocol(protocol_id):
-    protocols = Task.get_children() + Presentation.get_children()
+    protocols = BaseProtocol.get_children()
     for Protocol in protocols:
         if Protocol.get_identifier() == protocol_id:
             return Protocol
@@ -71,7 +71,9 @@ class BaseProtocol(object):
     @classmethod
     def get_children(cls):
         """Return all inheriting children as a list."""
-        return cls.__subclasses__()
+        for child in cls.__subclasses__():
+            yield from child.get_children()
+            yield child
 
     @classmethod
     def get_identifier(cls):

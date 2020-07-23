@@ -34,15 +34,19 @@ def load_image(name):
     return image, image.get_rect()
 
 
-def normalise_array(array: np.ndarray) -> np.ndarray:
+def normalise_array(array, contrast=1.0):
     """Cast array to a UINT8 image matrix."""
-    image = ((array - np.min(array)) / (np.max(array) - np.min(array))) * 255
+    image = (
+        ((array - np.min(array)) / (np.max(array) - np.min(array)))
+        * 255
+        * float(contrast)
+    )
     return image.astype(np.uint8)
 
 
-def grayscale_array(array: np.ndarray) -> np.ndarray:
+def grayscale_array(array, contrast=1.0):
     """Convert a 2D array to 3D array of grayscale values."""
-    return np.stack((normalise_array(array),) * 3, axis=-1)
+    return np.stack((normalise_array(array, contrast),) * 3, axis=-1)
 
 
 class BaseStimulus(pg.sprite.Group):
@@ -87,7 +91,9 @@ class BaseStimulus(pg.sprite.Group):
     @classmethod
     def get_children(cls):
         """Return all inheriting children as a list."""
-        return cls.__subclasses__()
+        for child in cls.__subclasses__():
+            yield from child.get_children()
+            yield child
 
     @classmethod
     def get_identifier(cls):
@@ -101,11 +107,11 @@ class BaseStimulus(pg.sprite.Group):
 class Grating(BaseStimulus):
     form_path = "stimuli/grating.html"
 
-    def __init__(self, background, period=20, **kwargs):
+    def __init__(self, background, period=20, contrast=1.0, **kwargs):
         super().__init__(background, **kwargs)
         self.period = int(period)
 
-        grating = Grating.sinusoid(self.width, self.height, self.period)
+        grating = Grating.sinusoid(self.width, self.height, self.period, contrast)
         sprite = pg.sprite.Sprite()
         sprite.image = pg.surfarray.make_surface(grating)
         sprite.rect = sprite.image.get_rect()
@@ -114,7 +120,7 @@ class Grating(BaseStimulus):
         self.add(sprite)
 
     @classmethod
-    def sinusoid(cls, width: int, height: int, period: int):
+    def sinusoid(cls, width: int, height: int, period: int, contrast: float = 1.0):
         # generate 1-D sine wave of required period
         x = np.arange(width)
         y = np.sin(2 * np.pi * x / period)
@@ -124,7 +130,7 @@ class Grating(BaseStimulus):
 
         # create 2-D array of sine-wave
         sinusoid = np.array([[y[j] for j in range(height)] for i in range(width)])
-        return grayscale_array(sinusoid)
+        return grayscale_array(sinusoid, contrast)
 
 
 class MovingGrating(BaseStimulus):
@@ -167,3 +173,28 @@ class MovingGrating(BaseStimulus):
                 sprite.rect.y = sprite.rect.height * idx * self.direction
                 self.px_travelled = 0
         self.draw(self.screen)
+
+
+class SolidColour(BaseStimulus):
+    form_path = "stimuli/solid_colour.html"
+
+    def __init__(self, background, colour, **kwargs):
+        super().__init__(background, **kwargs)
+        rgb = pg.Color(colour)
+
+        sprite = pg.sprite.Sprite()
+        sprite.image = pg.Surface((self.width, self.height))
+        sprite.image.fill(rgb)
+        sprite.rect = sprite.image.get_rect()
+        sprite.area = self.screen.get_rect()
+
+        self.add(sprite)
+
+
+class IsoluminantGray(SolidColour):
+    """Based gratings pixel value mean"""
+
+    form_path = None
+
+    def __init__(self, background, **kwargs):
+        super().__init__(background, colour=(127, 127, 127))
