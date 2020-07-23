@@ -191,5 +191,7 @@ class SolidColour(BaseStimulus):
 
 
 class IsoluminantGray(SolidColour):
+    form_path = None
+
     def __init__(self, background, **kwargs):
         super().__init__(background, rgb=(122, 122, 122), **kwargs)

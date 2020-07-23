@@ -92,7 +92,7 @@ def create_app():
         # allow for multiple instances of the same stimulus on same page
         idx = flask.request.args.get("idx")
         for stimulus in stims:
-            if stimulus.get_identifier() == stimulus_id:
+            if stimulus.get_identifier() == stimulus_id and stimulus.form_path:
                 return flask.render_template(stimulus.get_form(), idx=idx)
         return "No Additional Options"
 
