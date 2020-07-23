@@ -27,7 +27,7 @@ TouchEvent = collections.namedtuple(
 
 
 def get_protocol(protocol_id):
-    protocols = Task.get_children() + Presentation.get_children()
+    protocols = BaseProtocol.get_children()
     for Protocol in protocols:
         if Protocol.get_identifier() == protocol_id:
             return Protocol
