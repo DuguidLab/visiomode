@@ -6,6 +6,7 @@
 import re
 import json
 import serial
+import threading
 
 
 class BaseDevice:
@@ -43,11 +44,19 @@ class OutputDevice(BaseDevice):
 
 
 class WaterReward(OutputDevice):
-    def __init__(self, address):
+    def __init__(self, address, threaded=True):
         super().__init__(address)
+        self.threaded = threaded
 
     def dispense(self):
-        pass
+        if not self.threaded:
+            return self._dispense()
+        thread = threading.Thread(target=self._dispense)
+        thread.start()
+
+    def _dispense(self):
+        with serial.Serial(self.address) as bus:
+            bus.write("test")
 
 
 class DeviceError(Exception):
