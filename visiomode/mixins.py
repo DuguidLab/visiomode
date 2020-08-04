@@ -5,15 +5,6 @@
 import re
 
 
-class NamingMixin:
-    """Provides convenience methods for pretty-printing user-facing classes."""
-
-    @classmethod
-    def get_common_name(cls):
-        """"Return the human-readable, space-separated name for the class."""
-        return re.sub(r"((?<=[a-z])[A-Z]|(?<!\A)[A-Z](?=[a-z]))", r" \1", cls.__name__)
-
-
 class BaseClassMixin:
     """Provides convenience methods for identifying and  tracking the progeny of Base classes."""
 
@@ -42,3 +33,8 @@ class WebFormMixin:
     @classmethod
     def get_form(cls):
         return cls.form_path
+
+    @classmethod
+    def get_common_name(cls):
+        """"Return the human-readable, space-separated name for the class."""
+        return re.sub(r"((?<=[a-z])[A-Z]|(?<!\A)[A-Z](?=[a-z]))", r" \1", cls.__name__)

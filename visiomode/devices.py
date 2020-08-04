@@ -12,7 +12,7 @@ import visiomode.config as conf
 import visiomode.mixins as mixins
 
 
-class Device(mixins.BaseClassMixin, mixins.NamingMixin):
+class Device(mixins.BaseClassMixin):
     address = None
 
     def __init__(self, address, config_path=None):

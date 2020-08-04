@@ -46,9 +46,7 @@ def grayscale_array(array, contrast=1.0):
     return np.stack((normalise_array(array, contrast),) * 3, axis=-1)
 
 
-class Stimulus(
-    pg.sprite.Group, mixins.BaseClassMixin, mixins.NamingMixin, mixins.WebFormMixin
-):
+class Stimulus(pg.sprite.Group, mixins.BaseClassMixin, mixins.WebFormMixin):
     form_path = "stimuli/stimulus.html"
 
     def __init__(self, background, **kwargs):
