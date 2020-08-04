@@ -4,7 +4,6 @@
 #  Copyright (c) 2020 Constantinos Eleftheriou <Constantinos.Eleftheriou@ed.ac.uk>
 #  Distributed under the terms of the MIT Licence.
 import os
-import re
 import numpy as np
 import pygame as pg
 import visiomode.config as conf
