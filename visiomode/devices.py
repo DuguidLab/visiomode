@@ -12,7 +12,7 @@ import visiomode.config as conf
 import visiomode.mixins as mixins
 
 
-class Device(mixins.BaseClassMixin):
+class Device(mixins.BaseClassMixin, mixins.YamlAttributesMixin):
     address = None
 
     def __init__(self, address, config_path=None):
@@ -21,25 +21,7 @@ class Device(mixins.BaseClassMixin):
             conf.Config().devices + os.sep + self.get_identifier() + ".yml"
         )
 
-        # if a config file exists, load it
-        if os.path.exists(self.config_path):
-            self.load()
-
-    def load(self):
-        """Loads YAML file parameters as class attributes."""
-        with open(self.config_path) as f:
-            config = yaml.safe_load(f)
-            for key, value in config.items():
-                if key not in self.__dict__.keys():
-                    logging.info(
-                        "{} is not a valid config parameter, skipping...".format(key)
-                    )
-                    continue
-                setattr(self, key, value)
-
-    def save(self):
-        """Save device configuration."""
-        pass
+        self.load_yaml(self.config_path)
 
     def calibrate(self):
         """Calibrate device parameters."""

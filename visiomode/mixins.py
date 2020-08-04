@@ -2,11 +2,14 @@
 #  This file is part of visiomode.
 #  Copyright (c) 2020 Constantinos Eleftheriou <Constantinos.Eleftheriou@ed.ac.uk>
 #  Distributed under the terms of the MIT Licence.
+import os
 import re
+import yaml
+import logging
 
 
 class BaseClassMixin:
-    """Provides convenience methods for identifying and  tracking the progeny of Base classes."""
+    """Provides convenience methods for identifying and tracking the progeny of Base classes."""
 
     @classmethod
     def get_children(cls):
@@ -38,3 +41,29 @@ class WebFormMixin:
     def get_common_name(cls):
         """"Return the human-readable, space-separated name for the class."""
         return re.sub(r"((?<=[a-z])[A-Z]|(?<!\A)[A-Z](?=[a-z]))", r" \1", cls.__name__)
+
+
+class YamlAttributesMixin:
+    """Load and save class attributes as YAML files."""
+
+    def load_yaml(self, path):
+        """Loads YAML file parameters as class attributes.
+
+        Args:
+            path: Path to config YAML.
+        """
+        if not os.path.exists(path):
+            return
+        with open(path) as f:
+            attrs = yaml.safe_load(f)
+            for key, value in attrs.items():
+                if key not in self.__dict__.keys():
+                    logging.info(
+                        "{} is not a valid config parameter, skipping...".format(key)
+                    )
+                    continue
+                setattr(self, key, value)
+
+    def save_yaml(self, path, exclude=None):
+        """Save class attributes as a YAML file."""
+        pass

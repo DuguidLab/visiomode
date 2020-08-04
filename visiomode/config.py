@@ -7,12 +7,13 @@
 import os
 import yaml
 import logging
+import visiomode.mixins as mixins
 
 
 DEFAULT_PATH = "/etc/visiomode/config.yaml"
 
 
-class Config:
+class Config(mixins.YamlAttributesMixin):
     """Configuration class for visiomode components.
 
     Defaults to development settings unless initialised with a valid path to a config YAML, or the file specified by
@@ -36,22 +37,4 @@ class Config:
         Args:
             path: Path to config YAML, defaults to DEFAULT_PATH. Only used if it exists.
         """
-        if os.path.exists(path):
-            self.debug = False
-            self.load(path)
-
-    def load(self, path):
-        """Loads YAML file parameters as class attributes.
-
-        Args:
-            path: Path to config YAML, assumed to exist.
-        """
-        with open(path) as f:
-            config = yaml.safe_load(f)
-            for key, value in config.items():
-                if key not in self.__dict__.keys():
-                    logging.info(
-                        "{} is not a valid config parameter, skipping...".format(key)
-                    )
-                    continue
-                setattr(self, key, value)
+        self.load_yaml(path)
