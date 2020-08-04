@@ -13,10 +13,7 @@ config = conf.Config()
 
 
 def get_stimulus(stimulus_id):
-    stimuli = Stimulus.get_children()
-    for stimulus in stimuli:
-        if stimulus.get_identifier() == stimulus_id:
-            return stimulus
+    return Stimulus.get_child(stimulus_id)
 
 
 def load_image(name):

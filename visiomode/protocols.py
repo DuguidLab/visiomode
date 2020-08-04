@@ -27,10 +27,7 @@ TouchEvent = collections.namedtuple(
 
 
 def get_protocol(protocol_id):
-    protocols = Protocol.get_children()
-    for protocol in protocols:
-        if protocol.get_identifier() == protocol_id:
-            return protocol
+    return Protocol.get_child(protocol_id)
 
 
 class Protocol(mixins.BaseClassMixin, mixins.NamingMixin, mixins.WebFormMixin):
