@@ -46,7 +46,7 @@ class Device(mixins.BaseClassMixin):
         pass
 
     def __repr__(self):
-        return "<{} device at {}>".format(self.get_common_name(), self.address)
+        return "<{} device at {}>".format(self.__name__, self.address)
 
 
 class InputDevice(Device):
