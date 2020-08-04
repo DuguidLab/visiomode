@@ -54,7 +54,7 @@ def create_app():
             "session.html",
             tasks=protocols.Task.get_children(),
             presentations=protocols.Presentation.get_children(),
-            stimuli=stimuli.BaseStimulus.get_children(),
+            stimuli=stimuli.Stimulus.get_children(),
         )
 
     @app.route("/history")
@@ -82,13 +82,13 @@ def create_app():
         protocol = protocols.get_protocol(protocol_id)
         if protocol:
             return flask.render_template(
-                protocol.get_form(), stimuli=list(stimuli.BaseStimulus.get_children()),
+                protocol.get_form(), stimuli=list(stimuli.Stimulus.get_children()),
             )
         return "No Additional Options"
 
     @app.route("/api/stimulus-form/<stimulus_id>")
     def get_stimulus_form(stimulus_id):
-        stims = stimuli.BaseStimulus.get_children()
+        stims = stimuli.Stimulus.get_children()
         # allow for multiple instances of the same stimulus on same page
         idx = flask.request.args.get("idx")
         for stimulus in stims:

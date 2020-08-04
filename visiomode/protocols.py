@@ -3,7 +3,6 @@
 #  This file is part of visiomode.
 #  Copyright (c) 2020 Constantinos Eleftheriou <Constantinos.Eleftheriou@ed.ac.uk>
 #  Distributed under the terms of the MIT Licence.
-import re
 import collections
 import time
 import datetime
@@ -13,6 +12,7 @@ import queue
 import pygame as pg
 import visiomode.stimuli as stim
 import visiomode.models as models
+import visiomode.mixins as mixins
 
 HIT = "hit"
 MISS = "miss"
@@ -27,13 +27,13 @@ TouchEvent = collections.namedtuple(
 
 
 def get_protocol(protocol_id):
-    protocols = BaseProtocol.get_children()
-    for Protocol in protocols:
-        if Protocol.get_identifier() == protocol_id:
-            return Protocol
+    protocols = Protocol.get_children()
+    for protocol in protocols:
+        if protocol.get_identifier() == protocol_id:
+            return protocol
 
 
-class BaseProtocol(object):
+class Protocol(mixins.BaseClassMixin, mixins.NamingMixin):
     form_path = "protocols/protocol.html"
 
     def __init__(self, screen, duration: float):
@@ -44,6 +44,9 @@ class BaseProtocol(object):
             target=self._timer, args=[duration], daemon=True
         )
 
+    def update(self):
+        """Protocol rendering and cleanup operations"""
+
     def start(self):
         """Start the protocol"""
         self.is_running = True
@@ -51,9 +54,6 @@ class BaseProtocol(object):
 
     def stop(self):
         self.is_running = False
-
-    def update(self):
-        pass
 
     def _timer(self, duration: float):
         start_time = time.time()
@@ -64,27 +64,11 @@ class BaseProtocol(object):
         self.stop()
 
     @classmethod
-    def get_common_name(cls):
-        """"Return the human-readable, space-separated name for the class."""
-        return re.sub(r"((?<=[a-z])[A-Z]|(?<!\A)[A-Z](?=[a-z]))", r" \1", cls.__name__)
-
-    @classmethod
-    def get_children(cls):
-        """Return all inheriting children as a list."""
-        for child in cls.__subclasses__():
-            yield from child.get_children()
-            yield child
-
-    @classmethod
-    def get_identifier(cls):
-        return cls.__name__.lower()
-
-    @classmethod
     def get_form(cls):
         return cls.form_path
 
 
-class Task(BaseProtocol):
+class Task(Protocol):
     def __init__(self, screen, duration, iti, stim_duration, **kwargs):
         super().__init__(screen, duration)
 
@@ -193,7 +177,7 @@ class Task(BaseProtocol):
                     self._correction_trial = False
 
 
-class Presentation(BaseProtocol):
+class Presentation(Protocol):
     pass
 
 

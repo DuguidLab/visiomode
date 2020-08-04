@@ -11,9 +11,10 @@ import serial
 import logging
 import threading
 import visiomode.config as conf
+import visiomode.mixins as mixins
 
 
-class BaseDevice:
+class Device(mixins.BaseClassMixin, mixins.NamingMixin):
     address = None
 
     def __init__(self, address, config_path=None):
@@ -46,31 +47,15 @@ class BaseDevice:
         """Calibrate device parameters."""
         pass
 
-    @classmethod
-    def get_common_name(cls):
-        """"Return the human-readable, space-separated name for the class."""
-        return re.sub(r"((?<=[a-z])[A-Z]|(?<!\A)[A-Z](?=[a-z]))", r" \1", cls.__name__)
-
-    @classmethod
-    def get_children(cls):
-        """Return all inheriting children as a generator."""
-        for child in cls.__subclasses__():
-            yield from child.get_children()
-            yield child
-
-    @classmethod
-    def get_identifier(cls):
-        return cls.__name__.lower()
-
     def __repr__(self):
         return "<{} device at {}>".format(self.get_common_name(), self.address)
 
 
-class InputDevice(BaseDevice):
+class InputDevice(Device):
     pass
 
 
-class OutputDevice(BaseDevice):
+class OutputDevice(Device):
     pass
 
 

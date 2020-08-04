@@ -8,15 +8,16 @@ import re
 import numpy as np
 import pygame as pg
 import visiomode.config as conf
+import visiomode.mixins as mixins
 
 config = conf.Config()
 
 
 def get_stimulus(stimulus_id):
-    stimuli = BaseStimulus.get_children()
-    for Stimulus in stimuli:
-        if Stimulus.get_identifier() == stimulus_id:
-            return Stimulus
+    stimuli = Stimulus.get_children()
+    for stimulus in stimuli:
+        if stimulus.get_identifier() == stimulus_id:
+            return stimulus
 
 
 def load_image(name):
@@ -49,7 +50,7 @@ def grayscale_array(array, contrast=1.0):
     return np.stack((normalise_array(array, contrast),) * 3, axis=-1)
 
 
-class BaseStimulus(pg.sprite.Group):
+class Stimulus(pg.sprite.Group, mixins.BaseClassMixin, mixins.NamingMixin):
     form_path = "stimuli/stimulus.html"
 
     def __init__(self, background, **kwargs):
@@ -84,27 +85,11 @@ class BaseStimulus(pg.sprite.Group):
             sprite.rect.centerx = centerx
 
     @classmethod
-    def get_common_name(cls):
-        """"Return the human-readable, space-separated name for the class."""
-        return re.sub(r"((?<=[a-z])[A-Z]|(?<!\A)[A-Z](?=[a-z]))", r" \1", cls.__name__)
-
-    @classmethod
-    def get_children(cls):
-        """Return all inheriting children as a list."""
-        for child in cls.__subclasses__():
-            yield from child.get_children()
-            yield child
-
-    @classmethod
-    def get_identifier(cls):
-        return cls.__name__.lower()
-
-    @classmethod
     def get_form(cls):
         return cls.form_path
 
 
-class Grating(BaseStimulus):
+class Grating(Stimulus):
     form_path = "stimuli/grating.html"
 
     def __init__(self, background, period=20, contrast=1.0, **kwargs):
@@ -133,7 +118,7 @@ class Grating(BaseStimulus):
         return grayscale_array(sinusoid, contrast)
 
 
-class MovingGrating(BaseStimulus):
+class MovingGrating(Stimulus):
     form_path = "stimuli/moving_grating.html"
 
     def __init__(self, background, period=20, freq=1.0, **kwargs):
@@ -175,7 +160,7 @@ class MovingGrating(BaseStimulus):
         self.draw(self.screen)
 
 
-class SolidColour(BaseStimulus):
+class SolidColour(Stimulus):
     form_path = "stimuli/solid_colour.html"
 
     def __init__(self, background, colour, **kwargs):
