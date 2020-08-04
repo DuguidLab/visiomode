@@ -27,3 +27,11 @@ class BaseClassMixin:
         for child in cls.__subclasses__():
             yield from child.get_children()
             yield child
+
+
+class WebFormMixin:
+    form_path: str
+
+    @classmethod
+    def get_form(cls):
+        return cls.form_path

@@ -33,7 +33,7 @@ def get_protocol(protocol_id):
             return protocol
 
 
-class Protocol(mixins.BaseClassMixin, mixins.NamingMixin):
+class Protocol(mixins.BaseClassMixin, mixins.NamingMixin, mixins.WebFormMixin):
     form_path = "protocols/protocol.html"
 
     def __init__(self, screen, duration: float):
@@ -62,10 +62,6 @@ class Protocol(mixins.BaseClassMixin, mixins.NamingMixin):
             if not self.is_running:
                 return
         self.stop()
-
-    @classmethod
-    def get_form(cls):
-        return cls.form_path
 
 
 class Task(Protocol):
