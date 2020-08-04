@@ -13,13 +13,9 @@ class NamingMixin:
         """"Return the human-readable, space-separated name for the class."""
         return re.sub(r"((?<=[a-z])[A-Z]|(?<!\A)[A-Z](?=[a-z]))", r" \1", cls.__name__)
 
-    @classmethod
-    def get_identifier(cls):
-        return cls.__name__.lower()
-
 
 class BaseClassMixin:
-    """Provides convenience methods for tracking the progeny of Base classes."""
+    """Provides convenience methods for identifying and  tracking the progeny of Base classes."""
 
     @classmethod
     def get_children(cls):
@@ -27,6 +23,17 @@ class BaseClassMixin:
         for child in cls.__subclasses__():
             yield from child.get_children()
             yield child
+
+    @classmethod
+    def get_child(cls, child_id):
+        children = cls.get_children()
+        for child in children:
+            if child.get_identifier() == child_id:
+                return child
+
+    @classmethod
+    def get_identifier(cls):
+        return cls.__name__.lower()
 
 
 class WebFormMixin:
