@@ -1,1 +1,22 @@
-hello
+<div class="row">
+    <div class="col">
+        <label for="reward_profile">Reward Profile</label>
+        <select id="reward_profile" class="form-control mb-3">
+            {% for profile in reward_profiles %}
+                <option value="{{ profile.get_identifier() }}">{{ profile.get_common_name() }}</option>
+            {% endfor %}
+        </select>
+    </div>
+    <div class="col">
+        <label for="device_address">Device Address</label>
+        <select id="device_address" class="form-control mb-3">
+            {% for address in device_addresses %}
+                <option value="{{ address }}">{{ address }}</option>
+            {% endfor %}
+        </select>
+    </div>
+    <div class="col">
+        <label>Test Device</label>
+        <button class="btn btn-light btn-block btn-md" id="test-reward-btn">Dispense Reward</button>
+    </div>
+</div>

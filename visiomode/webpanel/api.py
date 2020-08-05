@@ -3,6 +3,7 @@
 #  Copyright (c) 2020 Constantinos Eleftheriou <Constantinos.Eleftheriou@ed.ac.uk>
 #  Distributed under the terms of the MIT Licence.
 import flask.views
+import visiomode.devices as devices
 import visiomode.protocols as protocols
 import visiomode.stimuli as stimuli
 
@@ -44,6 +45,8 @@ class ProtocolAPI(flask.views.MethodView):
         protocol = protocols.get_protocol(protocol_id)
         if protocol and protocol.form_path:
             return flask.render_template(
-                protocol.get_form(), stimuli=list(stimuli.Stimulus.get_children()),
+                protocol.get_form(),
+                stimuli=list(stimuli.Stimulus.get_children()),
+                reward_profiles=devices.OutputDevice.get_children(),
             )
         return "No Additional Options"
