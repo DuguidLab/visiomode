@@ -15,6 +15,7 @@ import visiomode.messaging as messaging
 import visiomode.protocols as protocols
 import visiomode.stimuli as stimuli
 import visiomode.webpanel.session as sess
+import visiomode.webpanel.api as api
 
 
 def create_app():
@@ -77,14 +78,11 @@ def create_app():
         """About page."""
         return flask.render_template("about.html")
 
-    @app.route("/api/protocol-form/<protocol_id>")
-    def get_protocol_form(protocol_id):
-        protocol = protocols.get_protocol(protocol_id)
-        if protocol:
-            return flask.render_template(
-                protocol.get_form(), stimuli=list(stimuli.Stimulus.get_children()),
-            )
-        return "No Additional Options"
+    app.add_url_rule(
+        "/api/protocol-form/<protocol_id>",
+        view_func=api.ProtocolAPI.as_view("protocol_api"),
+        methods=["GET",],
+    )
 
     @app.route("/api/stimulus-form/<stimulus_id>")
     def get_stimulus_form(stimulus_id):
