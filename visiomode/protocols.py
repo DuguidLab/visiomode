@@ -31,7 +31,7 @@ def get_protocol(protocol_id):
 
 
 class Protocol(mixins.BaseClassMixin, mixins.WebFormMixin):
-    form_path = "protocols/protocol.html"
+    form_path = None
 
     def __init__(self, screen, duration: float):
         self.screen = screen
