@@ -27,10 +27,13 @@ class BaseClassMixin:
 
     @classmethod
     def get_identifier(cls):
+        """Generate lowercase identifier for the class."""
         return cls.__name__.lower()
 
 
 class WebFormMixin:
+    """Webform UI for class parameters."""
+
     form_path: str
 
     @classmethod
