@@ -43,20 +43,17 @@ class WaterReward(OutputDevice):
     movt_delay = 500
     pump_ms = 50
 
-    def __init__(self, address, threaded=True):
+    def __init__(self, address):
         super().__init__(address)
-        self.threaded = threaded
+        self.bus = serial.Serial(address, 9600, timeout=5)
 
     def output(self):
         """Dispenses water reward."""
-        if not self.threaded:
-            return self._dispense()
-        thread = threading.Thread(target=self._dispense)
-        thread.start()
-
-    def _dispense(self):
-        with serial.Serial(self.address) as bus:
-            bus.write("test")
+        # if not self.threaded:
+        #     return self._dispense()
+        # thread = threading.Thread(target=self._dispense)
+        # thread.start()
+        self.bus.write(b"T")
 
 
 class DeviceError(Exception):

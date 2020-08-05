@@ -11,6 +11,7 @@ import threading
 import queue
 import pygame as pg
 import visiomode.stimuli as stim
+import visiomode.devices as devices
 import visiomode.models as models
 import visiomode.mixins as mixins
 
@@ -75,6 +76,8 @@ class Task(Protocol):
 
         self.target = None
 
+        self.reward_device = devices.WaterReward("/dev/cu.usbserial-A6025MY2")
+
         self._response_q = queue.Queue()
 
         self._session_thread = threading.Thread(
@@ -137,7 +140,10 @@ class Task(Protocol):
                     if not self._response_q.empty():
                         response = self._response_q.get()
                         if response.event_type in TOUCHDOWN:
-                            trial_outcome = HIT if response.on_target else MISS
+                            trial_outcome = MISS
+                            if response.on_target:
+                                trial_outcome = HIT
+                                self.reward_device.output()
                             touchdown_response = response
                         if response.event_type in TOUCHUP:
                             touchup_response = response

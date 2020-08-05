@@ -16,6 +16,16 @@ void loop() {
   // put your main code here, to run repeatedly:
   if (Serial.available() > 0) {
     char state = Serial.read();
+    if (state == 'T') {
+        digitalWrite(LED_BUILTIN, HIGH);
+        Serial.println("LED ON");
+        spoutServo.write(170);
+        delay(500);
+        digitalWrite(LED_BUILTIN, LOW);
+        Serial.println("LED OFF");
+        spoutServo.write(10);
+        delay(500);
+    }
     if (state == 'H' || state == 'h') {
       digitalWrite(LED_BUILTIN, HIGH);
       Serial.println("LED ON");
