@@ -78,10 +78,15 @@ def create_app():
         """About page."""
         return flask.render_template("about.html")
 
+    @app.errorhandler(404)
+    def page_not_found(e):
+        """404 page not found redirect."""
+        return flask.render_template("404.html")
+
     app.add_url_rule(
         "/api/protocol-form/<protocol_id>",
         view_func=api.ProtocolAPI.as_view("protocol_api"),
-        methods=["GET",],
+        methods=["GET"],
     )
 
     app.add_url_rule(
@@ -89,11 +94,6 @@ def create_app():
         view_func=api.StimulusAPI.as_view("stimulus_api"),
         methods=["GET"],
     )
-
-    @app.errorhandler(404)
-    def page_not_found(e):
-        """404 page not found redirect."""
-        return flask.render_template("404.html")
 
     return app
 
