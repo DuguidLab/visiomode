@@ -3,12 +3,9 @@
 #  This file is part of visiomode.
 #  Copyright (c) 2020 Constantinos Eleftheriou <Constantinos.Eleftheriou@ed.ac.uk>
 #  Distributed under the terms of the MIT Licence.
-import os
-import yaml
+import abc
 import serial
-import logging
 import threading
-import visiomode.config as conf
 import visiomode.mixins as mixins
 
 
@@ -17,26 +14,27 @@ class Device(mixins.BaseClassMixin, mixins.YamlAttributesMixin):
 
     def __init__(self, address, config_path=None):
         self.address = address
-        self.config_path = config_path or (
-            conf.Config().devices + os.sep + self.get_identifier() + ".yml"
-        )
-
-        self.load_yaml(self.config_path)
-
-    def calibrate(self):
-        """Calibrate device parameters."""
-        pass
+        self.load_yaml(config_path)
 
     def __repr__(self):
         return "<{} device at {}>".format(self.__name__, self.address)
 
 
-class InputDevice(Device):
-    pass
+class InputDevice(abc.ABC, Device):
+    """Interface for input devices"""
 
 
-class OutputDevice(Device):
-    pass
+class OutputDevice(abc.ABC, Device):
+    """Interface for output devices"""
+
+    @abc.abstractmethod
+    def output(self):
+        pass
+
+    def calibrate(self, **kwargs):
+        for key, value in kwargs.items():
+            if key in self.__dict__.keys():
+                setattr(self, key, value)
 
 
 class WaterReward(OutputDevice):
@@ -49,7 +47,8 @@ class WaterReward(OutputDevice):
         super().__init__(address)
         self.threaded = threaded
 
-    def dispense(self):
+    def output(self):
+        """Dispenses water reward."""
         if not self.threaded:
             return self._dispense()
         thread = threading.Thread(target=self._dispense)
