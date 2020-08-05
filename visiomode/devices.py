@@ -7,8 +7,14 @@ import os
 import abc
 import serial
 import threading
+import serial.tools.list_ports as ports
 import visiomode.mixins as mixins
 import visiomode.config as conf
+
+
+def get_available_devices():
+    """Return list of all serial devices connected to the machine."""
+    return [dev.device for dev in ports.comports()]
 
 
 class Device(mixins.BaseClassMixin, mixins.YamlAttributesMixin):

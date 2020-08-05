@@ -8,9 +8,9 @@
         </select>
     </div>
     <div class="col">
-        <label for="device_address">Device Address</label>
-        <select id="device_address" class="form-control mb-3">
-            {% for address in device_addresses %}
+        <label for="reward_address">Device Address</label>
+        <select id="reward_address" class="form-control mb-3">
+            {% for address in serial_devices %}
                 <option value="{{ address }}">{{ address }}</option>
             {% endfor %}
         </select>
