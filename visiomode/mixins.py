@@ -55,7 +55,7 @@ class YamlAttributesMixin:
         Args:
             path: Path to config YAML.
         """
-        if not os.path.exists(path):
+        if not path or not os.path.exists(path):
             return
         with open(path) as f:
             attrs = yaml.safe_load(f)
