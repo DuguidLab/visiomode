@@ -30,6 +30,11 @@ class BaseClassMixin:
         """Generate lowercase identifier for the class."""
         return cls.__name__.lower()
 
+    @classmethod
+    def get_common_name(cls):
+        """"Return the human-readable, space-separated name for the class."""
+        return re.sub(r"((?<=[a-z])[A-Z]|(?<!\A)[A-Z](?=[a-z]))", r" \1", cls.__name__)
+
 
 class WebFormMixin:
     """Webform UI for class parameters."""
@@ -39,11 +44,6 @@ class WebFormMixin:
     @classmethod
     def get_form(cls):
         return cls.form_path
-
-    @classmethod
-    def get_common_name(cls):
-        """"Return the human-readable, space-separated name for the class."""
-        return re.sub(r"((?<=[a-z])[A-Z]|(?<!\A)[A-Z](?=[a-z]))", r" \1", cls.__name__)
 
 
 class YamlAttributesMixin:
