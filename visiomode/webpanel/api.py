@@ -30,8 +30,13 @@ class DeviceAPI(flask.views.MethodView):
 
 class StimulusAPI(flask.views.MethodView):
     def get(self, stimulus_id):
-        if stimulus_id:
-            pass
+        idx = flask.request.args.get(
+            "idx"
+        )  # used to differentiate multiple stimuli on same page
+        stimulus = stimuli.get_stimulus(stimulus_id)
+        if stimulus and stimulus.form_path:
+            return flask.render_template(stimulus.get_form(), idx=idx)
+        return "No Additional Options"
 
 
 class ProtocolAPI(flask.views.MethodView):

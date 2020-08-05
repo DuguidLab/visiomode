@@ -84,15 +84,11 @@ def create_app():
         methods=["GET",],
     )
 
-    @app.route("/api/stimulus-form/<stimulus_id>")
-    def get_stimulus_form(stimulus_id):
-        idx = flask.request.args.get(
-            "idx"
-        )  # used to differentiate multiple stimuli on same page
-        stimulus = stimuli.get_stimulus(stimulus_id)
-        if stimulus and stimulus.form_path:
-            return flask.render_template(stimulus.get_form(), idx=idx)
-        return "No Additional Options"
+    app.add_url_rule(
+        "/api/stimulus-form/<stimulus_id>",
+        view_func=api.StimulusAPI.as_view("stimulus_api"),
+        methods=["GET"],
+    )
 
     @app.errorhandler(404)
     def page_not_found(e):
