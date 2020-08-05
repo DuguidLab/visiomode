@@ -3,18 +3,21 @@
 #  This file is part of visiomode.
 #  Copyright (c) 2020 Constantinos Eleftheriou <Constantinos.Eleftheriou@ed.ac.uk>
 #  Distributed under the terms of the MIT Licence.
+import os
 import abc
 import serial
 import threading
 import visiomode.mixins as mixins
+import visiomode.config as conf
 
 
 class Device(mixins.BaseClassMixin, mixins.YamlAttributesMixin):
-    address = None
-
-    def __init__(self, address, config_path=None):
+    def __init__(self, address, profile_path=None):
         self.address = address
-        self.load_yaml(config_path)
+        self.profile_path = profile_path or (
+            conf.Config().devices + os.sep + self.get_identifier() + ".yml"
+        )
+        self.load_yaml(self.profile_path)
 
     def __repr__(self):
         return "<{} device at {}>".format(self.__name__, self.address)
