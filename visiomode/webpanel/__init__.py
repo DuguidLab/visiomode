@@ -88,12 +88,12 @@ def create_app():
 
     @app.route("/api/stimulus-form/<stimulus_id>")
     def get_stimulus_form(stimulus_id):
-        stims = stimuli.Stimulus.get_children()
-        # allow for multiple instances of the same stimulus on same page
-        idx = flask.request.args.get("idx")
-        for stimulus in stims:
-            if stimulus.get_identifier() == stimulus_id and stimulus.form_path:
-                return flask.render_template(stimulus.get_form(), idx=idx)
+        idx = flask.request.args.get(
+            "idx"
+        )  # used to differentiate multiple stimuli on same page
+        stimulus = stimuli.get_stimulus(stimulus_id)
+        if stimulus and stimulus.form_path:
+            return flask.render_template(stimulus.get_form(), idx=idx)
         return "No Additional Options"
 
     @app.errorhandler(404)
