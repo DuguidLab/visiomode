@@ -2,6 +2,8 @@
 #  This file is part of visiomode.
 #  Copyright (c) 2020 Constantinos Eleftheriou <Constantinos.Eleftheriou@ed.ac.uk>
 #  Distributed under the terms of the MIT Licence.
+import json
+import flask
 import flask.views
 import visiomode.devices as devices
 import visiomode.protocols as protocols
@@ -9,24 +11,10 @@ import visiomode.stimuli as stimuli
 
 
 class DeviceAPI(flask.views.MethodView):
-    def get(self, device_id):
-        if device_id:
-            # return a single device
-            pass
-        # return list of devices
-        pass
-
     def post(self):
-        # create new device
-        pass
-
-    def put(self):
-        # update device
-        pass
-
-    def delete(self):
-        # delete device
-        pass
+        request = json.loads(flask.request.data.decode("utf8"))
+        devices.test_device(request["profile"], request["address"])
+        return "OK"
 
 
 class StimulusAPI(flask.views.MethodView):

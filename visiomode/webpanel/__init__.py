@@ -95,6 +95,10 @@ def create_app():
         methods=["GET"],
     )
 
+    app.add_url_rule(
+        "/api/device", view_func=api.DeviceAPI.as_view("device_api"), methods=["POST"],
+    )
+
     return app
 
 
