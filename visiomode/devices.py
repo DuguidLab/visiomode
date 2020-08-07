@@ -17,11 +17,8 @@ def get_available_devices():
     return [dev.device for dev in ports.comports()]
 
 
-def test_device(profile_id, address):
-    DeviceProfile = OutputDevice.get_child(profile_id)
-    device = DeviceProfile(address)
-    print(device)
-    device.output()
+def check_device_profile(profile_id, address):
+    OutputDevice.get_child(profile_id)(address).output()
 
 
 class Device(mixins.BaseClassMixin, mixins.YamlAttributesMixin):

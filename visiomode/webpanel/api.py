@@ -13,7 +13,7 @@ import visiomode.stimuli as stimuli
 class DeviceAPI(flask.views.MethodView):
     def post(self):
         request = json.loads(flask.request.data.decode("utf8"))
-        devices.test_device(request["profile"], request["address"])
+        devices.check_device_profile(request["profile"], request["address"])
         return "OK"
 
 
