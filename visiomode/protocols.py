@@ -19,8 +19,8 @@ HIT = "hit"
 MISS = "miss"
 PRECUED = "precued"
 
-TOUCHDOWN = (pg.MOUSEBUTTONDOWN, pg.FINGERDOWN)
-TOUCHUP = (pg.MOUSEBUTTONUP, pg.FINGERUP)
+TOUCHDOWN = (pg.MOUSEBUTTONDOWN,)
+TOUCHUP = (pg.MOUSEBUTTONUP,)
 
 TouchEvent = collections.namedtuple(
     "TouchEvent", ["event_type", "on_target", "x", "y", "timestamp"]
