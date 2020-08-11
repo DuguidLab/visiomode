@@ -18,6 +18,7 @@ def get_available_devices():
 
 
 def check_device_profile(profile_id, address):
+    """Allow user to check whether a device profile will work for a port address."""
     OutputDevice.get_child(profile_id)(address).output()
 
 
