@@ -63,7 +63,16 @@ class Protocol(mixins.BaseClassMixin, mixins.WebFormMixin):
 
 
 class Task(Protocol):
-    def __init__(self, screen, duration, iti, stim_duration, **kwargs):
+    def __init__(
+        self,
+        screen,
+        duration,
+        iti,
+        stim_duration,
+        reward_address,
+        reward_profile,
+        **kwargs
+    ):
         super().__init__(screen, duration)
 
         self.iti = float(iti) / 1000  # ms to s
@@ -76,7 +85,7 @@ class Task(Protocol):
 
         self.target = None
 
-        self.reward_device = devices.WaterReward("/dev/cu.usbserial-A6025MY2")
+        self.reward_device = devices.WaterReward(reward_address)
 
         self._response_q = queue.Queue()
 
