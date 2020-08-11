@@ -115,7 +115,7 @@ def runserver(threaded=False):
             daemon=True,
         )
         return thread.start()
-    socketio.run(app, debug=True)
+    socketio.run(app, host="0.0.0.0", debug=True)
 
 
 if __name__ == "__main__":
