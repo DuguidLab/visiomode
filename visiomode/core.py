@@ -32,7 +32,7 @@ class Visiomode:
         pg.display.set_icon(icon)
 
         # Initialise screen
-        self.screen = pg.display.set_mode((600, 400))
+        self.screen = pg.display.set_mode((720, 720), pg.FULLSCREEN)
         pg.display.set_caption("Visiomode")
 
         # Fill background
