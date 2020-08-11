@@ -111,7 +111,7 @@ def runserver(threaded=False):
         thread = threading.Thread(
             target=socketio.run,
             args=(app,),
-            kwargs={"use_reloader": False, "debug": True},
+            kwargs={"use_reloader": False, "debug": True, "host": "0.0.0.0"},
             daemon=True,
         )
         return thread.start()
