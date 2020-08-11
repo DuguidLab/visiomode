@@ -6,6 +6,7 @@
 import os
 import abc
 import serial
+import time
 import threading
 import serial.tools.list_ports as ports
 import visiomode.mixins as mixins
@@ -59,7 +60,8 @@ class WaterReward(OutputDevice):
 
     def __init__(self, address):
         super().__init__(address)
-        self.bus = serial.Serial(address, 9600, timeout=5)
+        self.bus = serial.Serial(address, 9600, timeout=1)
+        time.sleep(2)  # Allow the port enough time to do its thing after a reset
 
     def output(self):
         """Dispenses water reward."""
@@ -67,7 +69,7 @@ class WaterReward(OutputDevice):
         #     return self._dispense()
         # thread = threading.Thread(target=self._dispense)
         # thread.start()
-        self.bus.write(b"T")
+        self.bus.write(b"T\n")
 
 
 class DeviceError(Exception):
