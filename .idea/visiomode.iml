@@ -9,7 +9,7 @@
       <excludeFolder url="file://$MODULE_DIR$/docsrc" />
       <excludeFolder url="file://$MODULE_DIR$/venv" />
     </content>
-    <orderEntry type="jdk" jdkName="Remote Python 3.7.3 (sftp://pi@192.168.2.5:22/usr/bin/python3) (2)" jdkType="Python SDK" />
+    <orderEntry type="jdk" jdkName="Remote Python 3.7.3 (sftp://pi@10.42.0.215:22/usr/bin/python3)" jdkType="Python SDK" />
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="library" name="animate" level="application" />
     <orderEntry type="library" name="jquery-1.11.1" level="application" />
