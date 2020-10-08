@@ -32,7 +32,7 @@ class Visiomode:
         pg.display.set_icon(icon)
 
         # Initialise screen
-        self.screen = pg.display.set_mode((720, 720), pg.FULLSCREEN)
+        self.screen = pg.display.set_mode((720, 720))
         pg.display.set_caption("Visiomode")
 
         # Fill background
@@ -147,7 +147,7 @@ class Visiomode:
                         session.save(self.config.data_dir)
                     return
 
-            pg.display.flip()
+            pg.display.update()
 
             self.clock.tick(self.config.fps)
 
