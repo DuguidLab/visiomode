@@ -10,6 +10,7 @@ import random
 import threading
 import queue
 import pygame as pg
+import visiomode.config as conf
 import visiomode.stimuli as stim
 import visiomode.devices as devices
 import visiomode.models as models
@@ -41,9 +42,16 @@ class Protocol(mixins.BaseClassMixin, mixins.WebFormMixin):
         self._timer_thread = threading.Thread(
             target=self._timer, args=[duration], daemon=True
         )
+        self.clock = pg.time.Clock()
+        self.config = conf.Config()
+        self._timedelta = 0
 
     def update(self):
         """Protocol rendering and cleanup operations"""
+        timedelta = self.clock.tick(self.config.fps)
+        self._timedelta = timedelta / 1000
+        if timedelta > 0:
+            print(timedelta)
 
     def start(self):
         """Start the protocol"""
@@ -55,7 +63,7 @@ class Protocol(mixins.BaseClassMixin, mixins.WebFormMixin):
 
     def _timer(self, duration: float):
         start_time = time.time()
-        while time.time() - start_time < duration:
+        while time.time() - start_time < duration * 60:
             # If the session has been stopped, stop timer
             if not self.is_running:
                 return
@@ -116,7 +124,9 @@ class Task(Protocol):
                         timestamp=time.time(),
                     )
                 )
-        self.target.update()  # update stimulus drawing here since this is called on every iteration in the main loop
+        self.target.update(
+            timedelta=self._timedelta
+        )  # update stimulus drawing here since this is called on every iteration in the main loop
 
     def _session_runner(self):
         while self.is_running:
