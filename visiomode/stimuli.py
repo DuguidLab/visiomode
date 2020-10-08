@@ -67,7 +67,7 @@ class Stimulus(pg.sprite.Group, mixins.BaseClassMixin, mixins.WebFormMixin):
         self.hidden = True
         self.clear(self.screen, self.background)
 
-    def update(self):
+    def update(self, timedelta=0):
         pass
 
     def collision(self, pos):
@@ -119,7 +119,8 @@ class MovingGrating(Stimulus):
 
         self.period = int(period)
         self.frequency = float(freq)
-        self.px_per_cycle = (self.height / config.fps) * abs(self.frequency)
+        self.px_per_cycle = (self.height * abs(self.frequency)) / config.fps
+        print(self.px_per_cycle)
         self.px_travelled = 0
         # Determine sign of direction based on frequency (negative => downwards, positive => upwards)
         self.direction = (lambda x: (1, -1)[x < 0])(self.frequency)
@@ -138,11 +139,14 @@ class MovingGrating(Stimulus):
 
         self.add(sprites)
 
-    def update(self):
+    def update(self, timedelta=0):
         if self.hidden:
             return
         for sprite in self.sprites():
-            sprite.rect.move_ip(0, self.direction * -self.px_per_cycle)
+            newy = (100 * timedelta) + self.direction * -self.px_per_cycle
+            if timedelta > 0:
+                print(timedelta)
+            sprite.rect.move_ip(0, newy)
             self.px_travelled += self.px_per_cycle
         if self.px_travelled >= self.height:
             for idx, sprite in enumerate(self.sprites()):
