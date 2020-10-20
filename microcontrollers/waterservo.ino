@@ -26,14 +26,14 @@ void loop() {
         Serial.println("LED ON");
         spoutServo.write(150);
         delay(500);
-        
+
         digitalWrite(PUMP_PIN, HIGH);
         digitalWrite(SOL_PIN, HIGH);
         delay(100);
         digitalWrite(PUMP_PIN, LOW);
         digitalWrite(SOL_PIN, LOW);
         delay(700);
-        
+
         digitalWrite(LED_BUILTIN, LOW);
         Serial.println("LED OFF");
         spoutServo.write(70);

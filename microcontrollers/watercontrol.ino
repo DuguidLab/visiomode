@@ -1,6 +1,6 @@
 /*
 Water reward controller.
-Works for servos and 
+Works for servos and
 */
 #define OUT_PIN 3
 #define DELAY 100
