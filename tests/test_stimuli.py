@@ -16,6 +16,11 @@ class TestStimulusGeneration:
     screen.blit(background, (0, 0))
 
     def test_grating(self):
+        # Clean up screen
+        self.screen.blit(self.background, (0, 0))
+        pg.display.flip()
+
+        # Generate stimulus
         grating = stimuli.Grating(self.background)
         grating.show()
         pg.display.flip()
@@ -24,7 +29,14 @@ class TestStimulusGeneration:
         pass
 
     def test_solid_colour(self):
-        pass
+        # Clean up screen
+        self.screen.blit(self.background, (0, 0))
+        pg.display.flip()
+
+        # Generate stimulus
+        colour = stimuli.SolidColour(self.background, (100, 100, 100))
+        colour.show()
+        pg.display.flip()
 
     def test_isoluminant_gray(self):
         pass
