@@ -11,5 +11,12 @@ setup(
     data_files=DATA_FILES,
     packages=find_packages(),
     include_package_data=True,
-    install_requires=["redis", "Flask", "Flask-SocketIO", "PyYAML"],
+    install_requires=[
+        "redis",
+        "Flask",
+        "Flask-SocketIO",
+        "PyYAML",
+        "pygame==2.0.0.dev6",
+        "numpy",
+    ],
 )
