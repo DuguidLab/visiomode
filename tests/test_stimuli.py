@@ -93,6 +93,14 @@ class TestMovingGrating:
     def test_move_timedelta(self):
         """Test sprite movement with timedelta. y position should be proportional to timedelta."""
         self.moving_grating.show()
+        timedelta = 10
+        original_y = [sprite.rect.y for sprite in self.moving_grating.sprites()][0]
+        self.moving_grating.update()
+        new_y = [sprite.rect.y for sprite in self.moving_grating.sprites()][0]
+
+        assert (
+            abs(new_y) == abs(original_y) + self.moving_grating.px_per_cycle + timedelta
+        )
 
 
 class TestSolidColour:
