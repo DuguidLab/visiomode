@@ -100,7 +100,7 @@ class Grating(Stimulus):
     @classmethod
     def sinusoid(cls, width: int, height: int, period: int, contrast: float = 1.0):
         # generate 1-D sine wave of required period
-        x = np.arange(width)
+        x = np.arange(height)
         y = np.sin(2 * np.pi * x / period)
 
         # offset sine wave by the max value to go out of negative range of sine
