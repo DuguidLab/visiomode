@@ -46,7 +46,7 @@ def grayscale_array(array, contrast=1.0):
     return np.stack((normalise_array(array, contrast),) * 3, axis=-1)
 
 
-class Stimulus(pg.sprite.Group, mixins.BaseClassMixin, mixins.WebFormMixin):
+class Stimulus(pg.sprite.Sprite, mixins.BaseClassMixin, mixins.WebFormMixin):
     form_path = "stimuli/stimulus.html"
 
     def __init__(self, background, **kwargs):
@@ -61,24 +61,26 @@ class Stimulus(pg.sprite.Group, mixins.BaseClassMixin, mixins.WebFormMixin):
 
     def show(self):
         self.hidden = False
-        self.draw(self.screen)
+        self.draw()
+
+    def draw(self):
+        self.screen.blit(self.image, self.rect)
 
     def hide(self):
         self.hidden = True
-        self.clear(self.screen, self.background)
+        # self.clear(self.screen, self.background)
+        self.screen.blit(self.background, (0, 0))
 
     def update(self, timedelta=0):
         pass
 
     def collision(self, pos):
-        for sprite in self.sprites():
-            if sprite.rect.collidepoint(pos):
-                return True
+        if self.rect.collidepoint(pos):
+            return True
         return False
 
     def set_centerx(self, centerx):
-        for sprite in self.sprites():
-            sprite.rect.centerx = centerx
+        self.rect.centerx = centerx
 
 
 class Grating(Stimulus):
@@ -89,10 +91,9 @@ class Grating(Stimulus):
         self.period = int(period)
 
         grating = Grating.sinusoid(self.width, self.height, self.period, contrast)
-        sprite = pg.sprite.Sprite()
-        sprite.image = pg.surfarray.make_surface(grating)
-        sprite.rect = sprite.image.get_rect()
-        sprite.area = self.screen.get_rect()
+        self.image = pg.surfarray.make_surface(grating)
+        self.rect = self.image.get_rect()
+        self.area = self.screen.get_rect()
 
         self.add(sprite)
 
@@ -125,35 +126,22 @@ class MovingGrating(Stimulus):
         # Determine sign of direction based on frequency (negative => downwards, positive => upwards)
         self.direction = (lambda x: (1, -1)[x < 0])(self.frequency)
 
-        grating = Grating.sinusoid(self.width, self.height, self.period)
-
-        # To emulate the movement, we use two sprites that are offset by the screen width on the y axis.
-        # Then with every update, add or subtract y from both sprites. Reset to original position once
-        # an image has moved its entire height.
-        sprites = [pg.sprite.Sprite(), pg.sprite.Sprite()]
-        for idx, sprite in enumerate(sprites):
-            sprite.image = pg.surfarray.make_surface(grating)
-            sprite.rect = sprite.image.get_rect()
-            sprite.rect.y = sprite.rect.height * idx * self.direction  # offset
-            sprite.area = self.screen.get_rect()
+        grating = Grating.sinusoid(self.width, self.height * 2, self.period, contrast)
+        self.image = pg.surfarray.make_surface(grating).convert(self.screen)
+        self.rect = self.image.get_rect()
+        self.area = self.screen.get_rect()
 
         self.add(sprites)
 
     def update(self, timedelta=0):
         if self.hidden:
             return
-        for sprite in self.sprites():
-            newy = (100 * timedelta) + self.direction * -self.px_per_cycle
-            if timedelta > 0:
-                print(timedelta)
-            sprite.rect.move_ip(0, newy)
-            self.px_travelled += self.px_per_cycle
-        if self.px_travelled >= self.height:
-            for idx, sprite in enumerate(self.sprites()):
-                # reset offset position
-                sprite.rect.y = sprite.rect.height * idx * self.direction
-                self.px_travelled = 0
-        self.draw(self.screen)
+        if self.rect.bottom <= self.height:
+            print(self.rect.bottom)
+            self.rect.top = 0
+        self.rect.move_ip(0, self.px_per_cycle)
+
+        self.draw()
 
 
 class SolidColour(Stimulus):
@@ -163,13 +151,10 @@ class SolidColour(Stimulus):
         super().__init__(background, **kwargs)
         rgb = pg.Color(colour)
 
-        sprite = pg.sprite.Sprite()
-        sprite.image = pg.Surface((self.width, self.height))
-        sprite.image.fill(rgb)
-        sprite.rect = sprite.image.get_rect()
-        sprite.area = self.screen.get_rect()
-
-        self.add(sprite)
+        self.image = pg.Surface((self.width, self.height))
+        self.image.fill(rgb)
+        self.rect = self.image.get_rect()
+        self.area = self.screen.get_rect()
 
 
 class IsoluminantGray(SolidColour):
