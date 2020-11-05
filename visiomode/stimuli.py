@@ -120,7 +120,11 @@ class MovingGrating(Stimulus):
 
         self.period = int(period)
         self.frequency = float(freq)
-        self.px_per_cycle = (self.height * abs(self.frequency)) / config.fps
+        # Determine sign of direction based on frequency (negative => downwards, positive => upwards)
+        self.direction = (lambda x: (-1, 1)[x < 0])(self.frequency)
+        self.px_per_cycle = (
+            self.direction * (self.period * abs(self.frequency)) / config.fps
+        )
         print(self.px_per_cycle)
         self.px_travelled = 0
         # Determine sign of direction based on frequency (negative => downwards, positive => upwards)
