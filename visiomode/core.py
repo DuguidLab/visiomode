@@ -19,7 +19,9 @@ class Visiomode:
         self.config = conf.Config()
 
         # Subscribe to Redis status updates
-        status_sub = self.rds.subscribe_status(threaded=False)
+        status_sub = self.rds.subscribe_status(
+            threaded=True, callback=self._messaging_callback
+        )
         # Initialise webpanel, run in background
         webpanel.runserver(threaded=True)
 
@@ -32,7 +34,7 @@ class Visiomode:
         pg.display.set_icon(icon)
 
         # Initialise screen
-        self.screen = pg.display.set_mode((720, 720))
+        self.screen = pg.display.set_mode((400, 800))
         pg.display.set_caption("Visiomode")
 
         # Fill background
@@ -97,33 +99,12 @@ class Visiomode:
 
         pg.display.flip()
 
-        protocol = None
-        session = None
+        self.protocol = None
+        self.session = None
 
         # Event loop
         while True:
-            if status_sub.get_message():
-                status = self.rds.get_status()
-                print("updating...")
-                if status == messaging.DEBUG:
-                    text = self.font.render("Debug", 1, (10, 10, 10))
-                    self.background.blit(text, textpos)
-                if status == messaging.REQUESTED:
-                    request = self.rds.get_session_request()
-                    print(request)
-
-                    session, protocol = self.parse_request(request)
-
-                    protocol.start()
-
-                    self.rds.set_status(messaging.ACTIVE)
-
-                if status == messaging.STOPPED:
-                    print("stopping...")
-
-                    if protocol and protocol.is_running:
-                        protocol.stop()
-            if protocol and not protocol.is_running:
+            if self.protocol and not self.protocol.is_running:
                 print("finished")
 
                 self.background.blit(text, textpos)
@@ -131,20 +112,20 @@ class Visiomode:
 
                 self.rds.set_status(messaging.INACTIVE)
 
-                session.complete = True
-                session.trials = protocol.trials
-                session.save(self.config.data_dir)
+                self.session.complete = True
+                self.session.trials = self.protocol.trials
+                self.session.save(self.config.data_dir)
 
-                protocol = None
-                session = None
+                self.protocol = None
+                self.session = None
             events = pg.event.get()
-            if protocol and protocol.is_running:
-                protocol.handle_events(events)
+            if self.protocol and self.protocol.is_running:
+                self.protocol.handle_events(events)
             for event in events:
                 if event.type == pg.QUIT:
-                    if session:
-                        session.trials = protocol.trials
-                        session.save(self.config.data_dir)
+                    if self.session:
+                        self.session.trials = self.protocol.trials
+                        self.session.save(self.config.data_dir)
                     return
 
             pg.display.update()
@@ -162,6 +143,21 @@ class Visiomode:
         Protocol = protocols.get_protocol(session.protocol)
         protocol = Protocol(screen=self.screen, duration=session.duration, **request)
         return session, protocol
+
+    def _messaging_callback(self, *args, **kwargs):
+        status = self.rds.get_status()
+        print("updating...")
+        if status == messaging.REQUESTED:
+            request = self.rds.get_session_request()
+            print(request)
+            self.session, self.protocol = self.parse_request(request)
+            self.protocol.start()
+            self.rds.set_status(messaging.ACTIVE)
+
+        if status == messaging.STOPPED:
+            print("stopping...")
+            if self.protocol and self.protocol.is_running:
+                self.protocol.stop()
 
 
 def rotate(image, rect, angle):
