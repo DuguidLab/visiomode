@@ -6,6 +6,7 @@
 import os
 import numpy as np
 import pygame as pg
+import pygame.math as pgm
 import visiomode.config as conf
 import visiomode.mixins as mixins
 
@@ -61,7 +62,7 @@ class Stimulus(pg.sprite.Sprite, mixins.BaseClassMixin, mixins.WebFormMixin):
 
     def show(self):
         self.hidden = False
-        self.draw()
+        self.screen.blit(self.image, self.rect)
 
     def draw(self):
         self.screen.blit(self.image, self.rect)
@@ -95,8 +96,6 @@ class Grating(Stimulus):
         self.rect = self.image.get_rect()
         self.area = self.screen.get_rect()
 
-        self.add(sprite)
-
     @classmethod
     def sinusoid(cls, width: int, height: int, period: int, contrast: float = 1.0):
         # generate 1-D sine wave of required period
@@ -114,7 +113,7 @@ class Grating(Stimulus):
 class MovingGrating(Stimulus):
     form_path = "stimuli/moving_grating.html"
 
-    def __init__(self, background, period=20, freq=1.0, **kwargs):
+    def __init__(self, background, period=20, freq=1.0, contrast=1.0, **kwargs):
         # Default direction is upwards, use negative frequency for downwards
         super().__init__(background, **kwargs)
 
@@ -126,24 +125,25 @@ class MovingGrating(Stimulus):
             self.direction * (self.period * abs(self.frequency)) / config.fps
         )
         print(self.px_per_cycle)
-        self.px_travelled = 0
-        # Determine sign of direction based on frequency (negative => downwards, positive => upwards)
-        self.direction = (lambda x: (1, -1)[x < 0])(self.frequency)
 
         grating = Grating.sinusoid(self.width, self.height * 2, self.period, contrast)
         self.image = pg.surfarray.make_surface(grating).convert(self.screen)
         self.rect = self.image.get_rect()
         self.area = self.screen.get_rect()
 
-        self.add(sprites)
+        self.orig_center = (self.rect.centerx, self.rect.centery)
+
+        self.pos = pgm.Vector2(self.orig_center)
+        self.velocity = pgm.Vector2(0, self.px_per_cycle)
 
     def update(self, timedelta=0):
         if self.hidden:
             return
         if self.rect.bottom <= self.height:
-            print(self.rect.bottom)
-            self.rect.top = 0
-        self.rect.move_ip(0, self.px_per_cycle)
+            self.pos = self.orig_center
+        self.pos += self.velocity
+        self.rect.center = self.pos
+        # self.rect.move_ip(0, self.px_per_cycle)
 
         self.draw()
 
