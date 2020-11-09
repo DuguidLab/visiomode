@@ -126,7 +126,9 @@ class MovingGrating(Stimulus):
         )
         print(self.px_per_cycle)
 
-        grating = Grating.sinusoid(self.width, self.height * 2, self.period, contrast)
+        grating = Grating.sinusoid(
+            self.width, self.height + (self.period * 2), self.period, contrast
+        )
         self.image = pg.surfarray.make_surface(grating).convert(self.screen)
         self.rect = self.image.get_rect()
         self.area = self.screen.get_rect()
