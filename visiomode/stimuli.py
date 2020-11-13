@@ -6,6 +6,7 @@
 import os
 import numpy as np
 import pygame as pg
+import pygame.math as pgm
 import visiomode.config as conf
 import visiomode.mixins as mixins
 
@@ -46,7 +47,7 @@ def grayscale_array(array, contrast=1.0):
     return np.stack((normalise_array(array, contrast),) * 3, axis=-1)
 
 
-class Stimulus(pg.sprite.Group, mixins.BaseClassMixin, mixins.WebFormMixin):
+class Stimulus(pg.sprite.Sprite, mixins.BaseClassMixin, mixins.WebFormMixin):
     form_path = "stimuli/stimulus.html"
 
     def __init__(self, background, **kwargs):
@@ -61,24 +62,26 @@ class Stimulus(pg.sprite.Group, mixins.BaseClassMixin, mixins.WebFormMixin):
 
     def show(self):
         self.hidden = False
-        self.draw(self.screen)
+        self.screen.blit(self.image, self.rect)
+
+    def draw(self):
+        self.screen.blit(self.image, self.rect)
 
     def hide(self):
         self.hidden = True
-        self.clear(self.screen, self.background)
+        # self.clear(self.screen, self.background)
+        self.screen.blit(self.background, (0, 0))
 
     def update(self, timedelta=0):
         pass
 
     def collision(self, pos):
-        for sprite in self.sprites():
-            if sprite.rect.collidepoint(pos):
-                return True
+        if self.rect.collidepoint(pos):
+            return True
         return False
 
     def set_centerx(self, centerx):
-        for sprite in self.sprites():
-            sprite.rect.centerx = centerx
+        self.rect.centerx = centerx
 
 
 class Grating(Stimulus):
@@ -89,17 +92,14 @@ class Grating(Stimulus):
         self.period = int(period)
 
         grating = Grating.sinusoid(self.width, self.height, self.period, contrast)
-        sprite = pg.sprite.Sprite()
-        sprite.image = pg.surfarray.make_surface(grating)
-        sprite.rect = sprite.image.get_rect()
-        sprite.area = self.screen.get_rect()
-
-        self.add(sprite)
+        self.image = pg.surfarray.make_surface(grating)
+        self.rect = self.image.get_rect()
+        self.area = self.screen.get_rect()
 
     @classmethod
     def sinusoid(cls, width: int, height: int, period: int, contrast: float = 1.0):
         # generate 1-D sine wave of required period
-        x = np.arange(width)
+        x = np.arange(height)
         y = np.sin(2 * np.pi * x / period)
 
         # offset sine wave by the max value to go out of negative range of sine
@@ -113,47 +113,41 @@ class Grating(Stimulus):
 class MovingGrating(Stimulus):
     form_path = "stimuli/moving_grating.html"
 
-    def __init__(self, background, period=20, freq=1.0, **kwargs):
+    def __init__(self, background, period=20, freq=1.0, contrast=1.0, **kwargs):
         # Default direction is upwards, use negative frequency for downwards
         super().__init__(background, **kwargs)
 
         self.period = int(period)
         self.frequency = float(freq)
-        self.px_per_cycle = (self.height * abs(self.frequency)) / config.fps
-        print(self.px_per_cycle)
-        self.px_travelled = 0
         # Determine sign of direction based on frequency (negative => downwards, positive => upwards)
-        self.direction = (lambda x: (1, -1)[x < 0])(self.frequency)
+        self.direction = (lambda x: (-1, 1)[x < 0])(self.frequency)
+        self.px_per_cycle = (
+            self.direction * (self.period * abs(self.frequency)) / config.fps
+        )
+        print(self.px_per_cycle)
 
-        grating = Grating.sinusoid(self.width, self.height, self.period)
+        grating = Grating.sinusoid(
+            self.width, self.height + (self.period * 2), self.period, contrast
+        )
+        self.image = pg.surfarray.make_surface(grating).convert(self.screen)
+        self.rect = self.image.get_rect()
+        self.area = self.screen.get_rect()
 
-        # To emulate the movement, we use two sprites that are offset by the screen width on the y axis.
-        # Then with every update, add or subtract y from both sprites. Reset to original position once
-        # an image has moved its entire height.
-        sprites = [pg.sprite.Sprite(), pg.sprite.Sprite()]
-        for idx, sprite in enumerate(sprites):
-            sprite.image = pg.surfarray.make_surface(grating)
-            sprite.rect = sprite.image.get_rect()
-            sprite.rect.y = sprite.rect.height * idx * self.direction  # offset
-            sprite.area = self.screen.get_rect()
+        self.orig_center = (self.rect.centerx, self.rect.centery)
 
-        self.add(sprites)
+        self.pos = pgm.Vector2(self.orig_center)
+        self.velocity = pgm.Vector2(0, self.px_per_cycle)
 
     def update(self, timedelta=0):
         if self.hidden:
             return
-        for sprite in self.sprites():
-            newy = (100 * timedelta) + self.direction * -self.px_per_cycle
-            if timedelta > 0:
-                print(timedelta)
-            sprite.rect.move_ip(0, newy)
-            self.px_travelled += self.px_per_cycle
-        if self.px_travelled >= self.height:
-            for idx, sprite in enumerate(self.sprites()):
-                # reset offset position
-                sprite.rect.y = sprite.rect.height * idx * self.direction
-                self.px_travelled = 0
-        self.draw(self.screen)
+        if self.rect.bottom <= self.height:
+            self.pos = self.orig_center
+        self.pos += self.velocity
+        self.rect.center = self.pos
+        # self.rect.move_ip(0, self.px_per_cycle)
+
+        self.draw()
 
 
 class SolidColour(Stimulus):
@@ -163,13 +157,10 @@ class SolidColour(Stimulus):
         super().__init__(background, **kwargs)
         rgb = pg.Color(colour)
 
-        sprite = pg.sprite.Sprite()
-        sprite.image = pg.Surface((self.width, self.height))
-        sprite.image.fill(rgb)
-        sprite.rect = sprite.image.get_rect()
-        sprite.area = self.screen.get_rect()
-
-        self.add(sprite)
+        self.image = pg.Surface((self.width, self.height))
+        self.image.fill(rgb)
+        self.rect = self.image.get_rect()
+        self.area = self.screen.get_rect()
 
 
 class IsoluminantGray(SolidColour):
