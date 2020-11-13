@@ -2,8 +2,8 @@
 
 ---
 
- [![Build Status](https://travis-ci.com/celefthe/visiomode.svg?token=hMvCpbzh7tYAgFpNy6BK&branch=master)](https://travis-ci.com/celefthe/visiomode) 
-[![codecov](https://codecov.io/gh/celefthe/visiomode/branch/master/graph/badge.svg?token=1O1WDTTHOH)](https://codecov.io/gh/celefthe/visiomode) 
+ [![Build Status](https://travis-ci.com/celefthe/visiomode.svg?token=hMvCpbzh7tYAgFpNy6BK&branch=master)](https://travis-ci.com/celefthe/visiomode)
+[![codecov](https://codecov.io/gh/celefthe/visiomode/branch/master/graph/badge.svg?token=1O1WDTTHOH)](https://codecov.io/gh/celefthe/visiomode)
 [![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
 
 

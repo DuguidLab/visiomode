@@ -1,7 +1,7 @@
 <!--
   ~ This file is part of visiomode.
   ~ Copyright (c) 2020 Constantinos Eleftheriou <Constantinos.Eleftheriou@ed.ac.uk>
-  ~ Distributed under the terms of the MIT Licence. 
+  ~ Distributed under the terms of the MIT Licence.
   -->
 
 <!DOCTYPE html>
@@ -34,9 +34,11 @@
     {% set active_page = active_page|default('index') -%}
     <nav class="navbar navbar-dark align-items-start sidebar sidebar-dark accordion bg-gradient-primary p-0">
         <div class="container-fluid d-flex flex-column p-0">
+            {# TODO - Align icon with menu elements, bring text closer to image #}
             <a class="navbar-brand d-flex justify-content-center align-items-center sidebar-brand m-0" href="#">
-                <div class="sidebar-brand-icon rotate-n-15"><i class="far fa-eye"></i></div>
-                <div class="sidebar-brand-text mx-3"><span
+                <div class="sidebar-brand-icon"><img src="/static/img/visiomode_logo_icon.png"
+                                                     class="img-fluid" alt="VS"></div>
+                <div class="sidebar-brand-text mx-sm-2"><span
                         style="font-family: 'Advent Pro', sans-serif;font-size: 22px;">Visiomode</span></div>
             </a>
             <hr class="sidebar-divider my-0">
@@ -87,9 +89,9 @@
                     </div>
                 </div>
             </nav>
-        <div class="container-fluid">
-            {% block content %}{% endblock %}
-        </div>
+            <div class="container-fluid">
+                {% block content %}{% endblock %}
+            </div>
         </div>
         <footer class="bg-white sticky-footer">
             <div class="container my-auto">
@@ -104,7 +106,7 @@
 <script src="static/js/chart.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-easing/1.4.1/jquery.easing.js"></script>
 <script src="static/js/script.min.js"></script>
-<script src = "https://cdn.socket.io/socket.io-1.2.0.js" ></script>
+<script src="https://cdn.socket.io/socket.io-1.2.0.js"></script>
 {% block scripts %}{% endblock %}
 </body>
 </html>

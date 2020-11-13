@@ -134,3 +134,7 @@ dmypy.json
 /node_modules/
 *.sublime-*
 .vscode/
+
+/devices/
+.idea/dataSources/
+.idea/shelf/

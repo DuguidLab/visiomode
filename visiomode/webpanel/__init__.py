@@ -15,6 +15,7 @@ import visiomode.messaging as messaging
 import visiomode.protocols as protocols
 import visiomode.stimuli as stimuli
 import visiomode.webpanel.session as sess
+import visiomode.webpanel.api as api
 
 
 def create_app():
@@ -54,7 +55,7 @@ def create_app():
             "session.html",
             tasks=protocols.Task.get_children(),
             presentations=protocols.Presentation.get_children(),
-            stimuli=stimuli.BaseStimulus.get_children(),
+            stimuli=stimuli.Stimulus.get_children(),
         )
 
     @app.route("/history")
@@ -77,29 +78,26 @@ def create_app():
         """About page."""
         return flask.render_template("about.html")
 
-    @app.route("/api/protocol-form/<protocol_id>")
-    def get_protocol_form(protocol_id):
-        protocol = protocols.get_protocol(protocol_id)
-        if protocol:
-            return flask.render_template(
-                protocol.get_form(), stimuli=list(stimuli.BaseStimulus.get_children()),
-            )
-        return "No Additional Options"
-
-    @app.route("/api/stimulus-form/<stimulus_id>")
-    def get_stimulus_form(stimulus_id):
-        stims = stimuli.BaseStimulus.get_children()
-        # allow for multiple instances of the same stimulus on same page
-        idx = flask.request.args.get("idx")
-        for stimulus in stims:
-            if stimulus.get_identifier() == stimulus_id and stimulus.form_path:
-                return flask.render_template(stimulus.get_form(), idx=idx)
-        return "No Additional Options"
-
     @app.errorhandler(404)
     def page_not_found(e):
         """404 page not found redirect."""
         return flask.render_template("404.html")
+
+    app.add_url_rule(
+        "/api/protocol-form/<protocol_id>",
+        view_func=api.ProtocolAPI.as_view("protocol_api"),
+        methods=["GET"],
+    )
+
+    app.add_url_rule(
+        "/api/stimulus-form/<stimulus_id>",
+        view_func=api.StimulusAPI.as_view("stimulus_api"),
+        methods=["GET"],
+    )
+
+    app.add_url_rule(
+        "/api/device", view_func=api.DeviceAPI.as_view("device_api"), methods=["POST"]
+    )
 
     return app
 
@@ -113,11 +111,11 @@ def runserver(threaded=False):
         thread = threading.Thread(
             target=socketio.run,
             args=(app,),
-            kwargs={"use_reloader": False, "debug": True},
+            kwargs={"use_reloader": False, "debug": True, "host": "0.0.0.0"},
             daemon=True,
         )
         return thread.start()
-    socketio.run(app, debug=True)
+    socketio.run(app, host="0.0.0.0", debug=True)
 
 
 if __name__ == "__main__":

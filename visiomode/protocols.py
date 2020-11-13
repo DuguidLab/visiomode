@@ -3,7 +3,6 @@
 #  This file is part of visiomode.
 #  Copyright (c) 2020 Constantinos Eleftheriou <Constantinos.Eleftheriou@ed.ac.uk>
 #  Distributed under the terms of the MIT Licence.
-import re
 import collections
 import time
 import datetime
@@ -11,15 +10,18 @@ import random
 import threading
 import queue
 import pygame as pg
+import visiomode.config as conf
 import visiomode.stimuli as stim
+import visiomode.devices as devices
 import visiomode.models as models
+import visiomode.mixins as mixins
 
 HIT = "hit"
 MISS = "miss"
 PRECUED = "precued"
 
-TOUCHDOWN = (pg.MOUSEBUTTONDOWN, pg.FINGERDOWN)
-TOUCHUP = (pg.MOUSEBUTTONUP, pg.FINGERUP)
+TOUCHDOWN = (pg.MOUSEBUTTONDOWN,)
+TOUCHUP = (pg.MOUSEBUTTONUP,)
 
 TouchEvent = collections.namedtuple(
     "TouchEvent", ["event_type", "on_target", "x", "y", "timestamp"]
@@ -27,14 +29,11 @@ TouchEvent = collections.namedtuple(
 
 
 def get_protocol(protocol_id):
-    protocols = BaseProtocol.get_children()
-    for Protocol in protocols:
-        if Protocol.get_identifier() == protocol_id:
-            return Protocol
+    return Protocol.get_child(protocol_id)
 
 
-class BaseProtocol(object):
-    form_path = "protocols/protocol.html"
+class Protocol(mixins.BaseClassMixin, mixins.WebFormMixin):
+    form_path = None
 
     def __init__(self, screen, duration: float):
         self.screen = screen
@@ -43,6 +42,16 @@ class BaseProtocol(object):
         self._timer_thread = threading.Thread(
             target=self._timer, args=[duration], daemon=True
         )
+        self.clock = pg.time.Clock()
+        self.config = conf.Config()
+        self._timedelta = 0
+
+    def update(self):
+        """Protocol rendering and cleanup operations"""
+        timedelta = self.clock.tick(self.config.fps)
+        self._timedelta = timedelta / 1000
+        if timedelta > 0:
+            print(timedelta)
 
     def start(self):
         """Start the protocol"""
@@ -52,40 +61,26 @@ class BaseProtocol(object):
     def stop(self):
         self.is_running = False
 
-    def update(self):
-        pass
-
     def _timer(self, duration: float):
         start_time = time.time()
-        while time.time() - start_time < duration:
+        while time.time() - start_time < duration * 60:
             # If the session has been stopped, stop timer
             if not self.is_running:
                 return
         self.stop()
 
-    @classmethod
-    def get_common_name(cls):
-        """"Return the human-readable, space-separated name for the class."""
-        return re.sub(r"((?<=[a-z])[A-Z]|(?<!\A)[A-Z](?=[a-z]))", r" \1", cls.__name__)
 
-    @classmethod
-    def get_children(cls):
-        """Return all inheriting children as a list."""
-        for child in cls.__subclasses__():
-            yield from child.get_children()
-            yield child
-
-    @classmethod
-    def get_identifier(cls):
-        return cls.__name__.lower()
-
-    @classmethod
-    def get_form(cls):
-        return cls.form_path
-
-
-class Task(BaseProtocol):
-    def __init__(self, screen, duration, iti, stim_duration, **kwargs):
+class Task(Protocol):
+    def __init__(
+        self,
+        screen,
+        duration,
+        iti,
+        stim_duration,
+        reward_address,
+        reward_profile,
+        **kwargs
+    ):
         super().__init__(screen, duration)
 
         self.iti = float(iti) / 1000  # ms to s
@@ -97,6 +92,8 @@ class Task(BaseProtocol):
         self._correction_trial = False
 
         self.target = None
+
+        self.reward_device = devices.WaterReward(reward_address)
 
         self._response_q = queue.Queue()
 
@@ -127,7 +124,9 @@ class Task(BaseProtocol):
                         timestamp=time.time(),
                     )
                 )
-        self.target.update()  # update stimulus drawing here since this is called on every iteration in the main loop
+        self.target.update(
+            timedelta=self._timedelta
+        )  # update stimulus drawing here since this is called on every iteration in the main loop
 
     def _session_runner(self):
         while self.is_running:
@@ -160,7 +159,10 @@ class Task(BaseProtocol):
                     if not self._response_q.empty():
                         response = self._response_q.get()
                         if response.event_type in TOUCHDOWN:
-                            trial_outcome = HIT if response.on_target else MISS
+                            trial_outcome = MISS
+                            if response.on_target:
+                                trial_outcome = HIT
+                                self.reward_device.output()
                             touchdown_response = response
                         if response.event_type in TOUCHUP:
                             touchup_response = response
@@ -193,7 +195,7 @@ class Task(BaseProtocol):
                     self._correction_trial = False
 
 
-class Presentation(BaseProtocol):
+class Presentation(Protocol):
     pass
 
 

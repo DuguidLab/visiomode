@@ -1,0 +1,40 @@
+<div class="row">
+    <div class="col">
+        <label for="reward_profile">Reward Profile</label>
+        <select id="reward_profile" class="form-control mb-3">
+            {% for profile in reward_profiles %}
+                <option value="{{ profile.get_identifier() }}">{{ profile.get_common_name() }}</option>
+            {% endfor %}
+        </select>
+    </div>
+    <div class="col">
+        <label for="reward_address">Device Address</label>
+        <select id="reward_address" class="form-control mb-3">
+            {% for address in serial_devices %}
+                <option value="{{ address }}">{{ address }}</option>
+            {% endfor %}
+        </select>
+    </div>
+    <div class="col">
+        <label>Test Device</label>
+        <button class="btn btn-light btn-block btn-md" id="test-reward-btn">Dispense Reward</button>
+    </div>
+</div>
+
+
+<script>
+    reward_button = document.getElementById('test-reward-btn')
+    reward_button.onclick = function (event) {
+        event.preventDefault()
+        let address = document.getElementById('reward_address').value;
+        let profile = document.getElementById('reward_profile').value;
+        let data = {address: address, profile: profile};
+        fetch("/api/device", {
+            method: "POST",
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(data),
+        });
+    }
+</script>
