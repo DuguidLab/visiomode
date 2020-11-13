@@ -1,20 +1,16 @@
 #include <Servo.h>
 #define SERVO_PIN 9
-#define PUMP_PIN 3
-#define SOL_PIN 2
+#define SOL_PIN 4
 
 Servo spoutServo;
-
-int servoAngle = 5;
 
 void setup() {
   // initialize digital pin LED_BUILTIN as an output.
   pinMode(LED_BUILTIN, OUTPUT);
-  pinMode(PUMP_PIN, OUTPUT);
   pinMode(SOL_PIN, OUTPUT);
   Serial.begin(9600);
   spoutServo.attach(SERVO_PIN, 1000, 2000);
-  spoutServo.write(70);
+  spoutServo.write(20);
 }
 
 void loop() {
@@ -27,16 +23,14 @@ void loop() {
         spoutServo.write(150);
         delay(500);
 
-        digitalWrite(PUMP_PIN, HIGH);
         digitalWrite(SOL_PIN, HIGH);
         delay(100);
-        digitalWrite(PUMP_PIN, LOW);
         digitalWrite(SOL_PIN, LOW);
         delay(700);
 
         digitalWrite(LED_BUILTIN, LOW);
         Serial.println("LED OFF");
-        spoutServo.write(70);
+        spoutServo.write(20);
         delay(500);
     }
     if (state == 'H' || state == 'h') {
@@ -48,20 +42,18 @@ void loop() {
     if (state == 'L' || state == 'l') {
       digitalWrite(LED_BUILTIN, LOW);
       Serial.println("LED OFF");
-      spoutServo.write(70);
+      spoutServo.write(20);
       delay(500);
     }
     if (state == 'P' || state == 'p') {
-      digitalWrite(PUMP_PIN, HIGH);
       digitalWrite(LED_BUILTIN, HIGH);
       digitalWrite(SOL_PIN, HIGH);
-      Serial.println("PUMP ON");
+      Serial.println("SOL ON");
     }
     if (state == 'O' || state == 'o') {
       digitalWrite(LED_BUILTIN, LOW);
-      digitalWrite(PUMP_PIN, LOW);
       digitalWrite(SOL_PIN, LOW);
-      Serial.println("PUMP OFF");
+      Serial.println("SOL OFF");
     }
   }
   delay(50); // allow buffer to fill
