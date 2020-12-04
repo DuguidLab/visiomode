@@ -48,8 +48,8 @@ class Protocol(mixins.BaseClassMixin, mixins.WebFormMixin):
         self.config = conf.Config()
         self._timedelta = 0
 
-    def update(self):
-        """Protocol rendering and cleanup operations"""
+    def update(self, events):
+        """Protocol event handling and graphics rendering"""
 
     def start(self):
         """Start the protocol"""
