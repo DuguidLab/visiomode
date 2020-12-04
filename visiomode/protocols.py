@@ -50,10 +50,6 @@ class Protocol(mixins.BaseClassMixin, mixins.WebFormMixin):
 
     def update(self):
         """Protocol rendering and cleanup operations"""
-        timedelta = self.clock.tick(self.config.fps)  # FIXME tick only once per loop
-        self._timedelta = timedelta / 1000
-        if timedelta > 0:
-            print(timedelta)
 
     def start(self):
         """Start the protocol"""
