@@ -18,6 +18,8 @@ import visiomode.mixins as mixins
 
 HIT = "hit"
 MISS = "miss"
+FALSE_ALARM = "false_alarm"
+CORRECT_REJECTION = "correct_rejection"
 PRECUED = "precued"
 
 TOUCHDOWN = (pg.MOUSEBUTTONDOWN,)
@@ -48,7 +50,7 @@ class Protocol(mixins.BaseClassMixin, mixins.WebFormMixin):
 
     def update(self):
         """Protocol rendering and cleanup operations"""
-        timedelta = self.clock.tick(self.config.fps)
+        timedelta = self.clock.tick(self.config.fps)  # FIXME tick only once per loop
         self._timedelta = timedelta / 1000
         if timedelta > 0:
             print(timedelta)
