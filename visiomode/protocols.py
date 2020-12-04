@@ -113,7 +113,7 @@ class Task(Protocol):
     def hide_stim(self):
         pass
 
-    def handle_events(self, events):
+    def update(self, events):
         for event in events:
             if event.type in TOUCHDOWN or event.type in TOUCHUP:
                 on_target = self.target.collision(event.pos)
@@ -280,14 +280,14 @@ class TwoAlternativeForcedChoice(Task):
         self.target.hide()
         self.distractor.hide()
 
-    def handle_events(self, events):
+    def update(self, events):
         # ignore events on the background sprite if target and distractor are visible
         for event in events:
             if event.type in TOUCHDOWN or event.type in TOUCHUP:
                 if not self.target.hidden:  # if target is visible, so is the distractor
                     if self.separator.collidepoint(*event.pos):
                         return
-        super().handle_events(events)
+        super().update(events)
         self.distractor.update()
 
     def shuffle_centerx(self):

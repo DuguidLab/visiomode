@@ -120,7 +120,7 @@ class Visiomode:
                 self.session = None
             events = pg.event.get()
             if self.protocol and self.protocol.is_running:
-                self.protocol.handle_events(events)
+                self.protocol.update(events)
             for event in events:
                 if event.type == pg.QUIT:
                     if self.session:
