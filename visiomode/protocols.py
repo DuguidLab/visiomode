@@ -242,7 +242,9 @@ class SingleTarget(Task):
 class TwoAlternativeForcedChoice(Task):
     form_path = "protocols/tafc.html"
 
-    def __init__(self, target, distractor, sep_size=50, corrections="false", **kwargs):
+    def __init__(
+        self, target, distractor, sep_size=50, corrections_enabled="false", **kwargs
+    ):
         super().__init__(**kwargs)
 
         self.background = pg.Surface(self.screen.get_size())
@@ -250,7 +252,7 @@ class TwoAlternativeForcedChoice(Task):
         self.background.fill((0, 0, 0))
         self.screen.blit(self.background, (0, 0))
 
-        self.corrections = True if corrections == "true" else False
+        self.corrections_enabled = True if corrections_enabled == "true" else False
 
         self.separator_size = int(sep_size)  # pixels
         self.separator = pg.Rect(
