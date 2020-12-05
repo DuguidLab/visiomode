@@ -130,7 +130,6 @@ class Task(Protocol):
         touchdown_response = None
         touchup_response = None
         trial_outcome = MISS
-        stim_time = iti_start  # default to start of ITI until stimulus shows up
 
         while (time.time() - iti_start < self.iti) or touchdown_response:
             if not self._response_q.empty():
@@ -149,7 +148,6 @@ class Task(Protocol):
                 return
             self.show_stim()
             stim_start = time.time()
-            stim_time = stim_start
             while (time.time() - stim_start < self.stim_duration) or touchdown_response:
                 if not self._response_q.empty():
                     response = self._response_q.get()
@@ -185,7 +183,7 @@ class Task(Protocol):
         # session has ended). Prevent this crashing everything by checking for both touchup and touchdown
         # objects exist before creating a trial.
         if touchup_response and touchdown_response:
-            trial.response_time = touchdown_response.timestamp - stim_time
+            trial.response_time = touchdown_response.timestamp - iti_start - self.iti
             trial.duration = touchup_response.timestamp - touchdown_response.timestamp
             trial.pos_x = touchdown_response.x
             trial.pos_y = touchdown_response.y
