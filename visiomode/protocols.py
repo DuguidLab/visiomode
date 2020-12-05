@@ -86,7 +86,7 @@ class Task(Protocol):
 
         self.trials = []
 
-        self.corrections = False
+        self.corrections_enabled = False
         self._correction_trial = False
 
         self.target = None
@@ -122,75 +122,92 @@ class Task(Protocol):
                         timestamp=time.time(),
                     )
                 )
-        self.target.update(
-            timedelta=self._timedelta
-        )  # update stimulus drawing here since this is called on every iteration in the main loop
+        self.target.update(timedelta=self._timedelta)
 
-    def _session_runner(self):
-        while self.is_running:
-            self.hide_stim()
-            iti_start = time.time()
-            touchdown_response = None
-            touchup_response = None
-            trial_outcome = str()
-            stim_time = iti_start  # default to start of ITI until stimulus shows up
-            while (time.time() - iti_start < self.iti) or touchdown_response:
+    def trial_block(self):
+        self.hide_stim()
+        iti_start = time.time()
+        touchdown_response = None
+        touchup_response = None
+        trial_outcome = MISS
+        stim_time = iti_start  # default to start of ITI until stimulus shows up
+
+        while (time.time() - iti_start < self.iti) or touchdown_response:
+            if not self._response_q.empty():
+                response = self._response_q.get()
+                # If touchdown, log trial as precued
+                if response.event_type in TOUCHDOWN:
+                    trial_outcome = PRECUED
+                    touchdown_response = response
+                # On touchup, register the trial and reset the ITI by breaking out of loop
+                if response.event_type in TOUCHUP:
+                    touchup_response = response
+                    break
+        else:
+            # To prevent stimulus showing after the session has ended, check if the session is still running.
+            if not self.is_running:
+                return
+            self.show_stim()
+            stim_start = time.time()
+            while (time.time() - stim_start < self.stim_duration) or touchdown_response:
                 if not self._response_q.empty():
                     response = self._response_q.get()
-                    # If touchdown, log trial as precued
                     if response.event_type in TOUCHDOWN:
-                        trial_outcome = PRECUED
+                        if response.on_target:
+                            trial_outcome = HIT
+                            self.reward_device.output()
+                        else:
+                            trial_outcome = FALSE_ALARM
                         touchdown_response = response
-                    # On touchup, register the trial and reset the ITI by breaking out of loop
                     if response.event_type in TOUCHUP:
                         touchup_response = response
                         break
             else:
-                # To prevent stimulus showing after the session has ended, check if the session is still running.
-                if not self.is_running:
-                    return
-                self.show_stim()
-                stim_start = time.time()
-                while (
-                    time.time() - stim_start < self.stim_duration
-                ) or touchdown_response:
-                    if not self._response_q.empty():
-                        response = self._response_q.get()
-                        if response.event_type in TOUCHDOWN:
-                            trial_outcome = MISS
-                            if response.on_target:
-                                trial_outcome = HIT
-                                self.reward_device.output()
-                            touchdown_response = response
-                        if response.event_type in TOUCHUP:
-                            touchup_response = response
-                            break
-            # Touchup events from the previous session can sometimes leak through (e.g. if touchup is after
-            # session has ended). Prevent this crashing everything by checking for both touchup and touchdown
-            # objects exist before creating a trial.
-            if touchup_response and touchdown_response:
-                trial = models.Trial(
-                    outcome=trial_outcome,
-                    iti=self.iti,
-                    reaction_time=touchdown_response.timestamp - stim_time,
-                    duration=touchup_response.timestamp - touchdown_response.timestamp,
-                    pos_x=touchdown_response.x,
-                    pos_y=touchdown_response.y,
-                    dist_x=touchup_response.x - touchdown_response.x,
-                    dist_y=touchup_response.y - touchdown_response.y,
-                    timestamp=datetime.datetime.fromtimestamp(
-                        touchdown_response.timestamp
-                    ).isoformat(),
-                    correction=self._correction_trial,
-                )
-                print(trial.__dict__)
-                self.trials.append(trial)
+                # if the target was not visible, i.e. the stimulus was a distractor, and there was no touch event during
+                # the response window then the trial outcome is a correct rejection
+                if self.target.hidden:
+                    trial_outcome = CORRECT_REJECTION
 
-                # Correction trials
-                if self.corrections and trial.outcome == MISS:
-                    self._correction_trial = True
-                if self.corrections and self._correction_trial and trial.outcome == HIT:
-                    self._correction_trial = False
+        trial = models.Trial(
+            outcome=trial_outcome,
+            iti=self.iti,
+            reaction_time=-1,
+            duration=-1,
+            pos_x=-1,
+            pos_y=-1,
+            dist_x=-1,
+            dist_y=-1,
+            timestamp=datetime.datetime.now().isoformat(),
+            correction=self._correction_trial,
+        )
+        # Touchup events from the previous session can sometimes leak through (e.g. if touchup is after
+        # session has ended). Prevent this crashing everything by checking for both touchup and touchdown
+        # objects exist before creating a trial.
+        if touchup_response and touchdown_response:
+            trial.reaction_time = touchdown_response.timestamp - stim_time - self.iti
+            trial.duration = touchup_response.timestamp - touchdown_response.timestamp
+            trial.pos_x = touchdown_response.x
+            trial.pos_y = touchdown_response.y
+            trial.dist_x = touchup_response.x - touchdown_response.x
+            trial.dist_y = touchup_response.y - touchdown_response.y
+            trial.timestamp = datetime.datetime.fromtimestamp(
+                touchdown_response.timestamp
+            ).isoformat()
+
+        print(trial.__dict__)
+        self.trials.append(trial)
+
+        # Correction trials
+        if self.corrections_enabled and (
+            trial.outcome == MISS or trial.outcome == FALSE_ALARM
+        ):
+            self._correction_trial = True
+        if self.corrections_enabled and self._correction_trial and trial.outcome == HIT:
+            self._correction_trial = False
+
+    def _session_runner(self):
+        while self.is_running:
+            self.trial_block()
 
 
 class Presentation(Protocol):
