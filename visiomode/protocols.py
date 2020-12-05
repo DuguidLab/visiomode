@@ -149,6 +149,7 @@ class Task(Protocol):
                 return
             self.show_stim()
             stim_start = time.time()
+            stim_time = stim_start
             while (time.time() - stim_start < self.stim_duration) or touchdown_response:
                 if not self._response_q.empty():
                     response = self._response_q.get()
@@ -171,7 +172,7 @@ class Task(Protocol):
         trial = models.Trial(
             outcome=trial_outcome,
             iti=self.iti,
-            reaction_time=-1,
+            response_time=-1,
             duration=-1,
             pos_x=-1,
             pos_y=-1,
@@ -184,7 +185,7 @@ class Task(Protocol):
         # session has ended). Prevent this crashing everything by checking for both touchup and touchdown
         # objects exist before creating a trial.
         if touchup_response and touchdown_response:
-            trial.response_time = touchdown_response.timestamp - stim_time - self.iti
+            trial.response_time = touchdown_response.timestamp - stim_time
             trial.duration = touchup_response.timestamp - touchdown_response.timestamp
             trial.pos_x = touchdown_response.x
             trial.pos_y = touchdown_response.y
