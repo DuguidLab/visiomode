@@ -125,6 +125,7 @@ class Task(Protocol):
         self.target.update(timedelta=self._timedelta)
 
     def trial_block(self):
+        """Trial block supporting signal detection theory styled trials."""
         self.hide_stim()
         iti_start = time.time()
         touchdown_response = None
