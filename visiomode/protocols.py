@@ -184,7 +184,7 @@ class Task(Protocol):
         # session has ended). Prevent this crashing everything by checking for both touchup and touchdown
         # objects exist before creating a trial.
         if touchup_response and touchdown_response:
-            trial.reaction_time = touchdown_response.timestamp - stim_time - self.iti
+            trial.response_time = touchdown_response.timestamp - stim_time - self.iti
             trial.duration = touchup_response.timestamp - touchdown_response.timestamp
             trial.pos_x = touchdown_response.x
             trial.pos_y = touchdown_response.y
