@@ -167,6 +167,7 @@ class Task(Protocol):
                 # the response window then the trial outcome is a correct rejection
                 if self.target.hidden:
                     trial_outcome = CORRECT_REJECTION
+                    self.reward_device.output()
 
         trial = models.Trial(
             outcome=trial_outcome,
