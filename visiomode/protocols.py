@@ -225,8 +225,8 @@ class SingleTarget(Task):
         self.background.fill((0, 0, 0))
         self.screen.blit(self.background, (0, 0))
 
-        Target = stim.get_stimulus(target)
-        self.target = Target(background=self.background, **kwargs)
+        target = stim.get_stimulus(target)
+        self.target = target(background=self.background, **kwargs)
 
     def stop(self):
         print("stop")
@@ -261,21 +261,21 @@ class TwoAlternativeForcedChoice(Task):
         )
         self.separator.centerx = self.screen.get_rect().centerx
 
-        Target = stim.get_stimulus(target)
+        target = stim.get_stimulus(target)
         target_params = {
             key.replace("t_", ""): kwargs[key]
             for key in kwargs.keys()
             if key.startswith("t_")
         }
-        self.target = Target(background=self.background, **target_params)
+        self.target = target(background=self.background, **target_params)
 
-        Distractor = stim.get_stimulus(distractor)
+        distractor = stim.get_stimulus(distractor)
         distractor_params = {
             key.replace("d_", ""): kwargs[key]
             for key in kwargs.keys()
             if key.startswith("d_")
         }
-        self.distractor = Distractor(background=self.background, **distractor_params)
+        self.distractor = distractor(background=self.background, **distractor_params)
 
     def stop(self):
         print("stop")
