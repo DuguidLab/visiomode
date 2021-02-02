@@ -138,6 +138,7 @@ class Task(Protocol):
                 # If touchdown, log trial as precued
                 if response.event_type in TOUCHDOWN:
                     trial_outcome = PRECUED
+                    self.on_precued()
                     touchdown_response = response
                 # On touchup, register the trial and reset the ITI by breaking out of loop
                 if response.event_type in TOUCHUP:
@@ -155,9 +156,10 @@ class Task(Protocol):
                     if response.event_type in TOUCHDOWN:
                         if response.on_target:
                             trial_outcome = HIT
-                            self.reward_device.output()
+                            self.on_hit()
                         else:
                             trial_outcome = FALSE_ALARM
+                            self.on_false_alarm()
                         touchdown_response = response
                     if response.event_type in TOUCHUP:
                         touchup_response = response
@@ -167,7 +169,7 @@ class Task(Protocol):
                 # the response window then the trial outcome is a correct rejection
                 if self.target.hidden:
                     trial_outcome = CORRECT_REJECTION
-                    self.reward_device.output()
+                    self.on_correct_rejection()
 
         trial = models.Trial(
             outcome=trial_outcome,
@@ -198,6 +200,9 @@ class Task(Protocol):
         print(trial.__dict__)
         self.trials.append(trial)
 
+        if trial.outcome == MISS:
+            self.on_miss()
+
         # Correction trials
         if self.corrections_enabled and (
             trial.outcome == MISS or trial.outcome == FALSE_ALARM
@@ -205,6 +210,21 @@ class Task(Protocol):
             self._correction_trial = True
         if self.corrections_enabled and self._correction_trial and trial.outcome == HIT:
             self._correction_trial = False
+
+    def on_hit(self):
+        self.reward_device.output()
+
+    def on_miss(self):
+        pass
+
+    def on_false_alarm(self):
+        pass
+
+    def on_correct_rejection(self):
+        self.reward_device.output()
+
+    def on_precued(self):
+        pass
 
     def _session_runner(self):
         while self.is_running:
