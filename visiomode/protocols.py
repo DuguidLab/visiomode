@@ -112,7 +112,7 @@ class Task(Protocol):
     def update(self, events):
         for event in events:
             if event.type in TOUCHDOWN or event.type in TOUCHUP:
-                on_target = self.target.collision(event.pos)
+                on_target = self.target.collision(event.pos) and not self.target.hidden
                 self._response_q.put(
                     TouchEvent(
                         event_type=event.type,
@@ -208,7 +208,11 @@ class Task(Protocol):
             trial.outcome == MISS or trial.outcome == FALSE_ALARM
         ):
             self.correction_trial = True
-        if self.corrections_enabled and self.correction_trial and trial.outcome == HIT:
+        if (
+            self.corrections_enabled
+            and self.correction_trial
+            and (trial.outcome == HIT or trial.outcome == CORRECT_REJECTION)
+        ):
             self.correction_trial = False
 
     def on_hit(self):
@@ -346,9 +350,6 @@ class TwoIntervalForcedChoice(Task):
         self.screen.blit(self.background, (0, 0))
 
         self.corrections_enabled = True if corrections_enabled == "true" else False
-
-        target = stim.get_stimulus(target)
-        self.target = target(background=self.background, **kwargs)
 
         target = stim.get_stimulus(target)
         target_params = {
