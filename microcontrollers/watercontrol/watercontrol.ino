@@ -3,7 +3,7 @@ Water reward controller.
 Works for servos and
 */
 #define OUT_PIN 4
-#define DELAY 35
+#define DELAY 380
 
 void setup() {
     pinMode(LED_BUILTIN, OUTPUT);
