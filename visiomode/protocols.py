@@ -335,6 +335,8 @@ class TwoAlternativeForcedChoice(Task):
 
 
 class TwoIntervalForcedChoice(Task):
+    form_path = "protocols/tifc.html"
+
     def __init__(self, target, distractor, corrections_enabled="false", **kwargs):
         super().__init__(**kwargs)
 
@@ -378,6 +380,10 @@ class TwoIntervalForcedChoice(Task):
 
     def hide_stim(self):
         self.current_stimulus.hide()
+
+    def update(self, events):
+        super().update(events)
+        self.current_stimulus.update()
 
     def get_random_stimulus(self):
         return random.choice([self.target, self.distractor])
