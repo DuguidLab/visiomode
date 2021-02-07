@@ -20,7 +20,7 @@ jobs:
         pip install pylint
     - name: Analysing the code with pylint
       run: |
-        pylint --extension-pkg-whitelist=pygame visiomode/
+        pylint --extension-pkg-whitelist=pygame --fail-under=5 visiomode/
     - uses: actions/cache@v2
       with:
         path: ~/.cache/pip
