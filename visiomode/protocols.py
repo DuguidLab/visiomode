@@ -87,7 +87,7 @@ class Task(Protocol):
         self.trials = []
 
         self.corrections_enabled = False
-        self._correction_trial = False
+        self.correction_trial = False
 
         self.target = None
 
@@ -112,7 +112,7 @@ class Task(Protocol):
     def update(self, events):
         for event in events:
             if event.type in TOUCHDOWN or event.type in TOUCHUP:
-                on_target = self.target.collision(event.pos)
+                on_target = self.target.collision(event.pos) and not self.target.hidden
                 self._response_q.put(
                     TouchEvent(
                         event_type=event.type,
@@ -138,6 +138,7 @@ class Task(Protocol):
                 # If touchdown, log trial as precued
                 if response.event_type in TOUCHDOWN:
                     trial_outcome = PRECUED
+                    self.on_precued()
                     touchdown_response = response
                 # On touchup, register the trial and reset the ITI by breaking out of loop
                 if response.event_type in TOUCHUP:
@@ -155,9 +156,10 @@ class Task(Protocol):
                     if response.event_type in TOUCHDOWN:
                         if response.on_target:
                             trial_outcome = HIT
-                            self.reward_device.output()
+                            self.on_hit()
                         else:
                             trial_outcome = FALSE_ALARM
+                            self.on_false_alarm()
                         touchdown_response = response
                     if response.event_type in TOUCHUP:
                         touchup_response = response
@@ -167,6 +169,7 @@ class Task(Protocol):
                 # the response window then the trial outcome is a correct rejection
                 if self.target.hidden:
                     trial_outcome = CORRECT_REJECTION
+                    self.on_correct_rejection()
 
         trial = models.Trial(
             outcome=trial_outcome,
@@ -178,7 +181,7 @@ class Task(Protocol):
             dist_x=-1,
             dist_y=-1,
             timestamp=datetime.datetime.now().isoformat(),
-            correction=self._correction_trial,
+            correction=self.correction_trial,
         )
         # Touchup events from the previous session can sometimes leak through (e.g. if touchup is after
         # session has ended). Prevent this crashing everything by checking for both touchup and touchdown
@@ -197,13 +200,35 @@ class Task(Protocol):
         print(trial.__dict__)
         self.trials.append(trial)
 
+        if trial.outcome == MISS:
+            self.on_miss()
+
         # Correction trials
         if self.corrections_enabled and (
             trial.outcome == MISS or trial.outcome == FALSE_ALARM
         ):
-            self._correction_trial = True
-        if self.corrections_enabled and self._correction_trial and trial.outcome == HIT:
-            self._correction_trial = False
+            self.correction_trial = True
+        if (
+            self.corrections_enabled
+            and self.correction_trial
+            and (trial.outcome == HIT or trial.outcome == CORRECT_REJECTION)
+        ):
+            self.correction_trial = False
+
+    def on_hit(self):
+        self.reward_device.output()
+
+    def on_miss(self):
+        pass
+
+    def on_false_alarm(self):
+        pass
+
+    def on_correct_rejection(self):
+        self.reward_device.output()
+
+    def on_precued(self):
+        pass
 
     def _session_runner(self):
         while self.is_running:
@@ -225,8 +250,8 @@ class SingleTarget(Task):
         self.background.fill((0, 0, 0))
         self.screen.blit(self.background, (0, 0))
 
-        Target = stim.get_stimulus(target)
-        self.target = Target(background=self.background, **kwargs)
+        target = stim.get_stimulus(target)
+        self.target = target(background=self.background, **kwargs)
 
     def stop(self):
         print("stop")
@@ -261,21 +286,21 @@ class TwoAlternativeForcedChoice(Task):
         )
         self.separator.centerx = self.screen.get_rect().centerx
 
-        Target = stim.get_stimulus(target)
+        target = stim.get_stimulus(target)
         target_params = {
             key.replace("t_", ""): kwargs[key]
             for key in kwargs.keys()
             if key.startswith("t_")
         }
-        self.target = Target(background=self.background, **target_params)
+        self.target = target(background=self.background, **target_params)
 
-        Distractor = stim.get_stimulus(distractor)
+        distractor = stim.get_stimulus(distractor)
         distractor_params = {
             key.replace("d_", ""): kwargs[key]
             for key in kwargs.keys()
             if key.startswith("d_")
         }
-        self.distractor = Distractor(background=self.background, **distractor_params)
+        self.distractor = distractor(background=self.background, **distractor_params)
 
     def stop(self):
         print("stop")
@@ -283,7 +308,7 @@ class TwoAlternativeForcedChoice(Task):
         self.hide_stim()
 
     def show_stim(self):
-        if not self._correction_trial:
+        if not self.correction_trial:
             target_x, distr_x = self.shuffle_centerx()
             self.target.set_centerx(target_x)
             self.distractor.set_centerx(distr_x)
@@ -314,7 +339,55 @@ class TwoAlternativeForcedChoice(Task):
 
 
 class TwoIntervalForcedChoice(Task):
-    pass
+    form_path = "protocols/tifc.html"
+
+    def __init__(self, target, distractor, corrections_enabled="false", **kwargs):
+        super().__init__(**kwargs)
+
+        self.background = pg.Surface(self.screen.get_size())
+        self.background = self.background.convert()
+        self.background.fill((0, 0, 0))
+        self.screen.blit(self.background, (0, 0))
+
+        self.corrections_enabled = True if corrections_enabled == "true" else False
+
+        target = stim.get_stimulus(target)
+        target_params = {
+            key.replace("t_", ""): kwargs[key]
+            for key in kwargs.keys()
+            if key.startswith("t_")
+        }
+        self.target = target(background=self.background, **target_params)
+
+        distractor = stim.get_stimulus(distractor)
+        distractor_params = {
+            key.replace("d_", ""): kwargs[key]
+            for key in kwargs.keys()
+            if key.startswith("d_")
+        }
+        self.distractor = distractor(background=self.background, **distractor_params)
+
+        self.current_stimulus = self.get_random_stimulus()
+
+    def stop(self):
+        print("stop")
+        super().stop()
+        self.hide_stim()
+
+    def show_stim(self):
+        if not self.correction_trial:
+            self.current_stimulus = self.get_random_stimulus()
+        self.current_stimulus.show()
+
+    def hide_stim(self):
+        self.current_stimulus.hide()
+
+    def update(self, events):
+        super().update(events)
+        self.current_stimulus.update()
+
+    def get_random_stimulus(self):
+        return random.choice([self.target, self.distractor])
 
 
 class InvalidProtocol(Exception):
