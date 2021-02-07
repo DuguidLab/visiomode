@@ -144,7 +144,7 @@ class MovingGrating(Stimulus):
         if self.rect.bottom <= self.height:
             self.pos = self.orig_center
         self.pos += self.velocity
-        self.rect.center = self.pos
+        self.rect.centery = self.pos[1]
         # self.rect.move_ip(0, self.px_per_cycle)
 
         self.draw()
