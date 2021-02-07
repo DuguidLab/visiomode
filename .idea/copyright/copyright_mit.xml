@@ -1,7 +1,0 @@
-<component name="CopyrightManager">
-  <copyright>
-    <option name="keyword" value="cmit" />
-    <option name="notice" value="This file is part of &amp;#36;{project.name}.&#10;Copyright (c) &amp;#36;{today.year} Constantinos Eleftheriou &lt;Constantinos.Eleftheriou@ed.ac.uk&gt;&#10;Distributed under the terms of the MIT Licence. " />
-    <option name="myName" value="copyright-mit" />
-  </copyright>
-</component>
