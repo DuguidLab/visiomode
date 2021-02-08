@@ -21,17 +21,17 @@ void loop() {
         digitalWrite(LED_BUILTIN, HIGH);
         Serial.println("LED ON");
         spoutServo.write(150);
-        delay(500);
+        delay(500); // spout movement epoch
 
         digitalWrite(SOL_PIN, HIGH);
-        delay(100);
+        delay(100); // reward dispension
         digitalWrite(SOL_PIN, LOW);
-        delay(700);
+        delay(1400); // delay for mouse to drink
 
         digitalWrite(LED_BUILTIN, LOW);
         Serial.println("LED OFF");
         spoutServo.write(20);
-        delay(500);
+        delay(500); // spout movement epoch
     }
     if (state == 'H' || state == 'h') {
       digitalWrite(LED_BUILTIN, HIGH);
