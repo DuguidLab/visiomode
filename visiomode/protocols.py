@@ -139,7 +139,6 @@ class Task(Protocol):
                 # If touchdown, log trial as precued
                 if response.event_type in TOUCHDOWN:
                     trial_outcome = PRECUED
-                    self.on_precued()
                     touchdown_response = response
                 # On touchup, register the trial and reset the ITI by breaking out of loop
                 if response.event_type in TOUCHUP:
@@ -157,10 +156,8 @@ class Task(Protocol):
                     if response.event_type in TOUCHDOWN:
                         if response.on_target:
                             trial_outcome = HIT
-                            self.on_hit()
                         else:
                             trial_outcome = FALSE_ALARM
-                            self.on_false_alarm()
                         touchdown_response = response
                     if response.event_type in TOUCHUP:
                         touchup_response = response
@@ -170,8 +167,8 @@ class Task(Protocol):
                 # the response window then the trial outcome is a correct rejection
                 if self.target.hidden:
                     trial_outcome = CORRECT_REJECTION
-                    self.on_correct_rejection()
 
+        # Log trial
         trial = models.Trial(
             outcome=trial_outcome,
             iti=self.iti,
@@ -201,8 +198,21 @@ class Task(Protocol):
         print(trial.__dict__)
         self.trials.append(trial)
 
-        if trial.outcome == MISS:
+        # Hide stimulus at end of trial before calling handlers, so any reward dispensation associated
+        # delays don't keep the stimulus hanging about on the screen.
+        self.hide_stim()
+
+        # Call trial outcome handlers
+        if trial.outcome == PRECUED:
+            self.on_precued()
+        elif trial.outcome == HIT:
+            self.on_hit()
+        elif trial.outcome == MISS:
             self.on_miss()
+        elif trial.outcome == FALSE_ALARM:
+            self.on_false_alarm()
+        elif trial.outcome == CORRECT_REJECTION:
+            self.on_correct_rejection()
 
         # Correction trials
         if self.corrections_enabled and (
