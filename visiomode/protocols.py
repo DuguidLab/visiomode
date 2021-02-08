@@ -126,13 +126,14 @@ class Task(Protocol):
 
     def trial_block(self):
         """Trial block supporting signal detection theory styled trials."""
+        trial_start_iso = datetime.datetime.now().isoformat()
         self.hide_stim()
-        iti_start = time.time()
+        block_start = time.time()
         touchdown_response = None
         touchup_response = None
         trial_outcome = MISS
 
-        while (time.time() - iti_start < self.iti) or touchdown_response:
+        while (time.time() - block_start < self.iti) or touchdown_response:
             if not self._response_q.empty():
                 response = self._response_q.get()
                 # If touchdown, log trial as precued
@@ -180,14 +181,14 @@ class Task(Protocol):
             pos_y=-1,
             dist_x=-1,
             dist_y=-1,
-            timestamp=datetime.datetime.now().isoformat(),
+            timestamp=trial_start_iso,
             correction=self.correction_trial,
         )
         # Touchup events from the previous session can sometimes leak through (e.g. if touchup is after
         # session has ended). Prevent this crashing everything by checking for both touchup and touchdown
         # objects exist before creating a trial.
         if touchup_response and touchdown_response:
-            trial.response_time = touchdown_response.timestamp - iti_start - self.iti
+            trial.response_time = touchdown_response.timestamp - block_start - self.iti
             trial.duration = touchup_response.timestamp - touchdown_response.timestamp
             trial.pos_x = touchdown_response.x
             trial.pos_y = touchdown_response.y
