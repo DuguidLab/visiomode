@@ -53,10 +53,7 @@ class OutputDevice(abc.ABC, Device):
 
 
 class WaterReward(OutputDevice):
-    servo_start = 10
-    servo_end = 170
-    movt_delay = 500
-    pump_ms = 50
+    reward_epoch = 1500  # time from moment servo moves out in ms
 
     def __init__(self, address):
         super().__init__(address)
@@ -70,6 +67,7 @@ class WaterReward(OutputDevice):
         # thread = threading.Thread(target=self._dispense)
         # thread.start()
         self.bus.write(b"T\n")
+        time.sleep(self.reward_epoch / 1000)
 
 
 class DeviceError(Exception):
