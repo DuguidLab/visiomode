@@ -36,12 +36,7 @@ jobs:
 
     steps:
       - uses: actions/checkout@v2
-      - uses: codecov/codecov-action@v1
-        with:
-          token: ${{ secrets.CODECOV_TOKEN }} 
-          fail_ci_if_error: true 
-          verbose: true 
-    
+
       - name: Setup Python
         uses: actions/setup-python@v2
         with:
@@ -50,3 +45,9 @@ jobs:
         run: pip install tox
       - name: Run Tox
         run: tox -e py
+      - name: Upload coverage report to codecov
+      - uses: codecov/codecov-action@v1
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }} 
+          fail_ci_if_error: true 
+          verbose: true  
