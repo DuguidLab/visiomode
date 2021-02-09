@@ -34,6 +34,18 @@ jobs:
   build:
     runs-on: ubuntu-latest
 
+    services:
+      redis:
+        # Docker Hub image
+        image: redis
+        options: >-
+          --health-cmd "redis-cli ping"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+        ports:
+          - 6379:6379
+
     steps:
       - uses: actions/checkout@v2
 
@@ -45,6 +57,9 @@ jobs:
         run: pip install tox
       - name: Run Tox
         run: tox -e py
+        env:
+          REDIS_HOST: localhost
+          REDIS_PORT: 6379
       - name: Upload coverage report to codecov
         uses: codecov/codecov-action@v1
         with:
