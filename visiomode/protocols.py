@@ -22,8 +22,11 @@ FALSE_ALARM = "false_alarm"
 CORRECT_REJECTION = "correct_rejection"
 PRECUED = "precued"
 
-TOUCHDOWN = (pg.MOUSEBUTTONDOWN,)
-TOUCHUP = (pg.MOUSEBUTTONUP,)
+TOUCHDOWN = (pg.MOUSEBUTTONDOWN, pg.FINGERDOWN)
+TOUCHUP = (pg.MOUSEBUTTONUP, pg.FINGERUP)
+
+MOUSE_EVENTS = (pg.MOUSEBUTTONDOWN, pg.MOUSEBUTTONUP)
+TOUCH_EVENTS = (pg.FINGERDOWN, pg.FINGERUP)
 
 TouchEvent = collections.namedtuple(
     "TouchEvent", ["event_type", "on_target", "x", "y", "timestamp"]
@@ -112,13 +115,14 @@ class Task(Protocol):
     def update(self, events):
         for event in events:
             if event.type in TOUCHDOWN or event.type in TOUCHUP:
-                on_target = self.target.collision(event.pos) and not self.target.hidden
+                pos = event.pos if event.type in MOUSE_EVENTS else (event.x, event.y)
+                on_target = self.target.collision(pos) and not self.target.hidden
                 self._response_q.put(
                     TouchEvent(
                         event_type=event.type,
                         on_target=on_target,
-                        x=event.pos[0],
-                        y=event.pos[1],
+                        x=pos[0],
+                        y=pos[1],
                         timestamp=time.time(),
                     )
                 )
@@ -336,7 +340,8 @@ class TwoAlternativeForcedChoice(Task):
         for event in events:
             if event.type in TOUCHDOWN or event.type in TOUCHUP:
                 if not self.target.hidden:  # if target is visible, so is the distractor
-                    if self.separator.collidepoint(*event.pos):
+                    pos = event.pos if event.type in MOUSE_EVENTS else (event.x, event.y)
+                    if self.separator.collidepoint(*pos):
                         return
         super().update(events)
         self.distractor.update()

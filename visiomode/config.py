@@ -25,7 +25,7 @@ class Config(mixins.YamlAttributesMixin):
     debug = True
     flask_key = "dev"
     data_dir = "instance/"
-    fps = 60
+    fps = 30
     devices = "devices/"
 
     def __init__(self, path=DEFAULT_PATH):
