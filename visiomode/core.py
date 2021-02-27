@@ -4,6 +4,7 @@
 #  Copyright (c) 2020 Constantinos Eleftheriou <Constantinos.Eleftheriou@ed.ac.uk>
 #  Distributed under the terms of the MIT Licence.
 
+import queue
 import pygame as pg
 import visiomode.config as conf
 import visiomode.models as models
@@ -18,10 +19,8 @@ class Visiomode:
         self.clock = pg.time.Clock()
         self.config = conf.Config()
 
-        # Subscribe to Redis status updates
-        status_sub = self.rds.subscribe_status(
-            threaded=True, callback=self._messaging_callback
-        )
+        requests_q = queue.Queue()
+
         # Initialise webpanel, run in background
         webpanel.runserver(threaded=True)
 
@@ -104,6 +103,13 @@ class Visiomode:
 
         # Event loop
         while True:
+            request = None
+            try:
+                request = requests_q.get(block=False)
+            except queue.Empty:
+                pass
+            if request:
+                self.parse_request(request)
             if self.protocol and not self.protocol.is_running:
                 print("finished")
 
@@ -118,19 +124,19 @@ class Visiomode:
 
                 self.protocol = None
                 self.session = None
-            events = pg.event.get()
+            events = pg.event.get()  # TODO refactor to protocol
             if self.protocol and self.protocol.is_running:
                 self.protocol.update(events)
-            for event in events:
+            for event in events:  # TODO refactor to protocol?
                 if event.type == pg.QUIT:
                     if self.session:
                         self.session.trials = self.protocol.trials
                         self.session.save(self.config.data_dir)
                     return
 
-            pg.display.update()
+            pg.display.update()  # TODO refactor to protocol
 
-            self.clock.tick(self.config.fps)
+            self.clock.tick(self.config.fps)  # TODO refactor to protocol
 
     def parse_request(self, request: dict):
         """Parse new session request parameters."""
