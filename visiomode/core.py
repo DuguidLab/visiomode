@@ -34,7 +34,9 @@ class Visiomode:
         pg.display.set_icon(icon)
 
         # Initialise screen
-        self.screen = pg.display.set_mode((400, 800))
+        self.screen = pg.display.set_mode(
+            (400, 800)
+        )  # TODO refactor resolution settings to config
         pg.display.set_caption("Visiomode")
 
         # Fill background
@@ -149,33 +151,6 @@ class Visiomode:
                         self.session.trials = self.protocol.trials
                         self.session.save(self.config.data_dir)
                     return
-
-    def parse_request(self, request: dict):
-        """Parse new session request parameters."""
-        session = models.Session(
-            animal_id=request.pop("animal_id"),
-            experiment=request.pop("experiment"),
-            protocol=request.pop("protocol"),
-            duration=float(request.pop("duration")),
-        )
-        Protocol = protocols.get_protocol(session.protocol)
-        protocol = Protocol(screen=self.screen, duration=session.duration, **request)
-        return session, protocol
-
-    def _messaging_callback(self, *args, **kwargs):
-        status = self.rds.get_status()
-        print("updating...")
-        if status == messaging.REQUESTED:
-            request = self.rds.get_session_request()
-            print(request)
-            self.session, self.protocol = self.parse_request(request)
-            self.protocol.start()
-            self.rds.set_status(messaging.ACTIVE)
-
-        if status == messaging.STOPPED:
-            print("stopping...")
-            if self.protocol and self.protocol.is_running:
-                self.protocol.stop()
 
 
 def rotate(image, rect, angle):
