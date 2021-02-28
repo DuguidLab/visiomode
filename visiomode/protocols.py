@@ -90,13 +90,20 @@ class Task(Protocol):
         )
 
     def start(self):
-        super().start()
+        super(Task, self).start()
         self._session_thread.start()
+
+    def stop(self):
+        self.hide_stim()
+        super(Task, self).stop()
 
     def show_stim(self):
         pass
 
     def hide_stim(self):
+        pass
+
+    def update_stim(self):
         pass
 
     def update(self, events):
@@ -112,6 +119,7 @@ class Task(Protocol):
                         timestamp=time.time(),
                     )
                 )
+        self.update_stim()
 
     def trial_block(self):
         """Trial block supporting signal detection theory styled trials."""
@@ -248,7 +256,7 @@ class SingleTarget(Task):
     form_path = "protocols/single_target.html"
 
     def __init__(self, target, **kwargs):
-        super().__init__(**kwargs)
+        super(SingleTarget, self).__init__(**kwargs)
 
         self.background = pg.Surface(self.screen.get_size())
         self.background = self.background.convert()
@@ -258,13 +266,7 @@ class SingleTarget(Task):
         target = stim.get_stimulus(target)
         self.target = target(background=self.background, **kwargs)
 
-    def stop(self):
-        print("stop")
-        super().stop()
-        self.hide_stim()
-
-    def update(self, events):
-        super().update(events)
+    def update_stim(self):
         self.target.update()
 
     def show_stim(self):
@@ -280,7 +282,7 @@ class TwoAlternativeForcedChoice(Task):
     def __init__(
         self, target, distractor, sep_size=50, corrections_enabled="false", **kwargs
     ):
-        super().__init__(**kwargs)
+        super(TwoAlternativeForcedChoice, self).__init__(**kwargs)
 
         self.background = pg.Surface(self.screen.get_size())
         self.background = self.background.convert()
@@ -311,11 +313,6 @@ class TwoAlternativeForcedChoice(Task):
         }
         self.distractor = distractor(background=self.background, **distractor_params)
 
-    def stop(self):
-        print("stop")
-        super().stop()
-        self.hide_stim()
-
     def show_stim(self):
         if not self.correction_trial:
             target_x, distr_x = self.shuffle_centerx()
@@ -336,7 +333,9 @@ class TwoAlternativeForcedChoice(Task):
                 if not self.target.hidden:  # if target is visible, so is the distractor
                     if self.separator.collidepoint(*event.pos):
                         return
-        super().update(events)
+        super(TwoAlternativeForcedChoice, self).update(events)
+
+    def update_stim(self):
         self.distractor.update()
         self.target.update()
 
@@ -379,11 +378,6 @@ class TwoIntervalForcedChoice(Task):
 
         self.current_stimulus = self.get_random_stimulus()
 
-    def stop(self):
-        print("stop")
-        super().stop()
-        self.hide_stim()
-
     def show_stim(self):
         if not self.correction_trial:
             self.current_stimulus = self.get_random_stimulus()
@@ -392,8 +386,7 @@ class TwoIntervalForcedChoice(Task):
     def hide_stim(self):
         self.current_stimulus.hide()
 
-    def update(self, events):
-        super().update(events)
+    def update_stim(self):
         self.current_stimulus.update()
 
     def get_random_stimulus(self):
