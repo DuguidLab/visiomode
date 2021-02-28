@@ -98,13 +98,13 @@ class Task(Protocol):
         super(Task, self).stop()
 
     def show_stim(self):
-        pass
+        raise NotImplementedError
 
     def hide_stim(self):
-        pass
+        raise NotImplementedError
 
     def update_stim(self):
-        pass
+        raise NotImplementedError
 
     def update(self, events):
         for event in events:
