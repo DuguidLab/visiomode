@@ -193,7 +193,8 @@ class Task(Protocol):
 
         # Hide stimulus at end of trial before calling handlers, so any reward dispensation associated
         # delays don't keep the stimulus hanging about on the screen.
-        self.hide_stim()
+        if self.is_running:
+            self.hide_stim()
 
         # Call trial outcome handlers
         if trial.outcome == PRECUED:
