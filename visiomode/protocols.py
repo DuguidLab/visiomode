@@ -351,7 +351,7 @@ class TwoIntervalForcedChoice(Task):
     form_path = "protocols/tifc.html"
 
     def __init__(self, target, distractor, corrections_enabled="false", **kwargs):
-        super().__init__(**kwargs)
+        super(TwoIntervalForcedChoice, self).__init__(**kwargs)
 
         self.background = pg.Surface(self.screen.get_size())
         self.background = self.background.convert()
