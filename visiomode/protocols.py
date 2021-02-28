@@ -122,7 +122,9 @@ class Task(Protocol):
         touchup_response = None
         trial_outcome = MISS
 
-        while (time.time() - block_start < self.iti) or touchdown_response:
+        while self.is_running and (
+            (time.time() - block_start < self.iti) or touchdown_response
+        ):
             if not self._response_q.empty():
                 response = self._response_q.get()
                 # If touchdown, log trial as precued
@@ -139,7 +141,9 @@ class Task(Protocol):
                 return
             self.show_stim()
             stim_start = time.time()
-            while (time.time() - stim_start < self.stim_duration) or touchdown_response:
+            while self.is_running and (
+                (time.time() - stim_start < self.stim_duration) or touchdown_response
+            ):
                 if not self._response_q.empty():
                     response = self._response_q.get()
                     if response.event_type in TOUCHDOWN:
@@ -154,7 +158,7 @@ class Task(Protocol):
             else:
                 # if the target was not visible, i.e. the stimulus was a distractor, and there was no touch event during
                 # the response window then the trial outcome is a correct rejection
-                if self.target.hidden:
+                if self.is_running and self.target.hidden:
                     trial_outcome = CORRECT_REJECTION
 
         # Log trial
