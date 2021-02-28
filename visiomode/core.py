@@ -4,6 +4,7 @@
 #  Copyright (c) 2020 Constantinos Eleftheriou <Constantinos.Eleftheriou@ed.ac.uk>
 #  Distributed under the terms of the MIT Licence.
 
+import time
 import queue
 import pygame as pg
 import visiomode.config as conf
@@ -101,42 +102,53 @@ class Visiomode:
         self.protocol = None
         self.session = None
 
-        # Event loop
+        # Main program loop and session handler
+        # TODO session timing should go here?
         while True:
-            request = None
+            request = dict()
             try:
                 request = requests_q.get(block=False)
             except queue.Empty:
                 pass
             if request:
-                self.parse_request(request)
-            if self.protocol and not self.protocol.is_running:
-                print("finished")
+                if "type" not in request.keys():
+                    print("Invalid request - {}".format(request))
+                    continue
+                if request["type"] == "start":
+                    self.session = models.Session(
+                        animal_id=request["data"].pop("animal_id"),
+                        experiment=request["data"].pop("experiment"),
+                        protocol=request["data"].pop("protocol"),
+                        duration=float(request["data"].pop("duration")),
+                    )
+                    Protocol = protocols.get_protocol(self.session.protocol)
+                    self.protocol = Protocol(screen=self.screen, **request["data"])
+                    self.protocol.start()
 
-                self.background.blit(text, textpos)
-                self.screen.blit(self.background, (0, 0))
+            events = pg.event.get()
+            if self.session:
+                self.protocol.update(events)
+                self.session.trials = self.protocol.trials
 
-                self.rds.set_status(messaging.INACTIVE)
-
+            if (
+                self.session
+                and time.time() - self.protocol.start_time < self.session.duration * 60
+            ):
+                print("finished!")
+                self.protocol.stop()
                 self.session.complete = True
                 self.session.trials = self.protocol.trials
                 self.session.save(self.config.data_dir)
 
                 self.protocol = None
                 self.session = None
-            events = pg.event.get()  # TODO refactor to protocol
-            if self.protocol and self.protocol.is_running:
-                self.protocol.update(events)
-            for event in events:  # TODO refactor to protocol?
+
+            for event in events:
                 if event.type == pg.QUIT:
                     if self.session:
                         self.session.trials = self.protocol.trials
                         self.session.save(self.config.data_dir)
                     return
-
-            pg.display.update()  # TODO refactor to protocol
-
-            self.clock.tick(self.config.fps)  # TODO refactor to protocol
 
     def parse_request(self, request: dict):
         """Parse new session request parameters."""

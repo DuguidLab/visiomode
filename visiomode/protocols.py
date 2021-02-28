@@ -37,13 +37,11 @@ def get_protocol(protocol_id):
 class Protocol(mixins.BaseClassMixin, mixins.WebFormMixin):
     form_path = None
 
-    def __init__(self, screen, duration: float):
+    def __init__(self, screen):
         self.screen = screen
         self.is_running = False
+        self.start_time = None
 
-        self._timer_thread = threading.Thread(
-            target=self._timer, args=[duration], daemon=True
-        )
         self.clock = pg.time.Clock()
         self.config = conf.Config()
         self._timedelta = 0
@@ -54,18 +52,10 @@ class Protocol(mixins.BaseClassMixin, mixins.WebFormMixin):
     def start(self):
         """Start the protocol"""
         self.is_running = True
-        self._timer_thread.start()
+        self.start_time = time.time()
 
     def stop(self):
         self.is_running = False
-
-    def _timer(self, duration: float):
-        start_time = time.time()
-        while time.time() - start_time < duration * 60:
-            # If the session has been stopped, stop timer
-            if not self.is_running:
-                return
-        self.stop()
 
 
 class Task(Protocol):
@@ -79,7 +69,7 @@ class Task(Protocol):
         reward_profile,
         **kwargs
     ):
-        super().__init__(screen, duration)
+        super().__init__(screen)
 
         self.iti = float(iti) / 1000  # ms to s
         self.stim_duration = float(stim_duration) / 1000  # ms to s
@@ -122,7 +112,6 @@ class Task(Protocol):
                         timestamp=time.time(),
                     )
                 )
-        self.target.update(timedelta=self._timedelta)
 
     def trial_block(self):
         """Trial block supporting signal detection theory styled trials."""
@@ -269,6 +258,10 @@ class SingleTarget(Task):
         super().stop()
         self.hide_stim()
 
+    def update(self, events):
+        super().update(events)
+        self.target.update()
+
     def show_stim(self):
         self.target.show()
 
@@ -340,6 +333,7 @@ class TwoAlternativeForcedChoice(Task):
                         return
         super().update(events)
         self.distractor.update()
+        self.target.update()
 
     def shuffle_centerx(self):
         centers = [
