@@ -20,7 +20,8 @@ class Visiomode:
         self.clock = pg.time.Clock()
         self.config = conf.Config()
 
-        requests_q = queue.Queue()
+        action_q = queue.Queue()  # Queue for action messages
+        log_q = queue.Queue()  # Queue for log messages
 
         # Initialise webpanel, run in background
         webpanel.runserver(threaded=True)
@@ -109,7 +110,7 @@ class Visiomode:
         while True:
             request = dict()
             try:
-                request = requests_q.get(block=False)
+                request = action_q.get(block=False)
             except queue.Empty:
                 pass
             if request:

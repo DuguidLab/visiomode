@@ -18,7 +18,7 @@ import visiomode.webpanel.session as sess
 import visiomode.webpanel.api as api
 
 
-def create_app():
+def create_app(action_q=None, log_q=None):
     """Flask app factory
 
     Returns:
@@ -105,17 +105,14 @@ def create_app():
 def runserver(threaded=False):
     """Runs the flask app in an integrated server."""
     app = create_app()
-    socketio = sock.SocketIO(app)
-    socketio.on_namespace(sess.SessionNamespace("/session"))
     if threaded:
         thread = threading.Thread(
-            target=socketio.run,
-            args=(app,),
+            target=app.run,
             kwargs={"use_reloader": False, "debug": True, "host": "0.0.0.0"},
             daemon=True,
         )
         return thread.start()
-    socketio.run(app, host="0.0.0.0", debug=True)
+    app.run(host="0.0.0.0", debug=True)
 
 
 if __name__ == "__main__":
