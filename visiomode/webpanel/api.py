@@ -3,6 +3,7 @@
 #  Copyright (c) 2020 Constantinos Eleftheriou <Constantinos.Eleftheriou@ed.ac.uk>
 #  Distributed under the terms of the MIT Licence.
 import json
+import queue
 import flask
 import flask.views
 import visiomode.devices as devices
@@ -15,6 +16,21 @@ class DeviceAPI(flask.views.MethodView):
         request = json.loads(flask.request.data.decode("utf8"))
         devices.check_device_profile(request["profile"], request["address"])
         return "OK"
+
+
+class SessionAPI(flask.views.MethodView):
+    def __init__(self, action_q: queue.Queue, log_q: queue.Queue):
+        self.action_q = action_q
+        self.log_q = log_q
+
+    def post(self):
+        """Session management request."""
+        request = json.loads(flask.request.data.decode("utf8"))
+        self.action_q.put(request)
+
+    def get(self):
+        """Request for current session status."""
+        pass
 
 
 class StimulusAPI(flask.views.MethodView):
