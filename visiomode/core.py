@@ -122,7 +122,7 @@ class Visiomode:
                         animal_id=request["data"].pop("animal_id"),
                         experiment=request["data"].pop("experiment"),
                         protocol=request["data"].pop("protocol"),
-                        duration=float(request["data"].pop("duration")),
+                        duration=float(request["data"]["duration"]),
                     )
                     Protocol = protocols.get_protocol(self.session.protocol)
                     self.protocol = Protocol(screen=self.screen, **request["data"])
@@ -135,7 +135,7 @@ class Visiomode:
 
             if (
                 self.session
-                and time.time() - self.protocol.start_time < self.session.duration * 60
+                and time.time() - self.protocol.start_time > self.session.duration * 60
             ):
                 print("finished!")
                 self.protocol.stop()

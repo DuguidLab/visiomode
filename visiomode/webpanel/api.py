@@ -27,7 +27,7 @@ class SessionAPI(flask.views.MethodView):
         """Session management request."""
         request = flask.request.json
         print(request)
-        self.action_q.put(request)
+        self.action_q.put({"type": "start", "data": request})
         return "OK"
 
     def get(self):
