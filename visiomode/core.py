@@ -138,7 +138,7 @@ class Visiomode:
                     log_q.put(
                         {
                             "status": "active" if self.session else "inactive",
-                            "data": self.session.trials if self.session else [],
+                            "data": self.session.to_json() if self.session else [],
                         }
                     )
                 elif request["type"] == "stop":
