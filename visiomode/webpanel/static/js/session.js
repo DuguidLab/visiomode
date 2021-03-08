@@ -3,49 +3,33 @@
  * Copyright (c) 2020 Constantinos Eleftheriou <Constantinos.Eleftheriou@ed.ac.uk>
  * Distributed under the terms of the MIT Licence.
  */
-
-/// Websocket communication with backend
-let socket = io.connect('/session');
-
-let session_status;
-
-socket.on('connect', function () {
-    socket.emit('message', 'hello');
-    console.log('connected');
-});
-
-socket.on('callback', function (msg) {
-    console.log(msg);
-});
-
-socket.on('status', function (status) {
-    session_status = status;
-    if (session_status === 'active') {
-        setStatusActive()
-    } else {
-        setStatusInactive()
-    }
-});
-
 let form = document.getElementById('session-form');
 let session_button = document.getElementById('session-control-btn');
 let status_icon = document.getElementById('status-icon');
 let status_text = document.getElementById('status-text');
 
+session_status = "inactive"; // debug
 
 session_button.onclick = function () {
     if (form.reportValidity() && (session_status !== "active")) {
         // Start session
         let fields = [...form.getElementsByClassName('form-control')];
         let request = fields.reduce((_, x) => ({..._, [x.id]: x.value}), {});
+        console.log(JSON.stringify(request))
 
-        socket.emit('session_start', request);
+        $.ajax({
+            type: 'POST',
+            url: "/api/session",
+            data: JSON.stringify(request),
+            dataType: "json",
+            contentType: "application/json"
+        });
+
         console.log('session start request');
 
         setStatusWaiting();
     } else if (session_status === "active") {
         // Stop session
-        socket.emit('session_stop');
         console.log('session stop request');
 
         setStatusWaiting();
@@ -115,3 +99,5 @@ protocol_selector.onchange = function () {
 }
 
 protocol_selector.onchange();
+
+setStatusInactive();

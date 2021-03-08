@@ -24,7 +24,7 @@ class Visiomode:
         log_q = queue.Queue()  # Queue for log messages
 
         # Initialise webpanel, run in background
-        webpanel.runserver(threaded=True)
+        webpanel.runserver(action_q=action_q, log_q=log_q, threaded=True)
 
         # Initialise GUI
         pg.init()

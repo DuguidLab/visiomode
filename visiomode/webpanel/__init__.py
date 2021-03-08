@@ -25,7 +25,6 @@ def create_app(action_q=None, log_q=None):
         Flask app object
     """
     config = cfg.Config()
-    rds = messaging.RedisClient()
 
     app = flask.Flask(__name__)
     app.config.from_mapping({"SECRET_KEY": config.flask_key, "DEBUG": config.debug})
@@ -39,9 +38,6 @@ def create_app(action_q=None, log_q=None):
                 app.instance_path, str(exc)
             )
         )
-
-    # Set active session status to inactive
-    rds.set_status(messaging.INACTIVE)
 
     @app.route("/")
     def index():
@@ -84,6 +80,12 @@ def create_app(action_q=None, log_q=None):
         return flask.render_template("404.html")
 
     app.add_url_rule(
+        "/api/session",
+        view_func=api.SessionAPI.as_view("session_api", action_q, log_q),
+        methods=["GET", "POST"],
+    )
+
+    app.add_url_rule(
         "/api/protocol-form/<protocol_id>",
         view_func=api.ProtocolAPI.as_view("protocol_api"),
         methods=["GET"],
@@ -102,9 +104,9 @@ def create_app(action_q=None, log_q=None):
     return app
 
 
-def runserver(threaded=False):
+def runserver(action_q, log_q, threaded=False):
     """Runs the flask app in an integrated server."""
-    app = create_app()
+    app = create_app(action_q, log_q)
     if threaded:
         thread = threading.Thread(
             target=app.run,

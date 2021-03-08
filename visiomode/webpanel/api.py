@@ -25,8 +25,10 @@ class SessionAPI(flask.views.MethodView):
 
     def post(self):
         """Session management request."""
-        request = json.loads(flask.request.data.decode("utf8"))
+        request = flask.request.json
+        print(request)
         self.action_q.put(request)
+        return "OK"
 
     def get(self):
         """Request for current session status."""
