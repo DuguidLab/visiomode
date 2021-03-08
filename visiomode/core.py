@@ -127,13 +127,6 @@ class Visiomode:
                     Protocol = protocols.get_protocol(self.session.protocol)
                     self.protocol = Protocol(screen=self.screen, **request["data"])
                     self.protocol.start()
-                    log_q.put(
-                        {
-                            "message": "started at {}".format(
-                                str(datetime.datetime.now())
-                            )
-                        }
-                    )
                 elif request["type"] == "status":
                     log_q.put(
                         {

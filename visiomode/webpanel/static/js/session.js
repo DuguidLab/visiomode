@@ -42,7 +42,17 @@ function getStatus() {
     $.get("/api/session", function (data) {
         session_status = data.status;
         if (session_status === "active") {
+            let session_data = JSON.parse(data.data);
             setStatusActive();
+
+            console.log(session_data)
+
+            document.getElementById('animal_id').value = session_data.animal_id;
+            document.getElementById('experiment').value = session_data.experiment;
+            document.getElementById('protocol').value = session_data.protocol;
+            document.getElementById('duration').value = session_data.duration;
+
+
         } else if (session_status === "inactive") {
             setStatusInactive();
         } else {
