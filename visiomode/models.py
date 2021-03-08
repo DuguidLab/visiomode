@@ -19,7 +19,7 @@ class Base:
         """Returns class instance attributes as a dictionary."""
         return dataclasses.asdict(self)
 
-    def to_json(self, path=None):
+    def to_json(self):
         """Returns class instance attributes as JSON."""
         return json.dumps(self.to_dict())
 
