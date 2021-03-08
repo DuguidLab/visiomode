@@ -32,7 +32,8 @@ class SessionAPI(flask.views.MethodView):
 
     def get(self):
         """Request for current session status."""
-        pass
+        self.action_q.put({"type": "status"})
+        return self.log_q.get(timeout=200)
 
 
 class StimulusAPI(flask.views.MethodView):
