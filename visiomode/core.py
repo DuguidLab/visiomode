@@ -5,6 +5,7 @@
 #  Distributed under the terms of the MIT Licence.
 
 import time
+import datetime
 import queue
 import pygame as pg
 import visiomode.config as conf
@@ -106,7 +107,6 @@ class Visiomode:
         self.session = None
 
         # Main program loop and session handler
-        # TODO session timing should go here?
         while True:
             request = dict()
             try:
@@ -127,6 +127,22 @@ class Visiomode:
                     Protocol = protocols.get_protocol(self.session.protocol)
                     self.protocol = Protocol(screen=self.screen, **request["data"])
                     self.protocol.start()
+                    log_q.put(
+                        {
+                            "message": "started at {}".format(
+                                str(datetime.datetime.now())
+                            )
+                        }
+                    )
+                elif request["type"] == "status":
+                    log_q.put(
+                        {
+                            "status": "active" if self.session else "inactive",
+                            "data": self.session.trials if self.session else [],
+                        }
+                    )
+                elif request["type"] == "stop":
+                    pass
 
             events = pg.event.get()
             if self.session:
