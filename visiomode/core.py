@@ -141,7 +141,6 @@ class Visiomode:
             if self.session:
                 self.protocol.update(events)
                 self.session.trials = self.protocol.trials
-
             if (
                 self.session
                 and time.time() - self.protocol.start_time > self.session.duration * 60
@@ -161,6 +160,8 @@ class Visiomode:
                         self.session.trials = self.protocol.trials
                         self.session.save(self.config.data_dir)
                     return
+
+            pg.display.flip()
 
 
 def rotate(image, rect, angle):
