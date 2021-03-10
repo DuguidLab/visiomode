@@ -123,6 +123,7 @@ class Visiomode:
                         experiment=request["data"].pop("experiment"),
                         protocol=request["data"].pop("protocol"),
                         duration=float(request["data"]["duration"]),
+                        timestamp=datetime.datetime.now().isoformat(),
                     )
                     Protocol = protocols.get_protocol(self.session.protocol)
                     self.protocol = Protocol(screen=self.screen, **request["data"])
