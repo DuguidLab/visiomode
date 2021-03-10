@@ -42,6 +42,8 @@ class Protocol(mixins.BaseClassMixin, mixins.WebFormMixin):
         self.is_running = False
         self.start_time = None
 
+        self.trials = []
+
         self.clock = pg.time.Clock()
         self.config = conf.Config()
         self._timedelta = 0
@@ -73,8 +75,6 @@ class Task(Protocol):
 
         self.iti = float(iti) / 1000  # ms to s
         self.stim_duration = float(stim_duration) / 1000  # ms to s
-
-        self.trials = []
 
         self.corrections_enabled = False
         self.correction_trial = False
