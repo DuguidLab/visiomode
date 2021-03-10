@@ -23,7 +23,6 @@ class Visiomode:
         self.action_q = queue.Queue()  # Queue for action messages
         self.log_q = queue.Queue()  # Queue for log messages
 
-        self.protocol = None
         self.session = None
 
         # Initialise webpanel, run in background
@@ -52,27 +51,26 @@ class Visiomode:
         # Main program loop and session handler
         while True:
             events = pg.event.get()
-            if self.session and self.protocol:
-                self.protocol.update(events)
-                self.session.trials = self.protocol.trials
+            if self.session:
+                self.session.protocol.update(events)
+                self.session.trials = self.session.protocol.trials
             if (
                 self.session
-                and self.protocol
-                and time.time() - self.protocol.start_time > self.session.duration * 60
+                and time.time() - self.session.protocol.start_time
+                > self.session.duration * 60
             ):
                 print("finished!")
-                self.protocol.stop()
+                self.session.protocol.stop()
                 self.session.complete = True
-                self.session.trials = self.protocol.trials
+                self.session.trials = self.session.protocol.trials
                 self.session.save(self.config.data_dir)
 
-                self.protocol = None
                 self.session = None
 
             for event in events:
                 if event.type == pg.QUIT:
                     if self.session:
-                        self.session.trials = self.protocol.trials
+                        self.session.trials = self.session.protocol.trials
                         self.session.save(self.config.data_dir)
                     return
 
@@ -89,9 +87,7 @@ class Visiomode:
         text = self.font.render("Loading...", 1, (255, 255, 255))
         textpos = text.get_rect()
         textpos.centerx = self.background.get_rect().centerx
-        textpos.centery = (
-            self.background.get_rect().centery + 60
-        )  # TODO calculate offset at runtime
+        textpos.centery = self.background.get_rect().centery + 60
 
         self.background.blit(text, textpos)
 
@@ -100,9 +96,7 @@ class Visiomode:
         loading_img = pg.transform.smoothscale(loading_img, (100, 100))
         loading_img_pos = loading_img.get_rect()
         loading_img_pos.centerx = self.background.get_rect().centerx
-        loading_img_pos.centery = (
-            self.background.get_rect().centery - 40
-        )  # TODO calculate offset at runtime
+        loading_img_pos.centery = self.background.get_rect().centery - 40
 
         self.background.blit(loading_img, loading_img_pos)
 
@@ -151,16 +145,15 @@ class Visiomode:
                 print("Invalid request - {}".format(request))
                 continue
             if request["type"] == "start":
+                protocol = protocols.get_protocol(request["data"].pop("protocol"))
                 self.session = models.Session(
                     animal_id=request["data"].pop("animal_id"),
                     experiment=request["data"].pop("experiment"),
-                    protocol=request["data"].pop("protocol"),
                     duration=float(request["data"]["duration"]),
                     timestamp=datetime.datetime.now().isoformat(),
+                    protocol=protocol(screen=self.screen, **request["data"]),
                 )
-                Protocol = protocols.get_protocol(self.session.protocol)
-                self.protocol = Protocol(screen=self.screen, **request["data"])
-                self.protocol.start()
+                self.session.protocol.start()
             elif request["type"] == "status":
                 self.log_q.put(
                     {
