@@ -94,7 +94,7 @@ class Session(Base):
         """
         instance = copy.copy(self)
         instance.trials = [trial.to_dict() for trial in self.trials if self.trials]
-        instance.protocol = self.protocol.get_common_name()
+        instance.protocol = self.protocol.get_identifier()
         return dataclasses.asdict(instance)
 
     def save(self, path):
