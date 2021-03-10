@@ -71,6 +71,14 @@ function getStatus() {
             document.getElementById('protocol').value = session_data.protocol;
             document.getElementById('duration').value = session_data.duration;
 
+            var logList = document.getElementById('log-list');
+            logList.innerHTML = "" // Clear contents
+            for (var i = 0; i < session_data.trials.length; ++i) {
+                var event = document.createElement('li');
+                event.innerHTML = session_data.trials[i].timestamp;
+                logList.appendChild(event);
+            }
+
         } else if (session_status === "inactive") {
             setStatusInactive();
         } else {
