@@ -9,12 +9,9 @@ import logging
 import threading
 
 import flask
-import flask_socketio as sock
 import visiomode.config as cfg
-import visiomode.messaging as messaging
 import visiomode.protocols as protocols
 import visiomode.stimuli as stimuli
-import visiomode.webpanel.session as sess
 import visiomode.webpanel.api as api
 
 

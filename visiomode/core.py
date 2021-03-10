@@ -10,14 +10,12 @@ import queue
 import pygame as pg
 import visiomode.config as conf
 import visiomode.models as models
-import visiomode.messaging as messaging
 import visiomode.webpanel as webpanel
 import visiomode.protocols as protocols
 
 
 class Visiomode:
     def __init__(self):
-        self.rds = messaging.RedisClient()
         self.clock = pg.time.Clock()
         self.config = conf.Config()
 
