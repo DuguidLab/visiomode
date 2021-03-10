@@ -10,6 +10,8 @@ let status_text = document.getElementById('status-text');
 
 let session_status
 
+setTimeout(getStatus, 100)
+
 session_button.onclick = function () {
     if (form.reportValidity() && (session_status !== "active")) {
         // Start session
@@ -20,7 +22,10 @@ session_button.onclick = function () {
         $.ajax({
             type: 'POST',
             url: "/api/session",
-            data: JSON.stringify(request),
+            data: JSON.stringify({
+                type: "start",
+                data: request,
+            }),
             dataType: "json",
             contentType: "application/json"
         });
@@ -28,11 +33,25 @@ session_button.onclick = function () {
         console.log('session start request');
 
         setStatusWaiting();
+
+        setTimeout(getStatus, 100)
     } else if (session_status === "active") {
         // Stop session
+        $.ajax({
+            type: "POST",
+            url: "/api/session",
+            data: JSON.stringify({
+                type: "stop"
+            }),
+            dataType: "json",
+            contentType: "application/json"
+        })
+
         console.log('session stop request');
 
         setStatusWaiting();
+
+        setTimeout(getStatus, 100)
     }
     return false;
 };
@@ -51,7 +70,6 @@ function getStatus() {
             document.getElementById('experiment').value = session_data.experiment;
             document.getElementById('protocol').value = session_data.protocol;
             document.getElementById('duration').value = session_data.duration;
-
 
         } else if (session_status === "inactive") {
             setStatusInactive();
