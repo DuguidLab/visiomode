@@ -115,12 +115,9 @@ class Visiomode:
             if self.session:
                 self.session.protocol.update(events)
                 self.session.trials = self.session.protocol.trials
-            if (
-                self.session
-                and (
-                    not self.session.protocol.is_running
-                    or time.time() - self.session.protocol.start_time
-                )
+            if self.session and (
+                not self.session.protocol.is_running
+                or time.time() - self.session.protocol.start_time
                 > self.session.duration * 60
             ):
                 print("finished!")
