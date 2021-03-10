@@ -20,8 +20,6 @@ class Config(mixins.YamlAttributesMixin):
     DEFAULT_PATH exists.
     """
 
-    redis_port = 6379
-    redis_host = "localhost"
     debug = True
     flask_key = "dev"
     data_dir = "instance/"
