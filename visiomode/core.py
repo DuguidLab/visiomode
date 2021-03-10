@@ -4,26 +4,32 @@
 #  Copyright (c) 2020 Constantinos Eleftheriou <Constantinos.Eleftheriou@ed.ac.uk>
 #  Distributed under the terms of the MIT Licence.
 
+import time
+import datetime
+import threading
+import queue
 import pygame as pg
 import visiomode.config as conf
 import visiomode.models as models
-import visiomode.messaging as messaging
 import visiomode.webpanel as webpanel
 import visiomode.protocols as protocols
 
 
 class Visiomode:
     def __init__(self):
-        self.rds = messaging.RedisClient()
         self.clock = pg.time.Clock()
         self.config = conf.Config()
 
-        # Subscribe to Redis status updates
-        status_sub = self.rds.subscribe_status(
-            threaded=True, callback=self._messaging_callback
-        )
+        self.action_q = queue.Queue()  # Queue for action messages
+        self.log_q = queue.Queue()  # Queue for log messages
+
+        self.session = None
+
         # Initialise webpanel, run in background
-        webpanel.runserver(threaded=True)
+        webpanel.runserver(action_q=self.action_q, log_q=self.log_q, threaded=True)
+
+        request_thread = threading.Thread(target=self.request_listener, daemon=True)
+        request_thread.start()
 
         # Initialise GUI
         pg.init()
@@ -34,9 +40,17 @@ class Visiomode:
         pg.display.set_icon(icon)
 
         # Initialise screen
-        self.screen = pg.display.set_mode((400, 800))
+        self.screen = pg.display.set_mode(
+            (self.config.width, self.config.height),
+            pg.FULLSCREEN if self.config.fullscreen else 0,
+        )
         pg.display.set_caption("Visiomode")
 
+        self.loading_screen()
+
+        self.run_main()
+
+    def loading_screen(self):
         # Fill background
         self.background = pg.Surface(self.screen.get_size())
         self.background = self.background.convert()
@@ -47,9 +61,7 @@ class Visiomode:
         text = self.font.render("Loading...", 1, (255, 255, 255))
         textpos = text.get_rect()
         textpos.centerx = self.background.get_rect().centerx
-        textpos.centery = (
-            self.background.get_rect().centery + 60
-        )  # TODO calculate offset at runtime
+        textpos.centery = self.background.get_rect().centery + 60
 
         self.background.blit(text, textpos)
 
@@ -58,9 +70,7 @@ class Visiomode:
         loading_img = pg.transform.smoothscale(loading_img, (100, 100))
         loading_img_pos = loading_img.get_rect()
         loading_img_pos.centerx = self.background.get_rect().centerx
-        loading_img_pos.centery = (
-            self.background.get_rect().centery - 40
-        )  # TODO calculate offset at runtime
+        loading_img_pos.centery = self.background.get_rect().centery - 40
 
         self.background.blit(loading_img, loading_img_pos)
 
@@ -99,65 +109,62 @@ class Visiomode:
 
         pg.display.flip()
 
-        self.protocol = None
-        self.session = None
-
-        # Event loop
+    def run_main(self):
         while True:
-            if self.protocol and not self.protocol.is_running:
-                print("finished")
-
-                self.background.blit(text, textpos)
-                self.screen.blit(self.background, (0, 0))
-
-                self.rds.set_status(messaging.INACTIVE)
-
+            events = pg.event.get()
+            if self.session:
+                self.session.protocol.update(events)
+                self.session.trials = self.session.protocol.trials
+            if (
+                self.session
+                and (
+                    not self.session.protocol.is_running
+                    or time.time() - self.session.protocol.start_time
+                )
+                > self.session.duration * 60
+            ):
+                print("finished!")
+                self.session.protocol.stop()
                 self.session.complete = True
-                self.session.trials = self.protocol.trials
+                self.session.trials = self.session.protocol.trials
                 self.session.save(self.config.data_dir)
 
-                self.protocol = None
                 self.session = None
-            events = pg.event.get()
-            if self.protocol and self.protocol.is_running:
-                self.protocol.update(events)
+
             for event in events:
                 if event.type == pg.QUIT:
                     if self.session:
-                        self.session.trials = self.protocol.trials
+                        self.session.trials = self.session.protocol.trials
                         self.session.save(self.config.data_dir)
                     return
 
-            pg.display.update()
+            pg.display.flip()
 
-            self.clock.tick(self.config.fps)
-
-    def parse_request(self, request: dict):
-        """Parse new session request parameters."""
-        session = models.Session(
-            animal_id=request.pop("animal_id"),
-            experiment=request.pop("experiment"),
-            protocol=request.pop("protocol"),
-            duration=float(request.pop("duration")),
-        )
-        Protocol = protocols.get_protocol(session.protocol)
-        protocol = Protocol(screen=self.screen, duration=session.duration, **request)
-        return session, protocol
-
-    def _messaging_callback(self, *args, **kwargs):
-        status = self.rds.get_status()
-        print("updating...")
-        if status == messaging.REQUESTED:
-            request = self.rds.get_session_request()
-            print(request)
-            self.session, self.protocol = self.parse_request(request)
-            self.protocol.start()
-            self.rds.set_status(messaging.ACTIVE)
-
-        if status == messaging.STOPPED:
-            print("stopping...")
-            if self.protocol and self.protocol.is_running:
-                self.protocol.stop()
+    def request_listener(self):
+        while True:
+            request = self.action_q.get()
+            if "type" not in request.keys():
+                print("Invalid request - {}".format(request))
+                continue
+            if request["type"] == "start":
+                protocol = protocols.get_protocol(request["data"].pop("protocol"))
+                self.session = models.Session(
+                    animal_id=request["data"].pop("animal_id"),
+                    experiment=request["data"].pop("experiment"),
+                    duration=float(request["data"]["duration"]),
+                    timestamp=datetime.datetime.now().isoformat(),
+                    protocol=protocol(screen=self.screen, **request["data"]),
+                )
+                self.session.protocol.start()
+            elif request["type"] == "status":
+                self.log_q.put(
+                    {
+                        "status": "active" if self.session else "inactive",
+                        "data": self.session.to_json() if self.session else [],
+                    }
+                )
+            elif request["type"] == "stop":
+                self.session.protocol.stop()
 
 
 def rotate(image, rect, angle):
