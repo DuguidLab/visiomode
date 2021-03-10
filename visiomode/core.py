@@ -48,33 +48,7 @@ class Visiomode:
 
         self.loading_screen()
 
-        # Main program loop and session handler
-        while True:
-            events = pg.event.get()
-            if self.session:
-                self.session.protocol.update(events)
-                self.session.trials = self.session.protocol.trials
-            if (
-                self.session
-                and time.time() - self.session.protocol.start_time
-                > self.session.duration * 60
-            ):
-                print("finished!")
-                self.session.protocol.stop()
-                self.session.complete = True
-                self.session.trials = self.session.protocol.trials
-                self.session.save(self.config.data_dir)
-
-                self.session = None
-
-            for event in events:
-                if event.type == pg.QUIT:
-                    if self.session:
-                        self.session.trials = self.session.protocol.trials
-                        self.session.save(self.config.data_dir)
-                    return
-
-            pg.display.flip()
+        self.run_main()
 
     def loading_screen(self):
         # Fill background
@@ -135,8 +109,36 @@ class Visiomode:
 
         pg.display.flip()
 
-    def protocol_runner(self):
-        pass
+    def run_main(self):
+        while True:
+            events = pg.event.get()
+            if self.session:
+                self.session.protocol.update(events)
+                self.session.trials = self.session.protocol.trials
+            if (
+                self.session
+                and (
+                    not self.session.protocol.is_running
+                    or time.time() - self.session.protocol.start_time
+                )
+                > self.session.duration * 60
+            ):
+                print("finished!")
+                self.session.protocol.stop()
+                self.session.complete = True
+                self.session.trials = self.session.protocol.trials
+                self.session.save(self.config.data_dir)
+
+                self.session = None
+
+            for event in events:
+                if event.type == pg.QUIT:
+                    if self.session:
+                        self.session.trials = self.session.protocol.trials
+                        self.session.save(self.config.data_dir)
+                    return
+
+            pg.display.flip()
 
     def request_listener(self):
         while True:
@@ -162,7 +164,7 @@ class Visiomode:
                     }
                 )
             elif request["type"] == "stop":
-                pass
+                self.session.protocol.stop()
 
 
 def rotate(image, rect, angle):
