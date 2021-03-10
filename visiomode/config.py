@@ -24,6 +24,9 @@ class Config(mixins.YamlAttributesMixin):
     flask_key = "dev"
     data_dir = "instance/"
     fps = 60
+    width = 400
+    height = 800
+    fullscreen = False
     devices = "devices/"
 
     def __init__(self, path=DEFAULT_PATH):

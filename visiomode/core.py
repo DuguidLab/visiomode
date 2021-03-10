@@ -35,8 +35,9 @@ class Visiomode:
 
         # Initialise screen
         self.screen = pg.display.set_mode(
-            (400, 800)
-        )  # TODO refactor resolution settings to config
+            (self.config.width, self.config.height),
+            pg.FULLSCREEN if self.config.fullscreen else 0,
+        )
         pg.display.set_caption("Visiomode")
 
         # Fill background
@@ -161,6 +162,15 @@ class Visiomode:
                     return
 
             pg.display.flip()
+
+    def loading_screen(self):
+        pass
+
+    def protocol_runner(self):
+        pass
+
+    def request_listener(self):
+        pass
 
 
 def rotate(image, rect, angle):
