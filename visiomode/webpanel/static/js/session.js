@@ -73,7 +73,7 @@ function getStatus() {
 
             var logList = document.getElementById('log-list');
             logList.innerHTML = "" // Clear contents
-            for (var i = 0; i < session_data.trials.length; ++i) {
+            for (var i = session_data.trials.length - 1; i >= 0; i--) {
                 var event = document.createElement('li');
                 event.innerHTML = session_data.trials[i].timestamp;
                 logList.appendChild(event);
