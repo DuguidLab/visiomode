@@ -6,6 +6,7 @@
 
 import time
 import datetime
+import threading
 import queue
 import pygame as pg
 import visiomode.config as conf
@@ -19,11 +20,17 @@ class Visiomode:
         self.clock = pg.time.Clock()
         self.config = conf.Config()
 
-        action_q = queue.Queue()  # Queue for action messages
-        log_q = queue.Queue()  # Queue for log messages
+        self.action_q = queue.Queue()  # Queue for action messages
+        self.log_q = queue.Queue()  # Queue for log messages
+
+        self.protocol = None
+        self.session = None
 
         # Initialise webpanel, run in background
-        webpanel.runserver(action_q=action_q, log_q=log_q, threaded=True)
+        webpanel.runserver(action_q=self.action_q, log_q=self.log_q, threaded=True)
+
+        request_thread = threading.Thread(target=self.request_listener, daemon=True)
+        request_thread.start()
 
         # Initialise GUI
         pg.init()
@@ -40,6 +47,38 @@ class Visiomode:
         )
         pg.display.set_caption("Visiomode")
 
+        self.loading_screen()
+
+        # Main program loop and session handler
+        while True:
+            events = pg.event.get()
+            if self.session and self.protocol:
+                self.protocol.update(events)
+                self.session.trials = self.protocol.trials
+            if (
+                self.session
+                and self.protocol
+                and time.time() - self.protocol.start_time > self.session.duration * 60
+            ):
+                print("finished!")
+                self.protocol.stop()
+                self.session.complete = True
+                self.session.trials = self.protocol.trials
+                self.session.save(self.config.data_dir)
+
+                self.protocol = None
+                self.session = None
+
+            for event in events:
+                if event.type == pg.QUIT:
+                    if self.session:
+                        self.session.trials = self.protocol.trials
+                        self.session.save(self.config.data_dir)
+                    return
+
+            pg.display.flip()
+
+    def loading_screen(self):
         # Fill background
         self.background = pg.Surface(self.screen.get_size())
         self.background = self.background.convert()
@@ -102,75 +141,35 @@ class Visiomode:
 
         pg.display.flip()
 
-        self.protocol = None
-        self.session = None
-
-        # Main program loop and session handler
-        while True:
-            request = dict()
-            try:
-                request = action_q.get(block=False)
-            except queue.Empty:
-                pass
-            if request:
-                if "type" not in request.keys():
-                    print("Invalid request - {}".format(request))
-                    continue
-                if request["type"] == "start":
-                    self.session = models.Session(
-                        animal_id=request["data"].pop("animal_id"),
-                        experiment=request["data"].pop("experiment"),
-                        protocol=request["data"].pop("protocol"),
-                        duration=float(request["data"]["duration"]),
-                        timestamp=datetime.datetime.now().isoformat(),
-                    )
-                    Protocol = protocols.get_protocol(self.session.protocol)
-                    self.protocol = Protocol(screen=self.screen, **request["data"])
-                    self.protocol.start()
-                elif request["type"] == "status":
-                    log_q.put(
-                        {
-                            "status": "active" if self.session else "inactive",
-                            "data": self.session.to_json() if self.session else [],
-                        }
-                    )
-                elif request["type"] == "stop":
-                    pass
-
-            events = pg.event.get()
-            if self.session:
-                self.protocol.update(events)
-                self.session.trials = self.protocol.trials
-            if (
-                self.session
-                and time.time() - self.protocol.start_time > self.session.duration * 60
-            ):
-                print("finished!")
-                self.protocol.stop()
-                self.session.complete = True
-                self.session.trials = self.protocol.trials
-                self.session.save(self.config.data_dir)
-
-                self.protocol = None
-                self.session = None
-
-            for event in events:
-                if event.type == pg.QUIT:
-                    if self.session:
-                        self.session.trials = self.protocol.trials
-                        self.session.save(self.config.data_dir)
-                    return
-
-            pg.display.flip()
-
-    def loading_screen(self):
-        pass
-
     def protocol_runner(self):
         pass
 
     def request_listener(self):
-        pass
+        while True:
+            request = self.action_q.get()
+            if "type" not in request.keys():
+                print("Invalid request - {}".format(request))
+                continue
+            if request["type"] == "start":
+                self.session = models.Session(
+                    animal_id=request["data"].pop("animal_id"),
+                    experiment=request["data"].pop("experiment"),
+                    protocol=request["data"].pop("protocol"),
+                    duration=float(request["data"]["duration"]),
+                    timestamp=datetime.datetime.now().isoformat(),
+                )
+                Protocol = protocols.get_protocol(self.session.protocol)
+                self.protocol = Protocol(screen=self.screen, **request["data"])
+                self.protocol.start()
+            elif request["type"] == "status":
+                self.log_q.put(
+                    {
+                        "status": "active" if self.session else "inactive",
+                        "data": self.session.to_json() if self.session else [],
+                    }
+                )
+            elif request["type"] == "stop":
+                pass
 
 
 def rotate(image, rect, angle):
