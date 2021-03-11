@@ -4,11 +4,14 @@
  * Distributed under the terms of the MIT Licence.
  */
 let form = document.getElementById('session-form');
+
 let session_button = document.getElementById('session-control-btn');
+
 let status_icon = document.getElementById('status-icon');
 let status_text = document.getElementById('status-text');
+let progressBar = document.getElementById("session-progress");
 
-let session_status
+let session_status;
 
 setTimeout(getStatus, 100)
 
@@ -71,13 +74,23 @@ function getStatus() {
             document.getElementById('protocol').value = session_data.protocol;
             document.getElementById('duration').value = session_data.duration;
 
-            var logList = document.getElementById('log-list');
+            let logList = document.getElementById('log-list');
             logList.innerHTML = "" // Clear contents
             for (var i = session_data.trials.length - 1; i >= 0; i--) {
                 var event = document.createElement('li');
                 event.innerHTML = "<em>" + session_data.trials[i].timestamp + ": </em>" + session_data.trials[i].outcome;
                 logList.appendChild(event);
             }
+            logList.append(document.createElement('li').innerHTML = "Session started at " + session_data.timestamp);
+
+            // update progress bar
+            totalTimeMs = (parseInt(session_data.duration) * 60000);
+            timeLeftMs = totalTimeMs - (Date.now() - Date.parse(session_data.timestamp));
+            timeLeftMin = timeLeftMs / 60000;
+            progressBarWidth = (1 - (timeLeftMs / totalTimeMs)) * 100;
+            console.log(progressBarWidth);
+            console.log(progressBar);
+            progressBar.style.width = progressBarWidth.toString() + "%";
 
         } else if (session_status === "inactive") {
             setStatusInactive();
