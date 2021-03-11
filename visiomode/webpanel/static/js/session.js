@@ -11,6 +11,8 @@ let status_icon = document.getElementById('status-icon');
 let status_text = document.getElementById('status-text');
 let progressBar = document.getElementById("session-progress");
 
+let logList = document.getElementById('log-list');
+
 let session_status;
 
 setTimeout(getStatus, 100)
@@ -54,7 +56,7 @@ session_button.onclick = function () {
 
         setStatusWaiting();
 
-        setTimeout(getStatus, 100)
+        setTimeout(getStatus, 200)
     }
     return false;
 };
@@ -74,7 +76,6 @@ function getStatus() {
             document.getElementById('protocol').value = session_data.protocol;
             document.getElementById('duration').value = session_data.duration;
 
-            let logList = document.getElementById('log-list');
             logList.innerHTML = "" // Clear contents
             for (var i = session_data.trials.length - 1; i >= 0; i--) {
                 var event = document.createElement('li');
@@ -91,9 +92,11 @@ function getStatus() {
             console.log(progressBarWidth);
             console.log(progressBar);
             progressBar.style.width = progressBarWidth.toString() + "%";
+            progressBar.innerHTML = timeLeftMin.toFixed(1).toString() + " min left";
 
         } else if (session_status === "inactive") {
             setStatusInactive();
+
         } else {
             setStatusWaiting();
         }
@@ -123,6 +126,11 @@ function setStatusInactive() {
 
     status_icon.className = "fas fa-circle text-danger";
     status_text.childNodes[2].nodeValue = " Not Running";
+
+    progressBar.style.width = "0%";
+    progressBar.innerHTML = "";
+    logList.innerHTML = "<li><em>Welcome! Session events will appear here.</em></li>"
+
 
     // enable input fields
     let fields = form.getElementsByClassName('form-control');
