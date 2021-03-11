@@ -75,7 +75,7 @@ function getStatus() {
             logList.innerHTML = "" // Clear contents
             for (var i = session_data.trials.length - 1; i >= 0; i--) {
                 var event = document.createElement('li');
-                event.innerHTML = session_data.trials[i].timestamp;
+                event.innerHTML = session_data.trials[i].timestamp + ': ' + session_data.trials[i].outcome;
                 logList.appendChild(event);
             }
 
