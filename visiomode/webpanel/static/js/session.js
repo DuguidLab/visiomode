@@ -3,49 +3,33 @@
  * Copyright (c) 2020 Constantinos Eleftheriou <Constantinos.Eleftheriou@ed.ac.uk>
  * Distributed under the terms of the MIT Licence.
  */
-
-/// Websocket communication with backend
-let socket = io.connect('/session');
-
-let session_status;
-
-socket.on('connect', function () {
-    socket.emit('message', 'hello');
-    console.log('connected');
-});
-
-socket.on('callback', function (msg) {
-    console.log(msg);
-});
-
-socket.on('status', function (status) {
-    session_status = status;
-    if (session_status === 'active') {
-        setStatusActive()
-    } else {
-        setStatusInactive()
-    }
-});
-
 let form = document.getElementById('session-form');
 let session_button = document.getElementById('session-control-btn');
 let status_icon = document.getElementById('status-icon');
 let status_text = document.getElementById('status-text');
 
+let session_status
 
 session_button.onclick = function () {
     if (form.reportValidity() && (session_status !== "active")) {
         // Start session
         let fields = [...form.getElementsByClassName('form-control')];
         let request = fields.reduce((_, x) => ({..._, [x.id]: x.value}), {});
+        console.log(JSON.stringify(request))
 
-        socket.emit('session_start', request);
+        $.ajax({
+            type: 'POST',
+            url: "/api/session",
+            data: JSON.stringify(request),
+            dataType: "json",
+            contentType: "application/json"
+        });
+
         console.log('session start request');
 
         setStatusWaiting();
     } else if (session_status === "active") {
         // Stop session
-        socket.emit('session_stop');
         console.log('session stop request');
 
         setStatusWaiting();
@@ -54,9 +38,32 @@ session_button.onclick = function () {
 };
 
 
-function setStatusActive() {
-    console.log("Session is running");
+function getStatus() {
+    $.get("/api/session", function (data) {
+        session_status = data.status;
+        if (session_status === "active") {
+            let session_data = JSON.parse(data.data);
+            setStatusActive();
 
+            console.log(session_data)
+
+            document.getElementById('animal_id').value = session_data.animal_id;
+            document.getElementById('experiment').value = session_data.experiment;
+            document.getElementById('protocol').value = session_data.protocol;
+            document.getElementById('duration').value = session_data.duration;
+
+
+        } else if (session_status === "inactive") {
+            setStatusInactive();
+        } else {
+            setStatusWaiting();
+        }
+    })
+}
+
+let status_interval = setInterval(getStatus, 4000);
+
+function setStatusActive() {
     session_button.className = "btn btn-danger btn-block btn-lg";
     session_button.textContent = "Stop";
 
@@ -72,8 +79,6 @@ function setStatusActive() {
 
 
 function setStatusInactive() {
-    console.log("No active session");
-
     session_button.className = "btn btn-success btn-block btn-lg";
     session_button.textContent = "Start";
 

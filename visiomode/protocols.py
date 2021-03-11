@@ -40,13 +40,13 @@ def get_protocol(protocol_id):
 class Protocol(mixins.BaseClassMixin, mixins.WebFormMixin):
     form_path = None
 
-    def __init__(self, screen, duration: float):
+    def __init__(self, screen):
         self.screen = screen
         self.is_running = False
+        self.start_time = None
 
-        self._timer_thread = threading.Thread(
-            target=self._timer, args=[duration], daemon=True
-        )
+        self.trials = []
+
         self.clock = pg.time.Clock()
         self.config = conf.Config()
         self._timedelta = 0
@@ -57,18 +57,10 @@ class Protocol(mixins.BaseClassMixin, mixins.WebFormMixin):
     def start(self):
         """Start the protocol"""
         self.is_running = True
-        self._timer_thread.start()
+        self.start_time = time.time()
 
     def stop(self):
         self.is_running = False
-
-    def _timer(self, duration: float):
-        start_time = time.time()
-        while time.time() - start_time < duration * 60:
-            # If the session has been stopped, stop timer
-            if not self.is_running:
-                return
-        self.stop()
 
 
 class Task(Protocol):
@@ -82,12 +74,10 @@ class Task(Protocol):
         reward_profile,
         **kwargs
     ):
-        super().__init__(screen, duration)
+        super().__init__(screen)
 
         self.iti = float(iti) / 1000  # ms to s
         self.stim_duration = float(stim_duration) / 1000  # ms to s
-
-        self.trials = []
 
         self.corrections_enabled = False
         self.correction_trial = False
@@ -103,14 +93,21 @@ class Task(Protocol):
         )
 
     def start(self):
-        super().start()
+        super(Task, self).start()
         self._session_thread.start()
 
+    def stop(self):
+        self.hide_stim()
+        super(Task, self).stop()
+
     def show_stim(self):
-        pass
+        raise NotImplementedError
 
     def hide_stim(self):
-        pass
+        raise NotImplementedError
+
+    def update_stim(self):
+        raise NotImplementedError
 
     def update(self, events):
         for event in events:
@@ -126,7 +123,7 @@ class Task(Protocol):
                         timestamp=time.time(),
                     )
                 )
-        self.target.update(timedelta=self._timedelta)
+        self.update_stim()
 
     def trial_block(self):
         """Trial block supporting signal detection theory styled trials."""
@@ -137,7 +134,9 @@ class Task(Protocol):
         touchup_response = None
         trial_outcome = MISS
 
-        while (time.time() - block_start < self.iti) or touchdown_response:
+        while self.is_running and (
+            (time.time() - block_start < self.iti) or touchdown_response
+        ):
             if not self._response_q.empty():
                 response = self._response_q.get()
                 # If touchdown, log trial as precued
@@ -154,7 +153,9 @@ class Task(Protocol):
                 return
             self.show_stim()
             stim_start = time.time()
-            while (time.time() - stim_start < self.stim_duration) or touchdown_response:
+            while self.is_running and (
+                (time.time() - stim_start < self.stim_duration) or touchdown_response
+            ):
                 if not self._response_q.empty():
                     response = self._response_q.get()
                     if response.event_type in TOUCHDOWN:
@@ -169,7 +170,7 @@ class Task(Protocol):
             else:
                 # if the target was not visible, i.e. the stimulus was a distractor, and there was no touch event during
                 # the response window then the trial outcome is a correct rejection
-                if self.target.hidden:
+                if self.is_running and self.target.hidden:
                     trial_outcome = CORRECT_REJECTION
 
         # Log trial
@@ -204,7 +205,8 @@ class Task(Protocol):
 
         # Hide stimulus at end of trial before calling handlers, so any reward dispensation associated
         # delays don't keep the stimulus hanging about on the screen.
-        self.hide_stim()
+        if self.is_running:
+            self.hide_stim()
 
         # Call trial outcome handlers
         if trial.outcome == PRECUED:
@@ -258,7 +260,7 @@ class SingleTarget(Task):
     form_path = "protocols/single_target.html"
 
     def __init__(self, target, **kwargs):
-        super().__init__(**kwargs)
+        super(SingleTarget, self).__init__(**kwargs)
 
         self.background = pg.Surface(self.screen.get_size())
         self.background = self.background.convert()
@@ -268,10 +270,8 @@ class SingleTarget(Task):
         target = stim.get_stimulus(target)
         self.target = target(background=self.background, **kwargs)
 
-    def stop(self):
-        print("stop")
-        super().stop()
-        self.hide_stim()
+    def update_stim(self):
+        self.target.update()
 
     def show_stim(self):
         self.target.show()
@@ -286,7 +286,7 @@ class TwoAlternativeForcedChoice(Task):
     def __init__(
         self, target, distractor, sep_size=50, corrections_enabled="false", **kwargs
     ):
-        super().__init__(**kwargs)
+        super(TwoAlternativeForcedChoice, self).__init__(**kwargs)
 
         self.background = pg.Surface(self.screen.get_size())
         self.background = self.background.convert()
@@ -317,11 +317,6 @@ class TwoAlternativeForcedChoice(Task):
         }
         self.distractor = distractor(background=self.background, **distractor_params)
 
-    def stop(self):
-        print("stop")
-        super().stop()
-        self.hide_stim()
-
     def show_stim(self):
         if not self.correction_trial:
             target_x, distr_x = self.shuffle_centerx()
@@ -343,8 +338,11 @@ class TwoAlternativeForcedChoice(Task):
                     pos = event.pos if event.type in MOUSE_EVENTS else (event.x, event.y)
                     if self.separator.collidepoint(*pos):
                         return
-        super().update(events)
+        super(TwoAlternativeForcedChoice, self).update(events)
+
+    def update_stim(self):
         self.distractor.update()
+        self.target.update()
 
     def shuffle_centerx(self):
         centers = [
@@ -358,7 +356,7 @@ class TwoIntervalForcedChoice(Task):
     form_path = "protocols/tifc.html"
 
     def __init__(self, target, distractor, corrections_enabled="false", **kwargs):
-        super().__init__(**kwargs)
+        super(TwoIntervalForcedChoice, self).__init__(**kwargs)
 
         self.background = pg.Surface(self.screen.get_size())
         self.background = self.background.convert()
@@ -385,11 +383,6 @@ class TwoIntervalForcedChoice(Task):
 
         self.current_stimulus = self.get_random_stimulus()
 
-    def stop(self):
-        print("stop")
-        super().stop()
-        self.hide_stim()
-
     def show_stim(self):
         if not self.correction_trial:
             self.current_stimulus = self.get_random_stimulus()
@@ -398,8 +391,7 @@ class TwoIntervalForcedChoice(Task):
     def hide_stim(self):
         self.current_stimulus.hide()
 
-    def update(self, events):
-        super().update(events)
+    def update_stim(self):
         self.current_stimulus.update()
 
     def get_random_stimulus(self):

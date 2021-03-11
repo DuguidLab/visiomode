@@ -9,6 +9,8 @@ import datetime
 import socket
 import json
 import typing
+import copy
+import visiomode.protocols as protocols
 
 
 @dataclasses.dataclass
@@ -19,7 +21,7 @@ class Base:
         """Returns class instance attributes as a dictionary."""
         return dataclasses.asdict(self)
 
-    def to_json(self, path=None):
+    def to_json(self):
         """Returns class instance attributes as JSON."""
         return json.dumps(self.to_dict())
 
@@ -63,7 +65,7 @@ class Session(Base):
     Attributes:
         animal_id: String representing the animal identifier.
         experiment: A string holding the experiment identifier.
-        protocol: A string holding the protocol identifier.
+        protocol: An instance of the Protocol class.
         duration: Integer representing the session duration in minutes.
         complete: Boolean value indicating whether or not a session was completed
         timestamp: A string with the session start date and time (ISO format). Defaults to current date and time.
@@ -74,21 +76,26 @@ class Session(Base):
 
     animal_id: str
     experiment: str
-    protocol: str
     duration: float
+    protocol: protocols.Protocol = None
     complete: bool = False
     timestamp: str = datetime.datetime.now().isoformat()
     notes: str = ""
     device: str = socket.gethostname()
     trials: typing.List[Trial] = dataclasses.field(default_factory=list)
 
+    def __post_init__(self):
+        self.trials = self.protocol.trials
+
     def to_dict(self):
         """Returns class instance attributes as a dictionary.
 
         This method overrides the Base class to cast nested Trial objects under self.trials as dictionaries.
         """
-        self.trials = [trial.to_dict() for trial in self.trials if self.trials]
-        return dataclasses.asdict(self)
+        instance = copy.copy(self)
+        instance.trials = [trial.to_dict() for trial in self.trials if self.trials]
+        instance.protocol = self.protocol.get_identifier()
+        return dataclasses.asdict(instance)
 
     def save(self, path):
         """Save session to json file."""

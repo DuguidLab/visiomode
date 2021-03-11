@@ -20,12 +20,14 @@ class Config(mixins.YamlAttributesMixin):
     DEFAULT_PATH exists.
     """
 
-    redis_port = 6379
-    redis_host = "localhost"
     debug = True
     flask_key = "dev"
     data_dir = "instance/"
-    fps = 30
+
+    fps = 60
+    width = 400
+    height = 800
+    fullscreen = False
     devices = "devices/"
 
     def __init__(self, path=DEFAULT_PATH):

@@ -9,23 +9,19 @@ import logging
 import threading
 
 import flask
-import flask_socketio as sock
 import visiomode.config as cfg
-import visiomode.messaging as messaging
 import visiomode.protocols as protocols
 import visiomode.stimuli as stimuli
-import visiomode.webpanel.session as sess
 import visiomode.webpanel.api as api
 
 
-def create_app():
+def create_app(action_q=None, log_q=None):
     """Flask app factory
 
     Returns:
         Flask app object
     """
     config = cfg.Config()
-    rds = messaging.RedisClient()
 
     app = flask.Flask(__name__)
     app.config.from_mapping({"SECRET_KEY": config.flask_key, "DEBUG": config.debug})
@@ -39,9 +35,6 @@ def create_app():
                 app.instance_path, str(exc)
             )
         )
-
-    # Set active session status to inactive
-    rds.set_status(messaging.INACTIVE)
 
     @app.route("/")
     def index():
@@ -84,6 +77,12 @@ def create_app():
         return flask.render_template("404.html")
 
     app.add_url_rule(
+        "/api/session",
+        view_func=api.SessionAPI.as_view("session_api", action_q, log_q),
+        methods=["GET", "POST"],
+    )
+
+    app.add_url_rule(
         "/api/protocol-form/<protocol_id>",
         view_func=api.ProtocolAPI.as_view("protocol_api"),
         methods=["GET"],
@@ -102,20 +101,17 @@ def create_app():
     return app
 
 
-def runserver(threaded=False):
+def runserver(action_q, log_q, threaded=False):
     """Runs the flask app in an integrated server."""
-    app = create_app()
-    socketio = sock.SocketIO(app)
-    socketio.on_namespace(sess.SessionNamespace("/session"))
+    app = create_app(action_q, log_q)
     if threaded:
         thread = threading.Thread(
-            target=socketio.run,
-            args=(app,),
+            target=app.run,
             kwargs={"use_reloader": False, "debug": True, "host": "0.0.0.0"},
             daemon=True,
         )
         return thread.start()
-    socketio.run(app, host="0.0.0.0", debug=True)
+    app.run(host="0.0.0.0", debug=True)
 
 
 if __name__ == "__main__":
