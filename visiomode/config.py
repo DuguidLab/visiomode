@@ -23,6 +23,7 @@ class Config(mixins.YamlAttributesMixin):
     debug = True
     flask_key = "dev"
     data_dir = "instance/"
+
     fps = 60
     width = 400
     height = 800
