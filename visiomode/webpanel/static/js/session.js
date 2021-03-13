@@ -56,6 +56,11 @@ session_button.onclick = function () {
 
         setStatusWaiting();
 
+        let now = new Date(Date.now()).toISOString();
+        let stopTimeEvent = document.createElement('li');
+        stopTimeEvent.innerHTML = "Session stopped at " + now;
+        logList.prepend(stopTimeEvent);
+
         setTimeout(getStatus, 200)
     }
     return false;
@@ -77,8 +82,8 @@ function getStatus() {
             document.getElementById('duration').value = session_data.duration;
 
             logList.innerHTML = "" // Clear contents
-            for (var i = session_data.trials.length - 1; i >= 0; i--) {
-                var event = document.createElement('li');
+            for (let i = session_data.trials.length - 1; i >= 0; i--) {
+                let event = document.createElement('li');
                 event.innerHTML = "<em>" + session_data.trials[i].timestamp + ": </em>" + session_data.trials[i].outcome;
                 logList.appendChild(event);
             }
@@ -93,6 +98,13 @@ function getStatus() {
             console.log(progressBar);
             progressBar.style.width = progressBarWidth.toString() + "%";
             progressBar.innerHTML = timeLeftMin.toFixed(1).toString() + " min left";
+
+            if (timeLeftMin <= 0) {
+                let now = new Date(Date.now()).toISOString();
+                let finishTimeEvent = document.createElement('li');
+                finishTimeEvent.innerHTML = "Session stopped at " + now;
+                logList.prepend(finishTimeEvent);
+            }
 
         } else if (session_status === "inactive") {
             setStatusInactive();
@@ -129,7 +141,6 @@ function setStatusInactive() {
 
     progressBar.style.width = "0%";
     progressBar.innerHTML = "";
-    logList.innerHTML = "<li><em>Welcome! Session events will appear here.</em></li>"
 
 
     // enable input fields
