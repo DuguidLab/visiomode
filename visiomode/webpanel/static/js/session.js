@@ -4,11 +4,18 @@
  * Distributed under the terms of the MIT Licence.
  */
 let form = document.getElementById('session-form');
+
 let session_button = document.getElementById('session-control-btn');
+
 let status_icon = document.getElementById('status-icon');
 let status_text = document.getElementById('status-text');
+let progressBar = document.getElementById("session-progress");
 
-let session_status
+let logList = document.getElementById('log-list');
+
+let session_status;
+
+setTimeout(getStatus, 100)
 
 session_button.onclick = function () {
     if (form.reportValidity() && (session_status !== "active")) {
@@ -20,7 +27,10 @@ session_button.onclick = function () {
         $.ajax({
             type: 'POST',
             url: "/api/session",
-            data: JSON.stringify(request),
+            data: JSON.stringify({
+                type: "start",
+                data: request,
+            }),
             dataType: "json",
             contentType: "application/json"
         });
@@ -28,11 +38,30 @@ session_button.onclick = function () {
         console.log('session start request');
 
         setStatusWaiting();
+
+        setTimeout(getStatus, 100)
     } else if (session_status === "active") {
         // Stop session
+        $.ajax({
+            type: "POST",
+            url: "/api/session",
+            data: JSON.stringify({
+                type: "stop"
+            }),
+            dataType: "json",
+            contentType: "application/json"
+        })
+
         console.log('session stop request');
 
         setStatusWaiting();
+
+        let now = new Date(Date.now()).toISOString();
+        let stopTimeEvent = document.createElement('li');
+        stopTimeEvent.innerHTML = "Session stopped at " + now;
+        logList.prepend(stopTimeEvent);
+
+        setTimeout(getStatus, 200)
     }
     return false;
 };
@@ -52,9 +81,34 @@ function getStatus() {
             document.getElementById('protocol').value = session_data.protocol;
             document.getElementById('duration').value = session_data.duration;
 
+            logList.innerHTML = "" // Clear contents
+            for (let i = session_data.trials.length - 1; i >= 0; i--) {
+                let event = document.createElement('li');
+                event.innerHTML = "<em>" + session_data.trials[i].timestamp + ": </em>" + session_data.trials[i].outcome;
+                logList.appendChild(event);
+            }
+            logList.append(document.createElement('li').innerHTML = "Session started at " + session_data.timestamp);
+
+            // update progress bar
+            totalTimeMs = (parseInt(session_data.duration) * 60000);
+            timeLeftMs = totalTimeMs - (Date.now() - Date.parse(session_data.timestamp));
+            timeLeftMin = timeLeftMs / 60000;
+            progressBarWidth = (1 - (timeLeftMs / totalTimeMs)) * 100;
+            console.log(progressBarWidth);
+            console.log(progressBar);
+            progressBar.style.width = progressBarWidth.toString() + "%";
+            progressBar.innerHTML = timeLeftMin.toFixed(1).toString() + " min left";
+
+            if (timeLeftMin <= 0) {
+                let now = new Date(Date.now()).toISOString();
+                let finishTimeEvent = document.createElement('li');
+                finishTimeEvent.innerHTML = "Session stopped at " + now;
+                logList.prepend(finishTimeEvent);
+            }
 
         } else if (session_status === "inactive") {
             setStatusInactive();
+
         } else {
             setStatusWaiting();
         }
@@ -84,6 +138,10 @@ function setStatusInactive() {
 
     status_icon.className = "fas fa-circle text-danger";
     status_text.childNodes[2].nodeValue = " Not Running";
+
+    progressBar.style.width = "0%";
+    progressBar.innerHTML = "";
+
 
     // enable input fields
     let fields = form.getElementsByClassName('form-control');
