@@ -335,8 +335,9 @@ class TwoAlternativeForcedChoice(Task):
         for event in events:
             if event.type in TOUCHDOWN or event.type in TOUCHUP:
                 if not self.target.hidden:  # if target is visible, so is the distractor
-                    pos = event.pos if event.type in MOUSE_EVENTS else (event.x, event.y)
-                    if self.separator.collidepoint(*pos):
+                    pos = event.pos if event.type in MOUSE_EVENTS else (
+                        event.x * self.config.width, event.y * self.config.height)
+                    if self.separator.collidepoint(pos):
                         return
         super(TwoAlternativeForcedChoice, self).update(events)
 
