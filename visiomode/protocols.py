@@ -65,14 +65,14 @@ class Protocol(mixins.BaseClassMixin, mixins.WebFormMixin):
 
 class Task(Protocol):
     def __init__(
-        self,
-        screen,
-        duration,
-        iti,
-        stim_duration,
-        reward_address,
-        reward_profile,
-        **kwargs
+            self,
+            screen,
+            duration,
+            iti,
+            stim_duration,
+            reward_address,
+            reward_profile,
+            **kwargs
     ):
         super().__init__(screen)
 
@@ -112,7 +112,8 @@ class Task(Protocol):
     def update(self, events):
         for event in events:
             if event.type in TOUCHDOWN or event.type in TOUCHUP:
-                pos = event.pos if event.type in MOUSE_EVENTS else (event.x, event.y)
+                pos = event.pos if event.type in MOUSE_EVENTS else (
+                    event.x * self.config.width, event.y * self.config.height)
                 on_target = self.target.collision(pos) and not self.target.hidden
                 self._response_q.put(
                     TouchEvent(
@@ -135,7 +136,7 @@ class Task(Protocol):
         trial_outcome = MISS
 
         while self.is_running and (
-            (time.time() - block_start < self.iti) or touchdown_response
+                (time.time() - block_start < self.iti) or touchdown_response
         ):
             if not self._response_q.empty():
                 response = self._response_q.get()
@@ -154,7 +155,7 @@ class Task(Protocol):
             self.show_stim()
             stim_start = time.time()
             while self.is_running and (
-                (time.time() - stim_start < self.stim_duration) or touchdown_response
+                    (time.time() - stim_start < self.stim_duration) or touchdown_response
             ):
                 if not self._response_q.empty():
                     response = self._response_q.get()
@@ -222,13 +223,13 @@ class Task(Protocol):
 
         # Correction trials
         if self.corrections_enabled and (
-            trial.outcome == MISS or trial.outcome == FALSE_ALARM
+                trial.outcome == MISS or trial.outcome == FALSE_ALARM
         ):
             self.correction_trial = True
         if (
-            self.corrections_enabled
-            and self.correction_trial
-            and (trial.outcome == HIT or trial.outcome == CORRECT_REJECTION)
+                self.corrections_enabled
+                and self.correction_trial
+                and (trial.outcome == HIT or trial.outcome == CORRECT_REJECTION)
         ):
             self.correction_trial = False
 
@@ -284,7 +285,7 @@ class TwoAlternativeForcedChoice(Task):
     form_path = "protocols/tafc.html"
 
     def __init__(
-        self, target, distractor, sep_size=50, corrections_enabled="false", **kwargs
+            self, target, distractor, sep_size=50, corrections_enabled="false", **kwargs
     ):
         super(TwoAlternativeForcedChoice, self).__init__(**kwargs)
 
