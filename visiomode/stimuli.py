@@ -10,8 +10,6 @@ import pygame.math as pgm
 import visiomode.config as conf
 import visiomode.mixins as mixins
 
-config = conf.Config()
-
 
 def get_stimulus(stimulus_id):
     return Stimulus.get_child(stimulus_id)

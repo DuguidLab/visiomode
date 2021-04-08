@@ -15,14 +15,12 @@ import visiomode.stimuli as stimuli
 import visiomode.webpanel.api as api
 
 
-def create_app(action_q=None, log_q=None):
+def create_app(config, action_q=None, log_q=None):
     """Flask app factory
 
     Returns:
         Flask app object
     """
-    config = cfg.Config()
-
     app = flask.Flask(__name__)
     app.config.from_mapping({"SECRET_KEY": config.flask_key, "DEBUG": config.debug})
 
@@ -101,9 +99,9 @@ def create_app(action_q=None, log_q=None):
     return app
 
 
-def runserver(action_q, log_q, threaded=False):
+def runserver(config, action_q, log_q, threaded=False):
     """Runs the flask app in an integrated server."""
-    app = create_app(action_q, log_q)
+    app = create_app(config, action_q, log_q)
     if threaded:
         thread = threading.Thread(
             target=app.run,
@@ -111,7 +109,7 @@ def runserver(action_q, log_q, threaded=False):
             daemon=True,
         )
         return thread.start()
-    app.run(host="0.0.0.0", debug=True)
+    app.run(host="0.0.0.0")
 
 
 if __name__ == "__main__":

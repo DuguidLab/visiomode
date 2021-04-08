@@ -16,9 +16,12 @@ import visiomode.protocols as protocols
 
 
 class Visiomode:
-    def __init__(self):
+    def __init__(self, config=None):
         self.clock = pg.time.Clock()
-        self.config = conf.Config()
+
+        if not config:
+            config = conf.Config()
+        self.config = config
 
         self.action_q = queue.Queue()  # Queue for action messages
         self.log_q = queue.Queue()  # Queue for log messages
@@ -26,7 +29,7 @@ class Visiomode:
         self.session = None
 
         # Initialise webpanel, run in background
-        webpanel.runserver(action_q=self.action_q, log_q=self.log_q, threaded=True)
+        webpanel.runserver(config, action_q=self.action_q, log_q=self.log_q, threaded=True)
 
         request_thread = threading.Thread(target=self.request_listener, daemon=True)
         request_thread.start()
