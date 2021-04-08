@@ -16,9 +16,9 @@ import visiomode.protocols as protocols
 
 
 class Visiomode:
-    def __init__(self):
+    def __init__(self, config_path=None):
         self.clock = pg.time.Clock()
-        self.config = conf.Config()
+        self.config = conf.Config(config_path)
 
         self.action_q = queue.Queue()  # Queue for action messages
         self.log_q = queue.Queue()  # Queue for log messages

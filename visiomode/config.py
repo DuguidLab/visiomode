@@ -30,7 +30,7 @@ class Config(mixins.YamlAttributesMixin):
     fullscreen = False
     devices = "devices/"
 
-    def __init__(self, path=DEFAULT_PATH):
+    def __init__(self, path=None):
         """Initialises Config with a path to a configuration file.
 
         If a valid configuration file exists, the program assumes it is NOT in debug mode, unless the config file
@@ -39,4 +39,6 @@ class Config(mixins.YamlAttributesMixin):
         Args:
             path: Path to config YAML, defaults to DEFAULT_PATH. Only used if it exists.
         """
+        if not path:
+            path = DEFAULT_PATH
         self.load_yaml(path)
