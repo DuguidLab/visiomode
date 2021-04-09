@@ -16,10 +16,10 @@ import visiomode.devices as devices
 import visiomode.models as models
 import visiomode.mixins as mixins
 
-HIT = "hit"
-MISS = "miss"
-FALSE_ALARM = "false_alarm"
-CORRECT_REJECTION = "correct_rejection"
+
+CORRECT = "correct"
+INCORRECT = "incorrect"
+NO_RESPONSE = "no_response"
 PRECUED = "precued"
 
 TOUCHDOWN = (pg.MOUSEBUTTONDOWN, pg.FINGERDOWN)
@@ -136,7 +136,7 @@ class Task(Protocol):
         block_start = time.time()
         touchdown_response = None
         touchup_response = None
-        trial_outcome = MISS
+        trial_outcome = NO_RESPONSE
 
         while self.is_running and (
             (time.time() - block_start < self.iti) or touchdown_response
@@ -164,9 +164,9 @@ class Task(Protocol):
                     response = self._response_q.get()
                     if response.event_type in TOUCHDOWN:
                         if response.on_target:
-                            trial_outcome = HIT
+                            trial_outcome = CORRECT
                         else:
-                            trial_outcome = FALSE_ALARM
+                            trial_outcome = INCORRECT
                         touchdown_response = response
                     if response.event_type in TOUCHUP:
                         touchup_response = response
@@ -175,7 +175,7 @@ class Task(Protocol):
                 # if the target was not visible, i.e. the stimulus was a distractor, and there was no touch event during
                 # the response window then the trial outcome is a correct rejection
                 if self.is_running and self.target.hidden:
-                    trial_outcome = CORRECT_REJECTION
+                    trial_outcome = CORRECT
 
         # Log trial
         trial = models.Trial(
@@ -236,17 +236,14 @@ class Task(Protocol):
         ):
             self.correction_trial = False
 
-    def on_hit(self):
+    def on_correct(self):
         self.reward_device.output()
 
-    def on_miss(self):
+    def on_incorrect(self):
         pass
 
-    def on_false_alarm(self):
+    def on_no_response(self):
         pass
-
-    def on_correct_rejection(self):
-        self.reward_device.output()
 
     def on_precued(self):
         pass
