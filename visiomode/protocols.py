@@ -215,24 +215,22 @@ class Task(Protocol):
         # Call trial outcome handlers
         if trial.outcome == PRECUED:
             self.on_precued()
-        elif trial.outcome == HIT:
-            self.on_hit()
-        elif trial.outcome == MISS:
-            self.on_miss()
-        elif trial.outcome == FALSE_ALARM:
-            self.on_false_alarm()
-        elif trial.outcome == CORRECT_REJECTION:
-            self.on_correct_rejection()
+        elif trial.outcome == CORRECT:
+            self.on_correct()
+        elif trial.outcome == INCORRECT:
+            self.on_incorrect()
+        elif trial.outcome == NO_RESPONSE:
+            self.on_no_response()
 
         # Correction trials
         if self.corrections_enabled and (
-            trial.outcome == MISS or trial.outcome == FALSE_ALARM
+            trial.outcome == NO_RESPONSE or trial.outcome == INCORRECT
         ):
             self.correction_trial = True
         if (
             self.corrections_enabled
             and self.correction_trial
-            and (trial.outcome == HIT or trial.outcome == CORRECT_REJECTION)
+            and (trial.outcome == CORRECT)
         ):
             self.correction_trial = False
 
