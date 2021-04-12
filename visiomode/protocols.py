@@ -22,11 +22,8 @@ INCORRECT = "incorrect"
 NO_RESPONSE = "no_response"
 PRECUED = "precued"
 
-TOUCHDOWN = (pg.MOUSEBUTTONDOWN, pg.FINGERDOWN)
-TOUCHUP = (pg.MOUSEBUTTONUP, pg.FINGERUP)
-
-MOUSE_EVENTS = (pg.MOUSEBUTTONDOWN, pg.MOUSEBUTTONUP)
-TOUCH_EVENTS = (pg.FINGERDOWN, pg.FINGERUP)
+TOUCHDOWN = pg.FINGERDOWN
+TOUCHUP = pg.FINGERUP
 
 TouchEvent = collections.namedtuple(
     "TouchEvent", ["event_type", "on_target", "x", "y", "timestamp"]
@@ -111,19 +108,16 @@ class Task(Protocol):
 
     def update(self, events):
         for event in events:
-            if event.type in TOUCHDOWN or event.type in TOUCHUP:
-                pos = (
-                    event.pos
-                    if event.type in MOUSE_EVENTS
-                    else (event.x * self.config.width, event.y * self.config.height)
-                )
-                on_target = self.target.collision(pos) and not self.target.hidden
+            if event.type == TOUCHDOWN or event.type == TOUCHUP:
+                x = event.x * self.config.width
+                y = event.y * self.config.height
+                on_target = self.target.collision(x, y) and not self.target.hidden
                 self._response_q.put(
                     TouchEvent(
                         event_type=event.type,
                         on_target=on_target,
-                        x=pos[0],
-                        y=pos[1],
+                        x=x,
+                        y=y,
                         timestamp=time.time(),
                     )
                 )
@@ -144,11 +138,11 @@ class Task(Protocol):
             if not self._response_q.empty():
                 response = self._response_q.get()
                 # If touchdown, log trial as precued
-                if response.event_type in TOUCHDOWN:
+                if response.event_type == TOUCHDOWN:
                     trial_outcome = PRECUED
                     touchdown_response = response
                 # On touchup, register the trial and reset the ITI by breaking out of loop
-                if response.event_type in TOUCHUP:
+                if response.event_type == TOUCHUP:
                     touchup_response = response
                     break
         else:
@@ -162,13 +156,13 @@ class Task(Protocol):
             ):
                 if not self._response_q.empty():
                     response = self._response_q.get()
-                    if response.event_type in TOUCHDOWN:
+                    if response.event_type == TOUCHDOWN:
                         if response.on_target:
                             trial_outcome = CORRECT
                         else:
                             trial_outcome = INCORRECT
                         touchdown_response = response
-                    if response.event_type in TOUCHUP:
+                    if response.event_type == TOUCHUP:
                         touchup_response = response
                         break
             else:
@@ -332,14 +326,11 @@ class TwoAlternativeForcedChoice(Task):
     def update(self, events):
         # ignore events on the background sprite if target and distractor are visible
         for event in events:
-            if event.type in TOUCHDOWN or event.type in TOUCHUP:
+            if event.type == TOUCHDOWN or event.type == TOUCHUP:
                 if not self.target.hidden:  # if target is visible, so is the distractor
-                    pos = (
-                        event.pos
-                        if event.type in MOUSE_EVENTS
-                        else (event.x * self.config.width, event.y * self.config.height)
-                    )
-                    if self.separator.collidepoint(pos):
+                    x = event.x * self.config.width
+                    y = event.y * self.config.height
+                    if self.separator.collidepoint(x, y):
                         return
         super(TwoAlternativeForcedChoice, self).update(events)
 
