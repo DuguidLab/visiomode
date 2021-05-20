@@ -6,12 +6,10 @@
 import collections
 import time
 import datetime
-import random
 import threading
 import queue
 import pygame as pg
 import visiomode.config as conf
-import visiomode.stimuli as stim
 import visiomode.devices as devices
 import visiomode.models as models
 import visiomode.mixins as mixins
@@ -251,153 +249,6 @@ class Task(Protocol):
 
 class Presentation(Protocol):
     pass
-
-
-class SingleTarget(Task):
-    form_path = "protocols/single_target.html"
-
-    def __init__(self, target, **kwargs):
-        super(SingleTarget, self).__init__(**kwargs)
-
-        self.background = pg.Surface(self.screen.get_size())
-        self.background = self.background.convert()
-        self.background.fill((0, 0, 0))
-        self.screen.blit(self.background, (0, 0))
-
-        target = stim.get_stimulus(target)
-        self.target = target(background=self.background, **kwargs)
-
-    def update_stim(self):
-        self.target.update()
-
-    def show_stim(self):
-        self.target.show()
-
-    def hide_stim(self):
-        self.target.hide()
-
-
-class TwoAlternativeForcedChoice(Task):
-    form_path = "protocols/tafc.html"
-
-    def __init__(
-        self, target, distractor, sep_size=50, corrections_enabled="false", **kwargs
-    ):
-        super(TwoAlternativeForcedChoice, self).__init__(**kwargs)
-
-        self.background = pg.Surface(self.screen.get_size())
-        self.background = self.background.convert()
-        self.background.fill((0, 0, 0))
-        self.screen.blit(self.background, (0, 0))
-
-        self.corrections_enabled = True if corrections_enabled == "true" else False
-
-        self.separator_size = int(sep_size)  # pixels
-        self.separator = pg.Rect(
-            ((0, 0), (self.separator_size, self.screen.get_height()))
-        )
-        self.separator.centerx = self.screen.get_rect().centerx
-
-        target = stim.get_stimulus(target)
-        target_params = {
-            key.replace("t_", ""): kwargs[key]
-            for key in kwargs.keys()
-            if key.startswith("t_")
-        }
-        self.target = target(background=self.background, **target_params)
-
-        distractor = stim.get_stimulus(distractor)
-        distractor_params = {
-            key.replace("d_", ""): kwargs[key]
-            for key in kwargs.keys()
-            if key.startswith("d_")
-        }
-        self.distractor = distractor(background=self.background, **distractor_params)
-
-    def show_stim(self):
-        if not self.correction_trial:
-            target_x, distr_x = self.shuffle_centerx()
-            self.target.set_centerx(target_x)
-            self.distractor.set_centerx(distr_x)
-
-        self.target.show()
-        self.distractor.show()
-
-    def hide_stim(self):
-        self.target.hide()
-        self.distractor.hide()
-
-    def update(self, events):
-        # ignore events on the background sprite if target and distractor are visible
-        for event in events:
-            if event.type == TOUCHDOWN or event.type == TOUCHUP:
-                if not self.target.hidden:  # if target is visible, so is the distractor
-                    x = event.x * self.config.width
-                    y = event.y * self.config.height
-                    if self.separator.collidepoint(x, y):
-                        return
-        super(TwoAlternativeForcedChoice, self).update(events)
-
-    def update_stim(self):
-        self.distractor.update()
-        self.target.update()
-
-    def shuffle_centerx(self):
-        centers = [
-            0 - (self.separator_size / 2),
-            self.screen.get_width() + (self.separator_size / 2),
-        ]
-        return random.sample(centers, 2)
-
-
-class GoNoGo(Task):
-    form_path = "protocols/tifc.html"
-
-    def __init__(self, target, distractor, corrections_enabled="false", **kwargs):
-        super(GoNoGo, self).__init__(**kwargs)
-
-        self.background = pg.Surface(self.screen.get_size())
-        self.background = self.background.convert()
-        self.background.fill((0, 0, 0))
-        self.screen.blit(self.background, (0, 0))
-
-        self.corrections_enabled = True if corrections_enabled == "true" else False
-
-        target = stim.get_stimulus(target)
-        target_params = {
-            key.replace("t_", ""): kwargs[key]
-            for key in kwargs.keys()
-            if key.startswith("t_")
-        }
-        self.target = target(background=self.background, **target_params)
-
-        distractor = stim.get_stimulus(distractor)
-        distractor_params = {
-            key.replace("d_", ""): kwargs[key]
-            for key in kwargs.keys()
-            if key.startswith("d_")
-        }
-        self.distractor = distractor(background=self.background, **distractor_params)
-
-        self.current_stimulus = self.get_random_stimulus()
-
-    def show_stim(self):
-        if not self.correction_trial:
-            self.current_stimulus = self.get_random_stimulus()
-        self.current_stimulus.show()
-
-    def hide_stim(self):
-        self.current_stimulus.hide()
-
-    def update_stim(self):
-        self.current_stimulus.update()
-
-    def get_random_stimulus(self):
-        return random.choice([self.target, self.distractor])
-
-    @classmethod
-    def get_common_name(cls):
-        return "Go / NoGo"
 
 
 class InvalidProtocol(Exception):
