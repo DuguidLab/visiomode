@@ -1,8 +1,8 @@
-"""Module that defines the available task and stimulation protocols in a stimulus agnostic manner."""
-
 #  This file is part of visiomode.
-#  Copyright (c) 2020 Constantinos Eleftheriou <Constantinos.Eleftheriou@ed.ac.uk>
+#  Copyright (c) 2021 Constantinos Eleftheriou <Constantinos.Eleftheriou@ed.ac.uk>
 #  Distributed under the terms of the MIT Licence.
+
+"""Module that defines the available task and stimulation protocols in a stimulus agnostic manner."""
 import collections
 import time
 import datetime

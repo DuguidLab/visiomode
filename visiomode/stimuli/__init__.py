@@ -1,8 +1,8 @@
-"""Visual stimulus classes implemented """
-
 #  This file is part of visiomode.
-#  Copyright (c) 2020 Constantinos Eleftheriou <Constantinos.Eleftheriou@ed.ac.uk>
+#  Copyright (c) 2021 Constantinos Eleftheriou <Constantinos.Eleftheriou@ed.ac.uk>
 #  Distributed under the terms of the MIT Licence.
+
+"""Visual stimulus classes implemented """
 import os
 import numpy as np
 import pygame as pg
