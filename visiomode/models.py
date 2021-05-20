@@ -31,7 +31,7 @@ class Trial(Base):
     """Trial model class.
 
     Attributes:
-        outcome: String descriptive of trial outcome, e.g. "hit", "miss", "pre-cued".
+        outcome: String descriptive of trial outcome, e.g. "correct", "incorrect", "no_response", "precued".
         iti: Float representing the "silent" time before the stimulus is presented in milliseconds.
         response_time: Integer representing the time between stimulus presentation and response in milliseconds.
         duration: Integer representing the duration of the touch in milliseconds.

@@ -75,8 +75,8 @@ class Stimulus(pg.sprite.Sprite, mixins.BaseClassMixin, mixins.WebFormMixin):
     def update(self, timedelta=0):
         pass
 
-    def collision(self, pos):
-        if self.rect.collidepoint(pos):
+    def collision(self, x, y):
+        if self.rect.collidepoint(x, y):
             return True
         return False
 

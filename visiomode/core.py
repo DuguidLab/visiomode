@@ -4,6 +4,7 @@
 #  Copyright (c) 2020 Constantinos Eleftheriou <Constantinos.Eleftheriou@ed.ac.uk>
 #  Distributed under the terms of the MIT Licence.
 
+import os
 import time
 import datetime
 import threading
@@ -13,6 +14,9 @@ import visiomode.config as conf
 import visiomode.models as models
 import visiomode.webpanel as webpanel
 import visiomode.protocols as protocols
+
+
+os.environ["SDL_MOUSE_TOUCH_EVENTS"] = "1"
 
 
 class Visiomode:
