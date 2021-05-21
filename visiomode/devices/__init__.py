@@ -5,8 +5,6 @@
 #  Distributed under the terms of the MIT Licence.
 import os
 import abc
-import serial
-import time
 import serial.tools.list_ports as ports
 import visiomode.mixins as mixins
 import visiomode.config as conf
@@ -49,20 +47,6 @@ class OutputDevice(abc.ABC, Device):
         for key, value in kwargs.items():
             if key in self.__dict__.keys():
                 setattr(self, key, value)
-
-
-class WaterReward(OutputDevice):
-    reward_epoch = 1500  # time from moment servo moves out in ms
-
-    def __init__(self, address):
-        super().__init__(address)
-        self.bus = serial.Serial(address, 9600, timeout=1)
-        time.sleep(2)  # Allow the port enough time to do its thing after a reset
-
-    def output(self):
-        """Dispenses water reward."""
-        self.bus.write(b"T\n")
-        time.sleep(self.reward_epoch / 1000)
 
 
 class DeviceError(Exception):
