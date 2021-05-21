@@ -5,10 +5,10 @@
 import pygame as pg
 
 import stimuli as stim
-from protocols import Task
+import visiomode.protocols as protocols
 
 
-class SingleTarget(Task):
+class SingleTarget(protocols.Task):
     form_path = "protocols/single_target.html"
 
     def __init__(self, target, **kwargs):

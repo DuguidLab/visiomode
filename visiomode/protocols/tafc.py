@@ -7,10 +7,10 @@ import random
 import pygame as pg
 
 import stimuli as stim
-from protocols import Task, TOUCHDOWN, TOUCHUP
+import visiomode.protocols as protocols
 
 
-class TwoAlternativeForcedChoice(Task):
+class TwoAlternativeForcedChoice(protocols.Task):
     form_path = "protocols/tafc.html"
 
     def __init__(
@@ -63,7 +63,7 @@ class TwoAlternativeForcedChoice(Task):
     def update(self, events):
         # ignore events on the background sprite if target and distractor are visible
         for event in events:
-            if event.type == TOUCHDOWN or event.type == TOUCHUP:
+            if event.type == protocols.TOUCHDOWN or event.type == protocols.TOUCHUP:
                 if not self.target.hidden:  # if target is visible, so is the distractor
                     x = event.x * self.config.width
                     y = event.y * self.config.height

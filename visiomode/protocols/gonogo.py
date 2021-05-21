@@ -7,10 +7,10 @@ import random
 import pygame as pg
 
 import stimuli as stim
-from protocols import Task
+import visiomode.protocols as protocols
 
 
-class GoNoGo(Task):
+class GoNoGo(protocols.Task):
     form_path = "protocols/tifc.html"
 
     def __init__(self, target, distractor, corrections_enabled="false", **kwargs):
