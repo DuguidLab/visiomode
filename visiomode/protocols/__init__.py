@@ -10,7 +10,6 @@ import threading
 import queue
 import pygame as pg
 
-import devices.water_reward
 import visiomode.config as conf
 import visiomode.devices as devices
 import visiomode.models as models
