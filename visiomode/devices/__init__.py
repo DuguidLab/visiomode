@@ -5,17 +5,23 @@
 #  Distributed under the terms of the MIT Licence.
 import os
 import abc
-import serial
-import time
-import threading
 import serial.tools.list_ports as ports
 import visiomode.mixins as mixins
 import visiomode.config as conf
+import visiomode.plugins as plugins
 
 
 def get_available_devices():
     """Return list of all serial devices connected to the machine."""
     return [dev.device for dev in ports.comports()]
+
+
+def get_input_profile(profile_id):
+    return InputDevice.get_child(profile_id)
+
+
+def get_output_profile(profile_id):
+    return OutputDevice.get_child(profile_id)
 
 
 def check_device_profile(profile_id, address):
@@ -52,23 +58,8 @@ class OutputDevice(abc.ABC, Device):
                 setattr(self, key, value)
 
 
-class WaterReward(OutputDevice):
-    reward_epoch = 1500  # time from moment servo moves out in ms
-
-    def __init__(self, address):
-        super().__init__(address)
-        self.bus = serial.Serial(address, 9600, timeout=1)
-        time.sleep(2)  # Allow the port enough time to do its thing after a reset
-
-    def output(self):
-        """Dispenses water reward."""
-        # if not self.threaded:
-        #     return self._dispense()
-        # thread = threading.Thread(target=self._dispense)
-        # thread.start()
-        self.bus.write(b"T\n")
-        time.sleep(self.reward_epoch / 1000)
-
-
 class DeviceError(Exception):
     pass
+
+
+plugins.load_modules_dir(__path__[0])

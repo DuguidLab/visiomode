@@ -10,7 +10,6 @@ import socket
 import json
 import typing
 import copy
-import visiomode.protocols as protocols
 
 
 @dataclasses.dataclass
@@ -77,7 +76,7 @@ class Session(Base):
     animal_id: str
     experiment: str
     duration: float
-    protocol: protocols.Protocol = None
+    protocol: None = None
     complete: bool = False
     timestamp: str = datetime.datetime.now().isoformat()
     notes: str = ""
