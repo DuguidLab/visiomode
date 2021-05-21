@@ -8,6 +8,7 @@ import abc
 import serial.tools.list_ports as ports
 import visiomode.mixins as mixins
 import visiomode.config as conf
+import visiomode.plugins as plugins
 
 
 def get_available_devices():
@@ -51,3 +52,6 @@ class OutputDevice(abc.ABC, Device):
 
 class DeviceError(Exception):
     pass
+
+
+plugins.load_modules_dir(__path__[0])
