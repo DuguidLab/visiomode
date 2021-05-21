@@ -63,14 +63,7 @@ class Protocol(mixins.BaseClassMixin, mixins.WebFormMixin):
 
 class Task(Protocol):
     def __init__(
-        self,
-        screen,
-        duration,
-        iti,
-        stim_duration,
-        reward_address,
-        reward_profile,
-        **kwargs
+        self, screen, iti, stim_duration, reward_address, reward_profile, **kwargs
     ):
         super().__init__(screen)
 
