@@ -76,7 +76,7 @@ class Session(Base):
     animal_id: str
     experiment: str
     duration: float
-    protocol = None
+    protocol: None = None
     complete: bool = False
     timestamp: str = datetime.datetime.now().isoformat()
     notes: str = ""
