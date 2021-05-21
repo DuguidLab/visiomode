@@ -4,7 +4,7 @@
 
 import pygame as pg
 
-import stimuli as stim
+import visiomode.stimuli as stimuli
 import visiomode.protocols as protocols
 
 
@@ -19,7 +19,7 @@ class SingleTarget(protocols.Task):
         self.background.fill((0, 0, 0))
         self.screen.blit(self.background, (0, 0))
 
-        target = stim.get_stimulus(target)
+        target = stimuli.get_stimulus(target)
         self.target = target(background=self.background, **kwargs)
 
     def update_stim(self):

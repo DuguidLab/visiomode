@@ -82,7 +82,8 @@ class Task(Protocol):
 
         self.target = None
 
-        self.reward_device = devices.get_output_profile(reward_profile)
+        self._reward_profile = devices.get_output_profile(reward_profile)
+        self.reward_device = self._reward_profile(reward_address)
 
         self._touchevent_q = queue.Queue()
 
