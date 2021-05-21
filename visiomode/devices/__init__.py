@@ -16,6 +16,14 @@ def get_available_devices():
     return [dev.device for dev in ports.comports()]
 
 
+def get_input_profile(profile_id):
+    return InputDevice.get_child(profile_id)
+
+
+def get_output_profile(profile_id):
+    return OutputDevice.get_child(profile_id)
+
+
 def check_device_profile(profile_id, address):
     """Allow user to check whether a device profile will work for a port address."""
     OutputDevice.get_child(profile_id)(address).output()

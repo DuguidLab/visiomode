@@ -82,7 +82,7 @@ class Task(Protocol):
 
         self.target = None
 
-        self.reward_device = devices.water_reward.WaterReward(reward_address)
+        self.reward_device = devices.get_output_profile(reward_profile)
 
         self._touchevent_q = queue.Queue()
 
