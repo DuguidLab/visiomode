@@ -166,10 +166,14 @@ class Task(Protocol):
                 if self.is_running and self.target.hidden:
                     outcome = CORRECT
 
-        response = self.parse_response(block_start, touchdown_event, touchup_event)
-        trial = self.parse_trial(trial_start_iso, outcome, response)
-        print(trial.__dict__)
-        self.trials.append(trial)
+        # Touchup events from the previous session can sometimes leak through (e.g. if touchup is after
+        # session has ended). Prevent this crashing everything by checking for both touchup and touchdown
+        # objects exist before creating a trial.
+        if touchup_event and touchdown_event:
+            response = self.parse_response(block_start, touchdown_event, touchup_event)
+            trial = self.parse_trial(trial_start_iso, outcome, response)
+            print(trial.__dict__)
+            self.trials.append(trial)
 
         # Hide stimulus at end of trial before calling handlers, so any reward dispensation associated
         # delays don't keep the stimulus hanging about on the screen.
@@ -210,22 +214,17 @@ class Task(Protocol):
         return trial
 
     def parse_response(self, block_start, touchdown, touchup):
-        # Touchup events from the previous session can sometimes leak through (e.g. if touchup is after
-        # session has ended). Prevent this crashing everything by checking for both touchup and touchdown
-        # objects exist before creating a trial.
-        if touchup and touchdown:
-            return {
-                "response_time": touchdown.timestamp - block_start - self.iti,
-                "duration": touchup.timestamp - touchdown.timestamp,
-                "pos_x": touchdown.x,
-                "pos_y": touchdown.y,
-                "dist_x": touchup.x - touchdown.x,
-                "dist_y": touchup.y - touchdown.y,
-                "timestamp": datetime.datetime.fromtimestamp(
-                    touchdown.timestamp
-                ).isoformat(),
-            }
-        return None
+        return {
+            "response_time": touchdown.timestamp - block_start - self.iti,
+            "duration": touchup.timestamp - touchdown.timestamp,
+            "pos_x": touchdown.x,
+            "pos_y": touchdown.y,
+            "dist_x": touchup.x - touchdown.x,
+            "dist_y": touchup.y - touchdown.y,
+            "timestamp": datetime.datetime.fromtimestamp(
+                touchdown.timestamp
+            ).isoformat(),
+        }
 
     def on_correct(self):
         self.reward_device.output()
