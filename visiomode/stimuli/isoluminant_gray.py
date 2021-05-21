@@ -2,10 +2,10 @@
 #  Copyright (c) 2021 Constantinos Eleftheriou <Constantinos.Eleftheriou@ed.ac.uk>
 #  Distributed under the terms of the MIT Licence.
 
-import visiomode.stimuli as stimuli
+import visiomode.stimuli.solid_colour as solidcolour
 
 
-class IsoluminantGray(stimuli.SolidColour):
+class IsoluminantGray(solidcolour.SolidColour):
     """Based gratings pixel value mean"""
 
     form_path = None

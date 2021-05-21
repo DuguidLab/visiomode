@@ -9,8 +9,6 @@ import pygame as pg
 import visiomode.config as conf
 import visiomode.mixins as mixins
 import visiomode.plugins as plugins
-from stimuli.grating import Grating
-from stimuli.solid_colour import SolidColour
 
 config = conf.Config()
 
