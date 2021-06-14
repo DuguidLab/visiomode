@@ -6,7 +6,7 @@ import random
 
 import pygame as pg
 
-import stimuli as stim
+import visiomode.stimuli as stim
 import visiomode.protocols as protocols
 
 
