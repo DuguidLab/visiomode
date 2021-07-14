@@ -59,6 +59,9 @@ class Protocol(mixins.BaseClassMixin, mixins.WebFormMixin):
     def stop(self):
         self.is_running = False
 
+    def get_details(self):
+        raise NotImplementedError
+
 
 class Task(Protocol):
     def __init__(
