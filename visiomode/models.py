@@ -76,7 +76,7 @@ class Session(Base):
     animal_id: str
     experiment: str
     duration: float
-    protocol: None = None
+    protocol: None = None  # TODO - make this dict of protocol details? incl stim details?
     complete: bool = False
     timestamp: str = datetime.datetime.now().isoformat()
     notes: str = ""
@@ -106,7 +106,7 @@ class Session(Base):
             + "_date-"
             + self.timestamp.replace(":", "").replace("-", "").replace(".", "")
         )
-        f_path = path + os.sep + session_id
+        f_path = path + os.sep + session_id + ".json"
         with open(f_path, "w", encoding="utf-8") as f:
             json.dump(self.to_dict(), f)
 
