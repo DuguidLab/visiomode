@@ -77,8 +77,8 @@ class Task(Protocol):
 
         self.target = None
 
-        self._reward_profile = devices.get_output_profile(reward_profile)
-        self.reward_device = self._reward_profile(reward_address)
+        self.reward_profile = devices.get_output_profile(reward_profile)
+        self.reward_device = self.reward_profile(reward_address)
 
         self._touchevent_q = queue.Queue()
 
@@ -239,6 +239,13 @@ class Task(Protocol):
 
     def on_precued(self):
         pass
+
+    def get_details(self):
+        return {
+            "target": self.target.get_identifier() if self.target else None,
+            "corrections_enabled": self.corrections_enabled,
+            "reward_profile": self.reward_profile,
+        }
 
     def _session_runner(self):
         while self.is_running:
