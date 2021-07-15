@@ -155,6 +155,7 @@ class Visiomode:
                     duration=float(request["data"].pop("duration")),
                     timestamp=datetime.datetime.now().isoformat(),
                     protocol=protocol(screen=self.screen, **request["data"]),
+                    spec=request["data"],
                 )
                 self.session.protocol.start()
             elif request["type"] == "status":
