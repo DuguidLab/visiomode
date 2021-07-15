@@ -124,7 +124,7 @@ class Task(Protocol):
         block_start = time.time()
         touchdown_event = None
         touchup_event = None
-        outcome = NO_RESPONSE
+        outcome = None
 
         while self.is_running and (
             (time.time() - block_start < self.iti) or touchdown_event
@@ -151,7 +151,7 @@ class Task(Protocol):
                 if not self._touchevent_q.empty():
                     touchevent = self._touchevent_q.get()
                     if touchevent.event_type == TOUCHDOWN:
-                        if touchevent.on_target:
+                        if touchevent.on_target and not self.target.hidden:
                             outcome = CORRECT
                         else:
                             outcome = INCORRECT
@@ -164,40 +164,50 @@ class Task(Protocol):
                 # the response window then the trial outcome is a correct rejection
                 if self.is_running and self.target.hidden:
                     outcome = CORRECT
+                else:
+                    outcome = NO_RESPONSE
 
-        # Touchup events from the previous session can sometimes leak through (e.g. if touchup is after
-        # session has ended). Prevent this crashing everything by checking for both touchup and touchdown
-        # objects exist before creating a trial.
-        if touchup_event and touchdown_event:
-            response = self.parse_response(block_start, touchdown_event, touchup_event)
+        if outcome:
+            # Touchup events from the previous session can sometimes leak through (e.g. if touchup is after
+            # session has ended). Prevent this crashing everything by checking for both touchup and touchdown
+            # objects exist before creating a trial.
+            response = None
+            if touchup_event and touchdown_event:
+                response = self.parse_response(
+                    block_start, touchdown_event, touchup_event
+                )
             trial = self.parse_trial(trial_start_iso, outcome, response)
             print(trial.__dict__)
             self.trials.append(trial)
 
-        # Hide stimulus at end of trial before calling handlers, so any reward dispensation associated
-        # delays don't keep the stimulus hanging about on the screen.
-        if self.is_running:
-            self.hide_stim()
+            # Hide stimulus at end of trial before calling handlers, so any reward dispensation associated
+            # delays don't keep the stimulus hanging about on the screen.
+            if self.is_running:
+                self.hide_stim()
 
-        # Call trial outcome handlers
-        if outcome == PRECUED:
-            self.on_precued()
-        elif outcome == CORRECT:
-            self.on_correct()
-        elif outcome == INCORRECT:
-            self.on_incorrect()
-        elif outcome == NO_RESPONSE:
-            self.on_no_response()
+            # Call trial outcome handlers
+            if outcome == PRECUED:
+                self.on_precued()
+            elif outcome == CORRECT:
+                self.on_correct()
+            elif outcome == INCORRECT:
+                self.on_incorrect()
+            elif outcome == NO_RESPONSE:
+                self.on_no_response()
 
-        # Correction trials
-        if self.corrections_enabled and (
-            outcome == NO_RESPONSE or outcome == INCORRECT
-        ):
-            self.correction_trial = True
-        if self.corrections_enabled and self.correction_trial and (outcome == CORRECT):
-            self.correction_trial = False
+            # Correction trials
+            if self.corrections_enabled and (
+                outcome == NO_RESPONSE or outcome == INCORRECT
+            ):
+                self.correction_trial = True
+            if (
+                self.corrections_enabled
+                and self.correction_trial
+                and (outcome == CORRECT)
+            ):
+                self.correction_trial = False
 
-    def parse_trial(self, trial_start, outcome, response):
+    def parse_trial(self, trial_start, outcome, response=None):
         trial = models.Trial(
             outcome=outcome,
             iti=self.iti,
