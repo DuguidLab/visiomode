@@ -77,6 +77,7 @@ class Session(Base):
     experiment: str
     duration: float
     protocol: None = None
+    spec: dict = None
     complete: bool = False
     timestamp: str = datetime.datetime.now().isoformat()
     notes: str = ""
@@ -106,7 +107,7 @@ class Session(Base):
             + "_date-"
             + self.timestamp.replace(":", "").replace("-", "").replace(".", "")
         )
-        f_path = path + os.sep + session_id
+        f_path = path + os.sep + session_id + ".json"
         with open(f_path, "w", encoding="utf-8") as f:
             json.dump(self.to_dict(), f)
 

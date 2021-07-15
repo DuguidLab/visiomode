@@ -6,6 +6,7 @@ import pygame as pg
 from pygame import math as pgm
 
 import visiomode.stimuli as stimuli
+from visiomode.stimuli.grating import Grating
 
 
 class MovingGrating(stimuli.Stimulus):
@@ -24,7 +25,7 @@ class MovingGrating(stimuli.Stimulus):
         )
         print(self.px_per_cycle)
 
-        grating = stimuli.Grating.sinusoid(
+        grating = Grating.sinusoid(
             self.width, self.height + (self.period * 2), self.period, contrast
         )
         self.image = pg.surfarray.make_surface(grating).convert(self.screen)
