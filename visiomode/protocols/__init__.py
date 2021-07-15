@@ -242,6 +242,7 @@ class Task(Protocol):
 
     def get_details(self):
         return {
+            "id": self.get_identifier(),
             "target": self.target.get_identifier() if self.target else None,
             "corrections_enabled": self.corrections_enabled,
             "reward_profile": self.reward_profile,
