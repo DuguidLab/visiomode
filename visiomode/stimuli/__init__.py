@@ -83,5 +83,8 @@ class Stimulus(pg.sprite.Sprite, mixins.BaseClassMixin, mixins.WebFormMixin):
     def set_centerx(self, centerx):
         self.rect.centerx = centerx
 
+    def get_details(self):
+        return {"height": self.height, "width": self.width}
+
 
 plugins.load_modules_dir(__path__[0])
