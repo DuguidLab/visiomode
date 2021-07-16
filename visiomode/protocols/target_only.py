@@ -8,11 +8,11 @@ import visiomode.stimuli as stimuli
 import visiomode.protocols as protocols
 
 
-class SingleTarget(protocols.Task):
-    form_path = "protocols/single_target.html"
+class TargetOnly(protocols.Task):
+    form_path = "protocols/target_only.html"
 
     def __init__(self, target, **kwargs):
-        super(SingleTarget, self).__init__(**kwargs)
+        super(TargetOnly, self).__init__(**kwargs)
 
         self.background = pg.Surface(self.screen.get_size())
         self.background = self.background.convert()
@@ -22,11 +22,11 @@ class SingleTarget(protocols.Task):
         target = stimuli.get_stimulus(target)
         self.target = target(background=self.background, **kwargs)
 
-    def update_stim(self):
+    def update_stimulus(self):
         self.target.update()
 
-    def show_stim(self):
+    def show_stimulus(self):
         self.target.show()
 
-    def hide_stim(self):
+    def hide_stimulus(self):
         self.target.hide()

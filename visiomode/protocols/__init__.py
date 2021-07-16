@@ -62,12 +62,12 @@ class Protocol(mixins.BaseClassMixin, mixins.WebFormMixin):
 
 class Task(Protocol):
     def __init__(
-        self, screen, iti, stim_duration, reward_address, reward_profile, **kwargs
+        self, screen, iti, stimulus_duration, reward_address, reward_profile, **kwargs
     ):
         super().__init__(screen)
 
         self.iti = float(iti) / 1000  # ms to s
-        self.stim_duration = float(stim_duration) / 1000  # ms to s
+        self.stimulus_duration = float(stimulus_duration) / 1000  # ms to s
 
         self.corrections_enabled = False
         self.correction_trial = False
@@ -88,16 +88,16 @@ class Task(Protocol):
         self._session_thread.start()
 
     def stop(self):
-        self.hide_stim()
+        self.hide_stimulus()
         super(Task, self).stop()
 
-    def show_stim(self):
+    def show_stimulus(self):
         raise NotImplementedError
 
-    def hide_stim(self):
+    def hide_stimulus(self):
         raise NotImplementedError
 
-    def update_stim(self):
+    def update_stimulus(self):
         raise NotImplementedError
 
     def update(self, events):
@@ -115,12 +115,12 @@ class Task(Protocol):
                         timestamp=time.time(),
                     )
                 )
-        self.update_stim()
+        self.update_stimulus()
 
     def trial_block(self):
         """Trial block"""
         trial_start_iso = datetime.datetime.now().isoformat()
-        self.hide_stim()
+        self.hide_stimulus()
         block_start = time.time()
         touchdown_event = None
         touchup_event = None
@@ -143,10 +143,11 @@ class Task(Protocol):
             # To prevent stimulus showing after the session has ended, check if the session is still running.
             if not self.is_running:
                 return
-            self.show_stim()
-            stim_start = time.time()
+            self.show_stimulus()
+            stimulus_start = time.time()
             while self.is_running and (
-                (time.time() - stim_start < self.stim_duration) or touchdown_event
+                (time.time() - stimulus_start < self.stimulus_duration)
+                or touchdown_event
             ):
                 if not self._touchevent_q.empty():
                     touchevent = self._touchevent_q.get()
@@ -167,45 +168,41 @@ class Task(Protocol):
                 else:
                     outcome = NO_RESPONSE
 
-        if outcome:
-            # Touchup events from the previous session can sometimes leak through (e.g. if touchup is after
-            # session has ended). Prevent this crashing everything by checking for both touchup and touchdown
-            # objects exist before creating a trial.
-            response = None
-            if touchup_event and touchdown_event:
-                response = self.parse_response(
-                    block_start, touchdown_event, touchup_event
-                )
-            trial = self.parse_trial(trial_start_iso, outcome, response)
-            print(trial.__dict__)
-            self.trials.append(trial)
+        if not outcome:
+            return
 
-            # Hide stimulus at end of trial before calling handlers, so any reward dispensation associated
-            # delays don't keep the stimulus hanging about on the screen.
-            if self.is_running:
-                self.hide_stim()
+        # Touchup events from the previous session can sometimes leak through (e.g. if touchup is after
+        # session has ended). Prevent this crashing everything by checking for both touchup and touchdown
+        # objects exist before creating a trial.
+        response = None
+        if touchup_event and touchdown_event:
+            response = self.parse_response(block_start, touchdown_event, touchup_event)
+        trial = self.parse_trial(trial_start_iso, outcome, response)
+        print(trial.__dict__)
+        self.trials.append(trial)
 
-            # Call trial outcome handlers
-            if outcome == PRECUED:
-                self.on_precued()
-            elif outcome == CORRECT:
-                self.on_correct()
-            elif outcome == INCORRECT:
-                self.on_incorrect()
-            elif outcome == NO_RESPONSE:
-                self.on_no_response()
+        # Hide stimulus at end of trial before calling handlers, so any reward dispensation associated
+        # delays don't keep the stimulus hanging about on the screen.
+        if self.is_running:
+            self.hide_stimulus()
 
-            # Correction trials
-            if self.corrections_enabled and (
-                outcome == NO_RESPONSE or outcome == INCORRECT
-            ):
-                self.correction_trial = True
-            if (
-                self.corrections_enabled
-                and self.correction_trial
-                and (outcome == CORRECT)
-            ):
-                self.correction_trial = False
+        # Call trial outcome handlers
+        if outcome == PRECUED:
+            self.on_precued()
+        elif outcome == CORRECT:
+            self.on_correct()
+        elif outcome == INCORRECT:
+            self.on_incorrect()
+        elif outcome == NO_RESPONSE:
+            self.on_no_response()
+
+        # Correction trials
+        if self.corrections_enabled and (
+            outcome == NO_RESPONSE or outcome == INCORRECT
+        ):
+            self.correction_trial = True
+        if self.corrections_enabled and self.correction_trial and (outcome == CORRECT):
+            self.correction_trial = False
 
     def parse_trial(self, trial_start, outcome, response=None):
         trial = models.Trial(
