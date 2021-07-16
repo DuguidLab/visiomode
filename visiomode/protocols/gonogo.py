@@ -11,7 +11,7 @@ import visiomode.protocols as protocols
 
 
 class GoNoGo(protocols.Task):
-    form_path = "protocols/tifc.html"
+    form_path = "protocols/gonogo.html"
 
     def __init__(self, target, distractor, corrections_enabled="false", **kwargs):
         super(GoNoGo, self).__init__(**kwargs)
