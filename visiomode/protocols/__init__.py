@@ -62,12 +62,12 @@ class Protocol(mixins.BaseClassMixin, mixins.WebFormMixin):
 
 class Task(Protocol):
     def __init__(
-        self, screen, iti, stim_duration, reward_address, reward_profile, **kwargs
+        self, screen, iti, stimulus_duration, reward_address, reward_profile, **kwargs
     ):
         super().__init__(screen)
 
         self.iti = float(iti) / 1000  # ms to s
-        self.stim_duration = float(stim_duration) / 1000  # ms to s
+        self.stimulus_duration = float(stimulus_duration) / 1000  # ms to s
 
         self.corrections_enabled = False
         self.correction_trial = False
@@ -144,9 +144,10 @@ class Task(Protocol):
             if not self.is_running:
                 return
             self.show_stim()
-            stim_start = time.time()
+            stimulus_start = time.time()
             while self.is_running and (
-                (time.time() - stim_start < self.stim_duration) or touchdown_event
+                (time.time() - stimulus_start < self.stimulus_duration)
+                or touchdown_event
             ):
                 if not self._touchevent_q.empty():
                     touchevent = self._touchevent_q.get()
