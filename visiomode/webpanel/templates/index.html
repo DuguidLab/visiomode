@@ -1,87 +1,164 @@
 {% extends "base.html" %}
 {% set active_page = "index" %}
-
 {% block title %}Dashboard{% endblock %}
 
 {% block content %}
-    <div class="d-sm-flex justify-content-between align-items-center mb-4"></div>
     <div class="row">
-        <div class="col-lg-7 col-xl-8">
-            <div class="card shadow mb-4">
-                <div class="card-header d-flex justify-content-between align-items-center">
-                    <h6 class="text-primary font-weight-bold m-0">Recent Sessions Overview</h6>
-                    <div class="dropdown no-arrow">
-                        <button class="btn btn-link btn-sm dropdown-toggle" data-toggle="dropdown"
-                                aria-expanded="false" type="button"><i
-                                class="fas fa-ellipsis-v text-gray-400"></i></button>
-                        <div class="dropdown-menu shadow dropdown-menu-right animated--fade-in"
-                             role="menu"><a class="dropdown-item" role="presentation">Rewards</a><a
-                                class="dropdown-item" role="presentation">Hits/Misses</a></div>
-                    </div>
-                </div>
-                <div class="card-body">
-                    <div class="chart-area">
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="col-lg-5 col-xl-4">
-            <div class="card shadow mb-4">
-                <div class="card-header d-flex justify-content-between align-items-center">
-                    <h6 class="text-primary font-weight-bold m-0">Status</h6>
-                    <div class="dropdown no-arrow">
-                        <button class="btn btn-link btn-sm dropdown-toggle" data-toggle="dropdown"
-                                aria-expanded="false" type="button"><i
-                                class="fas fa-ellipsis-v text-gray-400"></i></button>
-                        <div class="dropdown-menu shadow dropdown-menu-right animated--fade-in"
-                             role="menu"><a class="dropdown-item" role="presentation"
-                                            href="settings.html">Settings</a>
+        <div class="col-xl-12 offset-xl-0">
+            <div class="row">
+                <div class="col-xl-7">
+                    <div class="card shadow mb-4">
+                        <div class="card-header d-flex justify-content-between align-items-center">
+                            <h6 class="text-primary font-weight-bold m-0">Setup</h6>
+                        </div>
+                        <div class="card-body" style="min-height: 178px;">
+                            <form id="session-form">
+                                <div class="row">
+                                    <div class="col">
+                                        <div class="form-group">
+                                            <label for="animal_id">Animal ID</label>
+                                            <input id="animal_id"
+                                                   class="form-control mb-3"
+                                                   type="text"
+                                                   placeholder="animal id"
+                                                   required>
+                                            <label for="protocol">Protocol</label>
+                                            <select id="protocol" class="form-control mb-3">
+                                                <optgroup label="Tasks">
+                                                    {% for task in tasks %}
+                                                        <option value="{{ task.get_identifier() }}">{{ task.get_common_name() }}</option>
+                                                    {% endfor %}
+                                                </optgroup>
+                                                <optgroup label="Presentations">
+                                                    {% for present in presentations %}
+                                                        <option value="{{ present.get_identifier() }}">{{ present.get_common_name() }}</option>
+                                                    {% endfor %}
+                                                </optgroup>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="col">
+                                        <label for="experiment">Experiment Reference</label>
+                                        <input id="experiment"
+                                               class="form-control mb-3"
+                                               type="text"
+                                               placeholder="experiment id"
+                                               required>
+                                        <label for="duration">Duration (mins)</label>
+                                        <input id="duration" class="form-control mb-3"
+                                               type="number" value="30"
+                                               min="0" step="5">
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col">
+                                        <div><a class="btn btn-outline-primary btn-block" data-toggle="collapse"
+                                                aria-expanded="false" aria-controls="collapse-1"
+                                                href="#collapse-options" role="button">More Options</a>
+                                            <div class="collapse" id="collapse-options" style="margin-top: 10px">
+                                                <div id="protocol-options"></div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </form>
                         </div>
                     </div>
                 </div>
-                <div class="card-body">
-                    <div class="row">
-                        <div class="col align-self-center"><a class="text-primary" href="/session"><span
-                                class="flash animated mr-2"><i
-                                class="fas fa-running mr-2"></i>No active session</span></a>
+                <div class="col">
+                    <div class="card shadow mb-4">
+                        <div class="card-header d-flex justify-content-between align-items-center">
+                            <h6 class="text-primary font-weight-bold m-0">Status</h6>
+                        </div>
+                        <div class="card-body" style="min-height: 178px;">
+                            <div class="row">
+                                <div class="col text-center" style="font-size: 18px;padding-bottom: 17px;">
+                                                <span id="status-text" class="flash animated mr-2"
+                                                      style="font-size: 20px;">
+                                                    <i id="status-icon" class="fas fa-circle text-warning"
+                                                       style="font-size: 18px;"></i>&nbsp;Waiting...</span>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col">
+                                    <div class="progress" style="min-height: 20px;">
+                                        <div id="session-progress" class="progress-bar bg-dark progress-bar-striped"
+                                             aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"
+                                             style="box-sizing: content-box">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col">
+                                    <hr>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col">
+                                    <button class="btn btn-light btn-block btn-lg" id="session-control-btn">Waiting...
+                                    </button>
+                                </div>
+                            </div>
                         </div>
                     </div>
-                    <div class="row">
-                        <div class="col"><span class="mr-2"><i
-                                class="fas fa-circle text-success"></i>&nbsp;Webpanel</span>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col"><span class="mr-2"><i class="fas fa-circle text-success"></i>&nbsp;Display device</span>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col"><span class="mr-2"><i class="fas fa-circle text-success"></i>&nbsp;Redis service</span>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col"><span class="mr-2"><i class="fas fa-circle text-success"></i>&nbsp;Reward device</span>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col"><span class="mr-2"><i class="fas fa-circle text-success"></i>&nbsp;Touch sensor</span>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col"><span class="mr-2"><i
-                                class="fas fa-circle text-success"></i>&nbsp;Imaging</span>
-                        </div>
-                    </div>
-                    <div class="text-center small mt-4"></div>
                 </div>
             </div>
             <div class="row">
+                <div class="col-lg-7 col-xl-7">
+                    <div class="card shadow mb-4">
+                        <div class="card-header d-flex justify-content-between align-items-center">
+                            <h6 class="text-primary font-weight-bold m-0">Overview</h6>
+                            <div class="dropdown no-arrow">
+                                <button class="btn btn-link btn-sm dropdown-toggle" data-toggle="dropdown"
+                                        aria-expanded="false" type="button"><i
+                                        class="fas fa-ellipsis-v text-gray-400"></i></button>
+                                <div class="dropdown-menu shadow dropdown-menu-right animated--fade-in"
+                                     role="menu"><a class="dropdown-item" role="presentation">Rewards</a><a
+                                        class="dropdown-item" role="presentation">Hits/Misses</a><a
+                                        class="dropdown-item" role="presentation">Discrimination (d')</a>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="card-body">
+                            <div class="chart-area">
+                            </div>
+                        </div>
+                    </div>
+                </div>
                 <div class="col">
-                    <div class="card">
-                        <button class="btn btn-primary btn-lg" type="button">Download All Data</button>
+                    <div class="card shadow mb-4">
+                        <div class="card-header d-flex justify-content-between align-items-center">
+                            <h6 class="text-primary font-weight-bold m-0">Log</h6>
+                        </div>
+                        <div class="card-body" style="min-height: 210px; overflow-y: auto; max-height: 600px" >
+                            <ul id="log-list" class="list-unstyled">
+                                <li><em>Welcome! Session events will appear here.</em></li>
+                            </ul>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
     </div>
+    <div class="row">
+        <div class="col">
+            <div class="toast fade hide" role="alert">
+                <div class="toast-header"><img class="mr-2"><strong class="mr-auto">Title</strong><small>10
+                    min ago</small>
+                    <button class="close ml-2 mb-1 close" data-dismiss="toast"><span
+                            aria-hidden="true">×</span></button>
+                </div>
+                <div class="toast-body" role="alert">
+                    <p>Nullam id dolor id nibh ultricies vehicula ut id elit. Cras justo odio, dapibus ac
+                        facilisis in, egestas eget quam. Donec id elit non mi porta gravida at eget
+                        metus.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block scripts %}
+    <script type="text/javascript" src="static/js/session.js"></script>
 {% endblock %}
