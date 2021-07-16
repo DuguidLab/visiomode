@@ -6,7 +6,7 @@ import random
 
 import pygame as pg
 
-import visiomode.stimuli as stim
+import visiomode.stimuli as stimulus
 import visiomode.protocols as protocols
 
 
@@ -31,7 +31,7 @@ class TwoAlternativeForcedChoice(protocols.Task):
         )
         self.separator.centerx = self.screen.get_rect().centerx
 
-        target = stim.get_stimulus(target)
+        target = stimulus.get_stimulus(target)
         target_params = {
             key.replace("t_", ""): kwargs[key]
             for key in kwargs.keys()
@@ -39,7 +39,7 @@ class TwoAlternativeForcedChoice(protocols.Task):
         }
         self.target = target(background=self.background, **target_params)
 
-        distractor = stim.get_stimulus(distractor)
+        distractor = stimulus.get_stimulus(distractor)
         distractor_params = {
             key.replace("d_", ""): kwargs[key]
             for key in kwargs.keys()
@@ -47,7 +47,7 @@ class TwoAlternativeForcedChoice(protocols.Task):
         }
         self.distractor = distractor(background=self.background, **distractor_params)
 
-    def show_stim(self):
+    def show_stimulus(self):
         if not self.correction_trial:
             target_x, distr_x = self.shuffle_centerx()
             self.target.set_centerx(target_x)
@@ -56,7 +56,7 @@ class TwoAlternativeForcedChoice(protocols.Task):
         self.target.show()
         self.distractor.show()
 
-    def hide_stim(self):
+    def hide_stimulus(self):
         self.target.hide()
         self.distractor.hide()
 
@@ -71,7 +71,7 @@ class TwoAlternativeForcedChoice(protocols.Task):
                         return
         super(TwoAlternativeForcedChoice, self).update(events)
 
-    def update_stim(self):
+    def update_stimulus(self):
         self.distractor.update()
         self.target.update()
 

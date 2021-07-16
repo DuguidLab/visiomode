@@ -22,11 +22,11 @@ class TargetOnly(protocols.Task):
         target = stimuli.get_stimulus(target)
         self.target = target(background=self.background, **kwargs)
 
-    def update_stim(self):
+    def update_stimulus(self):
         self.target.update()
 
-    def show_stim(self):
+    def show_stimulus(self):
         self.target.show()
 
-    def hide_stim(self):
+    def hide_stimulus(self):
         self.target.hide()

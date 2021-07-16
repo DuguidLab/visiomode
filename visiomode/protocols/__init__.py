@@ -88,16 +88,16 @@ class Task(Protocol):
         self._session_thread.start()
 
     def stop(self):
-        self.hide_stim()
+        self.hide_stimulus()
         super(Task, self).stop()
 
-    def show_stim(self):
+    def show_stimulus(self):
         raise NotImplementedError
 
-    def hide_stim(self):
+    def hide_stimulus(self):
         raise NotImplementedError
 
-    def update_stim(self):
+    def update_stimulus(self):
         raise NotImplementedError
 
     def update(self, events):
@@ -115,12 +115,12 @@ class Task(Protocol):
                         timestamp=time.time(),
                     )
                 )
-        self.update_stim()
+        self.update_stimulus()
 
     def trial_block(self):
         """Trial block"""
         trial_start_iso = datetime.datetime.now().isoformat()
-        self.hide_stim()
+        self.hide_stimulus()
         block_start = time.time()
         touchdown_event = None
         touchup_event = None
@@ -143,7 +143,7 @@ class Task(Protocol):
             # To prevent stimulus showing after the session has ended, check if the session is still running.
             if not self.is_running:
                 return
-            self.show_stim()
+            self.show_stimulus()
             stimulus_start = time.time()
             while self.is_running and (
                 (time.time() - stimulus_start < self.stimulus_duration)
@@ -184,7 +184,7 @@ class Task(Protocol):
             # Hide stimulus at end of trial before calling handlers, so any reward dispensation associated
             # delays don't keep the stimulus hanging about on the screen.
             if self.is_running:
-                self.hide_stim()
+                self.hide_stimulus()
 
             # Call trial outcome handlers
             if outcome == PRECUED:
