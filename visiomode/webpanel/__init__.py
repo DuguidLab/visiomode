@@ -38,14 +38,9 @@ def create_app(action_q=None, log_q=None):
 
     @app.route("/")
     def index():
-        """Dashboard page."""
-        return flask.render_template("index.html")
-
-    @app.route("/session")
-    def session():
-        """Session page."""
+        """Visiomode Dashboard."""
         return flask.render_template(
-            "session.html",
+            "index.html",
             tasks=protocols.Task.get_children(),
             presentations=protocols.Presentation.get_children(),
             stimuli=stimuli.Stimulus.get_children(),
