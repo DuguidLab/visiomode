@@ -66,9 +66,9 @@
                         <div class="col d-xl-flex align-items-xl-center">
                             <ul class="nav navbar-nav">
                                 <li class="nav-item" role="presentation"></li>
-                                <li class="nav-item" role="presentation"><a
+                                <li id="hostname" class="nav-item" role="presentation"><a
                                         class="nav-link active text-truncate text-muted d-flex"
-                                        style="max-height: 30px;">RPi01</a></li>
+                                        style="max-height: 30px;"></a></li>
                                 <li class="nav-item" role="presentation"></li>
                                 <li class="nav-item" role="presentation"></li>
                             </ul>
@@ -105,6 +105,12 @@
 <script src="static/js/chart.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-easing/1.4.1/jquery.easing.js"></script>
 <script src="static/js/script.min.js"></script>
+<script>
+    /// Get hostname
+    $.get("/api/hostname").done(function (data) {
+        $('#hostname').html(data);
+    })
+</script>
 {% block scripts %}{% endblock %}
 </body>
 </html>
