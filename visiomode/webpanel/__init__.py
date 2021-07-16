@@ -93,6 +93,12 @@ def create_app(action_q=None, log_q=None):
         "/api/device", view_func=api.DeviceAPI.as_view("device_api"), methods=["POST"]
     )
 
+    app.add_url_rule(
+        "/api/hostname",
+        view_func=api.HostnameAPI.as_view("hostname_api"),
+        methods=["GET"],
+    )
+
     return app
 
 

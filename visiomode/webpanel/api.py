@@ -4,6 +4,7 @@
 #  Distributed under the terms of the MIT Licence.
 import json
 import queue
+import socket
 import flask
 import flask.views
 import visiomode.devices as devices
@@ -58,3 +59,8 @@ class ProtocolAPI(flask.views.MethodView):
                 serial_devices=devices.get_available_devices(),
             )
         return "No Additional Options"
+
+
+class HostnameAPI(flask.views.MethodView):
+    def get(self):
+        return socket.gethostname()
