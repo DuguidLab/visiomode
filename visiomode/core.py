@@ -130,6 +130,7 @@ class Visiomode:
                 self.session.save(self.config.data_dir)
 
                 self.session = None
+                pg.event.clear()  # Clear unused events so queue doesn't fill up
 
             if pg.event.get(eventtype=pg.QUIT):
                 if self.session:
@@ -138,7 +139,6 @@ class Visiomode:
                 return
 
             pg.display.flip()
-            pg.event.clear()  # Clear unused events so queue doesn't fill up
 
     def request_listener(self):
         while True:
