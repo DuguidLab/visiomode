@@ -117,20 +117,6 @@ class Task(Protocol):
         response_event = self.response_device.get_response()
         if response_event:
             self._response_q.put(response_event)
-        # for event in events:
-        #     if event.type == TOUCHDOWN or event.type == TOUCHUP:
-        #         x = event.x * self.config.width
-        #         y = event.y * self.config.height
-        #         on_target = self.target.collision(x, y) and not self.target.hidden
-        #         self._response_q.put(
-        #             TouchEvent(
-        #                 event_type=event.type,
-        #                 on_target=on_target,
-        #                 x=x,
-        #                 y=y,
-        #                 timestamp=time.time(),
-        #             )
-        #         )
         self.update_stimulus()
 
     def trial_block(self):
