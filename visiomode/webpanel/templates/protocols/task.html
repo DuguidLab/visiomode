@@ -21,6 +21,17 @@
     </div>
 </div>
 
+<div class="row">
+    <div class="col">
+        <label for="response_device">Response Device</label>
+        <select id="response_device" class="form-control mb-3">
+            {% for profile in response_profiles %}
+                <option value="{{ profile.get_identifier() }}">{{ profile.get_common_name() }}</option>
+            {% endfor %}
+        </select>
+    </div>
+</div>
+
 
 <script>
     reward_button = document.getElementById('test-reward-btn')

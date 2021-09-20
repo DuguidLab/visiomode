@@ -62,7 +62,14 @@ class Protocol(mixins.BaseClassMixin, mixins.WebFormMixin):
 
 class Task(Protocol):
     def __init__(
-        self, screen, iti, stimulus_duration, reward_address, reward_profile, **kwargs
+        self,
+        screen,
+        iti,
+        stimulus_duration,
+        response_device,
+        reward_address,
+        reward_profile,
+        **kwargs
     ):
         super().__init__(screen)
 
@@ -73,6 +80,8 @@ class Task(Protocol):
         self.correction_trial = False
 
         self.target = None
+
+        self.response_device = devices.get_input_profile(response_device)
 
         self.reward_profile = devices.get_output_profile(reward_profile)
         self.reward_device = self.reward_profile(reward_address)
@@ -101,6 +110,7 @@ class Task(Protocol):
         raise NotImplementedError
 
     def update(self, events):
+        # check input device for response
         for event in events:
             if event.type == TOUCHDOWN or event.type == TOUCHUP:
                 x = event.x * self.config.width
