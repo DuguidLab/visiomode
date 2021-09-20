@@ -18,7 +18,7 @@ def get_available_devices():
 
 
 def get_input_profile(profile_id):
-    return InputDevice.get_child(profile_id)
+    return InputDevice.get_child(profile_id)()
 
 
 def get_output_profile(profile_id):
