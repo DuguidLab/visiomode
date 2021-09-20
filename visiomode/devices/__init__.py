@@ -17,12 +17,12 @@ def get_available_devices():
     return [dev.device for dev in ports.comports()]
 
 
-def get_input_profile(profile_id):
-    return InputDevice.get_child(profile_id)()
+def get_input_device(profile_id, address=None):
+    return InputDevice.get_child(profile_id)(address)
 
 
-def get_output_profile(profile_id):
-    return OutputDevice.get_child(profile_id)
+def get_output_profile(profile_id, address=None):
+    return OutputDevice.get_child(profile_id)(address)
 
 
 def check_device_profile(profile_id, address):
