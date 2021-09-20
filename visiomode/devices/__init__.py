@@ -31,21 +31,22 @@ def check_device_profile(profile_id, address):
 
 
 class Device(mixins.BaseClassMixin, mixins.YamlAttributesMixin):
-    def __init__(self, profile_path=None):
+    def __init__(self, address=None, profile_path=None):
         self.profile_path = profile_path or (
             conf.Config().devices + os.sep + self.get_identifier() + ".yml"
         )
+        self.address = address
         self.load_yaml(self.profile_path)
 
     def __repr__(self):
-        return "<{} device>".format(self.get_common_name())
+        return "<{} device at {}>".format(self.get_common_name(), self.address)
 
 
 class InputDevice(abc.ABC, Device):
     """Interface for input devices"""
 
     def __init__(self, profile_path=None):
-        super().__init__(profile_path)
+        super().__init__(profile_path=profile_path)
 
     @abc.abstractmethod
     def get_response(self):
