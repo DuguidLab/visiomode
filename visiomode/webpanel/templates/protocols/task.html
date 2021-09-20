@@ -1,5 +1,28 @@
 <div class="row">
     <div class="col">
+        <label for="response_device">Response Input Device</label>
+        <select id="response_device" class="form-control mb-3">
+            {% for profile in response_profiles|reverse %}
+                <option value="{{ profile.get_identifier() }}">{{ profile.get_common_name() }}</option>
+            {% endfor %}
+        </select>
+    </div>
+    <div class="col">
+        <label id="response_address_label" for="response_address">Input Device Address</label>
+        <select id="response_address" class="form-control mb-3">
+            {% for address in serial_devices %}
+                <option value="{{ address }}">{{ address }}</option>
+            {% endfor %}
+        </select>
+    </div>
+    <div class="col">
+        <label id="response_test_label">Test Input Device</label>
+        <button class="btn btn-light btn-block btn-md" id="test-response-btn">Test</button>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col">
         <label for="reward_profile">Reward Profile</label>
         <select id="reward_profile" class="form-control mb-3">
             {% for profile in reward_profiles %}
@@ -8,7 +31,7 @@
         </select>
     </div>
     <div class="col">
-        <label for="reward_address">Device Address</label>
+        <label id="reward_address_label" for="reward_address">Device Address</label>
         <select id="reward_address" class="form-control mb-3">
             {% for address in serial_devices %}
                 <option value="{{ address }}">{{ address }}</option>
@@ -16,19 +39,8 @@
         </select>
     </div>
     <div class="col">
-        <label>Test Device</label>
+        <label id="reward_test_label">Test Reward Device</label>
         <button class="btn btn-light btn-block btn-md" id="test-reward-btn">Dispense Reward</button>
-    </div>
-</div>
-
-<div class="row">
-    <div class="col">
-        <label for="response_device">Response Device</label>
-        <select id="response_device" class="form-control mb-3">
-            {% for profile in response_profiles %}
-                <option value="{{ profile.get_identifier() }}">{{ profile.get_common_name() }}</option>
-            {% endfor %}
-        </select>
     </div>
 </div>
 
@@ -47,5 +59,37 @@
             },
             body: JSON.stringify(data),
         });
+    };
+
+    response_button = document.getElementById('test-response-btn')
+    response_button.onclick = function (event) {
+        event.preventDefault()
+        let address = document.getElementById('response_address').value;
+        let profile = document.getElementById('response_profile').value;
+        let data = {address: address, profile: profile};
+        fetch("/api/device", {
+            method: "POST",
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(data),
+        });
+    };
+
+    reward_selector = document.getElementById('response_device')
+    reward_selector.onchange = function () {
+        if (reward_selector.options[reward_selector.selectedIndex].value === "touchscreen") {
+            document.getElementById('response_address').style.display = "none"
+            document.getElementById('response_address_label').style.display = "none"
+            document.getElementById('response_test_label').style.display = "none"
+            document.getElementById('test-response-btn').style.display = "none"
+        } else {
+            document.getElementById('response_address').style.display = "block"
+            document.getElementById('response_address_label').style.display = "block"
+            document.getElementById('response_test_label').style.display = "block"
+            document.getElementById('test-response-btn').style.display = "block"
+        }
     }
+
+    reward_selector.onchange();
 </script>

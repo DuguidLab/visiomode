@@ -67,6 +67,7 @@ class Task(Protocol):
         iti,
         stimulus_duration,
         response_device,
+        response_address,
         reward_address,
         reward_profile,
         **kwargs
@@ -83,11 +84,11 @@ class Task(Protocol):
         self.distractor = None
         self.separator = None
 
-        self.response_device = devices.get_input_profile(response_device)
+        self.response_device = devices.get_input_device(
+            response_device, response_address
+        )
 
-        # TODO - autodetect address (issue 140)
-        self.reward_profile = devices.get_output_profile(reward_profile)
-        self.reward_device = self.reward_profile(reward_address)
+        self.reward_device = devices.get_output_profile(reward_profile, reward_address)
 
         self._response_q = queue.Queue()
 
