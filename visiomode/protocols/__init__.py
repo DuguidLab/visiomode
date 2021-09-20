@@ -83,10 +83,11 @@ class Task(Protocol):
 
         self.response_device = devices.get_input_profile(response_device)
 
+        # TODO - autodetect address (issue 140)
         self.reward_profile = devices.get_output_profile(reward_profile)
         self.reward_device = self.reward_profile(reward_address)
 
-        self._touchevent_q = queue.Queue()
+        self._response_q = queue.Queue()
 
         self._session_thread = threading.Thread(
             target=self._session_runner, daemon=True
@@ -111,20 +112,23 @@ class Task(Protocol):
 
     def update(self, events):
         # check input device for response
-        for event in events:
-            if event.type == TOUCHDOWN or event.type == TOUCHUP:
-                x = event.x * self.config.width
-                y = event.y * self.config.height
-                on_target = self.target.collision(x, y) and not self.target.hidden
-                self._touchevent_q.put(
-                    TouchEvent(
-                        event_type=event.type,
-                        on_target=on_target,
-                        x=x,
-                        y=y,
-                        timestamp=time.time(),
-                    )
-                )
+        response_event = self.response_device.get_response()
+        if response_event:
+            self._response_q.put(response_event)
+        # for event in events:
+        #     if event.type == TOUCHDOWN or event.type == TOUCHUP:
+        #         x = event.x * self.config.width
+        #         y = event.y * self.config.height
+        #         on_target = self.target.collision(x, y) and not self.target.hidden
+        #         self._response_q.put(
+        #             TouchEvent(
+        #                 event_type=event.type,
+        #                 on_target=on_target,
+        #                 x=x,
+        #                 y=y,
+        #                 timestamp=time.time(),
+        #             )
+        #         )
         self.update_stimulus()
 
     def trial_block(self):
@@ -132,22 +136,18 @@ class Task(Protocol):
         trial_start_iso = datetime.datetime.now().isoformat()
         self.hide_stimulus()
         block_start = time.time()
-        touchdown_event = None
-        touchup_event = None
         outcome = None
+        response = None
+        response_time = -1
 
-        while self.is_running and (
-            (time.time() - block_start < self.iti) or touchdown_event
-        ):
-            if not self._touchevent_q.empty():
-                touchevent = self._touchevent_q.get()
+        while self.is_running and (time.time() - block_start < self.iti):
+            if not self._response_q.empty():
+                response_event = self._response_q.get()
                 # If touchdown, log trial as precued
-                if touchevent.event_type == TOUCHDOWN:
+                if response_event:
                     outcome = PRECUED
-                    touchdown_event = touchevent
-                # On touchup, register the trial and reset the ITI by breaking out of loop
-                if touchevent.event_type == TOUCHUP:
-                    touchup_event = touchevent
+                    response = response_event
+                    response_time = time.time()
                     break
         else:
             # To prevent stimulus showing after the session has ended, check if the session is still running.
@@ -156,19 +156,24 @@ class Task(Protocol):
             self.show_stimulus()
             stimulus_start = time.time()
             while self.is_running and (
-                (time.time() - stimulus_start < self.stimulus_duration)
-                or touchdown_event
+                time.time() - stimulus_start < self.stimulus_duration
             ):
-                if not self._touchevent_q.empty():
-                    touchevent = self._touchevent_q.get()
-                    if touchevent.event_type == TOUCHDOWN:
-                        if touchevent.on_target and not self.target.hidden:
+                if not self._response_q.empty():
+                    response_event = self._response_q.get()
+                    if response_event:
+                        if (
+                            self.target.collision(
+                                response_event.pos_x, response_event.pos_y
+                            )
+                            and not self.target.hidden
+                        ):
                             outcome = CORRECT
+                            response = response_event
+                            response_time = time.time()
                         else:
                             outcome = INCORRECT
-                        touchdown_event = touchevent
-                    if touchevent.event_type == TOUCHUP:
-                        touchup_event = touchevent
+                            response = response_event
+                            response_time = time.time()
                         break
             else:
                 # if the target was not visible, i.e. the stimulus was a distractor, and there was no touch event during
@@ -178,16 +183,12 @@ class Task(Protocol):
                 else:
                     outcome = NO_RESPONSE
 
+        # If no explicit outcome, return without doing anything else. This prevents previous session events from leaking
+        # through.
         if not outcome:
             return
 
-        # Touchup events from the previous session can sometimes leak through (e.g. if touchup is after
-        # session has ended). Prevent this crashing everything by checking for both touchup and touchdown
-        # objects exist before creating a trial.
-        response = None
-        if touchup_event and touchdown_event:
-            response = self.parse_response(block_start, touchdown_event, touchup_event)
-        trial = self.parse_trial(trial_start_iso, outcome, response)
+        trial = self.parse_trial(trial_start_iso, outcome, response, response_time)
         print(trial.__dict__)
         self.trials.append(trial)
 
@@ -214,33 +215,16 @@ class Task(Protocol):
         if self.corrections_enabled and self.correction_trial and (outcome == CORRECT):
             self.correction_trial = False
 
-    def parse_trial(self, trial_start, outcome, response=None):
+    def parse_trial(self, trial_start, outcome, response=None, response_time=-1):
         trial = models.Trial(
             outcome=outcome,
             iti=self.iti,
-            response_time=response["response_time"] if response else -1,
-            duration=response["duration"] if response else -1,
-            pos_x=response["pos_x"] if response else -1,
-            pos_y=response["pos_y"] if response else -1,
-            dist_x=response["dist_x"] if response else -1,
-            dist_y=response["dist_y"] if response else -1,
+            response=response,
+            response_time=response_time,
             timestamp=trial_start,
             correction=self.correction_trial,
         )
         return trial
-
-    def parse_response(self, block_start, touchdown, touchup):
-        return {
-            "response_time": touchdown.timestamp - block_start - self.iti,
-            "duration": touchup.timestamp - touchdown.timestamp,
-            "pos_x": touchdown.x,
-            "pos_y": touchdown.y,
-            "dist_x": touchup.x - touchdown.x,
-            "dist_y": touchup.y - touchdown.y,
-            "timestamp": datetime.datetime.fromtimestamp(
-                touchdown.timestamp
-            ).isoformat(),
-        }
 
     def on_correct(self):
         self.reward_device.output()

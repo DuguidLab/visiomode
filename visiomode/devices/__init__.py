@@ -5,6 +5,7 @@
 #  Distributed under the terms of the MIT Licence.
 import os
 import abc
+import queue
 import serial.tools.list_ports as ports
 import visiomode.mixins as mixins
 import visiomode.config as conf
@@ -45,6 +46,10 @@ class InputDevice(abc.ABC, Device):
 
     def __init__(self, profile_path=None):
         super().__init__(profile_path)
+
+    @abc.abstractmethod
+    def get_response(self):
+        pass
 
 
 class OutputDevice(abc.ABC, Device):
