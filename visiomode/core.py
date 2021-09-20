@@ -138,6 +138,7 @@ class Visiomode:
                 return
 
             pg.display.flip()
+            pg.event.clear()  # Clear unused events so queue doesn't fill up
 
     def request_listener(self):
         while True:
