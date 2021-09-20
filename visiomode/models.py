@@ -26,13 +26,32 @@ class Base:
 
 
 @dataclasses.dataclass
+class Response(Base):
+    """
+     Attributes:
+        timestamp: String trial date and time (ISO format). Defaults to current date and time.
+        duration: Integer representing the duration of the touch in milliseconds.
+        pos_x: Float representing the touch position in the x-axis.
+        pos_y: Float representing the touch position in the y-axis.
+        dist_x: Float representing the distance travelled while touching the screen in the x-axis.
+        dist_y: Float representing the distance travelled while touching the screen in the y-axis.
+    """
+
+    timestamp: str
+    duration: int
+    pos_x: float
+    pos_y: float
+    dist_x: float
+    dist_y: float
+
+
+@dataclasses.dataclass
 class Trial(Base):
     """Trial model class.
 
     Attributes:
         outcome: String descriptive of trial outcome, e.g. "correct", "incorrect", "no_response", "precued".
         iti: Float representing the "silent" time before the stimulus is presented in milliseconds.
-        response_time: Integer representing the time between stimulus presentation and response in milliseconds.
         duration: Integer representing the duration of the touch in milliseconds.
         pos_x: Float representing the touch position in the x-axis.
         pos_y: Float representing the touch position in the y-axis.
@@ -40,18 +59,15 @@ class Trial(Base):
         dist_y: Float representing the distance travelled while touching the screen in the y-axis.
         timestamp: String trial date and time (ISO format). Defaults to current date and time.
         correction: Boolean indicating whether or not trial is a correction trial. Defaults to False.
+        response_time: Integer representing the time between stimulus presentation and response in milliseconds.
     """
 
     outcome: str
     iti: float
-    response_time: int
-    duration: int
-    pos_x: float
-    pos_y: float
-    dist_x: float
-    dist_y: float
+    response: Response
     timestamp: str = datetime.datetime.now().isoformat()
     correction: bool = False
+    response_time: int = -1
 
     def __repr__(self):
         return "<Trial {}>".format(str(self.timestamp))
