@@ -37,14 +37,14 @@ class Device(mixins.BaseClassMixin, mixins.YamlAttributesMixin):
         self.load_yaml(self.profile_path)
 
     def __repr__(self):
-        return "<{} device at {}>".format(self.get_common_name(), self.address)
+        return "<{} device>".format(self.get_common_name())
 
 
 class InputDevice(abc.ABC, Device):
     """Interface for input devices"""
 
     def __init__(self, profile_path=None):
-        super().__init__()
+        super().__init__(profile_path)
 
 
 class OutputDevice(abc.ABC, Device):
