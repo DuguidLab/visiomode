@@ -30,8 +30,7 @@ def check_device_profile(profile_id, address):
 
 
 class Device(mixins.BaseClassMixin, mixins.YamlAttributesMixin):
-    def __init__(self, address, profile_path=None):
-        self.address = address
+    def __init__(self, profile_path=None):
         self.profile_path = profile_path or (
             conf.Config().devices + os.sep + self.get_identifier() + ".yml"
         )
@@ -43,6 +42,9 @@ class Device(mixins.BaseClassMixin, mixins.YamlAttributesMixin):
 
 class InputDevice(abc.ABC, Device):
     """Interface for input devices"""
+
+    def __init__(self, profile_path=None):
+        super().__init__()
 
 
 class OutputDevice(abc.ABC, Device):
