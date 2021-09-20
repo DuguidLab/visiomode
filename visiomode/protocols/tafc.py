@@ -60,17 +60,6 @@ class TwoAlternativeForcedChoice(protocols.Task):
         self.target.hide()
         self.distractor.hide()
 
-    def update(self):
-        # ignore events on the background sprite if target and distractor are visible
-        for event in events:
-            if event.type == protocols.TOUCHDOWN or event.type == protocols.TOUCHUP:
-                if not self.target.hidden:  # if target is visible, so is the distractor
-                    x = event.x * self.config.width
-                    y = event.y * self.config.height
-                    if self.separator.collidepoint(x, y):
-                        return
-        super(TwoAlternativeForcedChoice, self).update()
-
     def update_stimulus(self):
         self.distractor.update()
         self.target.update()

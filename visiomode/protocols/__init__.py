@@ -80,6 +80,8 @@ class Task(Protocol):
         self.correction_trial = False
 
         self.target = None
+        self.distractor = None
+        self.separator = None
 
         self.response_device = devices.get_input_profile(response_device)
 
@@ -161,6 +163,13 @@ class Task(Protocol):
                 if not self._response_q.empty():
                     response_event = self._response_q.get()
                     if response_event:
+                        # If the response is on the separator (and one exists), ignore it.
+                        if self.separator and self.separator.collidepoint(
+                            response_event.pos_x, response_event.pos_y
+                        ):
+                            print("blipblop")
+                            continue
+
                         if (
                             self.target.collision(
                                 response_event.pos_x, response_event.pos_y
