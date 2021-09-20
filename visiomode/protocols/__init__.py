@@ -48,7 +48,7 @@ class Protocol(mixins.BaseClassMixin, mixins.WebFormMixin):
         self.config = conf.Config()
         self._timedelta = 0
 
-    def update(self, events):
+    def update(self):
         """Protocol event handling and graphics rendering"""
 
     def start(self):
@@ -110,7 +110,7 @@ class Task(Protocol):
     def update_stimulus(self):
         raise NotImplementedError
 
-    def update(self, events):
+    def update(self):
         # check input device for response
         response_event = self.response_device.get_response()
         if response_event:
