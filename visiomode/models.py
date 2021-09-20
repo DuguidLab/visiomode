@@ -30,7 +30,6 @@ class Response(Base):
     """
      Attributes:
         timestamp: String trial date and time (ISO format). Defaults to current date and time.
-        duration: Integer representing the duration of the touch in milliseconds.
         pos_x: Float representing the touch position in the x-axis.
         pos_y: Float representing the touch position in the y-axis.
         dist_x: Float representing the distance travelled while touching the screen in the x-axis.
@@ -38,7 +37,6 @@ class Response(Base):
     """
 
     timestamp: str
-    duration: int
     pos_x: float
     pos_y: float
     dist_x: float
