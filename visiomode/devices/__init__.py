@@ -27,6 +27,7 @@ def get_output_profile(profile_id, address=None):
 
 def check_device_profile(profile_id, address):
     """Allow user to check whether a device profile will work for a port address."""
+    # TODO - support input devices too
     OutputDevice.get_child(profile_id)(address).output()
 
 
@@ -44,9 +45,6 @@ class Device(mixins.BaseClassMixin, mixins.YamlAttributesMixin):
 
 class InputDevice(abc.ABC, Device):
     """Interface for input devices"""
-
-    def __init__(self, profile_path=None):
-        super().__init__(profile_path=profile_path)
 
     @abc.abstractmethod
     def get_response(self):
