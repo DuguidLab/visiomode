@@ -222,17 +222,41 @@ class Task(Protocol):
         )
         return trial
 
+    def on_protocol_start(self):
+        self.response_device.on_protocol_start()
+        self.reward_device.on_protocol_start()
+
+    def on_trial_start(self):
+        self.response_device.on_trial_start()
+        self.reward_device.on_trial_start()
+
+    def on_stimulus_start(self):
+        self.response_device.on_stimulus_start()
+        self.reward_device.on_stimulus_start()
+
+    def on_trial_end(self):
+        self.response_device.on_trial_end()
+        self.reward_device.on_trial_end()
+
+    def on_protocol_end(self):
+        self.response_device.on_protocol_end()
+        self.reward_device.on_protocol_end()
+
     def on_correct(self):
-        self.reward_device.output()
+        self.response_device.on_correct()
+        self.reward_device.on_correct()
 
     def on_incorrect(self):
-        pass
+        self.response_device.on_incorrect()
+        self.reward_device.on_incorrect()
 
     def on_no_response(self):
-        pass
+        self.response_device.on_no_response()
+        self.reward_device.on_no_response()
 
     def on_precued(self):
-        pass
+        self.response_device.on_precued()
+        self.reward_device.on_precued()
 
     def _session_runner(self):
         while self.is_running:
