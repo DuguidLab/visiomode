@@ -30,7 +30,9 @@ def check_device_profile(profile_id, address):
     OutputDevice.get_child(profile_id)(address).output()
 
 
-class Device(mixins.BaseClassMixin, mixins.YamlAttributesMixin):
+class Device(
+    mixins.BaseClassMixin, mixins.YamlAttributesMixin, mixins.ProtocolEventsMixin
+):
     def __init__(self, address=None, profile_path=None):
         self.profile_path = profile_path or (
             conf.Config().devices + os.sep + self.get_identifier() + ".yml"
@@ -51,9 +53,6 @@ class InputDevice(Device):
 
 class OutputDevice(Device):
     """Interface for output devices"""
-
-    def output(self):
-        raise NotImplementedError
 
     def calibrate(self, **kwargs):
         for key, value in kwargs.items():
