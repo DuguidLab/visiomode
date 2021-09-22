@@ -4,7 +4,6 @@
 #  Copyright (c) 2020 Constantinos Eleftheriou <Constantinos.Eleftheriou@ed.ac.uk>
 #  Distributed under the terms of the MIT Licence.
 import os
-import abc
 import queue
 import serial.tools.list_ports as ports
 import visiomode.mixins as mixins
@@ -43,20 +42,18 @@ class Device(mixins.BaseClassMixin, mixins.YamlAttributesMixin):
         return "<{} device at {}>".format(self.get_common_name(), self.address)
 
 
-class InputDevice(abc.ABC, Device):
+class InputDevice(Device):
     """Interface for input devices"""
 
-    @abc.abstractmethod
     def get_response(self):
-        pass
+        raise NotImplementedError
 
 
-class OutputDevice(abc.ABC, Device):
+class OutputDevice(Device):
     """Interface for output devices"""
 
-    @abc.abstractmethod
     def output(self):
-        pass
+        raise NotImplementedError
 
     def calibrate(self, **kwargs):
         for key, value in kwargs.items():
