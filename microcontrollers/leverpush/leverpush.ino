@@ -48,7 +48,7 @@ void test() {
     // Cycle the servos and blink the indicator light
     digitalWrite(LED_BUILTIN, HIGH);
     leverUnlock();
-    digitalWrite(LED_BUILTIN, LOW;
+    digitalWrite(LED_BUILTIN, LOW);
     leverLock();
     digitalWrite(LED_BUILTIN, HIGH);
     leverUnlock();
