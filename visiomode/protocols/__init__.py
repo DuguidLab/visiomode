@@ -34,7 +34,7 @@ def get_protocol(protocol_id):
     return Protocol.get_child(protocol_id)
 
 
-class Protocol(mixins.BaseClassMixin, mixins.WebFormMixin):
+class Protocol(mixins.BaseClassMixin, mixins.WebFormMixin, mixins.ProtocolEventsMixin):
     form_path = None
 
     def __init__(self, screen):
