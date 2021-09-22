@@ -129,6 +129,8 @@ class Task(Protocol):
         response = None
         response_time = -1
 
+        self.on_trial_start()
+
         while self.is_running and (time.time() - block_start < self.iti):
             if not self._response_q.empty():
                 response_event = self._response_q.get()
@@ -143,6 +145,7 @@ class Task(Protocol):
             if not self.is_running:
                 return
             self.show_stimulus()
+            self.on_stimulus_start()
             stimulus_start = time.time()
             while self.is_running and (
                 time.time() - stimulus_start < self.stimulus_duration
@@ -183,6 +186,8 @@ class Task(Protocol):
         # through.
         if not outcome:
             return
+
+        self.on_trial_end()
 
         trial = self.parse_trial(trial_start_iso, outcome, response, response_time)
         print(trial.__dict__)
@@ -259,8 +264,10 @@ class Task(Protocol):
         self.reward_device.on_precued()
 
     def _session_runner(self):
+        self.on_protocol_start()
         while self.is_running:
             self.trial_block()
+        self.on_protocol_end()
 
 
 class Presentation(Protocol):

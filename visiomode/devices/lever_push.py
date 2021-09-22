@@ -55,6 +55,12 @@ class LeverPush(devices.InputDevice):
     def stop_listening(self):
         self.listening = False
 
+    def on_trial_start(self):
+        self.unlock_lever()
+
+    def on_trial_end(self):
+        self.lock_lever()
+
     def _message_listener(self):
         while self.listening:
             raw_message = self.bus.readline().decode("utf8")
