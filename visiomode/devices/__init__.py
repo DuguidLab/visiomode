@@ -28,6 +28,7 @@ def check_device_profile(profile_id, address):
     """Allow user to check whether a device profile will work for a port address."""
     # TODO - support input devices too
     OutputDevice.get_child(profile_id)(address).test()
+    InputDevice.get_child(profile_id)(address).test()
 
 
 class Device(
