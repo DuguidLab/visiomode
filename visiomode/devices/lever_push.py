@@ -69,6 +69,7 @@ class LeverPush(devices.InputDevice):
             raw_message = self.bus.readline().decode("utf8")
             print(raw_message)  # DEBUG
             message = lever_response_map.get(raw_message)
+            print(message)
             if message == "response":
                 self._response_q.put(message)
             elif message == "error":
