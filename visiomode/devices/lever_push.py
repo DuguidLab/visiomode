@@ -70,7 +70,8 @@ class LeverPush(devices.InputDevice):
             print(raw_message)  # DEBUG
             message = lever_response_map.get(raw_message)
             print(message)
-            if message == "response":
+            # if message == "response":
+            if raw_message == "R":
                 self._response_q.put(message)
             elif message == "error":
                 raise devices.DeviceError("Lever-push controller error.")
