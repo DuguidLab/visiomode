@@ -41,9 +41,11 @@ class LeverPush(devices.InputDevice):
 
     def lock_lever(self):
         self.bus.write(b"L\n")
+        time.sleep(0.2)
 
     def unlock_lever(self):
         self.bus.write(b"U\n")
+        time.sleep(0.2)
 
     def listen(self, threaded=True):
         self.listening = True
