@@ -61,9 +61,13 @@ class LeverPush(devices.InputDevice):
     def on_trial_end(self):
         self.lock_lever()
 
+    def test(self):
+        self.bus.write(b"T\n")
+
     def _message_listener(self):
         while self.listening:
             raw_message = self.bus.readline().decode("utf8")
+            print(raw_message)  # DEBUG
             message = lever_response_map.get(raw_message)
             if message == "response":
                 self._response_q.put(message)

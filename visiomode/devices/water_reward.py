@@ -19,3 +19,6 @@ class WaterReward(devices.OutputDevice):
         """Dispenses water reward."""
         self.bus.write(b"T\n")
         time.sleep(self.reward_epoch / 1000)
+
+    def test(self):
+        self.bus.write(b"T\n")

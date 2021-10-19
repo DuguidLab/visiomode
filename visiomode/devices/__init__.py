@@ -27,7 +27,7 @@ def get_output_profile(profile_id, address=None):
 def check_device_profile(profile_id, address):
     """Allow user to check whether a device profile will work for a port address."""
     # TODO - support input devices too
-    OutputDevice.get_child(profile_id)(address).output()
+    OutputDevice.get_child(profile_id)(address).test()
 
 
 class Device(
@@ -39,6 +39,9 @@ class Device(
         )
         self.address = address
         self.load_yaml(self.profile_path)
+
+    def test(self):
+        raise NotImplementedError
 
     def __repr__(self):
         return "<{} device at {}>".format(self.get_common_name(), self.address)
