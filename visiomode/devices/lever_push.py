@@ -66,7 +66,7 @@ class LeverPush(devices.InputDevice):
 
     def _message_listener(self):
         while self.listening:
-            raw_message = self.bus.readline().decode("utf8").rstrip("\n")
+            raw_message = self.bus.readline().decode("utf8").replace("\n", "")
             print(raw_message)  # DEBUG
             message = lever_response_map.get(raw_message)
             print(message)
