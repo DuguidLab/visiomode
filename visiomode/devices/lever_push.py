@@ -71,7 +71,7 @@ class LeverPush(devices.InputDevice):
             message = lever_response_map.get(raw_message[0]) if raw_message else None
             if message == "response":
                 self._response_q.put(message)
-                time.sleep(0.2)
+                time.sleep(0.1)
             elif message == "error":
                 raise devices.DeviceError("Lever-push controller error.")
 
