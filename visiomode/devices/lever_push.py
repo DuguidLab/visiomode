@@ -24,6 +24,7 @@ class LeverPush(devices.InputDevice):
 
         self.listening = False
         self._response_q = queue.Queue()
+        self._command_q = queue.Queue()
 
         self.listen(threaded=True)
 
@@ -40,12 +41,10 @@ class LeverPush(devices.InputDevice):
         return None
 
     def lock_lever(self):
-        self.bus.write(b"L\n")
-        time.sleep(0.2)
+        self._command_q.put(b"L\n")
 
     def unlock_lever(self):
-        self.bus.write(b"U\n")
-        time.sleep(0.2)
+        self._command_q.put(b"U\n")
 
     def listen(self, threaded=True):
         self.listening = True
@@ -64,7 +63,7 @@ class LeverPush(devices.InputDevice):
         self.lock_lever()
 
     def test(self):
-        self.bus.write(b"T\n")
+        self._command_q.put(b"T\n")
 
     def _message_listener(self):
         while self.listening:
@@ -75,6 +74,9 @@ class LeverPush(devices.InputDevice):
                 time.sleep(0.2)
             elif message == "error":
                 raise devices.DeviceError("Lever-push controller error.")
+
+            if not self._command_q.empty():
+                self.bus.write(self._command_q.get())
 
     def test(self):
         self.bus.write(b"T\n")
