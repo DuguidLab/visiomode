@@ -19,7 +19,7 @@ class LeverPush(devices.InputDevice):
         super().__init__(address, profile_path)
         self.config = conf.Config()
 
-        self.bus = serial.Serial(address, 9600, timeout=None)
+        self.bus = serial.Serial(address, 9600, timeout=1)
         time.sleep(2)  # Allow the port enough time to do its thing after a reset
 
         self.listening = False
@@ -67,12 +67,10 @@ class LeverPush(devices.InputDevice):
     def _message_listener(self):
         while self.listening:
             raw_message = self.bus.readline().decode("utf-8")[0]
-            print(raw_message)  # DEBUG
             message = lever_response_map.get(raw_message)
-            print(message)
-            print(type(raw_message))
             if message == "response":
                 self._response_q.put(message)
+                time.sleep(0.2)
             elif message == "error":
                 raise devices.DeviceError("Lever-push controller error.")
 
