@@ -19,7 +19,7 @@ class LeverPush(devices.InputDevice):
         super().__init__(address, profile_path)
         self.config = conf.Config()
 
-        self.bus = serial.Serial(address, 9600, timeout=1)
+        self.bus = serial.Serial(address, 9600, timeout=0.1)
         time.sleep(2)  # Allow the port enough time to do its thing after a reset
 
         self.listening = False
