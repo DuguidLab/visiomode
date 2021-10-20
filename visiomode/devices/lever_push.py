@@ -76,6 +76,3 @@ class LeverPush(devices.InputDevice):
 
             if not self._command_q.empty():
                 self.bus.write(self._command_q.get())
-
-    def test(self):
-        self.bus.write(b"T\n")
