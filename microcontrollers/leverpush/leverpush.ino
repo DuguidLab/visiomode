@@ -42,6 +42,7 @@ void loop() {
     if (BackSensorState == HIGH && FrontSensorState == LOW && response == false) {
         response = true;
         Serial.println("R");
+        leverLock();
     }
 
     if (BackSensorState == LOW && FrontSensorState == HIGH) {
