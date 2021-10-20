@@ -67,12 +67,12 @@ class LeverPush(devices.InputDevice):
 
     def _message_listener(self):
         while self.listening:
+            if not self._command_q.empty():
+                self.bus.write(self._command_q.get())
+
             raw_message = self.bus.readline().decode("utf-8")
             message = lever_response_map.get(raw_message[0]) if raw_message else None
             if message == "response":
                 self._response_q.put(message)
             elif message == "error":
                 raise devices.DeviceError("Lever-push controller error.")
-
-            if not self._command_q.empty():
-                self.bus.write(self._command_q.get())
