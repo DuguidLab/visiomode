@@ -41,10 +41,12 @@ class LeverPush(devices.InputDevice):
         return None
 
     def lock_lever(self):
-        self._command_q.put(b"L\n")
+        # self._command_q.put(b"L\n")
+        self.bus.write(b"L\n")
 
     def unlock_lever(self):
-        self._command_q.put(b"U\n")
+        # self._command_q.put(b"U\n")
+        self.bus.write(b"U\n")
 
     def listen(self, threaded=True):
         self.listening = True
@@ -67,8 +69,8 @@ class LeverPush(devices.InputDevice):
 
     def _message_listener(self):
         while self.listening:
-            if not self._command_q.empty():
-                self.bus.write(self._command_q.get())
+            # if not self._command_q.empty():
+            #     self.bus.write(self._command_q.get())
 
             raw_message = self.bus.readline().decode("utf-8")
             message = lever_response_map.get(raw_message[0]) if raw_message else None
