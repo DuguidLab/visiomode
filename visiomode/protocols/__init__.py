@@ -138,7 +138,7 @@ class Task(Protocol):
                 if response_event:
                     outcome = PRECUED
                     response = response_event
-                    response_time = time.time()
+                    response_time = time.time() - block_start
                     break
         else:
             # To prevent stimulus showing after the session has ended, check if the session is still running.
@@ -168,11 +168,11 @@ class Task(Protocol):
                         ):
                             outcome = CORRECT
                             response = response_event
-                            response_time = time.time()
+                            response_time = time.time() - stimulus_start
                         else:
                             outcome = INCORRECT
                             response = response_event
-                            response_time = time.time()
+                            response_time = time.time() - stimulus_start
                         break
             else:
                 # if the target was not visible, i.e. the stimulus was a distractor, and there was no touch event during
