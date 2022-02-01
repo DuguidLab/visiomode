@@ -9,7 +9,7 @@ import visiomode.config as conf
 
 
 class Touchscreen(devices.InputDevice):
-    def __init__(self):
+    def __init__(self, *args, **kwargs):
         super().__init__()
         self.config = conf.Config()
 
