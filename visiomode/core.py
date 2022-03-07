@@ -115,9 +115,8 @@ class Visiomode:
 
     def run_main(self):
         while True:
-            events = pg.event.get()
             if self.session:
-                self.session.protocol.update(events)
+                self.session.protocol.update()
                 self.session.trials = self.session.protocol.trials
             if self.session and (
                 not self.session.protocol.is_running
@@ -131,13 +130,13 @@ class Visiomode:
                 self.session.save(self.config.data_dir)
 
                 self.session = None
+                pg.event.clear()  # Clear unused events so queue doesn't fill up
 
-            for event in events:
-                if event.type == pg.QUIT:
-                    if self.session:
-                        self.session.trials = self.session.protocol.trials
-                        self.session.save(self.config.data_dir)
-                    return
+            if pg.event.get(eventtype=pg.QUIT):
+                if self.session:
+                    self.session.trials = self.session.protocol.trials
+                    self.session.save(self.config.data_dir)
+                return
 
             pg.display.flip()
 

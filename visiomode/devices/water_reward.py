@@ -15,7 +15,10 @@ class WaterReward(devices.OutputDevice):
         self.bus = serial.Serial(address, 9600, timeout=1)
         time.sleep(2)  # Allow the port enough time to do its thing after a reset
 
-    def output(self):
+    def on_correct(self):
         """Dispenses water reward."""
         self.bus.write(b"T\n")
         time.sleep(self.reward_epoch / 1000)
+
+    def test(self):
+        self.bus.write(b"T\n")

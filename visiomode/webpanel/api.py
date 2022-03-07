@@ -56,6 +56,7 @@ class ProtocolAPI(flask.views.MethodView):
                 protocol.get_form(),
                 stimuli=list(stimuli.Stimulus.get_children()),
                 reward_profiles=devices.OutputDevice.get_children(),
+                response_profiles=devices.InputDevice.get_children(),
                 serial_devices=devices.get_available_devices(),
             )
         return "No Additional Options"

@@ -4,7 +4,7 @@
 #  Copyright (c) 2020 Constantinos Eleftheriou <Constantinos.Eleftheriou@ed.ac.uk>
 #  Distributed under the terms of the MIT Licence.
 import os
-import abc
+import queue
 import serial.tools.list_ports as ports
 import visiomode.mixins as mixins
 import visiomode.config as conf
@@ -16,41 +16,54 @@ def get_available_devices():
     return [dev.device for dev in ports.comports()]
 
 
-def get_input_profile(profile_id):
-    return InputDevice.get_child(profile_id)
+def get_input_device(profile_id, address=None):
+    return InputDevice.get_child(profile_id)(address)
 
 
-def get_output_profile(profile_id):
-    return OutputDevice.get_child(profile_id)
+def get_output_profile(profile_id, address=None):
+    return OutputDevice.get_child(profile_id)(address)
 
 
 def check_device_profile(profile_id, address):
     """Allow user to check whether a device profile will work for a port address."""
-    OutputDevice.get_child(profile_id)(address).output()
+    # TODO - support input devices too
+    try:
+        OutputDevice.get_child(profile_id)(address).test()
+    except TypeError:
+        print("Not an output device!")
+
+    try:
+        InputDevice.get_child(profile_id)(address).test()
+    except TypeError:
+        print("Not an input device!")
 
 
-class Device(mixins.BaseClassMixin, mixins.YamlAttributesMixin):
-    def __init__(self, address, profile_path=None):
-        self.address = address
+class Device(
+    mixins.BaseClassMixin, mixins.YamlAttributesMixin, mixins.ProtocolEventsMixin
+):
+    def __init__(self, address=None, profile_path=None):
         self.profile_path = profile_path or (
             conf.Config().devices + os.sep + self.get_identifier() + ".yml"
         )
+        self.address = address
         self.load_yaml(self.profile_path)
+
+    def test(self):
+        raise NotImplementedError
 
     def __repr__(self):
         return "<{} device at {}>".format(self.get_common_name(), self.address)
 
 
-class InputDevice(abc.ABC, Device):
+class InputDevice(Device):
     """Interface for input devices"""
 
+    def get_response(self):
+        raise NotImplementedError
 
-class OutputDevice(abc.ABC, Device):
+
+class OutputDevice(Device):
     """Interface for output devices"""
-
-    @abc.abstractmethod
-    def output(self):
-        pass
 
     def calibrate(self, **kwargs):
         for key, value in kwargs.items():

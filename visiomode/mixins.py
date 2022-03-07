@@ -70,3 +70,34 @@ class YamlAttributesMixin:
     def save_yaml(self, path, exclude=None):
         """Save class attributes as a YAML file."""
         pass
+
+
+class ProtocolEventsMixin:
+    """Interface declarations for methods handling protocol events."""
+
+    def on_protocol_start(self):
+        pass
+
+    def on_trial_start(self):
+        pass
+
+    def on_stimulus_start(self):
+        pass
+
+    def on_trial_end(self):
+        pass
+
+    def on_protocol_end(self):
+        pass
+
+    def on_correct(self):
+        pass
+
+    def on_incorrect(self):
+        pass
+
+    def on_no_response(self):
+        pass
+
+    def on_precued(self):
+        pass
