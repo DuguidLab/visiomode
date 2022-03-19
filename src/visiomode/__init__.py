@@ -10,4 +10,5 @@ faulthandler.enable()
 
 
 def run():
+    """Application entry point."""
     visiomode.core.Visiomode()

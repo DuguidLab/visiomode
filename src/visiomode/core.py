@@ -40,7 +40,7 @@ class Visiomode:
 
         # Set app icon
         # Dimensions should be 512x512, 300 ppi for retina
-        icon = pg.image.load("visiomode/res/icon.png")
+        icon = pg.image.load("src/visiomode/res/icon.png")
         pg.display.set_icon(icon)
 
         # Initialise screen
@@ -70,7 +70,7 @@ class Visiomode:
         self.background.blit(text, textpos)
 
         # Loading screen - wait until webpanel comes online
-        loading_img = pg.image.load("visiomode/res/loading.png")
+        loading_img = pg.image.load("src/visiomode/res/loading.png")
         loading_img = pg.transform.smoothscale(loading_img, (100, 100))
         loading_img_pos = loading_img.get_rect()
         loading_img_pos.centerx = self.background.get_rect().centerx

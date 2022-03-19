@@ -1,3 +1,1 @@
-recursive-include src/visiomode/webpanel/templates *
-recursive-include src/visiomode/webpanel/static *
-recursive-include src/visiomode/res *
+graft src
