@@ -89,7 +89,6 @@ typing_extensions==4.1.1
 urllib3==1.26.9
 virtualenv==20.0.35
 virtualenv-clone==0.5.7
--e git+ssh://git@github.com/celefthe/visiomode.git@cfa606e2d8a913ac3c03ef8134984e7f59d28913#egg=visiomode
 wcwidth==0.1.9
 webencodings==0.5.1
 Werkzeug==1.0.1
