@@ -59,7 +59,7 @@ prompt-toolkit==3.0.5
 ptyprocess==0.6.0
 py==1.8.1
 py2app==0.21
-pygame==2.0.1
+pygame==2.0.0
 Pygments==2.6.1
 PyInstaller==3.6
 pylint==2.5.3
@@ -76,6 +76,7 @@ regex==2020.6.8
 requests==2.27.1
 requests-toolbelt==0.9.1
 rfc3986==2.0.0
+setuptools-scm==6.4.2
 six==1.14.0
 toml==0.10.1
 tomli==2.0.1
@@ -88,7 +89,7 @@ typing_extensions==4.1.1
 urllib3==1.26.9
 virtualenv==20.0.35
 virtualenv-clone==0.5.7
--e git+ssh://git@github.com/celefthe/visiomode.git@726ac800e8973a9548ea08ec31476e967d81c402#egg=visiomode
+-e git+ssh://git@github.com/celefthe/visiomode.git@cfa606e2d8a913ac3c03ef8134984e7f59d28913#egg=visiomode
 wcwidth==0.1.9
 webencodings==0.5.1
 Werkzeug==1.0.1
