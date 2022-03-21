@@ -22,7 +22,7 @@ class Config(mixins.YamlAttributesMixin):
 
     debug = True
     flask_key = "dev"
-    data_dir = "instance/"
+    data_dir = "visiomode_data/"
 
     fps = 60
     width = 400
