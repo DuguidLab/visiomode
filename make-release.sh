@@ -10,6 +10,12 @@ set -e
 
 version="$1"
 
+BRANCH="$(git rev-parse --abbrev-ref HEAD)"
+if [[ "$BRANCH" != "master" ]]; then
+  echo 'The release script should only be run on the master branch. Aborting...';
+  exit 1;
+fi
+
 echo "Creating release for $version"
 
 git tag -m "Release version $version" "v$version"
