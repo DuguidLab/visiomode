@@ -32,7 +32,7 @@ class BaseClassMixin:
 
     @classmethod
     def get_common_name(cls):
-        """"Return the human-readable, space-separated name for the class."""
+        """ "Return the human-readable, space-separated name for the class."""
         return re.sub(r"((?<=[a-z])[A-Z]|(?<!\A)[A-Z](?=[a-z]))", r" \1", cls.__name__)
 
 
