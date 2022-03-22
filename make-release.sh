@@ -13,8 +13,7 @@ version="$1"
 echo "Creating release for $version"
 
 git tag -m "Release version $version" "v$version"
-python -m setuptools_scm
 
-rm -r dist/
-python3 -m build
-#twine upload dist/*
+rm -rf dist/
+SETUPTOOLS_SCM_PRETEND_VERSION_FOR_VISIOMODE="$version" python3 -m build
+twine upload dist/*
