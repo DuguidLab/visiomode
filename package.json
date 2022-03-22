@@ -1,7 +1,0 @@
-{
-  "name": "visiomode",
-  "version": "1.0.0",
-  "dependencies": {
-    "socket.io-client": "^2.3.0"
-  }
-}

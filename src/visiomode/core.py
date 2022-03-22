@@ -5,15 +5,18 @@
 #  Distributed under the terms of the MIT Licence.
 
 import os
+
 import time
 import datetime
 import threading
 import queue
+import pkg_resources
 import pygame as pg
 import visiomode.config as conf
 import visiomode.models as models
 import visiomode.webpanel as webpanel
 import visiomode.protocols as protocols
+import visiomode.res as resources
 
 
 os.environ["SDL_MOUSE_TOUCH_EVENTS"] = "1"
@@ -40,7 +43,9 @@ class Visiomode:
 
         # Set app icon
         # Dimensions should be 512x512, 300 ppi for retina
-        icon = pg.image.load("visiomode/res/icon.png")
+        icon = pg.image.load(
+            pkg_resources.resource_filename("visiomode.res", "icon.png")
+        )
         pg.display.set_icon(icon)
 
         # Initialise screen
@@ -70,7 +75,9 @@ class Visiomode:
         self.background.blit(text, textpos)
 
         # Loading screen - wait until webpanel comes online
-        loading_img = pg.image.load("visiomode/res/loading.png")
+        loading_img = pg.image.load(
+            pkg_resources.resource_filename("visiomode.res", "loading.png")
+        )
         loading_img = pg.transform.smoothscale(loading_img, (100, 100))
         loading_img_pos = loading_img.get_rect()
         loading_img_pos.centerx = self.background.get_rect().centerx
