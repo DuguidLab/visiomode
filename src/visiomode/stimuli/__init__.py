@@ -18,7 +18,7 @@ def get_stimulus(stimulus_id):
 
 
 def load_image(name):
-    """ Load image and return image object"""
+    """Load image and return image object"""
     fullname = os.path.join("visiomode/gui/res", name)
     try:
         image = pg.image.load(fullname)

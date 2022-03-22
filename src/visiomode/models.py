@@ -28,12 +28,12 @@ class Base:
 @dataclasses.dataclass
 class Response(Base):
     """
-     Attributes:
-        timestamp: String trial date and time (ISO format). Defaults to current date and time.
-        pos_x: Float representing the touch position in the x-axis.
-        pos_y: Float representing the touch position in the y-axis.
-        dist_x: Float representing the distance travelled while touching the screen in the x-axis.
-        dist_y: Float representing the distance travelled while touching the screen in the y-axis.
+    Attributes:
+       timestamp: String trial date and time (ISO format). Defaults to current date and time.
+       pos_x: Float representing the touch position in the x-axis.
+       pos_y: Float representing the touch position in the y-axis.
+       dist_x: Float representing the distance travelled while touching the screen in the x-axis.
+       dist_y: Float representing the distance travelled while touching the screen in the y-axis.
     """
 
     timestamp: str

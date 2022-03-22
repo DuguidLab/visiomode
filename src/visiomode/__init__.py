@@ -7,11 +7,11 @@
 import faulthandler  # report segmentation faults as tracebacks
 import visiomode.core
 
-from importlib.metadata import version, PackageNotFoundError
+from pkg_resources import get_distribution, DistributionNotFound
 
 try:
-    __version__ = version("visiomode")
-except PackageNotFoundError:
+    __version__ = get_distribution("visiomode").version
+except DistributionNotFound:
     # package is not installed
     pass
 
