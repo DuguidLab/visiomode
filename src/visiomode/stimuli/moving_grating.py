@@ -23,7 +23,6 @@ class MovingGrating(stimuli.Stimulus):
         self.px_per_cycle = (
             self.direction * (self.period * abs(self.frequency)) / stimuli.config.fps
         )
-        print(self.px_per_cycle)
 
         grating = Grating.sinusoid(
             self.width, self.height + (self.period * 2), self.period, contrast
