@@ -62,6 +62,7 @@ class Stimulus(pg.sprite.Sprite, mixins.BaseClassMixin, mixins.WebFormMixin):
 
     def show(self):
         self.hidden = False
+
         self.screen.blit(self.image, self.rect)
 
     def draw(self):
@@ -85,7 +86,10 @@ class Stimulus(pg.sprite.Sprite, mixins.BaseClassMixin, mixins.WebFormMixin):
 
     def get_details(self):
         """Returns a dictionary of stimulus attributes."""
-        pass
+        return dict()
+
+    def generate_new_trial(self):
+        """Regenerate stimuli for a fresh trial"""
 
 
 plugins.load_modules_dir(__path__[0])
