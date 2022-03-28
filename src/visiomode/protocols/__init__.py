@@ -224,6 +224,7 @@ class Task(Protocol):
             response_time=response_time,
             timestamp=trial_start,
             correction=self.correction_trial,
+            stimulus=self.target.get_details(),
         )
         return trial
 
