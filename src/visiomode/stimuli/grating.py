@@ -14,8 +14,9 @@ class Grating(stimuli.Stimulus):
     def __init__(self, background, period=30, contrast=1.0, **kwargs):
         super().__init__(background, **kwargs)
         self.period = int(period)
+        self.contrast = float(contrast)
 
-        grating = Grating.sinusoid(self.width, self.height, self.period, contrast)
+        grating = Grating.sinusoid(self.width, self.height, self.period, self.contrast)
         self.image = pg.surfarray.make_surface(grating)
         self.rect = self.image.get_rect()
         self.area = self.screen.get_rect()
