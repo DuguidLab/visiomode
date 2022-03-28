@@ -30,4 +30,5 @@ class VariableContrastGrating(grating.Grating):
         self.rect = self.image.get_rect()
         self.area = self.screen.get_rect()
 
-        super().show()
+    def get_details(self):
+        return {"trial_contrast": self.trial_contrast}
