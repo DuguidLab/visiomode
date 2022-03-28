@@ -11,7 +11,7 @@ import visiomode.stimuli as stimuli
 class Grating(stimuli.Stimulus):
     form_path = "stimuli/grating.html"
 
-    def __init__(self, background, period=20, contrast=1.0, **kwargs):
+    def __init__(self, background, period=30, contrast=1.0, **kwargs):
         super().__init__(background, **kwargs)
         self.period = int(period)
 
