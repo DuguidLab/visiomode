@@ -32,13 +32,13 @@ def load_image(name):
     return image, image.get_rect()
 
 
-def normalise_array(array, contrast=1.0):
+def normalise_array(array, contrast=1.0, background_px=127):
     """Cast array to a UINT8 image matrix."""
-    image = (
-        ((array - np.min(array)) / (np.max(array) - np.min(array)))
-        * 255
-        * float(contrast)
-    )
+    contrast_min = (1 - contrast) * background_px
+    contrast_max = (1 + contrast) * background_px
+
+    image = np.interp(array, (array.min(), array.max()), (contrast_min, contrast_max))
+
     return image.astype(np.uint8)
 
 
@@ -62,6 +62,7 @@ class Stimulus(pg.sprite.Sprite, mixins.BaseClassMixin, mixins.WebFormMixin):
 
     def show(self):
         self.hidden = False
+
         self.screen.blit(self.image, self.rect)
 
     def draw(self):
@@ -82,6 +83,13 @@ class Stimulus(pg.sprite.Sprite, mixins.BaseClassMixin, mixins.WebFormMixin):
 
     def set_centerx(self, centerx):
         self.rect.centerx = centerx
+
+    def get_details(self):
+        """Returns a dictionary of stimulus attributes."""
+        return dict()
+
+    def generate_new_trial(self):
+        """Regenerate stimuli for a fresh trial"""
 
 
 plugins.load_modules_dir(__path__[0])

@@ -40,3 +40,4 @@ class Config(mixins.YamlAttributesMixin):
             path: Path to config YAML, defaults to DEFAULT_PATH. Only used if it exists.
         """
         self.load_yaml(path)
+        os.makedirs(self.data_dir, exist_ok=True)

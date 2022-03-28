@@ -11,17 +11,33 @@ import visiomode.stimuli as stimuli
 class Grating(stimuli.Stimulus):
     form_path = "stimuli/grating.html"
 
-    def __init__(self, background, period=20, contrast=1.0, **kwargs):
+    def __init__(self, background, period=30, contrast=1.0, **kwargs):
         super().__init__(background, **kwargs)
         self.period = int(period)
+        self.contrast = float(contrast)
 
-        grating = Grating.sinusoid(self.width, self.height, self.period, contrast)
+        grating = Grating.sinusoid(self.width, self.height, self.period, self.contrast)
         self.image = pg.surfarray.make_surface(grating)
         self.rect = self.image.get_rect()
         self.area = self.screen.get_rect()
 
     @classmethod
     def sinusoid(cls, width: int, height: int, period: int, contrast: float = 1.0):
+        sinusoid = Grating._sinusoid(width, height, period)
+        return stimuli.grayscale_array(sinusoid, contrast)
+
+    @classmethod
+    def _sinusoid(cls, width: int, height: int, period: int):
+        """Generate a sinusoid array in numpy.
+
+        Args:
+            width:
+            height:
+            period:
+
+        Returns:
+
+        """
         # generate 1-D sine wave of required period
         x = np.arange(height)
         y = np.sin(2 * np.pi * x / period)
@@ -31,4 +47,5 @@ class Grating(stimuli.Stimulus):
 
         # create 2-D array of sine-wave
         sinusoid = np.array([[y[j] for j in range(height)] for i in range(width)])
-        return stimuli.grayscale_array(sinusoid, contrast)
+
+        return sinusoid

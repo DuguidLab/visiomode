@@ -66,6 +66,7 @@ class Trial(Base):
     timestamp: str = datetime.datetime.now().isoformat()
     correction: bool = False
     response_time: int = -1
+    stimulus: dict = dataclasses.field(default_factory=dict)
 
     def __repr__(self):
         return "<Trial {}>".format(str(self.timestamp))

@@ -17,16 +17,16 @@ class MovingGrating(stimuli.Stimulus):
         super().__init__(background, **kwargs)
 
         self.period = int(period)
+        self.contrast = float(contrast)
         self.frequency = float(freq)
         # Determine sign of direction based on frequency (negative => downwards, positive => upwards)
         self.direction = (lambda x: (-1, 1)[x < 0])(self.frequency)
         self.px_per_cycle = (
             self.direction * (self.period * abs(self.frequency)) / stimuli.config.fps
         )
-        print(self.px_per_cycle)
 
         grating = Grating.sinusoid(
-            self.width, self.height + (self.period * 2), self.period, contrast
+            self.width, self.height + (self.period * 2), self.period, self.contrast
         )
         self.image = pg.surfarray.make_surface(grating).convert(self.screen)
         self.rect = self.image.get_rect()
