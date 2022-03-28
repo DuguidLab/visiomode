@@ -26,6 +26,7 @@ class TargetOnly(protocols.Task):
         self.target.update()
 
     def show_stimulus(self):
+        self.target.generate_new_trial()
         self.target.show()
 
     def hide_stimulus(self):

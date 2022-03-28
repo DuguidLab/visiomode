@@ -44,6 +44,7 @@ class GoNoGo(protocols.Task):
     def show_stimulus(self):
         if not self.correction_trial:
             self.current_stimulus = self.get_random_stimulus()
+            self.current_stimulus.generate_new_trial()
         self.current_stimulus.show()
 
     def hide_stimulus(self):
