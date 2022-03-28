@@ -224,7 +224,12 @@ class Task(Protocol):
             response_time=response_time,
             timestamp=trial_start,
             correction=self.correction_trial,
-            stimulus=self.target.get_details(),
+            stimulus={
+                "target": self.target.get_details(),
+                "distractor": self.distractor.get_details()
+                if self.distractor
+                else None,
+            },
         )
         return trial
 
