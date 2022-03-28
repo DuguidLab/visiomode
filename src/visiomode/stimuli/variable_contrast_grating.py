@@ -12,7 +12,7 @@ import visiomode.stimuli.grating as grating
 class VariableContrastGrating(grating.Grating):
     form_path = ""
 
-    def __init__(self, background, contrasts=(0, 0.5, 1.0), **kwargs):
+    def __init__(self, background, contrasts=(0, 0.06, 0.12, 0.25, 0.5, 1.0), **kwargs):
         super().__init__(background, **kwargs)
 
         self.contrasts = contrasts
@@ -20,10 +20,12 @@ class VariableContrastGrating(grating.Grating):
             self.width, self.height, self.period
         )
 
-    def show(self):
-        trial_contrast = random.choice(self.contrasts)
+        self.trial_contrast = None
 
-        _grating = stimuli.grayscale_array(self.sinusoid_array, trial_contrast)
+    def generate_new_trial(self):
+        self.trial_contrast = random.choice(self.contrasts)
+
+        _grating = stimuli.grayscale_array(self.sinusoid_array, self.trial_contrast)
         self.image = pg.surfarray.make_surface(_grating)
         self.rect = self.image.get_rect()
         self.area = self.screen.get_rect()
