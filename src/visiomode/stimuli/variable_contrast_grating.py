@@ -20,7 +20,7 @@ class VariableContrastGrating(grating.Grating):
             self.width, self.height, self.period
         )
 
-        self.trial_contrast = None
+        self.generate_new_trial()
 
     def generate_new_trial(self):
         self.trial_contrast = random.choice(self.contrasts)
