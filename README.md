@@ -10,25 +10,14 @@
 Visiomode is an open-source platform for rodent touchscreen-based visuomotor tasks. It has been designed to promote the use of touchscreens as an accessible option for implementing a variety of visual task paradigms, with low-cost and ease-of-use as a priority. Visiomode is implemented on the popular Raspberry Pi computer, and provides the user with an intuitive web interface to design and manage experiments. It can be deployed as a stand-alone cognitive testing solution in both freely-moving and head-restrained environments.
 
 
-**Visiomode is currently work in progress. Things will break. Run at your own risk.**
-
 ## Installation
 
 
-### Raspberry Pi OS
+### Raspberry Pi OS (recommended)
 
-#### Raspberry Pi OS image (recommended)
+The recommended way to install Visiomode is by using `pipx` (<https://pypa.github.io/pipx/>). `pipx` will create an isolated python environment from which Visiomode will run, leaving the system python alone.
 
-The most straight-forward way to get Visiomode up and running is to download the latest Visiomode image file from <https://github.com/DuguidLab/visiomode/releases> (`visiomode-X.X.X_raspios-buster.img`) and burn it to a Raspberry Pi SD card using the Raspberry Pi imager (<https://www.raspberrypi.com/software/>). The image comes with the latest version of Visiomode installed, and is set up for the e
-rectangular (480x800) Hyperpixel 4.0 display (<https://shop.pimoroni.com/products/hyperpixel-4?variant=12569539706963>).
-
-The password for the default `pi` user is `visiomode`.
-
-Visiomode currently ships on a Raspberry Pi OS Buster image (<https://www.raspberrypi.com/software/operating-systems/#raspberry-pi-os-legacy>), as the Hyperpixel 4.0 display does not yet support the latest Bullseye version (see <https://github.com/pimoroni/hyperpixel4/issues/155>).
-
-#### Via pip / pipx
-
-If you already have a Raspberry Pi set up, or you'd rather burn your own image, you can install Visiomode using `pipx` (<https://pypa.github.io/pipx/>). `pipx` will create an isolated python environment from which Visiomode will run, leaving the system python alone.
+> WARNING: If you're using Pimoroni's Hyperpixel 4.0 display, you'll need Raspberry Pi OS "Buster" (<https://www.raspberrypi.com/software/operating-systems/#raspberry-pi-os-legacy>), as the Hyperpixel 4.0 display does not yet support the latest Bullseye version (see <https://github.com/pimoroni/hyperpixel4/issues/155>).
 
 First, make sure that your Raspberry Pi OS is up-to-date.
 
@@ -93,7 +82,7 @@ pipx upgrade visiomode
 
 ## Contributing
 
-Visiomode is currently closed to PRs, except bugfixes.
+Visiomode is currently closed to PRs, except bugfixes. Please open an issue if you wish to contribute.
 
 
 ## Funders
