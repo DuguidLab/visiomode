@@ -8,8 +8,12 @@ Visiomode is an open-source platform for rodent touchscreen-based visuomotor tas
    This project is under active development.
 
 .. toctree::
-   :maxdepth: 2
-   :caption: Contents:
+    :maxdepth: 2
+    :caption: Contents:
+
+    installation
+    api
+    about
 
 
 
