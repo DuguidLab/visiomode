@@ -9,13 +9,19 @@
 import os
 import sys
 
+from pkg_resources import get_distribution, DistributionNotFound
+
 sys.path.insert(0, os.path.abspath("."))
 sys.path.insert(0, os.path.abspath("../src"))
 
 project = "Visiomode"
 copyright = "2022, Constantinos Eleftheriou"
 author = "Constantinos Eleftheriou"
-release = "0.3.5"
+
+try:
+    release = get_distribution("visiomode").version
+except DistributionNotFound:
+    release = "develop"
 
 # -- General configuration ---------------------------------------------------
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#general-configuration
