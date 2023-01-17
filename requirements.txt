@@ -10,7 +10,6 @@ executing==0.8.3
 filelock==3.6.0
 Flask==2.0.3
 identify==2.4.12
-importlib==1.0.4
 ipython
 itsdangerous==2.1.1
 jedi==0.18.1
