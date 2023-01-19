@@ -8,8 +8,8 @@ build-backend = "hatchling.build"
 name = "visiomode"
 description = "An open-source platform for touchscreen-based visuomotor tasks in rodents."
 readme = "README.md"
-requires-python = ">=3.7"
-license-files = { paths = ["LICENSE"] }
+requires-python = ">=3.8"
+license = {file = "LICENSE"}
 authors = [
   { name = "Constantinos Eleftheriou", email = "Constantinos.Eleftheriou@ed.ac.uk" },
 ]
@@ -48,7 +48,9 @@ cli-name = "visiomode:run"
 artifacts = [
   "*.png",
 ]
-sources = ["src"]
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/visiomode"]
 
 [tool.hatch.build.targets.sdist]
 exclude = [
@@ -58,3 +60,6 @@ exclude = [
 
 [tool.hatch.version]
 path = "src/visiomode/__about__.py"
+
+[tool.hatch.envs.default]
+python = "3.9"
