@@ -34,6 +34,7 @@ dependencies = [
     "numpy>=1.22",
     "pygame==2.0.1"
 ]
+dynamic = ["version"]
 
 [project.urls]
 Website = "https://www.visiomode.org"
