@@ -1,5 +1,65 @@
 [build-system]
-requires = ["setuptools>=45", "wheel", "setuptools_scm>=6.2"]
-build-backend = "setuptools.build_meta"
+requires = ["hatchling"]
+build-backend = "hatchling.build"
 
-[tool.setuptools_scm]
+[tool.hatch]
+
+[project]
+name = "visiomode"
+description = "An open-source platform for touchscreen-based visuomotor tasks in rodents."
+readme = "README.md"
+requires-python = ">=3.8"
+license = {file = "LICENSE"}
+authors = [
+  { name = "Constantinos Eleftheriou", email = "Constantinos.Eleftheriou@ed.ac.uk" },
+]
+classifiers = [
+    "Development Status :: 2 - Pre-Alpha",
+    "Framework :: Flask",
+    "Topic :: Scientific/Engineering",
+    "Topic :: Scientific/Engineering :: Medical Science Apps.",
+    "Topic :: Software Development :: Libraries :: pygame",
+    "Intended Audience :: Science/Research",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: POSIX :: Linux",
+    "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.9",
+]
+keywords = ["touchscreen", "rodent", "behaviour", "neuroscience"]
+dependencies = [
+    "Flask~=2.0.3",
+    "PyYAML~=6.0",
+    "pyserial~=3.5",
+    "numpy>=1.22",
+    "pygame==2.0.1"
+]
+dynamic = ["version"]
+
+[project.urls]
+Website = "https://www.visiomode.org"
+Documentation = "https://visiomode.readthedocs.io/en/latest/"
+Issues = "https://github.com/DuguidLab/visiomode/issues"
+Source = "https://github.com/DuguidLab/visiomode"
+
+[project.scripts]
+cli-name = "visiomode:run"
+
+[tool.hatch.build]
+artifacts = [
+  "*.png",
+]
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/visiomode"]
+
+[tool.hatch.build.targets.sdist]
+exclude = [
+  "/.github",
+  "/docs",
+]
+
+[tool.hatch.version]
+path = "src/visiomode/__about__.py"
+
+[tool.hatch.envs.default]
+python = "3.9"
