@@ -7,6 +7,8 @@ Versions follow [Semantic Versioning](https://semver.org) (`<major>.<minor>.<pat
 ### Added
 
 - This changelog.
+- Community code of conduct.
+- Contributing guidelines.
 
 ## [0.4.0] - 2023-01-19
 
