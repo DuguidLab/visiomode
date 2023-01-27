@@ -16,7 +16,6 @@ import visiomode.config as conf
 import visiomode.models as models
 import visiomode.webpanel as webpanel
 import visiomode.protocols as protocols
-import visiomode.res as resources
 
 
 os.environ["SDL_MOUSE_TOUCH_EVENTS"] = "1"
