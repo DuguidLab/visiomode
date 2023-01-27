@@ -3,6 +3,7 @@
 #  Copyright (c) 2020 Constantinos Eleftheriou <Constantinos.Eleftheriou@ed.ac.uk>
 #  Distributed under the terms of the MIT Licence.
 import json
+import logging
 import queue
 import socket
 import flask
@@ -27,7 +28,7 @@ class SessionAPI(flask.views.MethodView):
     def post(self):
         """Session management request."""
         request = flask.request.json
-        print(request)
+        logging.debug("Session POST request - {}".format(request))
         self.action_q.put(request)
         return "OK"
 

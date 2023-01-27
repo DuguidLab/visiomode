@@ -10,6 +10,10 @@ Versions follow [Semantic Versioning](https://semver.org) (`<major>.<minor>.<pat
 - Community code of conduct.
 - Contributing guidelines.
 
+### Changed
+
+- Use logging library instead of prints.
+
 ## [0.4.0] - 2023-01-19
 
 ### Added

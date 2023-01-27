@@ -2,6 +2,7 @@
 #  Copyright (c) 2021 Constantinos Eleftheriou <Constantinos.Eleftheriou@ed.ac.uk>
 #  Distributed under the terms of the MIT Licence.
 import datetime
+import logging
 import pygame as pg
 import visiomode.devices as devices
 import visiomode.models as models
@@ -16,7 +17,7 @@ class Touchscreen(devices.InputDevice):
     def get_response(self):
         touch_event = pg.event.get(eventtype=pg.FINGERDOWN)
         if touch_event:
-            print(touch_event)
+            logging.debug("Touch event registered - {}".format(touch_event))
             # Flatten list. This essentially throws out all touch events that happen at an epoch shorter than the FPS.
             touch_event = touch_event[0]
             return models.Response(
