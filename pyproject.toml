@@ -42,7 +42,7 @@ Issues = "https://github.com/DuguidLab/visiomode/issues"
 Source = "https://github.com/DuguidLab/visiomode"
 
 [project.scripts]
-cli-name = "visiomode:run"
+visiomode = "visiomode:run"
 
 [tool.hatch.build]
 artifacts = [

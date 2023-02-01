@@ -14,6 +14,10 @@ Versions follow [Semantic Versioning](https://semver.org) (`<major>.<minor>.<pat
 
 - Use logging library instead of prints.
 
+### Fixed
+
+- CLI entry point.
+
 ## [0.4.0] - 2023-01-19
 
 ### Added
@@ -35,7 +39,6 @@ Versions follow [Semantic Versioning](https://semver.org) (`<major>.<minor>.<pat
 - Dropped support for Python 3.7 due to important security upgrades in numpy not available in this version.
 - Remove `importlib` calls to support later versions of python where this has been deprecated.- No longer using `requirements.txt`, use hatch and tox for development.
 
-
 ## [0.3.5] - 2022-07-21
 
 ### Added
@@ -45,7 +48,6 @@ Versions follow [Semantic Versioning](https://semver.org) (`<major>.<minor>.<pat
 ### Changed
 
 - Recommend `pipx` as the default installation option.
-
 
 ## [0.3.4] - 2022-03-28
 
