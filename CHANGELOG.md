@@ -9,6 +9,8 @@ Versions follow [Semantic Versioning](https://semver.org) (`<major>.<minor>.<pat
 - This changelog.
 - Community code of conduct.
 - Contributing guidelines.
+- History panel now shows table of past sessions and allows downloading session JSON files.
+- Provisional support for different filetypes in download API.
 
 ### Changed
 
