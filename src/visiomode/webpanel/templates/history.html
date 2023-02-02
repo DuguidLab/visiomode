@@ -9,28 +9,23 @@
         </div>
         <div class="card-body">
             <div class="table-responsive">
-                <table class="table table-hover">
+                <table  class="table table-hover">
                     <thead>
                         <tr>
                             <th>Date</th>
                             <th>Animal ID</th>
-                            <th>Behaviour</th>
+                            <th>Protocol</th>
                             <th>Session Data</th>
                         </tr>
                     </thead>
 
-                    <tbody></tbody>
-                    {% for entry in entries %}
-                    <tr>
-                       <td>{{entry.date}}</td>
-                       <td>{{entry.animal_id}}</td>
-                       <td>{{entry.protocol}}</td>
-                       <td><button id="{{entry.protocol}}" class="btn btn-primary btn-block" type="button">Download</button></td>
-                    </tr>
-                    {% endfor %}
-                    </tbody>
+                    <tbody id="sessionsTable"a></tbody>
                 </table>
             </div>
         </div>
     </div>
+{% endblock %}
+
+{% block scripts %}
+    <script type="text/javascript" src="static/js/history.js"></script>
 {% endblock %}
