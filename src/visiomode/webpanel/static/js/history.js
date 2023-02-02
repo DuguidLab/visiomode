@@ -23,5 +23,21 @@ fetch("/api/history")
             let protocol = row.insertCell(2);
             protocol.innerHTML = session.protocol;
             let downloadButton = row.insertCell(3);
+            btn = document.createElement('input');
+            downloadButton.innerHTML = `
+            <div class="dropdown">
+                <button
+                    class="btn btn-primary btn-sm dropdown-toggle"
+                    type="button" id="dropdownMenuButton" data-toggle="dropdown"
+                    aria-haspopup="true" aria-expanded="false">
+                Download
+                </button>
+                <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                    <a class="dropdown-item" href="/api/download/${session.fname}">JSON</a>
+                    <a class="dropdown-item" href="#">CSV</a>
+                    <a class="dropdown-item" href="#">NWB</a>
+                </div>
+            </div>
+            `;
         });
     });
