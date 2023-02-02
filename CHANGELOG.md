@@ -2,7 +2,9 @@
 
 Versions follow [Semantic Versioning](https://semver.org) (`<major>.<minor>.<patch>`).
 
-## [Unreleased]
+# [Unreleased]
+
+# [0.4.1] - 2023-02-02
 
 ### Added
 
