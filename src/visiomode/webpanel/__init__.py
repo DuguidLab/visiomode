@@ -99,6 +99,16 @@ def create_app(action_q=None, log_q=None):
         methods=["GET"],
     )
 
+    app.add_url_rule(
+        "/api/history", view_func=api.HistoryAPI.as_view("history_api"), methods=["GET"]
+    )
+
+    app.add_url_rule(
+        "/api/download/<filetype>/<filename>",
+        view_func=api.DownloadAPI.as_view("download_api"),
+        methods=["GET"],
+    )
+
     return app
 
 

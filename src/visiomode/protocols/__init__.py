@@ -7,6 +7,7 @@ import collections
 import time
 import datetime
 import threading
+import logging
 import queue
 import pygame as pg
 
@@ -157,7 +158,7 @@ class Task(Protocol):
                         if self.separator and self.separator.collidepoint(
                             response_event.pos_x, response_event.pos_y
                         ):
-                            print("blipblop")
+                            logging.debug("Separator response, ignoring...")
                             continue
 
                         if (
@@ -190,7 +191,7 @@ class Task(Protocol):
         self.on_trial_end()
 
         trial = self.parse_trial(trial_start_iso, outcome, response, response_time)
-        print(trial.__dict__)
+        logging.debug("Trial info - {}".format(trial.__dict__))
         self.trials.append(trial)
 
         # Hide stimulus at end of trial before calling handlers, so any reward dispensation associated

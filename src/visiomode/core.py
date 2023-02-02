@@ -5,7 +5,7 @@
 #  Distributed under the terms of the MIT Licence.
 
 import os
-
+import logging
 import time
 import datetime
 import threading
@@ -16,10 +16,11 @@ import visiomode.config as conf
 import visiomode.models as models
 import visiomode.webpanel as webpanel
 import visiomode.protocols as protocols
-import visiomode.res as resources
 
-
+# Register mouse events as touch events - useful for debugging.
 os.environ["SDL_MOUSE_TOUCH_EVENTS"] = "1"
+
+logging.basicConfig(level=logging.DEBUG)
 
 
 class Visiomode:
@@ -130,7 +131,7 @@ class Visiomode:
                 or time.time() - self.session.protocol.start_time
                 > self.session.duration * 60
             ):
-                print("finished!")
+                logging.info("Session finished.")
                 self.session.protocol.stop()
                 self.session.complete = True
                 self.session.trials = self.session.protocol.trials
@@ -151,7 +152,7 @@ class Visiomode:
         while True:
             request = self.action_q.get()
             if "type" not in request.keys():
-                print("Invalid request - {}".format(request))
+                logging.error("Invalid request - {}".format(request))
                 continue
             if request["type"] == "start":
                 protocol = protocols.get_protocol(request["data"].pop("protocol"))

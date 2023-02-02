@@ -5,6 +5,7 @@
 #  Distributed under the terms of the MIT Licence.
 import os
 import queue
+import logging
 import serial.tools.list_ports as ports
 import visiomode.mixins as mixins
 import visiomode.config as conf
@@ -30,12 +31,12 @@ def check_device_profile(profile_id, address):
     try:
         OutputDevice.get_child(profile_id)(address).test()
     except TypeError:
-        print("Not an output device!")
+        logging.error("Not an output device!")
 
     try:
         InputDevice.get_child(profile_id)(address).test()
     except TypeError:
-        print("Not an input device!")
+        logging.error("Not an input device!")
 
 
 class Device(

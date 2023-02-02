@@ -4,6 +4,7 @@
 
 """Visual stimulus classes implemented """
 import os
+import logging
 import numpy as np
 import pygame as pg
 import visiomode.config as conf
@@ -27,7 +28,7 @@ def load_image(name):
         else:
             image = image.convert_alpha()
     except pg.error as message:
-        print("Cannot load image:", fullname)
+        logging.error("Cannot load image: {}".format(fullname))
         raise SystemExit(message)
     return image, image.get_rect()
 

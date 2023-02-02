@@ -2,11 +2,15 @@
 #  This file is part of visiomode.
 #  Copyright (c) 2020 Constantinos Eleftheriou <Constantinos.Eleftheriou@ed.ac.uk>
 #  Distributed under the terms of the MIT Licence.
+import os
 import json
+import logging
 import queue
 import socket
+import glob
 import flask
 import flask.views
+import visiomode.config as cfg
 import visiomode.devices as devices
 import visiomode.protocols as protocols
 import visiomode.stimuli as stimuli
@@ -27,7 +31,7 @@ class SessionAPI(flask.views.MethodView):
     def post(self):
         """Session management request."""
         request = flask.request.json
-        print(request)
+        logging.debug("Session POST request - {}".format(request))
         self.action_q.put(request)
         return "OK"
 
@@ -65,3 +69,42 @@ class ProtocolAPI(flask.views.MethodView):
 class HostnameAPI(flask.views.MethodView):
     def get(self):
         return socket.gethostname()
+
+
+class HistoryAPI(flask.views.MethodView):
+    """Session history API."""
+
+    def get(self):
+        """Get stored session data.
+        """
+        config = cfg.Config()
+        session_files = glob.glob(config.data_dir + os.sep + "*.json")
+        sessions = []
+        for session_file in session_files:
+            with open(session_file) as f:
+                try:
+                    session = json.load(f)
+                    sessions.append(
+                        {
+                            "fname": session_file.split(os.sep)[-1],
+                            "animal_id": session["animal_id"],
+                            "date": session["timestamp"],
+                            "protocol": session["protocol"],
+                            "experiment": session["experiment"],
+                        }
+                    )
+                except:
+                    logging.exception("Couldn't read session JSON file, wrong format?")
+        return {"sessions": sessions}
+
+
+class DownloadAPI(flask.views.MethodView):
+    """Download session data in whatever format the user wants."""
+
+    def get(self, filetype, filename):
+        config = cfg.Config()
+        sessions_dir = os.path.abspath(config.data_dir)
+        if filetype == "json":
+            return flask.send_from_directory(sessions_dir, filename, as_attachment=True)
+        else:
+            return "File format {} is not supported (yet)".format(filetype)
