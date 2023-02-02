@@ -101,7 +101,10 @@ class HistoryAPI(flask.views.MethodView):
 class DownloadAPI(flask.views.MethodView):
     """Download session data in whatever format the user wants."""
 
-    def get(self, filename):
+    def get(self, filetype, filename):
         config = cfg.Config()
         sessions_dir = os.path.abspath(config.data_dir)
-        return flask.send_from_directory(sessions_dir, filename, as_attachment=True)
+        if filetype == "json":
+            return flask.send_from_directory(sessions_dir, filename, as_attachment=True)
+        else:
+            return "File format {} is not supported (yet)".format(filetype)

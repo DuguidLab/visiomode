@@ -104,7 +104,7 @@ def create_app(action_q=None, log_q=None):
     )
 
     app.add_url_rule(
-        "/api/download/<filename>",
+        "/api/download/<filetype>/<filename>",
         view_func=api.DownloadAPI.as_view("download_api"),
         methods=["GET"],
     )

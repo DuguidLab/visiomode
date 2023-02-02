@@ -33,9 +33,9 @@ fetch("/api/history")
                 Download
                 </button>
                 <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                    <a class="dropdown-item" href="/api/download/${session.fname}">JSON</a>
-                    <a class="dropdown-item" href="#">CSV</a>
-                    <a class="dropdown-item" href="#">NWB</a>
+                    <a class="dropdown-item" href="/api/download/json/${session.fname}">JSON</a>
+                    <a class="dropdown-item" href="/api/download/csv/${session.fname}">CSV</a>
+                    <a class="dropdown-item" href="/api/download/nwb/${session.fname}">NWB</a>
                 </div>
             </div>
             `;
