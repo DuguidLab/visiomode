@@ -7,6 +7,11 @@ Versions follow [Semantic Versioning](https://semver.org) (`<major>.<minor>.<pat
 ### Added
 
 - Trial outcome counter chart in session "Overview" panel.
+- Favicon for web interface.
+
+### Changed
+
+- History table now sorts sessions in descending order based on date.
 
 # [0.4.1] - 2023-02-02
 

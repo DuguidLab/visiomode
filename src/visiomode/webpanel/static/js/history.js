@@ -10,12 +10,12 @@ fetch("/api/history")
     })
     .then((data) => {
         let sessions = data.sessions;
-        console.log(sessions);
+        sessions.sort((b, a) => new Date(a.date).getTime() - new Date(b.date).getTime());
 
-        let table = document.getElementById("sessionsTable");
+        let sessionsTableData = document.getElementById("sessionsTableData");
         sessions.forEach(session => {
             console.log(session.animal_id)
-            let row = table.insertRow();
+            let row = sessionsTableData.insertRow();
             let date = row.insertCell(0);
             date.innerHTML = session.date;
             let animal_id = row.insertCell(1);
