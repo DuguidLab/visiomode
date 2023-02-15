@@ -13,6 +13,10 @@ let progressBar = document.getElementById("session-progress");
 
 let logList = document.getElementById('log-list');
 
+const ctx = document.getElementById('trialsChart');
+
+let trialsChart;
+
 let session_status;
 
 setTimeout(getStatus, 100)
@@ -66,7 +70,6 @@ session_button.onclick = function () {
     return false;
 };
 
-
 function getStatus() {
     $.get("/api/session", function (data) {
         session_status = data.status;
@@ -75,6 +78,13 @@ function getStatus() {
             setStatusActive();
 
             console.log(session_data)
+
+            updateChart([
+                session_data.trials.filter((obj) => obj.outcome === 'correct').length,
+                session_data.trials.filter((obj) => obj.outcome === 'incorrect').length,
+                session_data.trials.filter((obj) => obj.outcome === 'precued').length,
+                session_data.trials.filter((obj) => obj.outcome === 'no_response').length
+            ])
 
             document.getElementById('animal_id').value = session_data.animal_id;
             document.getElementById('experiment').value = session_data.experiment;
@@ -164,6 +174,73 @@ function setStatusWaiting() {
         fields[i].disabled = true;
     }
 }
+
+/// Chart
+
+function updateChart(data) {
+    if (isCanvasBlank(ctx)) {
+        trialsChart = createChart(data);
+    }
+    else {
+        trialsChart.data.datasets.forEach((dataset) => {
+            dataset.data = data;
+        });
+        trialsChart.update();
+    }
+}
+
+function createChart(data) {
+    let newChart = new Chart(ctx, {
+        type: 'doughnut',
+        data: {
+            labels: ['Correct', 'Incorrect', 'Precued', 'No Response'],
+            datasets: [{
+                label: '# of Trials',
+                data: data,
+                borderWidth: 1
+            }]
+        },
+        options: {
+            devicePixelRatio: 3,
+            responsive: true,
+            plugins: {
+                legend: {
+                    display: true,
+                    position: 'right',
+                    labels: {
+                        font: {
+                            size: 14
+                        }
+                    }
+                },
+            }
+        },
+    });
+    return newChart;
+}
+
+// returns true if all color channels in each pixel are 0 (or "blank")
+function isCanvasBlank(canvas) {
+    return !canvas.getContext('2d')
+      .getImageData(0, 0, canvas.width, canvas.height).data
+      .some(channel => channel !== 0);
+}
+
+// new Chart(ctx, {
+//     type: 'doughnut',
+//     data: {
+//         datasets: [{
+//             label: '# of Trials',
+//             data: [{outcome: "correct"}, {outcome: "incorrect"}],
+//             // borderWidth: 1
+//         }]
+//     },
+//     options: {
+//         parsing: {
+//             key: 'outcome'
+//         }
+//     }
+// });
 
 
 /// Dynamic form updates for protocol selection

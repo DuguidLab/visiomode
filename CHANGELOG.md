@@ -4,6 +4,10 @@ Versions follow [Semantic Versioning](https://semver.org) (`<major>.<minor>.<pat
 
 # [Unreleased]
 
+### Added
+
+- Trial outcome counter chart in session "Overview" panel.
+
 # [0.4.1] - 2023-02-02
 
 ### Added
