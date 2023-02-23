@@ -32,4 +32,8 @@ class VariableContrastMovingGrating(moving_grating.MovingGrating):
         self.area = self.screen.get_rect()
 
     def get_details(self):
-        return {"trial_contrast": self.trial_contrast}
+        return {
+            "id": self.get_identifier,
+            "common_name": self.get_common_name,
+            "trial_contrast": self.trial_contrast,
+        }

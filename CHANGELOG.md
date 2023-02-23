@@ -11,6 +11,7 @@ Versions follow [Semantic Versioning](https://semver.org) (`<major>.<minor>.<pat
 - Version details in session file.
 - Signal detection theory classification per trial.
 - Added response identifier to Response object.
+- Stimulus info now returns common name and identifier.
 
 ### Changed
 
