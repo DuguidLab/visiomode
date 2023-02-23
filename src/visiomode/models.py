@@ -57,7 +57,7 @@ class Trial(Base):
         dist_y: Float representing the distance travelled while touching the screen in the y-axis.
         timestamp: String trial date and time (ISO format). Defaults to current date and time.
         correction: Boolean indicating whether or not trial is a correction trial. Defaults to False.
-        response_time: Integer representing the time between stimulus presentation and response in milliseconds.
+        response_time: Integer representing the time between stimulus presentation and response in seconds.
     """
 
     outcome: str
