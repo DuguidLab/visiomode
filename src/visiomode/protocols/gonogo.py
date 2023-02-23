@@ -23,6 +23,8 @@ class GoNoGo(protocols.Task):
 
         self.corrections_enabled = True if corrections_enabled == "true" else False
 
+        self._trial_count = 0
+
         target = stimulus.get_stimulus(target)
         target_params = {
             key.replace("t_", ""): kwargs[key]
@@ -39,13 +41,16 @@ class GoNoGo(protocols.Task):
         }
         self.distractor = distractor(background=self.background, **distractor_params)
 
-        self.current_stimulus = self.get_random_stimulus()
+        self.current_stimulus = self.target
 
     def show_stimulus(self):
+        if self._trial_count == 0:
+            self.current_stimulus = self.target
         if not self.correction_trial:
             self.current_stimulus = self.get_random_stimulus()
             self.current_stimulus.generate_new_trial()
         self.current_stimulus.show()
+        self._trial_count += 1
 
     def hide_stimulus(self):
         self.current_stimulus.hide()

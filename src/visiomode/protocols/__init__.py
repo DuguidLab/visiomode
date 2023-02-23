@@ -198,12 +198,25 @@ class Task(Protocol):
         if not outcome:
             return
 
+        stimulus = "None"
+        if outcome != PRECUED:
+            if not self.target.hidden and not self.distractor.hidden:
+                stimulus = {
+                    "target": self.target.get_details(),
+                    "distractor": self.distractor.get_details(),
+                }
+            else:
+                if self.target.hidden:
+                    stimulus = self.distractor.get_details()
+                else:
+                    stimulus = self.target.get_details()
+
         self.on_trial_end()
 
         if not response_time:
             response_time = time.time() - stimulus_start
         trial = self.parse_trial(
-            trial_start_iso, outcome, response, response_time, sdt_type
+            trial_start_iso, outcome, response, response_time, sdt_type, stimulus
         )
         logging.debug("Trial info - {}".format(trial.__dict__))
         self.trials.append(trial)
@@ -232,7 +245,13 @@ class Task(Protocol):
             self.correction_trial = False
 
     def parse_trial(
-        self, trial_start, outcome, response=None, response_time=0, sdt_type="NA"
+        self,
+        trial_start,
+        outcome,
+        response=None,
+        response_time=0,
+        sdt_type="NA",
+        stimulus=None,
     ):
         if not response:
             response = {"name": "none"}
@@ -243,12 +262,7 @@ class Task(Protocol):
             response_time=response_time,
             timestamp=trial_start,
             correction=self.correction_trial,
-            stimulus={
-                "target": self.target.get_details(),
-                "distractor": self.distractor.get_details()
-                if self.distractor
-                else None,
-            },
+            stimulus=stimulus,
             sdt_type=sdt_type,
         )
         return trial
