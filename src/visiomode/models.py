@@ -11,6 +11,8 @@ import json
 import typing
 import copy
 
+from visiomode import __about__
+
 
 @dataclasses.dataclass
 class Base:
@@ -77,6 +79,7 @@ class Session(Base):
     """Session model class.
 
     Attributes:
+        version: Visiomode version this was generated with.
         animal_id: String representing the animal identifier.
         experiment: A string holding the experiment identifier.
         protocol: An instance of the Protocol class.
@@ -88,6 +91,7 @@ class Session(Base):
         trials: A mutable list of session trials; each trial is an instance of the Trial dataclass.
     """
 
+    version: str
     animal_id: str
     experiment: str
     duration: float
@@ -100,6 +104,7 @@ class Session(Base):
     trials: typing.List[Trial] = dataclasses.field(default_factory=list)
 
     def __post_init__(self):
+        self.version = __about__.__version__
         self.trials = self.protocol.trials
 
     def to_dict(self):

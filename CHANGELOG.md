@@ -8,6 +8,7 @@ Versions follow [Semantic Versioning](https://semver.org) (`<major>.<minor>.<pat
 
 - Trial outcome counter chart in session "Overview" panel.
 - Favicon for web interface.
+- Version details in session file.
 
 ### Changed
 
