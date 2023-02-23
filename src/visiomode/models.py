@@ -95,7 +95,6 @@ class Session(Base):
         trials: A mutable list of session trials; each trial is an instance of the Trial dataclass.
     """
 
-    version: str
     animal_id: str
     experiment: str
     duration: float
@@ -106,9 +105,9 @@ class Session(Base):
     notes: str = ""
     device: str = socket.gethostname()
     trials: typing.List[Trial] = dataclasses.field(default_factory=list)
+    version: str = __about__.__version__
 
     def __post_init__(self):
-        self.version = __about__.__version__
         self.trials = self.protocol.trials
 
     def to_dict(self):
