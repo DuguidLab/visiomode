@@ -17,6 +17,8 @@ Versions follow [Semantic Versioning](https://semver.org) (`<major>.<minor>.<pat
 
 - History table now sorts sessions in descending order based on date.
 - Default to non-empty response object for no_response trials.
+- First stimulus in Go/NoGo is now always the target. This fixes weird bug where sometimes distractor and target stimuli would be flipped on the first trial.
+- More informative stimulus information in the trial - give the actual stimulus shown rather than what was used in the task.
 
 ## [0.4.1] - 2023-02-02
 
