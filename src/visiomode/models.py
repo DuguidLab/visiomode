@@ -32,6 +32,7 @@ class Response(Base):
     """
     Attributes:
        timestamp: String trial date and time (ISO format). Defaults to current date and time.
+       name: Response type identifier (e.g. left, right or lever).
        pos_x: Float representing the touch position in the x-axis.
        pos_y: Float representing the touch position in the y-axis.
        dist_x: Float representing the distance travelled while touching the screen in the x-axis.
@@ -39,6 +40,7 @@ class Response(Base):
     """
 
     timestamp: str
+    name: str
     pos_x: float
     pos_y: float
     dist_x: float
@@ -68,7 +70,7 @@ class Trial(Base):
     response: Response
     timestamp: str = datetime.datetime.now().isoformat()
     correction: bool = False
-    response_time: int = -1
+    response_time: int = 0
     stimulus: dict = dataclasses.field(default_factory=dict)
     sdt_type: str = "NA"
 
