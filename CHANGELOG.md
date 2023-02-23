@@ -15,6 +15,7 @@ Versions follow [Semantic Versioning](https://semver.org) (`<major>.<minor>.<pat
 ### Changed
 
 - History table now sorts sessions in descending order based on date.
+- Default to non-empty response object for no_response trials.
 
 ## [0.4.1] - 2023-02-02
 

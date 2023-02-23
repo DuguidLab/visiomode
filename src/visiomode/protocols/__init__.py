@@ -234,6 +234,8 @@ class Task(Protocol):
     def parse_trial(
         self, trial_start, outcome, response=None, response_time=0, sdt_type="NA"
     ):
+        if not response:
+            response = {"name": "none"}
         trial = models.Trial(
             outcome=outcome,
             iti=self.iti,
