@@ -60,6 +60,7 @@ class Trial(Base):
         timestamp: String trial date and time (ISO format). Defaults to current date and time.
         correction: Boolean indicating whether or not trial is a correction trial. Defaults to False.
         response_time: Integer representing the time between stimulus presentation and response in seconds.
+        sdt_type: Signal detection theory outcome classification (i.e. hit/miss/false_alarm/correct_rejection)
     """
 
     outcome: str
@@ -69,6 +70,7 @@ class Trial(Base):
     correction: bool = False
     response_time: int = -1
     stimulus: dict = dataclasses.field(default_factory=dict)
+    sdt_type: str = "NA"
 
     def __repr__(self):
         return "<Trial {}>".format(str(self.timestamp))
