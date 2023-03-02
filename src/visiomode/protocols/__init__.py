@@ -200,16 +200,19 @@ class Task(Protocol):
 
         stimulus = "None"
         if outcome != PRECUED:
-            if not self.target.hidden and not self.distractor.hidden:
+            if (
+                self.distractor
+                and not self.target.hidden
+                and not self.distractor.hidden
+            ):
                 stimulus = {
                     "target": self.target.get_details(),
                     "distractor": self.distractor.get_details(),
                 }
+            elif self.distractor and self.target.hidden:
+                stimulus = self.distractor.get_details()
             else:
-                if self.target.hidden:
-                    stimulus = self.distractor.get_details()
-                else:
-                    stimulus = self.target.get_details()
+                stimulus = self.target.get_details()
 
         self.on_trial_end()
 
