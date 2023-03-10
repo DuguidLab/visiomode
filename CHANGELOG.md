@@ -4,6 +4,14 @@ Versions follow [Semantic Versioning](https://semver.org) (`<major>.<minor>.<pat
 
 ## [Unreleased]
 
+## [0.5.1] - 2023-03-02
+
+### Fixed
+
+- Target-only paradigm crash.
+
+## [0.5.0] - 2023-02-24
+
 ### Added
 
 - Trial outcome counter chart in session "Overview" panel.
@@ -178,7 +186,9 @@ Versions follow [Semantic Versioning](https://semver.org) (`<major>.<minor>.<pat
 - Redis-based syncing between behaviour & web interface components.
 - SocketIO reads Redis updates for web interface.
 
-[unreleased]: https://github.com/DuguidLab/visiomode/compare/v0.4.1...HEAD
+[unreleased]: https://github.com/DuguidLab/visiomode/compare/v0.5.1...HEAD
+[0.5.1]: https://github.com/DuguidLab/visiomode/compare/v0.5.0...v0.5.1
+[0.5.0]: https://github.com/DuguidLab/visiomode/compare/v0.4.1...v0.5.0
 [0.4.1]: https://github.com/DuguidLab/visiomode/compare/v0.4.0...v0.4.1
 [0.4.0]: https://github.com/DuguidLab/visiomode/compare/v0.3.5...v0.4.0
 [0.3.5]: https://github.com/DuguidLab/visiomode/compare/v0.3.4...v0.3.5
