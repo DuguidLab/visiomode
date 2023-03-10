@@ -11,6 +11,8 @@ import json
 import typing
 import copy
 
+from visiomode import __about__
+
 
 @dataclasses.dataclass
 class Base:
@@ -30,6 +32,7 @@ class Response(Base):
     """
     Attributes:
        timestamp: String trial date and time (ISO format). Defaults to current date and time.
+       name: Response type identifier (e.g. left, right or lever).
        pos_x: Float representing the touch position in the x-axis.
        pos_y: Float representing the touch position in the y-axis.
        dist_x: Float representing the distance travelled while touching the screen in the x-axis.
@@ -37,6 +40,7 @@ class Response(Base):
     """
 
     timestamp: str
+    name: str
     pos_x: float
     pos_y: float
     dist_x: float
@@ -57,7 +61,8 @@ class Trial(Base):
         dist_y: Float representing the distance travelled while touching the screen in the y-axis.
         timestamp: String trial date and time (ISO format). Defaults to current date and time.
         correction: Boolean indicating whether or not trial is a correction trial. Defaults to False.
-        response_time: Integer representing the time between stimulus presentation and response in milliseconds.
+        response_time: Integer representing the time between stimulus presentation and response in seconds.
+        sdt_type: Signal detection theory outcome classification (i.e. hit/miss/false_alarm/correct_rejection)
     """
 
     outcome: str
@@ -65,8 +70,9 @@ class Trial(Base):
     response: Response
     timestamp: str = datetime.datetime.now().isoformat()
     correction: bool = False
-    response_time: int = -1
+    response_time: int = 0
     stimulus: dict = dataclasses.field(default_factory=dict)
+    sdt_type: str = "NA"
 
     def __repr__(self):
         return "<Trial {}>".format(str(self.timestamp))
@@ -77,6 +83,7 @@ class Session(Base):
     """Session model class.
 
     Attributes:
+        version: Visiomode version this was generated with.
         animal_id: String representing the animal identifier.
         experiment: A string holding the experiment identifier.
         protocol: An instance of the Protocol class.
@@ -98,6 +105,7 @@ class Session(Base):
     notes: str = ""
     device: str = socket.gethostname()
     trials: typing.List[Trial] = dataclasses.field(default_factory=list)
+    version: str = __about__.__version__
 
     def __post_init__(self):
         self.trials = self.protocol.trials

@@ -33,6 +33,7 @@ class LeverPush(devices.InputDevice):
             self._response_q.get()  # Remove response from queue
             return models.Response(
                 timestamp=datetime.datetime.now().isoformat(),
+                name="leverpush",
                 pos_x=self.config.width / 2,
                 pos_y=self.config.height / 2,
                 dist_x=0,

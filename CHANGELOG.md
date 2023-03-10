@@ -2,13 +2,33 @@
 
 Versions follow [Semantic Versioning](https://semver.org) (`<major>.<minor>.<patch>`).
 
-# [Unreleased]
+## [Unreleased]
+
+## [0.5.1] - 2023-03-02
+
+### Fixed
+
+- Target-only paradigm crash.
+
+## [0.5.0] - 2023-02-24
 
 ### Added
 
 - Trial outcome counter chart in session "Overview" panel.
+- Favicon for web interface.
+- Version details in session file.
+- Signal detection theory classification per trial.
+- Added response identifier to Response object.
+- Stimulus info now returns common name and identifier.
 
-# [0.4.1] - 2023-02-02
+### Changed
+
+- History table now sorts sessions in descending order based on date.
+- Default to non-empty response object for no_response trials.
+- First stimulus in Go/NoGo is now always the target. This fixes weird bug where sometimes distractor and target stimuli would be flipped on the first trial.
+- More informative stimulus information in the trial - give the actual stimulus shown rather than what was used in the task.
+
+## [0.4.1] - 2023-02-02
 
 ### Added
 
@@ -166,7 +186,9 @@ Versions follow [Semantic Versioning](https://semver.org) (`<major>.<minor>.<pat
 - Redis-based syncing between behaviour & web interface components.
 - SocketIO reads Redis updates for web interface.
 
-[unreleased]: https://github.com/DuguidLab/visiomode/compare/v0.4.1...HEAD
+[unreleased]: https://github.com/DuguidLab/visiomode/compare/v0.5.1...HEAD
+[0.5.1]: https://github.com/DuguidLab/visiomode/compare/v0.5.0...v0.5.1
+[0.5.0]: https://github.com/DuguidLab/visiomode/compare/v0.4.1...v0.5.0
 [0.4.1]: https://github.com/DuguidLab/visiomode/compare/v0.4.0...v0.4.1
 [0.4.0]: https://github.com/DuguidLab/visiomode/compare/v0.3.5...v0.4.0
 [0.3.5]: https://github.com/DuguidLab/visiomode/compare/v0.3.4...v0.3.5

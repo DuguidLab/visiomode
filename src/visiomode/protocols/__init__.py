@@ -23,6 +23,11 @@ INCORRECT = "incorrect"
 NO_RESPONSE = "no_response"
 PRECUED = "precued"
 
+HIT = "hit"
+MISS = "miss"
+FALSE_ALARM = "false_alarm"
+CORRECT_REJECTION = "correct_rejection"
+
 TOUCHDOWN = pg.FINGERDOWN
 TOUCHUP = pg.FINGERUP
 
@@ -128,7 +133,8 @@ class Task(Protocol):
         block_start = time.time()
         outcome = None
         response = None
-        response_time = -1
+        response_time = None
+        sdt_type = "NA"
 
         self.on_trial_start()
 
@@ -168,10 +174,12 @@ class Task(Protocol):
                             and not self.target.hidden
                         ):
                             outcome = CORRECT
+                            sdt_type = HIT
                             response = response_event
                             response_time = time.time() - stimulus_start
                         else:
                             outcome = INCORRECT
+                            sdt_type = FALSE_ALARM
                             response = response_event
                             response_time = time.time() - stimulus_start
                         break
@@ -180,17 +188,39 @@ class Task(Protocol):
                 # the response window then the trial outcome is a correct rejection
                 if self.is_running and self.target.hidden:
                     outcome = CORRECT
+                    sdt_type = CORRECT_REJECTION
                 else:
                     outcome = NO_RESPONSE
+                    sdt_type = MISS
 
         # If no explicit outcome, return without doing anything else. This prevents previous session events from leaking
         # through.
         if not outcome:
             return
 
+        stimulus = "None"
+        if outcome != PRECUED:
+            if (
+                self.distractor
+                and not self.target.hidden
+                and not self.distractor.hidden
+            ):
+                stimulus = {
+                    "target": self.target.get_details(),
+                    "distractor": self.distractor.get_details(),
+                }
+            elif self.distractor and self.target.hidden:
+                stimulus = self.distractor.get_details()
+            else:
+                stimulus = self.target.get_details()
+
         self.on_trial_end()
 
-        trial = self.parse_trial(trial_start_iso, outcome, response, response_time)
+        if not response_time:
+            response_time = time.time() - stimulus_start
+        trial = self.parse_trial(
+            trial_start_iso, outcome, response, response_time, sdt_type, stimulus
+        )
         logging.debug("Trial info - {}".format(trial.__dict__))
         self.trials.append(trial)
 
@@ -217,7 +247,17 @@ class Task(Protocol):
         if self.corrections_enabled and self.correction_trial and (outcome == CORRECT):
             self.correction_trial = False
 
-    def parse_trial(self, trial_start, outcome, response=None, response_time=-1):
+    def parse_trial(
+        self,
+        trial_start,
+        outcome,
+        response=None,
+        response_time=0,
+        sdt_type="NA",
+        stimulus=None,
+    ):
+        if not response:
+            response = {"name": "none"}
         trial = models.Trial(
             outcome=outcome,
             iti=self.iti,
@@ -225,12 +265,8 @@ class Task(Protocol):
             response_time=response_time,
             timestamp=trial_start,
             correction=self.correction_trial,
-            stimulus={
-                "target": self.target.get_details(),
-                "distractor": self.distractor.get_details()
-                if self.distractor
-                else None,
-            },
+            stimulus=stimulus,
+            sdt_type=sdt_type,
         )
         return trial
 
