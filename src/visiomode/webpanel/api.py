@@ -14,6 +14,7 @@ import visiomode.config as cfg
 import visiomode.devices as devices
 import visiomode.protocols as protocols
 import visiomode.stimuli as stimuli
+import visiomode.webpanel.export as export
 
 
 class DeviceAPI(flask.views.MethodView):
@@ -75,8 +76,7 @@ class HistoryAPI(flask.views.MethodView):
     """Session history API."""
 
     def get(self):
-        """Get stored session data.
-        """
+        """Get stored session data."""
         config = cfg.Config()
         session_files = glob.glob(config.data_dir + os.sep + "*.json")
         sessions = []
@@ -104,7 +104,11 @@ class DownloadAPI(flask.views.MethodView):
     def get(self, filetype, filename):
         config = cfg.Config()
         sessions_dir = os.path.abspath(config.data_dir)
+        cache_dir = os.path.abspath(config.cache_dir)
         if filetype == "json":
             return flask.send_from_directory(sessions_dir, filename, as_attachment=True)
+        elif filetype == "nwb":
+            nwb_fname = export.to_nwb(sessions_dir + os.sep + filename)
+            return flask.send_from_directory(cache_dir, nwb_fname, as_attachment=True)
         else:
             return "File format {} is not supported (yet)".format(filetype)

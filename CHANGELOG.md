@@ -7,6 +7,7 @@ Versions follow [Semantic Versioning](https://semver.org) (`<major>.<minor>.<pat
 ### Added
 
 - Cache directory for intermittent export files.
+- Session data export in NWB format.
 
 ## [0.5.1] - 2023-03-02
 
@@ -99,7 +100,6 @@ Versions follow [Semantic Versioning](https://semver.org) (`<major>.<minor>.<pat
 ### Changed
 
 - Use pygame version 2.0.1.
-
 
 ## [0.3.2] - 2022-03-22
 
