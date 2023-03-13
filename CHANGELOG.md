@@ -4,6 +4,10 @@ Versions follow [Semantic Versioning](https://semver.org) (`<major>.<minor>.<pat
 
 ## [Unreleased]
 
+### Added
+
+- Cache directory for intermittent export files.
+
 ## [0.5.1] - 2023-03-02
 
 ### Fixed
