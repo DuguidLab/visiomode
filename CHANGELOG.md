@@ -7,7 +7,7 @@ Versions follow [Semantic Versioning](https://semver.org) (`<major>.<minor>.<pat
 ### Added
 
 - Cache directory for intermittent export files.
-- Session data export in NWB format.
+- Session data export in NWB and CSV format.
 
 ## [0.5.1] - 2023-03-02
 
