@@ -110,5 +110,8 @@ class DownloadAPI(flask.views.MethodView):
         elif filetype == "nwb":
             nwb_fname = export.to_nwb(sessions_dir + os.sep + filename)
             return flask.send_from_directory(cache_dir, nwb_fname, as_attachment=True)
+        elif filetype == "csv":
+            csv_fname = export.to_csv(sessions_dir + os.sep + filename)
+            return flask.send_from_directory(cache_dir, csv_fname, as_attachment=True)
         else:
             return "File format {} is not supported (yet)".format(filetype)

@@ -11,6 +11,7 @@ converted file stored in Visiomode's cache directory.
 import os
 import json
 import pynwb
+import pandas as pd
 
 import visiomode.config as cfg
 
@@ -59,6 +60,45 @@ def to_nwb(session_path):
         name="sdt_type", description="signal detection theory classification"
     )
 
+    for trial in _flatten_trials(session):
+        nwbfile.add_trial(**trial)
+
+    nwbfile.create_device(
+        name=session["device"],
+        description="Visiomode acquisition device version {}".format(
+            session.get("version", "<0.5.0")
+        ),
+        manufacturer="Duguid Lab",
+    )
+
+    subject_id = session.get("animal_id")
+    session_date = session.get("timestamp").split("T")[0].replace("-", "")
+    fname = "sub-{}_ses-{}_behavior.nwb".format(subject_id, session_date)
+    outpath = config.cache_dir + os.sep + fname
+    with pynwb.NWBHDF5IO(outpath, "w") as io:
+        io.write(nwbfile)
+
+    return fname
+
+
+def to_csv(session_path):
+    with open(session_path, "r") as f:
+        session = json.load(f)
+
+    session_start_time = datetime.fromisoformat(session["timestamp"])
+
+    df = pd.DataFrame(_flatten_trials(session))
+
+    fname = session_path.split("/")[-1].replace(".json", ".csv")
+    outpath = config.cache_dir + os.sep + fname
+    df.to_csv(outpath)
+
+    return fname
+
+
+def _flatten_trials(session):
+    session_start_time = datetime.fromisoformat(session["timestamp"])
+
     for trial in session.get("trials"):
         start_time = (
             datetime.fromisoformat(trial["timestamp"]) - session_start_time
@@ -93,39 +133,18 @@ def to_nwb(session_path):
 
         sdt_type = trial.get("sdt_type", "unavailable")
 
-        nwbfile.add_trial(
-            start_time=start_time,
-            stop_time=stop_time,
-            stimulus=stimulus,
-            cue_onset=cue_onset,
-            response=response,
-            response_time=response_time,
-            outcome=trial["outcome"],
-            correction=trial["correction"],
-            pos_x=pos_x,
-            pos_y=pos_y,
-            dist_x=dist_x,
-            dist_y=dist_y,
-            sdt_type=sdt_type,
-        )
-
-    nwbfile.create_device(
-        name=session["device"],
-        description="Visiomode acquisition device version {}".format(
-            session.get("version", "<0.5.0")
-        ),
-        manufacturer="Duguid Lab",
-    )
-
-    subject_id = session.get("animal_id")
-    session_date = session.get("timestamp").split("T")[0].replace("-", "")
-    fname = "sub-{}_ses-{}_behavior.nwb".format(subject_id, session_date)
-    outpath = config.cache_dir + os.sep + fname
-    with pynwb.NWBHDF5IO(outpath, "w") as io:
-        io.write(nwbfile)
-
-    return fname
-
-
-def to_csv(session_path):
-    pass
+        yield {
+            "start_time": start_time,
+            "stop_time": stop_time,
+            "stimulus": stimulus,
+            "cue_onset": cue_onset,
+            "response": response,
+            "response_time": response_time,
+            "outcome": trial["outcome"],
+            "correction": trial["correction"],
+            "pos_x": pos_x,
+            "pos_y": pos_y,
+            "dist_x": dist_x,
+            "dist_y": dist_y,
+            "sdt_type": sdt_type,
+        }
