@@ -139,3 +139,5 @@ dmypy.json
 /devices/
 visiomode_data/
 /docs/_build/
+
+.hatch

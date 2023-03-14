@@ -22,7 +22,8 @@ class Config(mixins.YamlAttributesMixin):
 
     debug = True
     flask_key = "dev"
-    data_dir = "visiomode_data/"
+    data_dir = "visiomode_data"
+    cache_dir = data_dir + os.sep + "cache"
 
     fps = 60
     width = 400
@@ -41,3 +42,4 @@ class Config(mixins.YamlAttributesMixin):
         """
         self.load_yaml(path)
         os.makedirs(self.data_dir, exist_ok=True)
+        os.makedirs(self.cache_dir, exist_ok=True)

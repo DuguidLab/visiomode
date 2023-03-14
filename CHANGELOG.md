@@ -4,6 +4,12 @@ Versions follow [Semantic Versioning](https://semver.org) (`<major>.<minor>.<pat
 
 ## [Unreleased]
 
+### Added
+
+- Cache directory for intermittent export files.
+- Session data export in NWB and CSV format.
+- CITATION.cff file
+
 ## [0.5.1] - 2023-03-02
 
 ### Fixed
@@ -95,7 +101,6 @@ Versions follow [Semantic Versioning](https://semver.org) (`<major>.<minor>.<pat
 ### Changed
 
 - Use pygame version 2.0.1.
-
 
 ## [0.3.2] - 2022-03-22
 
