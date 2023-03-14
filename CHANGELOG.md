@@ -8,6 +8,7 @@ Versions follow [Semantic Versioning](https://semver.org) (`<major>.<minor>.<pat
 
 - Cache directory for intermittent export files.
 - Session data export in NWB and CSV format.
+- CITATION.cff file
 
 ## [0.5.1] - 2023-03-02
 

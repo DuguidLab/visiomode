@@ -1,0 +1,43 @@
+cff-version: 1.2.0
+message: "If you use this software, please cite it as below."
+authors:
+  - family-names: "Eleftheriou"
+    given-names: "Constantinos"
+    orcid: "https://orcid.org/0000-0002-8506-2504"
+  - family-names: "Clarke"
+    given-names: "Thomas"
+    orcid: "https://orcid.org/0000-0001-6987-3545"
+  - family-names: "Poon"
+    given-names: "V"
+  - family-names: "Zechner"
+    given-names: "Marie"
+  - family-names: "Duguid"
+    given-names: "Ian"
+    orcid: "https://orcid.org/0000-0001-6966-2641"
+title: "Visiomode"
+version: 0.5.1
+doi: 10.5281/zenodo.1234
+date-released: 2023-03-10
+url: "https://github.com/DuguidLab/visiomode"
+preferred-citation:
+  type: article
+  authors:
+    - family-names: "Eleftheriou"
+      given-names: "Constantinos"
+      orcid: "https://orcid.org/0000-0002-8506-2504"
+    - family-names: "Clarke"
+      given-names: "Thomas"
+      orcid: "https://orcid.org/0000-0001-6987-3545"
+    - family-names: "Poon"
+      given-names: "V"
+    - family-names: "Zechner"
+      given-names: "Marie"
+    - family-names: "Duguid"
+      given-names: "Ian"
+      orcid: "https://orcid.org/0000-0001-6966-2641"
+  doi: "10.1016/j.jneumeth.2022.109779"
+  journal: "Journal of Neuroscience Methods"
+  month: 2
+  title: "Visiomode: An open-source platform for building rodent touchscreen-based behavioral assays"
+  volume: 386
+  year: 2023
