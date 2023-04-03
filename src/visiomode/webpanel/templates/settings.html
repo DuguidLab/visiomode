@@ -3,5 +3,78 @@
 {% block title %}Settings{% endblock %}
 
 {% block content %}
-    <h3 class="text-dark mb-1">Settings</h3>
+<div class="row">
+    <div class="col-xl-12 offset-xl-0">
+        <div class="row">
+            <div class="col-xl-6">
+                <div class="card shadow mb-4">
+                    <div class="card-header py-3">
+                        <h6 class="text-primary font-weight-bold m-0">App settings</h6>
+                    </div>
+                    <div class="card-body" style="min-height: 178px;">
+                        <ul style="list-style-type: none" class="list-group list-group-flush">
+                            <li class="list-group-item"><a href="#">Change screen settings</a></li>
+                            <li class="list-group-item"><a href="#">Change storage location</a></li>
+                            <li class="list-group-item"><a href="#">Clear cache</a></li>
+                            <li class="list-group-item"><a href="#" class="text-danger">Delete app data</a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-xl-6">
+                <div class="card shadow mb-4">
+                    <div class="card-header py-3">
+                        <h6 class="text-primary font-weight-bold m-0">Experimenter profiles</h6>
+                    </div>
+                    <div class="card-body" style="min-height: 178px;">
+                        <ul style="list-style-type: none" class="list-group list-group-flush">
+                            <li class="list-group-item"><a href="#">Add new experimenter</a></li>
+                            <li class="list-group-item"><a href="#">View/edit experimenter details</a></li>
+                            <li class="list-group-item"><a href="#">Export experimenter metadata</a></li>
+                            <li class="list-group-item"><a href="#" class="text-danger">Delete all experimenter
+                                    data</a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-xl-6">
+                <div class="card shadow mb-4">
+                    <div class="card-header py-3">
+                        <h6 class="text-primary font-weight-bold m-0">Animal profiles</h6>
+                    </div>
+                    <div class="card-body" style="min-height: 178px;">
+                        <ul style="list-style-type: none" class="list-group list-group-flush">
+                            <li class="list-group-item"><a href="#">Add new animal profile</a></li>
+                            <li class="list-group-item"><a href="#">View/edit animals</a></li>
+                            <li class="list-group-item"><a href="#">Export animal metadata</a></li>
+                            <li class="list-group-item"><a href="#" class="text-danger">Delete all animal data</a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-xl-6">
+                <div class="card shadow mb-4">
+                    <div class="card-header py-3">
+                        <h6 class="text-primary font-weight-bold m-0">Experimental protocols</h6>
+                    </div>
+                    <div class="card-body" style="min-height: 178px;">
+                        <ul style="list-style-type: none" class="list-group list-group-flush">
+                            <li class="list-group-item"><a href="#">Add new protocol</a></li>
+                            <li class="list-group-item"><a href="#">View/edit protocols</a></li>
+                            <li class="list-group-item"><a href="#">Export protocol metadata</a></li>
+                            <li class="list-group-item"><a href="#" class="text-danger">Delete all protocol data</a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
 {% endblock %}
