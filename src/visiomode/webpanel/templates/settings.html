@@ -13,10 +13,15 @@
                     </div>
                     <div class="card-body" style="min-height: 178px;">
                         <ul style="list-style-type: none" class="list-group list-group-flush">
-                            <li class="list-group-item"><a href="#">Change screen settings</a></li>
-                            <li class="list-group-item"><a href="#">Change storage location</a></li>
-                            <li class="list-group-item"><a href="#">Clear cache</a></li>
-                            <li class="list-group-item"><a href="#" class="text-danger">Delete app data</a></li>
+                            <li class="list-group-item"><a href="#" data-toggle="modal"
+                                    data-target="#changeScreenSettings">Change
+                                    screen settings</a></li>
+                            <li class="list-group-item"><a href="#" data-toggle="modal"
+                                    data-target="#changeStorageSettings">Change storage location</a></li>
+                            <li class="list-group-item"><a href="#" data-toggle="modal" data-target="#clearCache">Clear
+                                    cache</a></li>
+                            <li class="list-group-item" data-toggle="modal" data-target="#deleteAppData"><a href="#"
+                                    class="text-danger">Delete app data</a></li>
                         </ul>
                     </div>
                 </div>
@@ -73,6 +78,91 @@
                         </ul>
                     </div>
                 </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal popup forms -->
+<div class="modal fade" id="changeScreenSettings" tabindex="-1" role="dialog"
+    aria-labelledby="changeScreenSettingsTitle" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="changeScreenSettingsLongTitle">Screen settings</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                ...
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary">Save changes</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="changeStorageSettings" tabindex="-1" role="dialog"
+    aria-labelledby="changeStorageSettingsTitle" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="changeStorageSettingsLongTitle">Storage settings</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                ...
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary">Save changes</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="clearCache" tabindex="-1" role="dialog" aria-labelledby="clearCacheTitle"
+    aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="clearCacheLongTitle">Clear cache</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                ...
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-warning">Clear cache</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="deleteAppData" tabindex="-1" role="dialog" aria-labelledby="deleteAppDataTitle"
+    aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="deleteAppDataLongTitle">Delete app data</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                ...
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-danger">Delete all data</button>
             </div>
         </div>
     </div>
