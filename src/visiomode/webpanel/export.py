@@ -85,8 +85,6 @@ def to_csv(session_path):
     with open(session_path, "r") as f:
         session = json.load(f)
 
-    session_start_time = datetime.fromisoformat(session["timestamp"])
-
     df = pd.DataFrame(_flatten_trials(session))
 
     fname = session_path.split("/")[-1].replace(".json", ".csv")
