@@ -14,8 +14,8 @@
                     <div class="card-body" style="min-height: 178px;">
                         <ul style="list-style-type: none" class="list-group list-group-flush">
                             <li class="list-group-item"><a href="#" data-toggle="modal"
-                                    data-target="#changeScreenSettings">Change
-                                    screen settings</a></li>
+                                    data-target="#changeDisplaySettings">Change
+                                    display settings</a></li>
                             <li class="list-group-item"><a href="#" data-toggle="modal"
                                     data-target="#changeStorageSettings">Change storage location</a></li>
                             <li class="list-group-item"><a href="#" data-toggle="modal" data-target="#clearCache">Clear
@@ -84,18 +84,48 @@
 </div>
 
 <!-- Modal popup forms -->
-<div class="modal fade" id="changeScreenSettings" tabindex="-1" role="dialog"
-    aria-labelledby="changeScreenSettingsTitle" aria-hidden="true">
+<div class="modal fade" id="changeDisplaySettings" tabindex="-1" role="dialog"
+    aria-labelledby="changeDisplaySettingsTitle" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered" role="document">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="changeScreenSettingsLongTitle">Screen settings</h5>
+                <h5 class="modal-title" id="changeDisplaySettingsLongTitle">Display settings</h5>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
             </div>
             <div class="modal-body">
-                ...
+                <form>
+                    <div class="form-group row">
+                        <label for="display-width" class="col-sm-3 col-form-label">Width</label>
+                        <div class="col-sm-4">
+                            <input type="text" class="form-control" id="display-width">
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label for="display-height" class="col-sm-3 col-form-label">Height</label>
+                        <div class="col-sm-4">
+                            <input type="text" class="form-control" id="display-height">
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label for="display-fps" class="col-sm-3 col-form-label">Refresh rate</label>
+                        <div class="col-sm-4">
+                            <input type="text" class="form-control" id="display-fps">
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label for="display-fullscreen" class="col-sm-3 col-form-label">Fullscreen</label>
+                        <div class="form-check">
+                            <select id="inputState" class="form-control">
+                                <option>True</option>
+                                <option>False</option>
+                            </select>
+                        </div>
+                    </div>
+                </form>
+
+                You will need to restart the app for changes to take effect.
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
@@ -116,7 +146,16 @@
                 </button>
             </div>
             <div class="modal-body">
-                ...
+                <form>
+                    <div class="form-group row">
+                        <label for="storage-path" class="col-sm-3 col-form-label">Storage path</label>
+                        <div class="col-sm-4">
+                            <input type="text" class="form-control" id="storage-path">
+                        </div>
+                    </div>
+                </form>
+
+                You will need to restart the app for changes to take effect.
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
@@ -137,7 +176,9 @@
                 </button>
             </div>
             <div class="modal-body">
-                ...
+                <p>The cache contains temporary files generated during the app's operation. Clearing the cache will not
+                    affect session data.</p>
+                <p>Clearing the cache will reclaim storage space on the device running Visiomode.</p>
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
@@ -158,7 +199,8 @@
                 </button>
             </div>
             <div class="modal-body">
-                ...
+                <p>Deleting app data will remove all session data and revert the app to its default settings.</p>
+                <p class="text-danger">Warning: this action cannot be undone.</p>
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
