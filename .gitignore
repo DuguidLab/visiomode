@@ -141,3 +141,5 @@ visiomode_data/
 /docs/_build/
 
 .hatch
+
+.visiomode.json
