@@ -8,7 +8,15 @@ Versions follow [Semantic Versioning](https://semver.org) (`<major>.<minor>.<pat
 
 - Cache directory for intermittent export files.
 - Session data export in NWB and CSV format.
-- CITATION.cff file
+- CITATION.cff file.
+
+### Changed
+
+- App configuration is now stored in a JSON relative to where the app was launched.
+
+### Fixed
+
+- Fix loading external confoguration files ([#118](https://github.com/DuguidLab/visiomode/issues/118)).
 
 ## [0.5.1] - 2023-03-02
 
