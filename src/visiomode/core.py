@@ -20,8 +20,6 @@ import visiomode.protocols as protocols
 # Register mouse events as touch events - useful for debugging.
 os.environ["SDL_MOUSE_TOUCH_EVENTS"] = "1"
 
-logging.basicConfig(level=logging.DEBUG)
-
 
 class Visiomode:
     def __init__(self):
