@@ -16,7 +16,7 @@ Versions follow [Semantic Versioning](https://semver.org) (`<major>.<minor>.<pat
 
 ### Fixed
 
-- Fix loading external confoguration files ([#118](https://github.com/DuguidLab/visiomode/issues/118)).
+- Fix loading external configuration files ([#118](https://github.com/DuguidLab/visiomode/issues/118)).
 
 ## [0.5.1] - 2023-03-02
 
