@@ -25,7 +25,7 @@ session_button.onclick = function () {
     if (form.reportValidity() && (session_status !== "active")) {
         // Start session
         let fields = [...form.getElementsByClassName('form-control')];
-        let request = fields.reduce((_, x) => ({..._, [x.id]: x.value}), {});
+        let request = fields.reduce((_, x) => ({ ..._, [x.id]: x.value }), {});
         console.log(JSON.stringify(request))
 
         $.ajax({
@@ -222,8 +222,8 @@ function createChart(data) {
 // returns true if all color channels in each pixel are 0 (or "blank")
 function isCanvasBlank(canvas) {
     return !canvas.getContext('2d')
-      .getImageData(0, 0, canvas.width, canvas.height).data
-      .some(channel => channel !== 0);
+        .getImageData(0, 0, canvas.width, canvas.height).data
+        .some(channel => channel !== 0);
 }
 
 // new Chart(ctx, {
