@@ -117,9 +117,9 @@
                     <div class="form-group row">
                         <label for="display-fullscreen" class="col-sm-3 col-form-label">Fullscreen</label>
                         <div class="form-check">
-                            <select id="inputState" class="form-control">
-                                <option>True</option>
-                                <option>False</option>
+                            <select id="display-fullscreen" class="form-control">
+                                <option>true</option>
+                                <option>false</option>
                             </select>
                         </div>
                     </div>
@@ -209,4 +209,8 @@
         </div>
     </div>
 </div>
+{% endblock %}
+
+{% block scripts %}
+<script type="text/javascript" src="static/js/settings.js"></script>
 {% endblock %}
