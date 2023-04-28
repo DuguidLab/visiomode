@@ -127,7 +127,7 @@ class SettingsAPI(flask.views.MethodView):
 
     def post(self):
         """Save settings."""
-        request = flask.request.json
+        request = flask.request.json.get("data")
         config = cfg.Config()
         print(request)
         config.width = request.get("width", config.width)
@@ -135,5 +135,6 @@ class SettingsAPI(flask.views.MethodView):
         config.fps = request.get("fps", config.fps)
         config.fullscreen = request.get("fullscreen", config.fullscreen)
         config.data_dir = request.get("data_dir", config.data_dir)
+        config.cache_dir = config.data_dir + os.sep + "cache"
         config.save()
         return "OK"
