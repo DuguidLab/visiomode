@@ -4,6 +4,8 @@ Versions follow [Semantic Versioning](https://semver.org) (`<major>.<minor>.<pat
 
 ## [Unreleased]
 
+## [0.5.2] - 2023-04-26
+
 ### Added
 
 - Cache directory for intermittent export files.
@@ -13,6 +15,7 @@ Versions follow [Semantic Versioning](https://semver.org) (`<major>.<minor>.<pat
 ### Changed
 
 - App configuration is now stored in a JSON relative to where the app was launched.
+- Help sidebar option redirects to documentation at readthedocs.
 
 ### Fixed
 
