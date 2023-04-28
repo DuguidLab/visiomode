@@ -63,6 +63,9 @@ class Config:
         with open(path, "w") as f:
             json.dump(self.__dict__, f, indent=4)
 
+    def to_dict(self):
+        return self.__dict__
+
     def _load_config(self, path):
         """Loads config from a JSON file.
 
