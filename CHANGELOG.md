@@ -4,6 +4,11 @@ Versions follow [Semantic Versioning](https://semver.org) (`<major>.<minor>.<pat
 
 ## [Unreleased]
 
+### Added
+
+- Change app config from the Settings panel ([#105](https://github.com/DuguidLab/visiomode/issues/105)).
+- About info in webpanel ([#180](https://github.com/DuguidLab/visiomode/issues/180))
+
 ## [0.5.2] - 2023-04-26
 
 ### Added
