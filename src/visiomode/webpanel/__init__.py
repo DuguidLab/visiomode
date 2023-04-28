@@ -109,6 +109,12 @@ def create_app(action_q=None, log_q=None):
         methods=["GET"],
     )
 
+    app.add_url_rule(
+        "/api/settings",
+        view_func=api.SettingsAPI.as_view("settings_api"),
+        methods=["GET", "POST"],
+    )
+
     return app
 
 

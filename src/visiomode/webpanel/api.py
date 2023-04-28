@@ -115,3 +115,25 @@ class DownloadAPI(flask.views.MethodView):
             return flask.send_from_directory(cache_dir, csv_fname, as_attachment=True)
         else:
             return "File format {} is not supported (yet)".format(filetype)
+
+
+class SettingsAPI(flask.views.MethodView):
+    """API for saving and loading settings."""
+
+    def get(self):
+        """Get settings."""
+        config = cfg.Config()
+        return config.to_dict()
+
+    def post(self):
+        """Save settings."""
+        request = flask.request.json
+        config = cfg.Config()
+        print(request)
+        config.width = request.get("width", config.width)
+        config.height = request.get("height", config.height)
+        config.fps = request.get("fps", config.fps)
+        config.fullscreen = request.get("fullscreen", config.fullscreen)
+        config.data_dir = request.get("data_dir", config.data_dir)
+        config.save()
+        return "OK"
