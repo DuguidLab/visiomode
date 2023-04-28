@@ -46,32 +46,6 @@ class WebFormMixin:
         return cls.form_path
 
 
-class YamlAttributesMixin:
-    """Load and save class attributes as YAML files."""
-
-    def load_yaml(self, path):
-        """Loads YAML file parameters as class attributes.
-
-        Args:
-            path: Path to config YAML.
-        """
-        if not path or not os.path.exists(path):
-            return
-        with open(path) as f:
-            attrs = yaml.safe_load(f)
-            for key, value in attrs.items():
-                if key not in self.__dict__.keys():
-                    logging.info(
-                        "{} is not a valid config parameter, skipping...".format(key)
-                    )
-                    continue
-                setattr(self, key, value)
-
-    def save_yaml(self, path, exclude=None):
-        """Save class attributes as a YAML file."""
-        pass
-
-
 class ProtocolEventsMixin:
     """Interface declarations for methods handling protocol events."""
 

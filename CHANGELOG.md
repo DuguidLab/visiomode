@@ -6,9 +6,25 @@ Versions follow [Semantic Versioning](https://semver.org) (`<major>.<minor>.<pat
 
 ### Added
 
+- Change app config from the Settings panel ([#105](https://github.com/DuguidLab/visiomode/issues/105)).
+- About info in webpanel ([#180](https://github.com/DuguidLab/visiomode/issues/180))
+
+## [0.5.2] - 2023-04-26
+
+### Added
+
 - Cache directory for intermittent export files.
 - Session data export in NWB and CSV format.
-- CITATION.cff file
+- CITATION.cff file.
+
+### Changed
+
+- App configuration is now stored in a JSON relative to where the app was launched.
+- Help sidebar option redirects to documentation at readthedocs.
+
+### Fixed
+
+- Fix loading external configuration files ([#118](https://github.com/DuguidLab/visiomode/issues/118)).
 
 ## [0.5.1] - 2023-03-02
 
@@ -191,7 +207,8 @@ Versions follow [Semantic Versioning](https://semver.org) (`<major>.<minor>.<pat
 - Redis-based syncing between behaviour & web interface components.
 - SocketIO reads Redis updates for web interface.
 
-[unreleased]: https://github.com/DuguidLab/visiomode/compare/v0.5.1...HEAD
+[unreleased]: https://github.com/DuguidLab/visiomode/compare/v0.5.2...HEAD
+[0.5.2]: https://github.com/DuguidLab/visiomode/compare/v0.5.1...v0.5.2
 [0.5.1]: https://github.com/DuguidLab/visiomode/compare/v0.5.0...v0.5.1
 [0.5.0]: https://github.com/DuguidLab/visiomode/compare/v0.4.1...v0.5.0
 [0.4.1]: https://github.com/DuguidLab/visiomode/compare/v0.4.0...v0.4.1

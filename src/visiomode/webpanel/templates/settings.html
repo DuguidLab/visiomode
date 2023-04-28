@@ -3,5 +3,214 @@
 {% block title %}Settings{% endblock %}
 
 {% block content %}
-    <h3 class="text-dark mb-1">Settings</h3>
+<div class="row">
+    <div class="col-xl-12 offset-xl-0">
+        <div class="row">
+            <div class="col-xl-6">
+                <div class="card shadow mb-4">
+                    <div class="card-header py-3">
+                        <h6 class="text-primary font-weight-bold m-0">App settings</h6>
+                    </div>
+                    <div class="card-body" style="min-height: 178px;">
+                        <ul style="list-style-type: none" class="list-group list-group-flush">
+                            <li class="list-group-item"><a href="#" data-toggle="modal"
+                                    data-target="#changeDisplaySettings">Change
+                                    display settings</a></li>
+                            <li class="list-group-item"><a href="#" data-toggle="modal"
+                                    data-target="#changeStorageSettings">Change storage location</a></li>
+                            <li class="list-group-item"><a href="#" data-toggle="modal" data-target="#clearCache">Clear
+                                    cache</a></li>
+                            <li class="list-group-item" data-toggle="modal" data-target="#deleteAppData"><a href="#"
+                                    class="text-danger">Delete app data</a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-xl-6">
+                <div class="card shadow mb-4">
+                    <div class="card-header py-3">
+                        <h6 class="text-primary font-weight-bold m-0">Experimenter profiles</h6>
+                    </div>
+                    <div class="card-body" style="min-height: 178px;">
+                        <ul style="list-style-type: none" class="list-group list-group-flush">
+                            <li class="list-group-item"><a href="#">Add new experimenter</a></li>
+                            <li class="list-group-item"><a href="#">View/edit experimenter details</a></li>
+                            <li class="list-group-item"><a href="#">Export experimenter metadata</a></li>
+                            <li class="list-group-item"><a href="#" class="text-danger">Delete all experimenter
+                                    data</a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-xl-6">
+                <div class="card shadow mb-4">
+                    <div class="card-header py-3">
+                        <h6 class="text-primary font-weight-bold m-0">Animal profiles</h6>
+                    </div>
+                    <div class="card-body" style="min-height: 178px;">
+                        <ul style="list-style-type: none" class="list-group list-group-flush">
+                            <li class="list-group-item"><a href="#">Add new animal</a></li>
+                            <li class="list-group-item"><a href="#">View/edit animals</a></li>
+                            <li class="list-group-item"><a href="#">Export animal metadata</a></li>
+                            <li class="list-group-item"><a href="#" class="text-danger">Delete all animal metadata</a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-xl-6">
+                <div class="card shadow mb-4">
+                    <div class="card-header py-3">
+                        <h6 class="text-primary font-weight-bold m-0">Protocol presets</h6>
+                    </div>
+                    <div class="card-body" style="min-height: 178px;">
+                        <ul style="list-style-type: none" class="list-group list-group-flush">
+                            <li class="list-group-item"><a href="#">Add new protocol preset</a></li>
+                            <li class="list-group-item"><a href="#">View/edit presets</a></li>
+                            <li class="list-group-item"><a href="#">Export presets</a></li>
+                            <li class="list-group-item"><a href="#" class="text-danger">Delete all protocol presets</a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal popup forms -->
+<div class="modal fade" id="changeDisplaySettings" tabindex="-1" role="dialog"
+    aria-labelledby="changeDisplaySettingsTitle" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="changeDisplaySettingsLongTitle">Display settings</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form>
+                    <div class="form-group row">
+                        <label for="display-width" class="col-sm-3 col-form-label">Width</label>
+                        <div class="col-sm-4">
+                            <input type="text" class="form-control" id="display-width">
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label for="display-height" class="col-sm-3 col-form-label">Height</label>
+                        <div class="col-sm-4">
+                            <input type="text" class="form-control" id="display-height">
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label for="display-fps" class="col-sm-3 col-form-label">Refresh rate</label>
+                        <div class="col-sm-4">
+                            <input type="text" class="form-control" id="display-fps">
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label for="display-fullscreen" class="col-sm-3 col-form-label">Fullscreen</label>
+                        <div class="form-check">
+                            <select id="display-fullscreen" class="form-control">
+                                <option>true</option>
+                                <option>false</option>
+                            </select>
+                        </div>
+                    </div>
+                </form>
+
+                You will need to restart the app for changes to take effect.
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary" id="display-settings-btn">Save changes</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="changeStorageSettings" tabindex="-1" role="dialog"
+    aria-labelledby="changeStorageSettingsTitle" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="changeStorageSettingsLongTitle">Storage settings</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form>
+                    <div class="form-group row">
+                        <label for="storage-path" class="col-sm-3 col-form-label">Storage path</label>
+                        <div class="col-sm-4">
+                            <input type="text" class="form-control" id="storage-path">
+                        </div>
+                    </div>
+                </form>
+
+                You will need to restart the app for changes to take effect.
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary" id="storage-settings-btn">Save changes</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="clearCache" tabindex="-1" role="dialog" aria-labelledby="clearCacheTitle"
+    aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="clearCacheLongTitle">Clear cache</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <p>The cache contains temporary files generated during the app's operation. Clearing the cache will not
+                    affect session data.</p>
+                <p>Clearing the cache will reclaim storage space on the device running Visiomode.</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-warning" id="clear-cache-btn">Clear cache</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="deleteAppData" tabindex="-1" role="dialog" aria-labelledby="deleteAppDataTitle"
+    aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="deleteAppDataLongTitle">Delete app data</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <p>Deleting app data will remove all session data and revert the app to its default settings.</p>
+                <p class="text-danger">Warning: this action cannot be undone.</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-danger" id="delete-all-data-btn">Delete all data</button>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script type="text/javascript" src="static/js/settings.js"></script>
 {% endblock %}
