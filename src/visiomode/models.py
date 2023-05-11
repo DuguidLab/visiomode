@@ -168,6 +168,12 @@ class Animal(Base):
         if os.path.exists(path):
             with open(path, "r") as f:
                 animals = json.load(f)
+            # If the animal already exists, remove it and append the new one
+            animals = [
+                animal
+                for animal in animals
+                if not animal["animal_id"] == self.animal_id
+            ]
             animals.append(self.to_dict())
             with open(path, "w") as f:
                 json.dump(animals, f)
