@@ -115,6 +115,12 @@ def create_app(action_q=None, log_q=None):
         methods=["GET", "POST"],
     )
 
+    app.add_url_rule(
+        "/api/animals",
+        view_func=api.AnimalsAPI.as_view("animals_api"),
+        methods=["GET", "POST"],
+    )
+
     return app
 
 

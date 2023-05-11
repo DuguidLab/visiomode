@@ -16,6 +16,8 @@ import visiomode.protocols as protocols
 import visiomode.stimuli as stimuli
 import visiomode.webpanel.export as export
 
+from visiomode.models import Animal
+
 
 class DeviceAPI(flask.views.MethodView):
     def post(self):
@@ -138,3 +140,15 @@ class SettingsAPI(flask.views.MethodView):
         config.cache_dir = config.data_dir + os.sep + "cache"
         config.save()
         return "OK"
+
+
+class AnimalsAPI(flask.views.MethodView):
+    """API for managing animal profiles."""
+
+    def get(self):
+        """Get animal profiles."""
+        return {"animals": Animal.get_animals()}
+
+    def post(self):
+        request = flask.request.json.get("data")
+        print(request)
