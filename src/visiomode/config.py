@@ -18,6 +18,7 @@ DEFAULT_CONFIG = {
     "flask_key": "dev",
     "data_dir": "visiomode_data",
     "cache_dir": "visiomode_data/cache",
+    "db_dir": "visiomode_data/db",
     "fps": 60,
     "width": 400,
     "height": 800,
@@ -38,6 +39,7 @@ class Config:
     height: int
     fullscreen: bool
     devices: str
+    db_dir: str = "visiomode_data/db"
 
     def __init__(self):
         """Initialises Config with a path to a configuration file.
