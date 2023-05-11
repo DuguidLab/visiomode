@@ -11,6 +11,8 @@ let storageSettingsButton = document.getElementById('storage-settings-btn');
 let clearCacheButton = document.getElementById('clear-cache-btn');
 let deleteAllDataButton = document.getElementById('delete-all-data-btn');
 
+let addAnimalButton = document.getElementById('add-animal-btn');
+
 
 function loadSettings() {
     $.get("/api/settings", function (data) {
@@ -37,6 +39,33 @@ function updateSettings() {
     });
 }
 
+function addAnimal() {
+    let animalId = document.getElementById("animal-id").value;
+    let animalDob = document.getElementById("animal-dob").value;
+    let animalSex = document.getElementById("animal-sex").value;
+    let animalSpecies = document.getElementById("animal-species").value;
+    let animalGenotype = document.getElementById("animal-genotype").value;
+    let animalDescription = document.getElementById("animal-description").value;
+
+    $.ajax({
+        type: 'POST',
+        url: "/api/animals",
+        data: JSON.stringify({
+            type: "add",
+            data: {
+                id: animalId,
+                dob: animalDob,
+                sex: animalSex,
+                species: animalSpecies,
+                genotype: animalGenotype,
+                description: animalDescription,
+            },
+        }),
+        dataType: "json",
+        contentType: "application/json"
+    });
+}
+
 displaySettingsButton.onclick = function () {
     currentSettings.width = Number(document.getElementById("display-width").value);
     currentSettings.height = Number(document.getElementById("display-height").value);
@@ -51,6 +80,10 @@ storageSettingsButton.onclick = function () {
     currentSettings.data_dir = document.getElementById("storage-path").value;
 
     updateSettings();
+}
+
+addAnimalButton.onclick = function () {
+    addAnimal();
 }
 
 

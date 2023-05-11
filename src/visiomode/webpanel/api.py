@@ -152,3 +152,13 @@ class AnimalsAPI(flask.views.MethodView):
     def post(self):
         request = flask.request.json.get("data")
         print(request)
+        animal = Animal(
+            animal_id=request.get("id"),
+            date_of_birth=request.get("dob"),
+            sex=request.get("sex"),
+            species=request.get("species"),
+            genotype=request.get("genotype"),
+            description=request.get("description"),
+        )
+        animal.save()
+        return "OK"
