@@ -146,7 +146,7 @@ class Animal(Base):
     """Animal model class.
 
     Attributes:
-        subject_id: String representing the animal identifier.
+        animal_id: String representing the animal identifier.
         date_of_birth: String representing the animal date of birth (ISO format).
         sex: Character representing the animal's sex (M/F/U/O).
         species: String representing the animal's species. Use the latin name, eg. Mus musculus.
@@ -154,7 +154,7 @@ class Animal(Base):
         description: String with additional animal notes. Defaults to empty string.
     """
 
-    subject_id: str
+    animal_id: str
     date_of_birth: str
     sex: str
     species: str
