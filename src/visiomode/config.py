@@ -60,6 +60,7 @@ class Config:
 
         os.makedirs(self.data_dir, exist_ok=True)
         os.makedirs(self.cache_dir, exist_ok=True)
+        os.makedirs(self.db_dir, exist_ok=True)
 
     def save(self, path=CONFIG_PATH):
         with open(path, "w") as f:
