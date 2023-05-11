@@ -11,7 +11,10 @@ import json
 import typing
 import copy
 
-from visiomode import __about__
+from visiomode import __about__, config
+
+
+cfg = config.Config()
 
 
 @dataclasses.dataclass
@@ -157,3 +160,31 @@ class Animal(Base):
     species: str
     genotype: str = ""
     description: str = ""
+
+    def save(self):
+        """Append animal to json database file."""
+        path = cfg.db_dir + os.sep + "animals.json"
+
+        if os.path.exists(path):
+            with open(path, "r") as f:
+                animals = json.load(f)
+            animals.append(self.to_dict())
+            with open(path, "w") as f:
+                json.dump(animals, f)
+        else:
+            with open(path, "w") as f:
+                json.dump([self.to_dict()], f)
+
+    @classmethod
+    def get_animals(self):
+        """Get all animals stored in the database.
+
+        Returns a list of dictionaries with animal attributes.
+        """
+        path = cfg.db_dir + os.sep + "animals.json"
+
+        if os.path.exists(path):
+            with open(path, "r") as f:
+                animals = json.load(f)
+            return animals
+        return []
