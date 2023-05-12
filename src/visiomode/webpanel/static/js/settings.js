@@ -35,7 +35,10 @@ function updateSettings() {
             data: currentSettings,
         }),
         dataType: "json",
-        contentType: "application/json"
+        contentType: "application/json",
+        success: function (data) {
+            $("#changeDisplaySettings").modal("hide");
+        }
     });
 }
 
@@ -62,7 +65,10 @@ function addAnimal() {
             },
         }),
         dataType: "json",
-        contentType: "application/json"
+        contentType: "application/json",
+        success: function (data) {
+            $("#addAnimal").modal("hide");
+        }
     });
 }
 
