@@ -19,7 +19,6 @@ void setup() {
 }
 
 void loop() {
-  Serial.println(digitalRead(BUTTON_PIN));
   buttonState = digitalRead(BUTTON_PIN);
   if (buttonState == 1) {
     if (dispensing == false) {
@@ -65,7 +64,8 @@ void dispenseReward() {
   spoutServo.write(150);
   delay(500); // spout movement epoch
 
-  digita); // reward dispension
+  digitalWrite(SOL_PIN, HIGH); // reward dispension
+  delay(15);
   digitalWrite(SOL_PIN, LOW);
   delay(1400); // delay for mouse to drink
 
