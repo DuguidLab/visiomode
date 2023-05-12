@@ -161,4 +161,4 @@ class AnimalsAPI(flask.views.MethodView):
             description=request.get("description"),
         )
         animal.save()
-        return "OK"
+        return json.dumps({"success": True}), 200, {"ContentType": "application/json"}

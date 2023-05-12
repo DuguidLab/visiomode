@@ -1,0 +1,100 @@
+{% extends "base.html" %}
+{% set active_page = "settings" %}
+{% block title %}Settings{% endblock %}
+
+{% block content %}
+<div class="card shadow">
+    <div class="card-header py-3">
+        <p class="text-primary m-0 font-weight-bold">Animals</p>
+    </div>
+    <div class="card-body">
+        <div class="table-responsive">
+            <table  class="table table-hover" id="animalsTable">
+                <thead>
+                    <tr>
+                        <th>Animal ID</th>
+                        <th>Date of Birth</th>
+                        <th>Sex</th>
+                        <th>Description</th>
+                    </tr>
+                </thead>
+
+                <tbody id="animalsTableData"a></tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+
+<div class="modal fade" id="editAnimal" tabindex="-1" role="dialog"
+    aria-labelledby="editAnimalTitle" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="editAnimalLongTitle">Edit animal details</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form>
+                    <div class="form-group row">
+                        <label for="animal-id" class="col-sm-3 col-form-label">Animal ID<sup>*</sup></label>
+                        <div class="col-sm-5">
+                            <input type="text" class="form-control" id="animal-id" required>
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label for="animal-dob" class="col-sm-3 col-form-label">Date of Birth<sup>*</sup></label>
+                        <div class="col-sm-5">
+                            <input type="date" class="form-control" id="animal-dob" required>
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label for="animal-sex" class="col-sm-3 col-form-label">Sex<sup>*</sup></label>
+                        <div class="col-sm-5">
+                            <div class="form-check">
+                                <select id="animal-sex" class="form-control">
+                                    <option value="U">Unknown</option>
+                                    <option value="M">Male</option>
+                                    <option value="F">Female</option>
+                                    <option value="O">Other</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label for="animal-species" class="col-sm-3 col-form-label">Species<sup>*</sup></label>
+                        <div class="col-sm-5">
+                            <input type="text" class="form-control" id="animal-species" value="Mus musculus" required>
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label for="animal-genotype" class="col-sm-3 col-form-label">Genotype</label>
+                        <div class="col-sm-5">
+                            <input type="text" class="form-control" id="animal-genotype">
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label for="animal-description" class="col-sm-3 col-form-label">Description</label>
+                        <div class="col-sm-8">
+                            <textarea class="form-control" id="animal-description"></textarea>
+                        </div>
+                    </div>
+                </form>
+
+                <sup>*</sup> Indicates a required field.
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-alert" id="delete-animal-btn">Delete</button>
+                <button type="button" class="btn btn-primary" id="edit-animal-btn">Save changes</button>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script type="text/javascript" src="static/js/settings-animals.js"></script>
+{% endblock %}
