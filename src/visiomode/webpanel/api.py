@@ -23,7 +23,7 @@ class DeviceAPI(flask.views.MethodView):
     def post(self):
         request = json.loads(flask.request.data.decode("utf8"))
         devices.check_device_profile(request["profile"], request["address"])
-        return "OK"
+        return json.dumps({"success": True}), 200, {"ContentType": "application/json"}
 
 
 class SessionAPI(flask.views.MethodView):
@@ -36,7 +36,7 @@ class SessionAPI(flask.views.MethodView):
         request = flask.request.json
         logging.debug("Session POST request - {}".format(request))
         self.action_q.put(request)
-        return "OK"
+        return json.dumps({"success": True}), 200, {"ContentType": "application/json"}
 
     def get(self):
         """Request for current session status."""
@@ -139,7 +139,7 @@ class SettingsAPI(flask.views.MethodView):
         config.data_dir = request.get("data_dir", config.data_dir)
         config.cache_dir = config.data_dir + os.sep + "cache"
         config.save()
-        return "OK"
+        return json.dumps({"success": True}), 200, {"ContentType": "application/json"}
 
 
 class AnimalsAPI(flask.views.MethodView):
