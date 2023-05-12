@@ -150,15 +150,20 @@ class AnimalsAPI(flask.views.MethodView):
         return {"animals": Animal.get_animals()}
 
     def post(self):
+        request_type = flask.request.json.get("type")  # add, delete, update
         request = flask.request.json.get("data")
         print(request)
-        animal = Animal(
-            animal_id=request.get("id"),
-            date_of_birth=request.get("dob"),
-            sex=request.get("sex"),
-            species=request.get("species"),
-            genotype=request.get("genotype"),
-            description=request.get("description"),
-        )
-        animal.save()
+        if request_type == "delete":
+            animal_id = request.get("id")
+            Animal.delete_animal(animal_id)
+        elif (request_type == "update") or (request_type == "add"):
+            animal = Animal(
+                animal_id=request.get("id"),
+                date_of_birth=request.get("dob"),
+                sex=request.get("sex"),
+                species=request.get("species"),
+                genotype=request.get("genotype"),
+                description=request.get("description"),
+            )
+            animal.save()
         return json.dumps({"success": True}), 200, {"ContentType": "application/json"}

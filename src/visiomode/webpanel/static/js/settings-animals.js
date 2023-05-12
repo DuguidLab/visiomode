@@ -5,7 +5,8 @@
  */
 
 let table = document.getElementById("animalsTableData");
-let editAnimalButton = document.getElementById('edit-animal-btn');
+let updateAnimalButton = document.getElementById('update-animal-btn');
+let deleteAnimalButton = document.getElementById('delete-animal-btn');
 let animals = [];
 
 
@@ -38,7 +39,7 @@ table.onclick = function (event) {
     let animal_id = event.target.parentNode.cells[0].innerHTML;
     let selected_animal = animals.find(element => element.animal_id == animal_id);
     console.log(selected_animal);
-    $("#editAnimal").modal();
+    $("#updateAnimal").modal();
     document.getElementById("animal-id").value = selected_animal.animal_id;
     document.getElementById("animal-dob").value = selected_animal.date_of_birth;
     document.getElementById("animal-sex").value = selected_animal.sex;
@@ -47,7 +48,7 @@ table.onclick = function (event) {
     document.getElementById("animal-description").value = selected_animal.description;
 }
 
-function editAnimal() {
+function updateAnimal() {
     let animalId = document.getElementById("animal-id").value;
     let animalDob = document.getElementById("animal-dob").value;
     let animalSex = document.getElementById("animal-sex").value;
@@ -59,7 +60,7 @@ function editAnimal() {
         type: 'POST',
         url: "/api/animals",
         data: JSON.stringify({
-            type: "edit",
+            type: "update",
             data: {
                 id: animalId,
                 dob: animalDob,
@@ -74,13 +75,35 @@ function editAnimal() {
         success: function (data) {
             console.log(data);
             loadAnimals();
-            $("#editAnimal").modal("toggle")
+            $("#updateAnimal").modal("toggle")
         }
     });
 }
 
-editAnimalButton.onclick = function () {
-    editAnimal();
+updateAnimalButton.onclick = function () {
+    updateAnimal();
+}
+
+
+deleteAnimalButton.onclick = function () {
+    let animalId = document.getElementById("animal-id").value;
+    $.ajax({
+        type: 'POST',
+        url: "/api/animals",
+        data: JSON.stringify({
+            type: "delete",
+            data: {
+                id: animalId,
+            },
+        }),
+        dataType: "json",
+        contentType: "application/json",
+        success: function (data) {
+            console.log(data);
+            loadAnimals();
+            $("#updateAnimal").modal("toggle")
+        }
+    });
 }
 
 loadAnimals();

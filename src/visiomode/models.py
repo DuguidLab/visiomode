@@ -194,3 +194,18 @@ class Animal(Base):
                 animals = json.load(f)
             return animals
         return []
+
+    @classmethod
+    def delete_animal(self, animal_id):
+        """Delete animal from database."""
+        path = cfg.db_dir + os.sep + "animals.json"
+
+        if os.path.exists(path):
+            with open(path, "r") as f:
+                animals = json.load(f)
+            # If the animal exists, remove it
+            animals = [
+                animal for animal in animals if not animal["animal_id"] == animal_id
+            ]
+            with open(path, "w") as f:
+                json.dump(animals, f)
