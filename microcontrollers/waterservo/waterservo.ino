@@ -23,14 +23,14 @@ void loop() {
   if (buttonState == 1) {
     if (dispensing == false) {
       dispensing = true;
-      dispenseReward();
+      dispenseReward(false);
       dispensing = false;
     }
   }
   if (Serial.available() > 0) {
     char state = Serial.read();
     if (state == 'T') {
-        dispenseReward();
+      dispenseReward(true);
     }
     if (state == 'H' || state == 'h') {
       digitalWrite(LED_BUILTIN, HIGH);
@@ -58,7 +58,7 @@ void loop() {
   delay(50); // allow buffer to fill
 }
 
-void dispenseReward() {
+void dispenseReward(bool retract) {
   digitalWrite(LED_BUILTIN, HIGH);
   Serial.println("LED ON");
   spoutServo.write(150);
@@ -67,10 +67,12 @@ void dispenseReward() {
   digitalWrite(SOL_PIN, HIGH); // reward dispension
   delay(15);
   digitalWrite(SOL_PIN, LOW);
-  delay(1400); // delay for mouse to drink
 
-  digitalWrite(LED_BUILTIN, LOW);
-  Serial.println("LED OFF");
-  spoutServo.write(50);
-  delay(500); // spout movement epoch
+  if (retract) {
+    delay(1400); // delay for mouse to drink
+    digitalWrite(LED_BUILTIN, LOW);
+    Serial.println("LED OFF");
+    spoutServo.write(50);
+    delay(500); // spout movement epoch
+  }
 }
