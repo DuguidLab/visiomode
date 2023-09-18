@@ -31,7 +31,7 @@ dependencies = [
   "PyYAML~=6.0",
   "pyserial~=3.5",
   "numpy>=1.22",
-  "pygame==2.0.1",
+  "pygame>=2.5.1",
   "pynwb>=2.2.0",
 ]
 dynamic = ["version"]
@@ -62,4 +62,4 @@ python = "3.9"
 
 [tool.hatch.envs.develop]
 python = "3.9"
-dependencies = ["black", "pylint"]
+dependencies = ["black", "pylint", "pre-commit"]
