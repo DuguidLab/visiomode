@@ -9,6 +9,10 @@ Versions follow [Semantic Versioning](https://semver.org) (`<major>.<minor>.<pat
 - Change app config from the Settings panel ([#105](https://github.com/DuguidLab/visiomode/issues/105)).
 - About info in webpanel ([#180](https://github.com/DuguidLab/visiomode/issues/180))
 
+### Changed
+
+- Pygame version bumped to >=2.5.1
+
 ## [0.5.2] - 2023-04-26
 
 ### Added
