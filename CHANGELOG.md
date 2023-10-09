@@ -11,7 +11,7 @@ Versions follow [Semantic Versioning](https://semver.org) (`<major>.<minor>.<pat
 
 ### Changed
 
-- Pygame version bumped to >=2.5.1
+- Pygame version bumped to >=2.5.1.
 
 ## [0.5.2] - 2023-04-26
 
