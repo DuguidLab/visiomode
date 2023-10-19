@@ -134,7 +134,7 @@ unfixable = [
 ]
 
 [tool.ruff.isort]
-known-first-party = ["duguidlab_nwb"]
+known-first-party = ["visiomode"]
 
 [tool.ruff.flake8-tidy-imports]
 ban-relative-imports = "all"
