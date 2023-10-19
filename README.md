@@ -15,9 +15,7 @@ Visiomode is an open-source platform for rodent touchscreen-based visuomotor tas
 
 ### Raspberry Pi OS (recommended)
 
-The recommended way to install Visiomode is by using `pipx` (<https://pypa.github.io/pipx/>). `pipx` will create an isolated python environment from which Visiomode will run, leaving the system python alone.
-
-> WARNING: If you're using Pimoroni's Hyperpixel 4.0 display, you'll need Raspberry Pi OS "Buster" (<https://www.raspberrypi.com/software/operating-systems/#raspberry-pi-os-legacy>), as the Hyperpixel 4.0 display does not yet support the latest Bullseye version (see <https://github.com/pimoroni/hyperpixel4/issues/155>).
+The recommended way to install Visiomode is by using `pipx` (<https://pypa.github.io/pipx/>). `pipx` will create an isolated python environment from which Visiomode will run, leaving the system python alone. This is the recommended way to install Visiomode, as it will not interfere with any other python packages you may have installed on your system.
 
 First, make sure that your Raspberry Pi OS is up-to-date.
 
@@ -34,8 +32,7 @@ sudo apt install libsdl2-mixer-2.0-0 libsdl2-image-2.0-0 libsdl2-2.0-0 libsdl2-t
 Install `pipx` using
 
 ```bash
-python3 -m pip install --user pipx
-python3 -m pipx ensurepath
+sudo apt install pipx
 ```
 
 And finally, install Visiomode using `pipx`:

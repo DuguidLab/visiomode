@@ -12,6 +12,8 @@ Versions follow [Semantic Versioning](https://semver.org) (`<major>.<minor>.<pat
 ### Changed
 
 - Pygame version bumped to >=2.5.1.
+- Installation instructions for `pipx` now use apt instead of pip.
+- Remove warning about Hyperpixel display compatibility with the latest Raspberry Pi OS. This is now [fixed](https://github.com/pimoroni/hyperpixel4/issues/177).
 
 ## [0.5.2] - 2023-04-26
 
