@@ -182,7 +182,7 @@ class Animal(Base):
                 json.dump([self.to_dict()], f)
 
     @classmethod
-    def get_animals(self):
+    def get_animals(cls):
         """Get all animals stored in the database.
 
         Returns a list of dictionaries with animal attributes.
@@ -196,7 +196,7 @@ class Animal(Base):
         return []
 
     @classmethod
-    def delete_animal(self, animal_id):
+    def delete_animal(cls, animal_id):
         """Delete animal from database."""
         path = cfg.db_dir + os.sep + "animals.json"
 
