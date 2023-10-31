@@ -1,4 +1,4 @@
-"""Visiomode Application main class and core utilities"""
+"""Visiomode main class and application loop."""
 
 #  This file is part of visiomode.
 #  Copyright (c) 2020 Constantinos Eleftheriou <Constantinos.Eleftheriou@ed.ac.uk>
@@ -22,6 +22,13 @@ os.environ["SDL_MOUSE_TOUCH_EVENTS"] = "1"
 
 
 class Visiomode:
+    """Visiomode application main class.
+
+    This class handles the main application loop, and initialises the mouse GUI
+    and user webpanel. It also handles requests from the webpanel, and passes
+    them on to the appropriate protocol runner.
+    """
+
     def __init__(self):
         self.clock = pg.time.Clock()
         self.config = conf.Config()
@@ -59,6 +66,7 @@ class Visiomode:
         self.run_main()
 
     def loading_screen(self):
+        """Rotating logo to entertain user and mouse while the webpanel is loading."""
         # Fill background
         self.background = pg.Surface(self.screen.get_size())
         self.background = self.background.convert()
@@ -120,6 +128,7 @@ class Visiomode:
         pg.display.flip()
 
     def run_main(self):
+        """Main application loop."""
         while True:
             if self.session:
                 self.session.protocol.update()
@@ -147,6 +156,16 @@ class Visiomode:
             pg.display.flip()
 
     def request_listener(self):
+        """Parser for requests from the webpanel.
+
+        This tries to parse the request and pass it on to the appropriate
+        protocol runner. It also handles requests for the current status of the
+        application.
+
+        Requests are read from the class action queue, which is written to by
+        the webpanel thread. The response is written to the class log queue,
+        which is read by the webpanel thread.
+        """
         while True:
             request = self.action_q.get()
             if "type" not in request.keys():
@@ -175,7 +194,19 @@ class Visiomode:
 
 
 def rotate(image, rect, angle):
-    """Rotate an image while keeping its center."""
+    """Rotate an image while keeping its center.
+
+    Used for the loading screen.
+
+    Args:
+        image (pygame.Surface): Image to rotate.
+        rect (pygame.Rect): Rectangle to rotate.
+        angle (float): Angle to rotate by.
+
+    Returns:
+        pygame.Surface: Rotated image.
+        pygame.Rect: New rectangle for the rotated image.
+    """
     # Rotate the original image without modifying it.
     new_image = pg.transform.rotozoom(image, angle, 1)
     # Get a new rect with the center of the old rect.
