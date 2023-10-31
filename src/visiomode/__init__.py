@@ -13,7 +13,7 @@ faulthandler.enable()
 
 
 def run():
-    """Application entry point."""
+    """Entry point for the `visiomode` cli command."""
     visiomode.core.Visiomode()
 
 
