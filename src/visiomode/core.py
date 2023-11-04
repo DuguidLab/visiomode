@@ -30,6 +30,12 @@ class Visiomode:
     """
 
     def __init__(self):
+        """Initialise application.
+
+        This initialises the application, and starts the webpanel and GUI
+        threads. It also loads the configuration file, and displays the
+        loading animation on the GUI screen while the webpanel is loading.
+        """
         self.clock = pg.time.Clock()
         self.config = conf.Config()
 
@@ -128,7 +134,14 @@ class Visiomode:
         pg.display.flip()
 
     def run_main(self):
-        """Main application loop."""
+        """Main application loop.
+
+        This is the main application loop. It checks for events, and updates the
+        protocol runner if one is active. If the protocol is no longer running,
+        or the session duration has elapsed, the session is saved and the
+        protocol is stopped. If the application receives a quit event, the
+        session is saved and the application exits.
+        """
         while True:
             if self.session:
                 self.session.protocol.update()
