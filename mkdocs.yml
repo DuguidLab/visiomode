@@ -1,5 +1,7 @@
 site_name: Visiomode
 site_url: https://docs.visiomode.org/
+repo_url: https://github.com/DuguidLab/visiomode
+repo_name: DuguidLab/visiomode
 
 theme:
   name: material
@@ -7,6 +9,8 @@ theme:
   font:
     text: Montserrat
   logo: assets/visiomode_logo_icon.png
+  icon:
+    repo: fontawesome/brands/github
   features:
     - navigation.instant
     - navigation.instant.progress
