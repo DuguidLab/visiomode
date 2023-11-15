@@ -45,3 +45,19 @@ The recommended way to install Visiomode is via `pipx` (<https://pypa.github.io/
 ```bash
 pipx install visiomode
 ```
+
+## Running Visiomode
+
+To launch Visiomode, open a terminal and run
+
+```bash
+visiomode
+```
+
+If running over `ssh`, you will need to prepend `DISPLAY=:0` to the `visiomode` command to run the behaviour window on the primary display.
+
+```bash
+DISPLAY=:0 visiomode
+```
+
+This will launch the behaviour window (what the animal sees). The web interface can be accessed from any machine connected on the same network as the Raspberry Pi running Visiomode at `http://<YOUR-PI-HOSTNAME>.local:5000`, where `<YOUR-PI-HOSTNAME>` is the hostname of your Raspberry Pi. If you're unsure on what this is, run `hostname` in a terminal window.
