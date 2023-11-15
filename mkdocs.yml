@@ -2,6 +2,7 @@ site_name: Visiomode
 
 theme:
   name: material
+  custom_dir: docs/overrides
   font:
     text: Montserrat
   logo: assets/visiomode_logo_icon.png
