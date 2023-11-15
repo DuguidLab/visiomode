@@ -20,6 +20,7 @@ theme:
     - toc.follow
     - content.code.copy
     - content.code.annotate
+    - navigation.footer
   palette:
     - media: "(prefers-color-scheme: light)"
       scheme: default
@@ -54,9 +55,19 @@ markdown_extensions:
   - pymdownx.highlight:
       anchor_linenums: true
       line_spans: __span
-      pygments_lang_class: true
   - pymdownx.inlinehilite
   - pymdownx.snippets
+
+extra:
+  social:
+    - icon: fontawesome/brands/github
+      link: https://github.com/orgs/DuguidLab
+    - icon: material/web
+      link: https://www.duguidlab.com
+    - icon: material/file-document
+      link: https://doi.org/10.1016/j.jneumeth.2022.109779
+
+copyright: Copyright &copy; 2023 Constantinos Eleftheriou
 
 nav:
   - Getting started:
