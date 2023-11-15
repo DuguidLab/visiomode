@@ -13,7 +13,7 @@ theme:
     - navigation.tracking
     - navigation.sections
     - navigation.path
-    - navigation.indexes
+    # - navigation.indexes
     # - toc.integrate
     - navigation.top
     - navigation.tabs
@@ -72,7 +72,7 @@ copyright: Copyright &copy; 2023 Constantinos Eleftheriou
 
 nav:
   - Getting started:
-    - Installation: getting-started/installation.md
+    - Installation: index.md
     - Building an arena: getting-started/building-an-arena.md
     - Running your first experiment: getting-started/running-first-experiment.md
     - Analysing data: getting-started/data-analysis.md
