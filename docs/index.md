@@ -60,4 +60,17 @@ If running over `ssh`, you will need to prepend `DISPLAY=:0` to the `visiomode` 
 DISPLAY=:0 visiomode
 ```
 
-This will launch the behaviour window (what the animal sees). The web interface can be accessed from any machine connected on the same network as the Raspberry Pi running Visiomode at `http://<YOUR-PI-HOSTNAME>.local:5000`, where `<YOUR-PI-HOSTNAME>` is the hostname of your Raspberry Pi. If you're unsure on what this is, run `hostname` in a terminal window.
+After a few moments you will be greeted with the Visiomode mouse interface:
+
+![Visiomode mouse interface](../assets/screengrabs/hello-mouse.png)
+
+The web interface can be accessed from any machine connected on the same network as the Raspberry Pi running Visiomode at `http://<YOUR-PI-HOSTNAME>.local:5000`, where `<YOUR-PI-HOSTNAME>` is the hostname of your Raspberry Pi. If you're unsure on what this is, run `hostname` in a terminal window, which will print the hostname of your Raspberry Pi. If you're running Visiomode on your local device, you can access the web interface at `http://localhost:5000`.
+
+![Visiomode web interface](../assets/screengrabs/hello-visiomode.png)
+
+## Next steps
+
+Now that you have a working installation of Visiomode, you can start putting together an arena for running your experiments. [Building an arena](building-an-arena.md) will guide you through the process of building a touchscreen arena, while [Running your first experiment](running-first-experiment.md) will walk you through the process of designing and running experiments.
+
+!!! tip
+    Things not quite working as you expect? Head over to the [Troubleshooting](troubleshooting.md) page for some common issues and solutions.
