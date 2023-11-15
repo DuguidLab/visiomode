@@ -39,7 +39,7 @@ dynamic = ["version"]
 
 [project.urls]
 Website = "https://www.visiomode.org"
-Documentation = "https://visiomode.readthedocs.io/en/latest/"
+Documentation = "https:/docs.visiomode.org"
 Issues = "https://github.com/DuguidLab/visiomode/issues"
 Source = "https://github.com/DuguidLab/visiomode"
 
