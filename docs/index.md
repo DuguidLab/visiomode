@@ -73,4 +73,4 @@ The web interface can be accessed from any machine connected on the same network
 Now that you have a working installation of Visiomode, you can start putting together an arena for running your experiments. [Building an arena](building-an-arena.md) will guide you through the process of building a touchscreen arena, while [Running your first experiment](running-first-experiment.md) will walk you through the process of designing and running experiments.
 
 !!! tip
-    Things not quite working as you expect? Head over to the [Troubleshooting](troubleshooting.md) page for some common issues and solutions.
+    Things not quite working as you'd expect? Head over to the [Troubleshooting](troubleshooting.md) page for some common issues and solutions.
