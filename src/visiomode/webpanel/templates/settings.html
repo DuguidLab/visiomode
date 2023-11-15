@@ -53,8 +53,9 @@
                     </div>
                     <div class="card-body" style="min-height: 178px;">
                         <ul style="list-style-type: none" class="list-group list-group-flush">
-                            <li class="list-group-item"><a href="#">Add new animal</a></li>
-                            <li class="list-group-item"><a href="#">View/edit animals</a></li>
+                            <li class="list-group-item"><a href="#" data-toggle="modal"
+                                data-target="#addAnimal">Add new animal</a></li>
+                            <li class="list-group-item"><a href="/settings-animals">View/edit animals</a></li>
                             <li class="list-group-item"><a href="#">Export animal metadata</a></li>
                             <li class="list-group-item"><a href="#" class="text-danger">Delete all animal metadata</a>
                             </li>
@@ -209,6 +210,125 @@
         </div>
     </div>
 </div>
+
+<div class="modal fade" id="changeDisplaySettings" tabindex="-1" role="dialog"
+    aria-labelledby="changeDisplaySettingsTitle" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="changeDisplaySettingsLongTitle">Display settings</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form>
+                    <div class="form-group row">
+                        <label for="display-width" class="col-sm-3 col-form-label">Width</label>
+                        <div class="col-sm-4">
+                            <input type="text" class="form-control" id="display-width">
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label for="display-height" class="col-sm-3 col-form-label">Height</label>
+                        <div class="col-sm-4">
+                            <input type="text" class="form-control" id="display-height">
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label for="display-fps" class="col-sm-3 col-form-label">Refresh rate</label>
+                        <div class="col-sm-4">
+                            <input type="text" class="form-control" id="display-fps">
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label for="display-fullscreen" class="col-sm-3 col-form-label">Fullscreen</label>
+                        <div class="form-check">
+                            <select id="display-fullscreen" class="form-control">
+                                <option>true</option>
+                                <option>false</option>
+                            </select>
+                        </div>
+                    </div>
+                </form>
+
+                You will need to restart the app for changes to take effect.
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary" id="display-settings-btn">Save changes</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="addAnimal" tabindex="-1" role="dialog"
+    aria-labelledby="addAnimalTitle" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="addAnimalLongTitle">Add animal</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form>
+                    <div class="form-group row">
+                        <label for="animal-id" class="col-sm-3 col-form-label">Animal ID<sup>*</sup></label>
+                        <div class="col-sm-5">
+                            <input type="text" class="form-control" id="animal-id" required>
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label for="animal-dob" class="col-sm-3 col-form-label">Date of Birth<sup>*</sup></label>
+                        <div class="col-sm-5">
+                            <input type="date" class="form-control" id="animal-dob" required>
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label for="animal-sex" class="col-sm-3 col-form-label">Sex<sup>*</sup></label>
+                        <div class="col-sm-5">
+                            <div class="form-check">
+                                <select id="animal-sex" class="form-control">
+                                    <option value="U">Unknown</option>
+                                    <option value="M">Male</option>
+                                    <option value="F">Female</option>
+                                    <option value="O">Other</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label for="animal-species" class="col-sm-3 col-form-label">Species<sup>*</sup></label>
+                        <div class="col-sm-5">
+                            <input type="text" class="form-control" id="animal-species" value="Mus musculus" required>
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label for="animal-genotype" class="col-sm-3 col-form-label">Genotype</label>
+                        <div class="col-sm-5">
+                            <input type="text" class="form-control" id="animal-genotype">
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label for="animal-description" class="col-sm-3 col-form-label">Description</label>
+                        <div class="col-sm-8">
+                            <textarea class="form-control" id="animal-description"></textarea>
+                        </div>
+                    </div>
+                </form>
+
+                <sup>*</sup> Indicates a required field.
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary" id="add-animal-btn">Save animal</button>
+            </div>
+        </div>
+    </div>
+</div>
+
 {% endblock %}
 
 {% block scripts %}

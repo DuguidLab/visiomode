@@ -16,12 +16,14 @@ import visiomode.protocols as protocols
 import visiomode.stimuli as stimuli
 import visiomode.webpanel.export as export
 
+from visiomode.models import Animal
+
 
 class DeviceAPI(flask.views.MethodView):
     def post(self):
         request = json.loads(flask.request.data.decode("utf8"))
         devices.check_device_profile(request["profile"], request["address"])
-        return "OK"
+        return json.dumps({"success": True}), 200, {"ContentType": "application/json"}
 
 
 class SessionAPI(flask.views.MethodView):
@@ -34,7 +36,7 @@ class SessionAPI(flask.views.MethodView):
         request = flask.request.json
         logging.debug("Session POST request - {}".format(request))
         self.action_q.put(request)
-        return "OK"
+        return json.dumps({"success": True}), 200, {"ContentType": "application/json"}
 
     def get(self):
         """Request for current session status."""
@@ -137,4 +139,31 @@ class SettingsAPI(flask.views.MethodView):
         config.data_dir = request.get("data_dir", config.data_dir)
         config.cache_dir = config.data_dir + os.sep + "cache"
         config.save()
-        return "OK"
+        return json.dumps({"success": True}), 200, {"ContentType": "application/json"}
+
+
+class AnimalsAPI(flask.views.MethodView):
+    """API for managing animal profiles."""
+
+    def get(self):
+        """Get animal profiles."""
+        return {"animals": Animal.get_animals()}
+
+    def post(self):
+        request_type = flask.request.json.get("type")  # add, delete, update
+        request = flask.request.json.get("data")
+        print(request)
+        if request_type == "delete":
+            animal_id = request.get("id")
+            Animal.delete_animal(animal_id)
+        elif (request_type == "update") or (request_type == "add"):
+            animal = Animal(
+                animal_id=request.get("id"),
+                date_of_birth=request.get("dob"),
+                sex=request.get("sex"),
+                species=request.get("species"),
+                genotype=request.get("genotype"),
+                description=request.get("description"),
+            )
+            animal.save()
+        return json.dumps({"success": True}), 200, {"ContentType": "application/json"}

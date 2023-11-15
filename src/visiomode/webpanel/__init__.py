@@ -56,6 +56,11 @@ def create_app(action_q=None, log_q=None):
         """Settings page."""
         return flask.render_template("settings.html")
 
+    @app.route("/settings-animals")
+    def settings_animals():
+        """Animals view/edit page."""
+        return flask.render_template("settings-animals.html")
+
     @app.route("/help")
     def docs():
         """Help / documentation page."""
@@ -112,6 +117,12 @@ def create_app(action_q=None, log_q=None):
     app.add_url_rule(
         "/api/settings",
         view_func=api.SettingsAPI.as_view("settings_api"),
+        methods=["GET", "POST"],
+    )
+
+    app.add_url_rule(
+        "/api/animals",
+        view_func=api.AnimalsAPI.as_view("animals_api"),
         methods=["GET", "POST"],
     )
 

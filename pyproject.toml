@@ -27,11 +27,12 @@ classifiers = [
 ]
 keywords = ["touchscreen", "rodent", "behaviour", "neuroscience"]
 dependencies = [
-  "Flask~=2.0.3",
-  "PyYAML~=6.0",
-  "pyserial~=3.5",
+  "Flask>=2.0.3",
+  "PyYAML>=6.0",
+  "Werkzeug>=2.2,<3.0",
+  "pyserial>=3.5",
   "numpy>=1.22",
-  "pygame==2.0.1",
+  "pygame>=2.5.1",
   "pynwb>=2.2.0",
 ]
 dynamic = ["version"]
@@ -62,4 +63,15 @@ python = "3.9"
 
 [tool.hatch.envs.develop]
 python = "3.9"
-dependencies = ["black", "pylint"]
+dependencies = ["black", "pylint", "pre-commit"]
+
+[tool.hatch.envs.docs]
+dependencies = [
+  "mkdocs",
+  "mkdocs-material",
+  "mkdocstrings-python",
+]
+
+[tool.hatch.envs.docs.scripts]
+build = "mkdocs build --clean --strict"
+serve = "mkdocs serve --dev-addr localhost:8000"

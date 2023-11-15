@@ -1,4 +1,4 @@
-"""Database connection handling module"""
+"""Application data model classes."""
 
 #  This file is part of visiomode.
 #  Copyright (c) 2020 Constantinos Eleftheriou <Constantinos.Eleftheriou@ed.ac.uk>
@@ -11,7 +11,10 @@ import json
 import typing
 import copy
 
-from visiomode import __about__
+from visiomode import __about__, config
+
+
+cfg = config.Config()
 
 
 @dataclasses.dataclass
@@ -19,11 +22,19 @@ class Base:
     """Base model class."""
 
     def to_dict(self):
-        """Returns class instance attributes as a dictionary."""
+        """Get class instance attributes as a dictionary.
+
+        Returns:
+            Dictionary with class instance attributes.
+        """
         return dataclasses.asdict(self)
 
     def to_json(self):
-        """Returns class instance attributes as JSON."""
+        """Get class instance attributes as JSON.
+
+        Returns:
+            JSON string with class instance attributes.
+        """
         return json.dumps(self.to_dict())
 
 
@@ -111,9 +122,12 @@ class Session(Base):
         self.trials = self.protocol.trials
 
     def to_dict(self):
-        """Returns class instance attributes as a dictionary.
+        """Get class instance attributes as a dictionary.
 
         This method overrides the Base class to cast nested Trial objects under self.trials as dictionaries.
+
+        Returns:
+            Dictionary with class instance attributes.
         """
         instance = copy.copy(self)
         instance.trials = [trial.to_dict() for trial in self.trials if self.trials]
@@ -136,3 +150,74 @@ class Session(Base):
 
     def __repr__(self):
         return "<Session {}>".format(str(self.timestamp))
+
+
+@dataclasses.dataclass
+class Animal(Base):
+    """Animal model class.
+
+    Attributes:
+        animal_id: String representing the animal identifier.
+        date_of_birth: String representing the animal date of birth (ISO format).
+        sex: Character representing the animal's sex (M/F/U/O).
+        species: String representing the animal's species. Use the latin name, eg. Mus musculus.
+        genotype: String representing the animal's genotype. Defaults to empty string.
+        description: String with additional animal notes. Defaults to empty string.
+    """
+
+    animal_id: str
+    date_of_birth: str
+    sex: str
+    species: str
+    genotype: str = ""
+    description: str = ""
+
+    def save(self):
+        """Append animal to json database file."""
+        path = cfg.db_dir + os.sep + "animals.json"
+
+        if os.path.exists(path):
+            with open(path, "r") as f:
+                animals = json.load(f)
+            # If the animal already exists, remove it and append the new one
+            animals = [
+                animal
+                for animal in animals
+                if not animal["animal_id"] == self.animal_id
+            ]
+            animals.append(self.to_dict())
+            with open(path, "w") as f:
+                json.dump(animals, f)
+        else:
+            with open(path, "w") as f:
+                json.dump([self.to_dict()], f)
+
+    @classmethod
+    def get_animals(self):
+        """Get all animals stored in the database.
+
+        Returns:
+            List of dictionaries with animal attributes.
+        """
+        path = cfg.db_dir + os.sep + "animals.json"
+
+        if os.path.exists(path):
+            with open(path, "r") as f:
+                animals = json.load(f)
+            return animals
+        return []
+
+    @classmethod
+    def delete_animal(self, animal_id):
+        """Delete animal from database."""
+        path = cfg.db_dir + os.sep + "animals.json"
+
+        if os.path.exists(path):
+            with open(path, "r") as f:
+                animals = json.load(f)
+            # If the animal exists, remove it
+            animals = [
+                animal for animal in animals if not animal["animal_id"] == animal_id
+            ]
+            with open(path, "w") as f:
+                json.dump(animals, f)

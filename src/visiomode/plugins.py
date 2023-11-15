@@ -15,11 +15,8 @@ def load_module(path: str, name: str = None) -> None:
     """Load plugin module from file.
 
     Args:
-        path:
-        name:
-
-    Returns:
-
+        path: Path to plugin module (i.e. a python file).
+        name: Name of plugin module. If not provided, this will be inferred from the path.
     """
     name = name or "visiomode{}".format(
         path.split("visiomode")[-1].replace("/", ".").replace(".py", "")
@@ -46,14 +43,11 @@ def load_module(path: str, name: str = None) -> None:
 def load_modules_dir(path: str, exclude: list = None) -> None:
     """Load all modules from a directory.
 
-    This will not load __init__.py, if one exists.
+    This will not load __init__.py in that directory, if one exists.
 
     Args:
-        path:
-        exclude:
-
-    Returns:
-
+        path: Path to directory containing plugin modules.
+        exclude: List of modules to exclude from loading.
     """
     logging.info("Loading plugin modules from {}".format(path))
     module_files = glob.glob(path + "/*.py")
