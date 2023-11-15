@@ -64,3 +64,14 @@ python = "3.9"
 [tool.hatch.envs.develop]
 python = "3.9"
 dependencies = ["black", "pylint", "pre-commit"]
+
+[tool.hatch.envs.docs]
+dependencies = [
+  "mkdocs",
+  "mkdocs-material",
+  "mkdocstrings-python",
+]
+
+[tool.hatch.envs.docs.scripts]
+build = "mkdocs build --clean --strict"
+serve = "mkdocs serve --dev-addr localhost:8000"
