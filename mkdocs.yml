@@ -73,9 +73,9 @@ copyright: Copyright &copy; 2023 Constantinos Eleftheriou
 nav:
   - Getting started:
     - Installation: index.md
-    - Building an arena: getting-started/building-an-arena.md
-    - Running your first experiment: getting-started/running-first-experiment.md
-    - Analysing data: getting-started/data-analysis.md
+    - Building an arena: building-an-arena.md
+    - Running your first experiment: running-first-experiment.md
+    - Analysing data: data-analysis.md
   - How-to:
     - how-to/index.md
   - Design principles:
