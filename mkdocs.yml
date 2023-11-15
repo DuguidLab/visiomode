@@ -59,6 +59,7 @@ markdown_extensions:
   - pymdownx.snippets
 
 extra:
+  homepage: https://visiomode.org
   social:
     - icon: fontawesome/brands/github
       link: https://github.com/orgs/DuguidLab
@@ -74,6 +75,7 @@ nav:
     - Installation: getting-started/installation.md
     - Building an arena: getting-started/building-an-arena.md
     - Running your first experiment: getting-started/running-first-experiment.md
+    - Analysing data: getting-started/data-analysis.md
   - How-to:
     - how-to/index.md
   - Design principles:
