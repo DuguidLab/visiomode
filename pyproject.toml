@@ -70,8 +70,10 @@ dependencies = [
   "mkdocs",
   "mkdocs-material",
   "mkdocstrings-python",
+  "pymdown-extensions",
 ]
 
 [tool.hatch.envs.docs.scripts]
 build = "mkdocs build --clean --strict"
 serve = "mkdocs serve --dev-addr localhost:8000"
+deploy = "mkdocs gh-deploy --force"
