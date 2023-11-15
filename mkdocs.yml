@@ -1,4 +1,5 @@
 site_name: Visiomode
+site_url: https://docs.visiomode.org/
 
 theme:
   name: material
@@ -10,6 +11,13 @@ theme:
     - navigation.instant
     - navigation.instant.progress
     - navigation.tracking
+    - navigation.sections
+    - navigation.path
+    - navigation.indexes
+    # - toc.integrate
+    - navigation.top
+    - navigation.tabs
+    - toc.follow
   palette:
     - media: "(prefers-color-scheme: light)"
       scheme: default
@@ -36,3 +44,20 @@ plugins:
             docstring_style: google
             docstring_section_style: list
   - search
+
+markdown_extensions:
+  - admonition
+  - pymdownx.details
+  - pymdownx.superfences
+
+nav:
+  - Getting started:
+    - Installation: getting-started/installation.md
+    - Building an arena: getting-started/building-an-arena.md
+    - Running your first experiment: getting-started/running-first-experiment.md
+  - How-to:
+    - how-to/index.md
+  - Design principles:
+    - design-principles/index.md
+  - Reference:
+    - reference/index.md
