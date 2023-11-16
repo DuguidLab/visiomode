@@ -21,7 +21,6 @@ theme:
     # - navigation.indexes
     # - toc.integrate
     - navigation.top
-    - navigation.tabs
     - toc.follow
     - content.code.copy
     - content.code.annotate
@@ -79,7 +78,6 @@ nav:
   - Getting started:
     - Installation: index.md
     - Building an arena: building-an-arena.md
-    - Setting up: setting-up.md
     - Running your first experiment: running-first-experiment.md
     - Analysing data: data-analysis.md
     - Troubleshooting: troubleshooting.md
