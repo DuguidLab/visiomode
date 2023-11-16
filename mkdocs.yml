@@ -81,7 +81,8 @@ nav:
     - Building an arena: building-an-arena.md
     - Running your first experiment: running-first-experiment.md
     - Analysing data: data-analysis.md
-    - Next steps: next-steps.md
+    - Where to go from here: next-steps.md
+    - Contributing: contributing.md
     - Troubleshooting: troubleshooting.md
   - How-to:
     - how-to/index.md
