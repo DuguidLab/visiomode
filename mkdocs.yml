@@ -5,6 +5,7 @@ repo_name: DuguidLab/visiomode
 
 theme:
   name: material
+  favicon: assets/visiomode_logo_icon.png
   custom_dir: docs/overrides
   font:
     text: Montserrat
