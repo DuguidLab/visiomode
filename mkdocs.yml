@@ -5,6 +5,7 @@ repo_name: DuguidLab/visiomode
 
 theme:
   name: material
+  favicon: assets/visiomode_logo_icon.png
   custom_dir: docs/overrides
   font:
     text: Montserrat
@@ -78,13 +79,14 @@ nav:
   - Getting started:
     - Installation: index.md
     - Building an arena: building-an-arena.md
-    - Setting up: setting-up.md
     - Running your first experiment: running-first-experiment.md
     - Analysing data: data-analysis.md
+    - Where to go from here: next-steps.md
+    - Contributing: contributing.md
     - Troubleshooting: troubleshooting.md
   - How-to:
-    - how-to/index.md
+    - Overview: how-to/index.md
   - Design principles:
-    - design-principles/index.md
+    - Overview: design-principles/index.md
   - Reference:
-    - reference/index.md
+    - Overview: reference/index.md
