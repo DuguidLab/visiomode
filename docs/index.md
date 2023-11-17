@@ -140,7 +140,7 @@ Once you have an active `ssh` connection to your Raspberry Pi, you can launch Vi
 DISPLAY=:0 visiomode
 ```
 
-The mouse interface will appear on the screen (or touchscreen) attached to the Raspberry Pi, and you can access the web interface by opening a browser and navigating to `http://<YOUR-IP-ADDRESS>:5000`.
+The mouse interface will appear on the screen (or touchscreen) attached to the Raspberry Pi, and you can access the web interface by opening a browser on your device and navigating to `http://<YOUR-IP-ADDRESS>:5000`.
 
 🎉 Congratulations! You are all set to build an arena and start doing some science!🧑‍🔬
 
