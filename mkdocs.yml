@@ -75,7 +75,7 @@ extra:
       link: https://doi.org/10.1016/j.jneumeth.2022.109779
   analytics:
     provider: plausible
-    domain: visiomode.org
+    domain: docs.visiomode.org
 
 copyright: Copyright &copy; 2023 Constantinos Eleftheriou
 
