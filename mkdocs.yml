@@ -52,6 +52,7 @@ plugins:
             docstring_style: google
             docstring_section_style: list
   - search
+  - material-plausible
 
 markdown_extensions:
   - admonition
@@ -72,6 +73,9 @@ extra:
       link: https://www.duguidlab.com
     - icon: material/file-document
       link: https://doi.org/10.1016/j.jneumeth.2022.109779
+  analytics:
+    provider: plausible
+    domain: visiomode.org
 
 copyright: Copyright &copy; 2023 Constantinos Eleftheriou
 
