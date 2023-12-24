@@ -71,6 +71,7 @@ dependencies = [
   "mkdocs-material",
   "mkdocstrings-python",
   "pymdown-extensions",
+  "material-plausible-plugin",
 ]
 
 [tool.hatch.envs.docs.scripts]
