@@ -77,7 +77,7 @@ extra:
     provider: plausible
     domain: docs.visiomode.org
 
-copyright: Copyright &copy; 2023 Constantinos Eleftheriou
+copyright: Copyright &copy; 2024 Constantinos Eleftheriou
 
 nav:
   - Getting started:
