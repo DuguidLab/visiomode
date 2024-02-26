@@ -221,3 +221,76 @@ class Animal(Base):
             ]
             with open(path, "w") as f:
                 json.dump(animals, f)
+
+
+@dataclasses.dataclass
+class Experimenter(Base):
+    """Experimenter model class.
+
+    Attributes:
+        experimenter_id: String representing the experimenter identifier.
+        name: String representing the experimenter's name.
+        email: String representing the experimenter's email.
+        lab: String representing the experimenter's lab.
+        institution: String representing the experimenter's institution.
+        description: String with additional experimenter notes. Defaults to empty string.
+    """
+
+    experimenter_id: str
+    name: str
+    email: str
+    lab: str
+    institution: str
+    description: str = ""
+
+    def save(self):
+        """Append experimenter to json database file."""
+        path = cfg.db_dir + os.sep + "experimenters.json"
+
+        if os.path.exists(path):
+            with open(path, "r") as f:
+                experimenters = json.load(f)
+            # If the experimenter already exists, remove them and append the new one
+            experimenters = [
+                experimenter
+                for experimenter in experimenters
+                if not experimenter["experimenter_id"] == self.experimenter_id
+            ]
+            experimenters.append(self.to_dict())
+            with open(path, "w") as f:
+                json.dump(experimenters, f)
+        else:
+            with open(path, "w") as f:
+                json.dump([self.to_dict()], f)
+
+    @classmethod
+    def get_experimenters(self):
+        """Get all experimenters stored in the database.
+
+        Returns:
+            List of dictionaries with experimenter attributes.
+        """
+        path = cfg.db_dir + os.sep + "experimenters.json"
+
+        if os.path.exists(path):
+            with open(path, "r") as f:
+                experimenters = json.load(f)
+            return experimenters
+        return []
+
+    @classmethod
+    def delete_experimenter(self, experimenter_id):
+        """Delete experimenter from database."""
+        path = cfg.db_dir + os.sep + "experimenters.json"
+
+        if os.path.exists(path):
+            with open(path, "r") as f:
+                experimenters = json.load(f)
+            # If the experimenter exists, remove them
+            experimenters = [
+                experimenter
+                for experimenter in experimenters
+                if not experimenter["experimenter_id"] == experimenter_id
+            ]
+            with open(path, "w") as f:
+                json.dump(experimenters, f)
