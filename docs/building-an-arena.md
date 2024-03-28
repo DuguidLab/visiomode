@@ -49,7 +49,7 @@ You will also need access to the following equipment:
 - A soldering station.
 - A drill (any will do but a standing drill is recommended).
 - A jigsaw (or hand saw if you have a lot of patience), with blades suitable for cutting through metal and plastic.
-- A laser cutter (or a CNC router) capable of cutting 3mm and 5mm acrylic sheets. This is required for the slit inserts that facilitate forelimb reaching responses described by [Eleftheriou et al. 2023](https://doi.org/10.1016/j.jneumeth.2022.109779). If you don't have access to a laser cutter / CNC machine you might want to consider outsourcing this task to an external vendor such as [Get It Made](https://get-it-made.co.uk) or [Protolabs](https://www.protolabs.com/en-gb/services/cnc-machining/), but always check with your local University / Institute workshop / Engineering department first as they may be able to do this for you. Other than the slit inserts, the rest of the arena can be built using a jigsaw, a drill and a hot glue gun.
+- A laser cutter (or a CNC router) capable of cutting 3mm and 5mm acrylic sheets. This is required for the slit inserts that facilitate forelimb reaching responses described by [Eleftheriou et al. 2023](https://doi.org/10.1016/j.jneumeth.2022.109779). If you don't have access to a laser cutter / CNC machine you might want to consider outsourcing this task to an external vendor such as [Get It Made](https://get-it-made.co.uk) or [Protolabs](https://www.protolabs.com/en-gb/services/cnc-machining/), but always check with your local University / Institute workshop / Engineering department first as they may be able to do this for you. Other than the slit inserts, the rest of the arena can be built using a jigsaw, a drill, a hot glue gun and a pair of Allen keys.
 
 !!! warning
     This tutorial assumes you have some basic knowledge of electronics and soldering, and are comfortable using a soldering iron. If you are not, please seek help from someone who is.
@@ -57,8 +57,20 @@ You will also need access to the following equipment:
 
 ## Assembling the electronics
 
+### The reward system
 
-## Putting the arena together
+The first step is to assemble the electronics for the reward system. This will involve soldering the solenoid valve and servo motor to the Arduino Nano, and connecting the solenoid valve to the servo motor. The solenoid valve will be used to deliver a liquid reward to the mouse, and the servo motor will be used to control the position of the solenoid valve. The Arduino Nano will be used to control the servo motor and solenoid valve.
+
+The solenoid valve will be used to deliver a liquid reward to the mouse. The solenoid valve has two wires: a red wire and a black wire. The red wire is the positive wire, and the black wire is the negative wire. The solenoid valve is normally closed, and will open when a current is applied to the wires. The solenoid valve is rated for 5V, and will draw a current of 0.1A when open.
+
+### The touchscreen display module
+
+
+### Putting it all together
+
+
+
+## Setting up the arena
 
 
 ## Calibrating the reward system
