@@ -86,7 +86,6 @@ class Session(Base):
     """Session model class.
 
     Attributes:
-        version: Visiomode version this was generated with.
         animal_id: String representing the animal identifier.
         experiment: A string holding the experiment identifier.
         protocol: An instance of the Protocol class.
