@@ -243,7 +243,7 @@ function isCanvasBlank(canvas) {
 // });
 
 
-/// Dynamic form updates for protocol selection
+/// Dynamic form updates
 
 // load protocol options on select
 protocol_selector = document.getElementById('protocol');
@@ -255,3 +255,21 @@ protocol_selector.onchange = function () {
 }
 
 protocol_selector.onchange();
+
+
+// load animals
+function loadAnimals() {
+    let animal_selector = document.getElementById('animal_id');
+    $.get("/api/animals").done(function (data) {
+        animal_selector.innerHTML = "";
+        data.animals.reverse(); // reverse order to show latest animals first
+        data.animals.forEach(function (animal) {
+            let option = document.createElement('option');
+            option.value = animal.animal_id;
+            option.text = animal.animal_id;
+            animal_selector.add(option);
+        });
+    });
+}
+
+loadAnimals();
