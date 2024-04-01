@@ -96,6 +96,8 @@ class Session(Base):
         notes: String with additional session notes. Defaults to empty string
         device: String hostname of the device running the session. Defaults to the hostname provided by the socket lib.
         trials: A mutable list of session trials; each trial is an instance of the Trial dataclass.
+        animal_meta: A dictionary with animal metadata (see Animal class). Automatically populated using animal_id after class instantiation.
+        version: Visiomode version this was generated with.
     """
 
     animal_id: str
@@ -108,9 +110,11 @@ class Session(Base):
     notes: str = ""
     device: str = socket.gethostname()
     trials: typing.List[Trial] = dataclasses.field(default_factory=list)
+    animal_meta: dict = None
     version: str = __about__.__version__
 
     def __post_init__(self):
+        self.animal_meta = Animal.get_animal(self.animal_id)
         self.trials = self.protocol.trials
 
     def to_dict(self):
@@ -180,6 +184,19 @@ class Animal(Base):
         else:
             with open(path, "w") as f:
                 json.dump([self.to_dict()], f)
+
+    @classmethod
+    def get_animal(cls, animal_id):
+        """Get an animal from the database based on its ID."""
+        path = cfg.db_dir + os.sep + "animals.json"
+
+        if os.path.exists(path):
+            with open(path, "r") as f:
+                animals = json.load(f)
+            for animal in animals:
+                if animal["animal_id"] == animal_id:
+                    return animal
+        return None
 
     @classmethod
     def get_animals(cls):
