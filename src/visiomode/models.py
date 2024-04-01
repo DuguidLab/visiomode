@@ -95,7 +95,7 @@ class Session(Base):
         timestamp: A string with the session start date and time (ISO format). Defaults to current date and time.
         notes: String with additional session notes. Defaults to empty string
         device: String hostname of the device running the session. Defaults to the hostname provided by the socket lib.
-        trials: A mutable list of session trials; each trial is an instance of the Trial dataclass.
+        trials: A mutable list of session trials; each trial is an instance of the Trial dataclass. Automatically populated using protocol.trials after class instantiation.
         animal_meta: A dictionary with animal metadata (see Animal class). Automatically populated using animal_id after class instantiation.
         version: Visiomode version this was generated with.
     """
