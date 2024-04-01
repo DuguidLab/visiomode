@@ -30,8 +30,8 @@
                                                     {% endfor %}
                                                 </optgroup>
                                                 <optgroup label="Presentations">
-                                                    {% for present in presentations %}
-                                                        <option value="{{ present.get_identifier() }}">{{ present.get_common_name() }}</option>
+                                                    {% for presentation in presentations %}
+                                                        <option value="{{ presentation.get_identifier() }}">{{ presentation.get_common_name() }}</option>
                                                     {% endfor %}
                                                 </optgroup>
                                             </select>
