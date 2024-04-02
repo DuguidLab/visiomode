@@ -16,15 +16,19 @@
                                 <div class="row">
                                     <div class="col">
                                         <div class="form-group">
+                                            <!-- Animal Selector -->
+
                                             <label for="animal_id">Animal ID</label>
-                                            <!-- <input id="animal_id"
-                                                   class="form-control mb-3"
-                                                   type="text"
-                                                   placeholder="animal id"
-                                                   required> -->
-                                            <select id="animal_id" class="form-control mb-3"></select>
+                                            <div class="input-group">
+                                                <select id="animal_id" class="custom-select mb-3"></select>
+                                                <div class="input-group-append mb-3">
+                                                <a class="btn btn-outline-secondary" role="button" href="#" data-toggle="modal"
+                                                data-target="#addAnimal">Add animal</a>
+                                                </div>
+                                            </div>
+                                            <!-- Protocol selector -->
                                             <label for="protocol">Protocol</label>
-                                            <select id="protocol" class="form-control mb-3">
+                                            <select id="protocol" class="custom-select mb-3">
                                                 <optgroup label="Tasks">
                                                     {% for task in tasks %}
                                                         <option value="{{ task.get_identifier() }}">{{ task.get_common_name() }}</option>
@@ -154,6 +158,75 @@
             </div>
         </div>
     </div>
+
+<!-- Modal dialogs -->
+<div class="modal fade" id="addAnimal" tabindex="-1" role="dialog"
+    aria-labelledby="addAnimalTitle" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="addAnimalLongTitle">Add animal</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form>
+                    <div class="form-group row">
+                        <label for="new-animal-id" class="col-sm-3 col-form-label">Animal ID<sup>*</sup></label>
+                        <div class="col-sm-5">
+                            <input type="text" class="form-control" id="new-animal-id" required>
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label for="new-animal-dob" class="col-sm-3 col-form-label">Date of Birth<sup>*</sup></label>
+                        <div class="col-sm-5">
+                            <input type="date" class="form-control" id="new-animal-dob" required>
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label for="new-animal-sex" class="col-sm-3 col-form-label">Sex<sup>*</sup></label>
+                        <div class="col-sm-5">
+                            <div class="form-check">
+                                <select id="new-animal-sex" class="form-control">
+                                    <option value="U">Unknown</option>
+                                    <option value="M">Male</option>
+                                    <option value="F">Female</option>
+                                    <option value="O">Other</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label for="new-animal-species" class="col-sm-3 col-form-label">Species<sup>*</sup></label>
+                        <div class="col-sm-5">
+                            <input type="text" class="form-control" id="new-animal-species" value="Mus musculus" required>
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label for="new-animal-genotype" class="col-sm-3 col-form-label">Genotype</label>
+                        <div class="col-sm-5">
+                            <input type="text" class="form-control" id="new-animal-genotype">
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label for="new-animal-description" class="col-sm-3 col-form-label">Description</label>
+                        <div class="col-sm-8">
+                            <textarea class="form-control" id="new-animal-description"></textarea>
+                        </div>
+                    </div>
+                </form>
+
+                <sup>*</sup> Indicates a required field.
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary" id="add-animal-btn">Save animal</button>
+            </div>
+        </div>
+    </div>
+</div>
+
 {% endblock %}
 
 {% block scripts %}
