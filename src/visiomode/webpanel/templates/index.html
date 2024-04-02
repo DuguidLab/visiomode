@@ -20,7 +20,7 @@
 
                                             <label for="animal_id">Animal ID</label>
                                             <div class="input-group">
-                                                <select id="animal_id" class="custom-select mb-3"></select>
+                                                <select id="animal_id" class="custom-select form-control mb-3"></select>
                                                 <div class="input-group-append mb-3">
                                                 <a class="btn btn-outline-secondary" role="button" href="#" data-toggle="modal"
                                                 data-target="#addAnimal">Add animal</a>
@@ -28,7 +28,7 @@
                                             </div>
                                             <!-- Protocol selector -->
                                             <label for="protocol">Protocol</label>
-                                            <select id="protocol" class="custom-select mb-3">
+                                            <select id="protocol" class="custom-select form-control mb-3">
                                                 <optgroup label="Tasks">
                                                     {% for task in tasks %}
                                                         <option value="{{ task.get_identifier() }}">{{ task.get_common_name() }}</option>
@@ -188,7 +188,7 @@
                         <label for="new-animal-sex" class="col-sm-3 col-form-label">Sex<sup>*</sup></label>
                         <div class="col-sm-5">
                             <div class="form-check">
-                                <select id="new-animal-sex" class="form-control">
+                                <select id="new-animal-sex" class="custom-select form-control">
                                     <option value="U">Unknown</option>
                                     <option value="M">Male</option>
                                     <option value="F">Female</option>
@@ -200,7 +200,7 @@
                     <div class="form-group row">
                         <label for="new-animal-species" class="col-sm-3 col-form-label">Species<sup>*</sup></label>
                         <div class="col-sm-5">
-                            <input type="text" class="form-control" id="new-animal-species" value="Mus musculus" required>
+                            <input type="text" class="custom-select form-control" id="new-animal-species" value="Mus musculus" required>
                         </div>
                     </div>
                     <div class="form-group row">
