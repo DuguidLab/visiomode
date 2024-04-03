@@ -46,6 +46,7 @@ table.onclick = function (event) {
     document.getElementById("animal-species").value = selected_animal.species;
     document.getElementById("animal-genotype").value = selected_animal.genotype;
     document.getElementById("animal-description").value = selected_animal.description;
+    document.getElementById("animal-rfid").value = selected_animal.rfid;
 }
 
 function updateAnimal() {
@@ -55,6 +56,7 @@ function updateAnimal() {
     let animalSpecies = document.getElementById("animal-species").value;
     let animalGenotype = document.getElementById("animal-genotype").value;
     let animalDescription = document.getElementById("animal-description").value;
+    let animalRFID = document.getElementById("animal-rfid").value;
 
     $.ajax({
         type: 'POST',
@@ -68,6 +70,7 @@ function updateAnimal() {
                 species: animalSpecies,
                 genotype: animalGenotype,
                 description: animalDescription,
+                rfid: animalRFID,
             },
         }),
         dataType: "json",

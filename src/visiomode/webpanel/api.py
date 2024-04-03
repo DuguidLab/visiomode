@@ -1,4 +1,5 @@
 """API Module"""
+
 #  This file is part of visiomode.
 #  Copyright (c) 2020 Constantinos Eleftheriou <Constantinos.Eleftheriou@ed.ac.uk>
 #  Distributed under the terms of the MIT Licence.
@@ -164,6 +165,7 @@ class AnimalsAPI(flask.views.MethodView):
                 species=request.get("species"),
                 genotype=request.get("genotype"),
                 description=request.get("description"),
+                rfid=request.get("rfid"),
             )
             animal.save()
         return json.dumps({"success": True}), 200, {"ContentType": "application/json"}

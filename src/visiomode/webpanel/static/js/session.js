@@ -286,6 +286,7 @@ function addAnimal() {
     let animalSpecies = document.getElementById("new-animal-species").value;
     let animalGenotype = document.getElementById("new-animal-genotype").value;
     let animalDescription = document.getElementById("new-animal-description").value;
+    let animalRFID = document.getElementById("new-animal-rfid").value;
 
     return $.ajax({
         type: 'POST',
@@ -299,6 +300,7 @@ function addAnimal() {
                 species: animalSpecies,
                 genotype: animalGenotype,
                 description: animalDescription,
+                rfid: animalRFID,
             },
         }),
         dataType: "json",

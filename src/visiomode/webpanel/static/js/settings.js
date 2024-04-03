@@ -49,6 +49,7 @@ function addAnimal() {
     let animalSpecies = document.getElementById("animal-species").value;
     let animalGenotype = document.getElementById("animal-genotype").value;
     let animalDescription = document.getElementById("animal-description").value;
+    let animalRFID = document.getElementById("animal-rfid").value;
 
     $.ajax({
         type: 'POST',
@@ -62,6 +63,7 @@ function addAnimal() {
                 species: animalSpecies,
                 genotype: animalGenotype,
                 description: animalDescription,
+                rfid: animalRFID,
             },
         }),
         dataType: "json",

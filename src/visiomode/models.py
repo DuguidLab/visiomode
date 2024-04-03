@@ -155,6 +155,7 @@ class Animal(Base):
         species: String representing the animal's species. Use the latin name, eg. Mus musculus.
         genotype: String representing the animal's genotype. Defaults to empty string.
         description: String with additional animal notes. Defaults to empty string.
+        rfid: String representing the animal's RFID tag. Defaults to empty string.
     """
 
     animal_id: str
@@ -163,6 +164,7 @@ class Animal(Base):
     species: str
     genotype: str = ""
     description: str = ""
+    rfid: str = ""
 
     def save(self):
         """Append animal to json database file."""
