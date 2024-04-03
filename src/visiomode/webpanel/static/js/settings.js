@@ -14,6 +14,8 @@ let deleteAllDataButton = document.getElementById('delete-all-data-btn');
 let addAnimalButton = document.getElementById('add-animal-btn');
 
 
+/// Display & storage settings
+
 function loadSettings() {
     $.get("/api/settings", function (data) {
         currentSettings = data;
@@ -41,6 +43,26 @@ function updateSettings() {
         }
     });
 }
+
+displaySettingsButton.onclick = function () {
+    currentSettings.width = Number(document.getElementById("display-width").value);
+    currentSettings.height = Number(document.getElementById("display-height").value);
+    currentSettings.fps = Number(document.getElementById("display-fps").value);
+    currentSettings.fullscreen = document.getElementById("display-fullscreen").value === "true";
+
+    updateSettings();
+}
+
+storageSettingsButton.onclick = function () {
+    currentSettings.data_dir = document.getElementById("storage-path").value;
+
+    updateSettings();
+}
+
+loadSettings();
+
+
+/// Animals
 
 function addAnimal() {
     let animalId = document.getElementById("animal-id").value;
@@ -74,25 +96,26 @@ function addAnimal() {
     });
 }
 
-displaySettingsButton.onclick = function () {
-    currentSettings.width = Number(document.getElementById("display-width").value);
-    currentSettings.height = Number(document.getElementById("display-height").value);
-    currentSettings.fps = Number(document.getElementById("display-fps").value);
-    currentSettings.fullscreen = document.getElementById("display-fullscreen").value === "true";
-
-    updateSettings();
-}
-
-
-storageSettingsButton.onclick = function () {
-    currentSettings.data_dir = document.getElementById("storage-path").value;
-
-    updateSettings();
-}
-
 addAnimalButton.onclick = function () {
     addAnimal();
 }
 
-
-loadSettings();
+function exportAnimals() {
+    // Export animals as CSV
+    $.get("/api/animals", function (data) {
+        animals = data.animals;
+        let replacer = (key, value) => value === null ? '' : value
+        let header = Object.keys(animals[0])
+        let csv = [
+            header.join(','), // header row first
+            ...animals.map(row => header.map(
+                fieldName => JSON.stringify(row[fieldName], replacer)).join(','))
+        ].join('\r\n');
+        let csvExport = new Blob([csv], {type: "text/csv"});
+        let url = window.URL.createObjectURL(csvExport);
+        let a = document.createElement('a');
+        a.href = url;
+        a.download = 'animals.csv';
+        a.click();
+    });
+}
