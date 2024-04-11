@@ -12,6 +12,7 @@ let clearCacheButton = document.getElementById('clear-cache-btn');
 let deleteAllDataButton = document.getElementById('delete-all-data-btn');
 
 let addAnimalButton = document.getElementById('add-animal-btn');
+let deleteAnimalDataButton = document.getElementById('delete-animal-data-btn');
 
 
 /// Display & storage settings
@@ -118,4 +119,24 @@ function exportAnimals() {
         a.download = 'animals.csv';
         a.click();
     });
+}
+
+function deleteAnimalData() {
+    $.ajax({
+        type: 'POST',
+        url: "/api/animals",
+        data: JSON.stringify({
+            type: "delete",
+            data: {},
+        }),
+        dataType: "json",
+        contentType: "application/json",
+        success: function (data) {
+            $("#deleteAnimalData").modal("hide");
+        }
+    });
+}
+
+deleteAnimalDataButton.onclick = function () {
+    deleteAnimalData();
 }
