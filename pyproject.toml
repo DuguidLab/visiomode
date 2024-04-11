@@ -39,7 +39,7 @@ dynamic = ["version"]
 
 [project.urls]
 Website = "https://www.visiomode.org"
-Documentation = "https://visiomode.readthedocs.io/en/latest/"
+Documentation = "https:/docs.visiomode.org"
 Issues = "https://github.com/DuguidLab/visiomode/issues"
 Source = "https://github.com/DuguidLab/visiomode"
 
@@ -64,6 +64,20 @@ python = "3.9"
 [tool.hatch.envs.develop]
 python = "3.9"
 dependencies = ["black", "pylint", "pre-commit"]
+
+[tool.hatch.envs.docs]
+dependencies = [
+  "mkdocs",
+  "mkdocs-material",
+  "mkdocstrings-python",
+  "pymdown-extensions",
+  "material-plausible-plugin",
+]
+
+[tool.hatch.envs.docs.scripts]
+build = "mkdocs build --clean --strict"
+serve = "mkdocs serve --dev-addr localhost:8000"
+deploy = "mkdocs gh-deploy --force"
 
 [tool.hatch.envs.lint]
 detached = true

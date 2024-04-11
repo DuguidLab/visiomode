@@ -1,0 +1,96 @@
+site_name: Visiomode
+site_url: https://docs.visiomode.org/
+repo_url: https://github.com/DuguidLab/visiomode
+repo_name: DuguidLab/visiomode
+
+theme:
+  name: material
+  favicon: assets/visiomode_logo_icon.png
+  # custom_dir: docs/overrides
+  font:
+    text: Montserrat
+  logo: assets/visiomode_logo_icon.png
+  icon:
+    repo: fontawesome/brands/github
+  features:
+    - navigation.instant
+    - navigation.instant.progress
+    - navigation.tracking
+    - navigation.sections
+    - navigation.path
+    # - navigation.indexes
+    # - toc.integrate
+    - navigation.top
+    - navigation.tabs
+    - toc.follow
+    - content.code.copy
+    - content.code.annotate
+    - navigation.footer
+  palette:
+    - media: "(prefers-color-scheme: light)"
+      scheme: default
+      toggle:
+        icon: material/eye
+        name: Switch to dark mode
+    - media: "(prefers-color-scheme: dark)"
+      scheme: slate
+      toggle:
+        icon: material/eye-outline
+        name: Switch to light mode
+
+extra_css:
+  - stylesheets/extra.css
+
+plugins:
+  - mkdocstrings:
+      default_handler: python
+      handlers:
+        python:
+          paths: [src]
+          options:
+            show_source: true
+            docstring_style: google
+            docstring_section_style: list
+  - search
+  - material-plausible
+
+markdown_extensions:
+  - admonition
+  - pymdownx.details
+  - pymdownx.superfences
+  - pymdownx.highlight:
+      anchor_linenums: true
+      line_spans: __span
+  - pymdownx.inlinehilite
+  - pymdownx.snippets
+
+extra:
+  homepage: https://visiomode.org
+  social:
+    - icon: fontawesome/brands/github
+      link: https://github.com/orgs/DuguidLab
+    - icon: material/web
+      link: https://www.duguidlab.com
+    - icon: material/file-document
+      link: https://doi.org/10.1016/j.jneumeth.2022.109779
+  analytics:
+    provider: plausible
+    domain: docs.visiomode.org
+
+copyright: Copyright &copy; 2023 Constantinos Eleftheriou
+
+nav:
+  - Getting started:
+    - Installation: index.md
+    - Building an arena: building-an-arena.md
+    - Running your first experiment: running-first-experiment.md
+    - Analysing data: data-analysis.md
+    - Where to go from here: next-steps.md
+    - Contributing: contributing.md
+    - Troubleshooting: troubleshooting.md
+  - How-to:
+    - Overview: how-to/index.md
+  - Design principles:
+    - Overview: design-principles/index.md
+  - Reference:
+    - Overview: reference/index.md

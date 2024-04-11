@@ -1,4 +1,4 @@
-"""Database connection handling module"""
+"""Application data model classes."""
 
 #  This file is part of visiomode.
 #  Copyright (c) 2020 Constantinos Eleftheriou <Constantinos.Eleftheriou@ed.ac.uk>
@@ -22,11 +22,19 @@ class Base:
     """Base model class."""
 
     def to_dict(self):
-        """Returns class instance attributes as a dictionary."""
+        """Get class instance attributes as a dictionary.
+
+        Returns:
+            Dictionary with class instance attributes.
+        """
         return dataclasses.asdict(self)
 
     def to_json(self):
-        """Returns class instance attributes as JSON."""
+        """Get class instance attributes as JSON.
+
+        Returns:
+            JSON string with class instance attributes.
+        """
         return json.dumps(self.to_dict())
 
 
@@ -117,9 +125,12 @@ class Session(Base):
         self.trials = self.protocol.trials
 
     def to_dict(self):
-        """Returns class instance attributes as a dictionary.
+        """Get class instance attributes as a dictionary.
 
         This method overrides the Base class to cast nested Trial objects under self.trials as dictionaries.
+
+        Returns:
+            Dictionary with class instance attributes.
         """
         instance = copy.copy(self)
         instance.trials = [trial.to_dict() for trial in self.trials if self.trials]
@@ -203,7 +214,8 @@ class Animal(Base):
     def get_animals(cls):
         """Get all animals stored in the database.
 
-        Returns a list of dictionaries with animal attributes.
+        Returns:
+            List of dictionaries with animal attributes.
         """
         path = cfg.db_dir + os.sep + "animals.json"
 
