@@ -56,9 +56,8 @@
                             <li class="list-group-item"><a href="#" data-toggle="modal"
                                 data-target="#addAnimal">Add new animal</a></li>
                             <li class="list-group-item"><a href="/settings-animals">View/edit animals</a></li>
-                            <li class="list-group-item"><a href="#">Export animal metadata</a></li>
-                            <li class="list-group-item"><a href="#" class="text-danger">Delete all animal metadata</a>
-                            </li>
+                            <li class="list-group-item"><a onclick="exportAnimals()" href="#">Export animal metadata</a></li>
+                            <li class="list-group-item" data-toggle="modal" data-target="#deleteAnimalData"><a href="#" class="text-danger">Delete all animal metadata</a></li>
                         </ul>
                     </div>
                 </div>
@@ -317,6 +316,12 @@
                             <textarea class="form-control" id="animal-description"></textarea>
                         </div>
                     </div>
+                    <div class="form-group row">
+                        <label for="animal-rfid" class="col-sm-3 col-form-label">RFID</label>
+                        <div class="col-sm-8">
+                            <input type="text" class="form-control" id="animal-rfid"></textarea>
+                        </div>
+                    </div>
                 </form>
 
                 <sup>*</sup> Indicates a required field.
@@ -324,6 +329,29 @@
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
                 <button type="button" class="btn btn-primary" id="add-animal-btn">Save animal</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="deleteAnimalData" tabindex="-1" role="dialog" aria-labelledby="deleteAnimalDataTitle"
+    aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="deleteAnimalDataLongTitle">Delete animal profile data</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <p>Deleting animal profile data will remove all metadata Visiomode holds on experimental animals.</p>
+                <p>Session data will not be affected.</p>
+                <p class="text-danger">Warning: this action cannot be undone.</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-danger" id="delete-animal-data-btn">Delete animal profile data</button>
             </div>
         </div>
     </div>

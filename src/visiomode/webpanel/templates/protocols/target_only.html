@@ -17,7 +17,7 @@
 <div class="row">
     <div class="col">
         <label for="target">Target</label>
-        <select id="target" class="form-control mb-3">
+        <select id="target" class="custom-select form-control mb-3">
             {% for stimulus in stimuli %}
                 <option value="{{ stimulus.get_identifier() }}">{{ stimulus.get_common_name() }}</option>
             {% endfor %}

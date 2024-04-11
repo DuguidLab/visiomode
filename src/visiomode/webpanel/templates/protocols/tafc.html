@@ -24,7 +24,7 @@
     </div>
     <div class="col">
         <label for="corrections_enabled">Correction Trials</label>
-        <select id="corrections_enabled" class="form-control mb-3">
+        <select id="corrections_enabled" class="custom-select form-control mb-3">
             <option value="true">Enabled</option>
             <option value="false">Disabled</option>
         </select>
@@ -34,7 +34,7 @@
 <div class="row">
     <div class="col">
         <label for="target">Target</label>
-        <select id="target" class="form-control mb-3">
+        <select id="target" class="custom-select form-control mb-3">
             {% for stimulus in stimuli %}
                 <option value="{{ stimulus.get_identifier() }}">{{ stimulus.get_common_name() }}</option>
             {% endfor %}
@@ -48,7 +48,7 @@
 <div class="row">
     <div class="col">
         <label for="distractor">Distractor</label>
-        <select id="distractor" class="form-control mb-3">
+        <select id="distractor" class="custom-select form-control mb-3">
             {% for stimulus in stimuli %}
                 <option value="{{ stimulus.get_identifier() }}">{{ stimulus.get_common_name() }}</option>
             {% endfor %}

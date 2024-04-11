@@ -1,7 +1,7 @@
 <div class="row">
     <div class="col">
         <label for="response_device">Response Input Device</label>
-        <select id="response_device" class="form-control mb-3">
+        <select id="response_device" class="custom-select form-control mb-3">
             {% for profile in response_profiles|reverse %}
                 <option value="{{ profile.get_identifier() }}">{{ profile.get_common_name() }}</option>
             {% endfor %}
@@ -9,7 +9,7 @@
     </div>
     <div class="col">
         <label id="response_address_label" for="response_address">Input Device Address</label>
-        <select id="response_address" class="form-control mb-3">
+        <select id="response_address" class="custom-select form-control mb-3">
             {% for address in serial_devices %}
                 <option value="{{ address }}">{{ address }}</option>
             {% endfor %}
@@ -24,7 +24,7 @@
 <div class="row">
     <div class="col">
         <label for="reward_profile">Reward Profile</label>
-        <select id="reward_profile" class="form-control mb-3">
+        <select id="reward_profile" class="custom-select form-control mb-3">
             {% for profile in reward_profiles %}
                 <option value="{{ profile.get_identifier() }}">{{ profile.get_common_name() }}</option>
             {% endfor %}
@@ -32,7 +32,7 @@
     </div>
     <div class="col">
         <label id="reward_address_label" for="reward_address">Device Address</label>
-        <select id="reward_address" class="form-control mb-3">
+        <select id="reward_address" class="custom-select form-control mb-3">
             {% for address in serial_devices %}
                 <option value="{{ address }}">{{ address }}</option>
             {% endfor %}
