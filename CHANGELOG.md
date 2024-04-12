@@ -9,6 +9,7 @@ Versions follow [Semantic Versioning](https://semver.org) (`<major>.<minor>.<pat
 - Change app config from the Settings panel ([#105](https://github.com/DuguidLab/visiomode/issues/105)).
 - About info in webpanel ([#180](https://github.com/DuguidLab/visiomode/issues/180))
 - Animal metadata is now held within Visiomode. Free-form animal ID text field has now been replaced by a dropdown list of animals, which can be added from the settings panel or directly within the session dashboard ([[#179](https://github.com/DuguidLab/visiomode/issues/179)]).
+- App data and cache can now be cleared from the webpanel ([[#193](https://github.com/DuguidLab/visiomode/issues/193)]).
 
 ### Changed
 
