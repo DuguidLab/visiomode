@@ -5,6 +5,7 @@
 #  Distributed under the terms of the MIT Licence.
 
 import os
+import shutil
 import json
 import logging
 
@@ -102,3 +103,27 @@ class Config:
         """Sets config to default values."""
         for key, value in DEFAULT_CONFIG.items():
             setattr(self, key, value)
+
+
+def clear_cache():
+    """Clears the cache directory."""
+    config = Config()
+    shutil.rmtree(config.cache_dir, ignore_errors=True)
+    os.makedirs(config.cache_dir, exist_ok=True)
+
+
+def clear_db():
+    """Clears the database directory."""
+    config = Config()
+    shutil.rmtree(config.db_dir, ignore_errors=True)
+    os.makedirs(config.db_dir, exist_ok=True)
+
+
+def clear_data():
+    """Clears the data directory."""
+    config = Config()
+    shutil.rmtree(config.data_dir, ignore_errors=True)
+
+    # Create new config file with default settings
+    new_config = Config()
+    new_config.save()
