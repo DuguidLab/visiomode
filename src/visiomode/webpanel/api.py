@@ -130,16 +130,28 @@ class SettingsAPI(flask.views.MethodView):
 
     def post(self):
         """Save settings."""
+        request_type = flask.request.json.get("type")  # add, delete, update
         request = flask.request.json.get("data")
         config = cfg.Config()
+
         print(request)
-        config.width = request.get("width", config.width)
-        config.height = request.get("height", config.height)
-        config.fps = request.get("fps", config.fps)
-        config.fullscreen = request.get("fullscreen", config.fullscreen)
-        config.data_dir = request.get("data_dir", config.data_dir)
-        config.cache_dir = config.data_dir + os.sep + "cache"
-        config.save()
+        if request_type == "update":
+            config.width = request.get("width", config.width)
+            config.height = request.get("height", config.height)
+            config.fps = request.get("fps", config.fps)
+            config.fullscreen = request.get("fullscreen", config.fullscreen)
+            config.data_dir = request.get("data_dir", config.data_dir)
+            config.cache_dir = config.data_dir + os.sep + "cache"
+            config.save()
+        elif request_type == "delete":
+            if request.get("path") == "cache":
+                logging.warning("Clearing cache directory.")
+                cfg.clear_cache()
+            elif request.get("path") == "app-data":
+                logging.warning(
+                    "Clearing app data directory. Will revert to default settings."
+                )
+                cfg.clear_data()
         return json.dumps({"success": True}), 200, {"ContentType": "application/json"}
 
 

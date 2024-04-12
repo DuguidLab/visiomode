@@ -60,6 +60,49 @@ storageSettingsButton.onclick = function () {
     updateSettings();
 }
 
+function clearCache() {
+    console.log("Clearing cache")
+    $.ajax({
+        type: 'POST',
+        url: "/api/settings",
+        data: JSON.stringify({
+            type: "delete",
+            data: {"path": "cache"},
+        }),
+        dataType: "json",
+        contentType: "application/json",
+        success: function (data) {
+            $("#clearCache").modal("hide");
+        }
+    });
+}
+
+clearCacheButton.onclick = function () {
+    clearCache();
+}
+
+function deleteAppData() {
+    console.log("Deleting all data")
+    $.ajax({
+        type: 'POST',
+        url: "/api/settings",
+        data: JSON.stringify({
+            type: "delete",
+            data: {"path": "app-data"},
+        }),
+        dataType: "json",
+        contentType: "application/json",
+        success: function (data) {
+            $("#deleteAppData").modal("hide");
+        }
+    });
+}
+
+deleteAllDataButton.onclick = function () {
+    deleteAppData();
+}
+
+
 loadSettings();
 
 
