@@ -32,7 +32,7 @@ class MovingGrating(stimuli.Stimulus):
         self.rect = self.image.get_rect()
         self.area = self.screen.get_rect()
 
-        self.orig_center = (self.rect.centerx, self.rect.centery)
+        self.orig_center = (self.rect.centerx, self.rect.centery - self.period)
 
         self.pos = pgm.Vector2(self.orig_center)
         self.velocity = pgm.Vector2(0, self.px_per_cycle)
@@ -40,7 +40,7 @@ class MovingGrating(stimuli.Stimulus):
     def update(self, timedelta=0):
         if self.hidden:
             return
-        if self.rect.bottom <= self.height:
+        if self.rect.bottom <= self.height or self.rect.top >= 0:
             self.pos = self.orig_center
         self.pos += self.velocity
         self.rect.centery = self.pos[1]
