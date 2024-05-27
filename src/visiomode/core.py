@@ -30,12 +30,22 @@ class Visiomode:
     them on to the appropriate task runner.
     """
 
-    def __init__(self):
+    def __init__(
+        self,
+        run_application_loop: bool = True,
+        run_webpanel: bool = True,
+    ):
         """Initialise application.
 
         This initialises the application, and starts the webpanel and GUI
         threads. It also loads the configuration file, and displays the
         loading animation on the GUI screen while the webpanel is loading.
+
+        Args:
+            run_application_loop (bool): Whether to run the application loop after the
+                                         app has been started.
+            run_webpanel (bool): Whether to start the webpanel with the application.
+                                 This also dictates whether the loading screen is shown.
         """
         self.clock = pg.time.Clock()
         self.config = conf.Config()
@@ -46,10 +56,11 @@ class Visiomode:
         self.session = None
 
         # Initialise webpanel, run in background
-        webpanel.runserver(action_q=self.action_q, log_q=self.log_q, threaded=True)
+        if run_webpanel:
+            webpanel.runserver(action_q=self.action_q, log_q=self.log_q, threaded=True)
 
-        request_thread = threading.Thread(target=self.request_listener, daemon=True)
-        request_thread.start()
+            request_thread = threading.Thread(target=self.request_listener, daemon=True)
+            request_thread.start()
 
         # Initialise GUI
         pg.init()
@@ -66,9 +77,11 @@ class Visiomode:
         )
         pg.display.set_caption("Visiomode")
 
-        self.loading_screen()
+        if run_webpanel:
+            self.loading_screen()
 
-        self.run_main()
+        if run_application_loop:
+            self.run_main()
 
     def loading_screen(self):
         """Rotating logo to entertain user and mouse while the webpanel is loading."""
