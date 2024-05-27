@@ -13,8 +13,6 @@ import typing
 
 logging.basicConfig(level=logging.INFO)
 
-DEFAULT_CONFIG_PATH = ".visiomode.json"
-
 DEFAULT_CONFIG = {
     "debug": True,
     "flask_key": "dev",
@@ -26,6 +24,7 @@ DEFAULT_CONFIG = {
     "height": 800,
     "fullscreen": False,
     "devices": "devices",
+    "config_path": ".visiomode.json",
 }
 
 
@@ -45,6 +44,7 @@ class Config(object):
         height: Screen height.
         fullscreen: Fullscreen mode flag.
         devices: Path to devices directory.
+        config_path: Path to the config.
     """
 
     debug: bool
@@ -57,6 +57,7 @@ class Config(object):
     height: int
     fullscreen: bool
     devices: str
+    config_path: str
 
     _instance = None
 
@@ -78,7 +79,7 @@ class Config(object):
             cls._instance = super(Config, cls).__new__(cls)
 
             if config_path is None:
-                config_path = DEFAULT_CONFIG_PATH
+                config_path = DEFAULT_CONFIG["config_path"]
 
             if os.path.exists(config_path):
                 logging.info(f"Loading config from {config_path}")
@@ -97,7 +98,7 @@ class Config(object):
     @classmethod
     def save(cls, path: typing.Optional[str] = None):
         if path is None:
-            path = DEFAULT_CONFIG_PATH
+            path = cls.config_path
 
         with open(path, "w") as f:
             json.dump(cls.to_dict(), f, indent=4)
