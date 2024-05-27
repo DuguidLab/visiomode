@@ -98,6 +98,8 @@ class Config(object):
     def save(self, path: typing.Optional[str] = None):
         if path is None:
             path = self.config_path
+        else:
+            self.config_path = path
 
         with open(path, "w") as f:
             json.dump(self.to_dict(), f, indent=4)
