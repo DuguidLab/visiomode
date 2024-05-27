@@ -13,9 +13,12 @@ import queue
 import pkg_resources
 import pygame as pg
 import visiomode.config as conf
+import visiomode.devices as devices
 import visiomode.models as models
 import visiomode.webpanel as webpanel
+import visiomode.plugins as plugins
 import visiomode.protocols as protocols
+import visiomode.stimuli as stimuli
 
 # Register mouse events as touch events - useful for debugging.
 os.environ["SDL_MOUSE_TOUCH_EVENTS"] = "1"
@@ -33,6 +36,7 @@ class Visiomode:
         self,
         run_application_loop: bool = True,
         run_webpanel: bool = True,
+        load_plugins: bool = True,
     ):
         """Initialise application.
 
@@ -63,6 +67,12 @@ class Visiomode:
 
         # Initialise GUI
         pg.init()
+
+        if load_plugins:
+            # Load plugins
+            plugins.load_modules_dir(devices.__path__[0])
+            plugins.load_modules_dir(protocols.__path__[0])
+            plugins.load_modules_dir(stimuli.__path__[0])
 
         # Set app icon
         # Dimensions should be 512x512, 300 ppi for retina

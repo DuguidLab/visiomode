@@ -91,6 +91,3 @@ class Stimulus(pg.sprite.Sprite, mixins.BaseClassMixin, mixins.WebFormMixin):
 
     def generate_new_trial(self):
         """Regenerate stimuli for a fresh trial"""
-
-
-plugins.load_modules_dir(__path__[0])

@@ -319,6 +319,3 @@ class Presentation(Protocol):
 
 class InvalidProtocol(Exception):
     pass
-
-
-plugins.load_modules_dir(__path__[0])
