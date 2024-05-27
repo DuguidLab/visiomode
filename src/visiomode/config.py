@@ -92,6 +92,10 @@ class Config(object):
             os.makedirs(cls._instance.data_dir, exist_ok=True)
             os.makedirs(cls._instance.cache_dir, exist_ok=True)
             os.makedirs(cls._instance.db_dir, exist_ok=True)
+        elif config_path is not None:
+            logging.warning(
+                "Config has already been loaded, ignoring `config_path` passed to constructor."
+            )
 
         return cls._instance
 
