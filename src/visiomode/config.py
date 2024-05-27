@@ -126,10 +126,20 @@ class Config(object):
             else:
                 logging.warning("Unknown config key: {}".format(key))
 
+        self._validate()
+
     def _set_defaults(self):
         """Sets config to default values."""
         for key, value in DEFAULT_CONFIG.items():
             setattr(self, key, value)
+
+    def _validate(self) -> None:
+        for key, value in DEFAULT_CONFIG.items():
+            if not hasattr(self, key):
+                logging.warning(
+                    f"Config is malformed, it does not have attribute '{key}'. Using default value."
+                )
+                setattr(self, key, value)
 
 
 def clear_cache():
