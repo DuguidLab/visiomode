@@ -83,39 +83,29 @@ class Config(object):
 
             if os.path.exists(config_path):
                 logging.info(f"Loading config from {config_path}")
-                cls._load_config(config_path)
+                cls._instance._load_config(config_path)
             else:
                 logging.warning("No config file found, using defaults")
-                cls._set_defaults()
-                cls.save()
+                cls._instance._set_defaults()
+                cls._instance.save()
 
-            os.makedirs(cls.data_dir, exist_ok=True)
-            os.makedirs(cls.cache_dir, exist_ok=True)
-            os.makedirs(cls.db_dir, exist_ok=True)
+            os.makedirs(cls._instance.data_dir, exist_ok=True)
+            os.makedirs(cls._instance.cache_dir, exist_ok=True)
+            os.makedirs(cls._instance.db_dir, exist_ok=True)
 
         return cls._instance
 
-    @classmethod
-    def save(cls, path: typing.Optional[str] = None):
+    def save(self, path: typing.Optional[str] = None):
         if path is None:
-            path = cls.config_path
+            path = self.config_path
 
         with open(path, "w") as f:
-            json.dump(cls.to_dict(), f, indent=4)
+            json.dump(self.to_dict(), f, indent=4)
 
-    @classmethod
-    def to_dict(cls):
-        config = {}
-        for key in DEFAULT_CONFIG.keys():
-            try:
-                config[key] = getattr(cls, key)
-            except AttributeError:
-                logging.warning(f"Config is malformed, it does not have attribute '{key}'. Using default value.")
-                config[key] = DEFAULT_CONFIG[key]
-        return config
+    def to_dict(self):
+        return self.__dict__
 
-    @classmethod
-    def _load_config(cls, config_path: str):
+    def _load_config(self, config_path: str):
         """Loads config from a JSON file.
 
         Args:
@@ -126,15 +116,14 @@ class Config(object):
 
         for key, value in config.items():
             if key in DEFAULT_CONFIG:
-                setattr(cls, key, value)
+                setattr(self, key, value)
             else:
                 logging.warning("Unknown config key: {}".format(key))
 
-    @classmethod
-    def _set_defaults(cls):
+    def _set_defaults(self):
         """Sets config to default values."""
         for key, value in DEFAULT_CONFIG.items():
-            setattr(cls, key, value)
+            setattr(self, key, value)
 
 
 def clear_cache():
