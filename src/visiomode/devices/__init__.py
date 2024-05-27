@@ -71,6 +71,3 @@ class OutputDevice(Device):
 
 class DeviceError(Exception):
     pass
-
-
-plugins.load_modules_dir(__path__[0])

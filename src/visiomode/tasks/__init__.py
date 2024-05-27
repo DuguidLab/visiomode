@@ -299,6 +299,3 @@ class Task(mixins.BaseClassMixin, mixins.WebFormMixin, mixins.TaskEventsMixin):
 
 class InvalidTask(Exception):
     pass
-
-
-plugins.load_modules_dir(__path__[0])
