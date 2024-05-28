@@ -277,38 +277,42 @@ loadAnimals();
 
 // Modals
 
+let addAnimalForm = document.getElementById("add-animal-form")
+
 let addAnimalButton = document.getElementById('add-animal-btn');
 
 function addAnimal() {
-    let animalId = document.getElementById("new-animal-id").value;
-    let animalDob = document.getElementById("new-animal-dob").value;
-    let animalSex = document.getElementById("new-animal-sex").value;
-    let animalSpecies = document.getElementById("new-animal-species").value;
-    let animalGenotype = document.getElementById("new-animal-genotype").value;
-    let animalDescription = document.getElementById("new-animal-description").value;
-    let animalRFID = document.getElementById("new-animal-rfid").value;
+    if (addAnimalForm.reportValidity()) {
+        let animalId = document.getElementById("new-animal-id").value;
+        let animalDob = document.getElementById("new-animal-dob").value;
+        let animalSex = document.getElementById("new-animal-sex").value;
+        let animalSpecies = document.getElementById("new-animal-species").value;
+        let animalGenotype = document.getElementById("new-animal-genotype").value;
+        let animalDescription = document.getElementById("new-animal-description").value;
+        let animalRFID = document.getElementById("new-animal-rfid").value;
 
-    return $.ajax({
-        type: 'POST',
-        url: "/api/animals",
-        data: JSON.stringify({
-            type: "add",
-            data: {
-                id: animalId,
-                dob: animalDob,
-                sex: animalSex,
-                species: animalSpecies,
-                genotype: animalGenotype,
-                description: animalDescription,
-                rfid: animalRFID,
-            },
-        }),
-        dataType: "json",
-        contentType: "application/json",
-        success: function () {
-            $("#addAnimal").modal("hide");
-        }
-    });
+        return $.ajax({
+            type: 'POST',
+            url: "/api/animals",
+            data: JSON.stringify({
+                type: "add",
+                data: {
+                    id: animalId,
+                    dob: animalDob,
+                    sex: animalSex,
+                    species: animalSpecies,
+                    genotype: animalGenotype,
+                    description: animalDescription,
+                    rfid: animalRFID,
+                },
+            }),
+            dataType: "json",
+            contentType: "application/json",
+            success: function () {
+                $("#addAnimal").modal("hide");
+            }
+        });
+    }
 }
 
 addAnimalButton.onclick = function () {
