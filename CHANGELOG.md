@@ -18,6 +18,10 @@ Versions follow [Semantic Versioning](https://semver.org) (`<major>.<minor>.<pat
 - Remove warning about Hyperpixel display compatibility with the latest Raspberry Pi OS. This is now [fixed](https://github.com/pimoroni/hyperpixel4/issues/177).
 - Documentation migrated to mkdocs, hosted at [docs.visiomode.org](https://docs.visiomode.org).
 
+### Fixed
+
+- Negative frequencies for moving gratings stimuli now update properly ([#86](https://github.com/DuguidLab/visiomode/issues/86)).
+
 ## [0.5.2] - 2023-04-26
 
 ### Added
