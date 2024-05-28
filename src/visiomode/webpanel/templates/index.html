@@ -171,7 +171,7 @@
                 </button>
             </div>
             <div class="modal-body">
-                <form>
+                <form id="add-animal-form">
                     <div class="form-group row">
                         <label for="new-animal-id" class="col-sm-3 col-form-label">Animal ID<sup>*</sup></label>
                         <div class="col-sm-5">
@@ -188,7 +188,7 @@
                         <label for="new-animal-sex" class="col-sm-3 col-form-label">Sex<sup>*</sup></label>
                         <div class="col-sm-5">
                             <div class="form-check">
-                                <select id="new-animal-sex" class="custom-select form-control">
+                                <select id="new-animal-sex" class="custom-select form-control" required>
                                     <option value="U">Unknown</option>
                                     <option value="M">Male</option>
                                     <option value="F">Female</option>
