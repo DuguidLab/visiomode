@@ -144,19 +144,19 @@ class Config(object):
 
 def clear_cache():
     """Clears the cache directory."""
-    shutil.rmtree(Config.cache_dir, ignore_errors=True)
-    os.makedirs(Config.cache_dir, exist_ok=True)
+    shutil.rmtree(Config().cache_dir, ignore_errors=True)
+    os.makedirs(Config().cache_dir, exist_ok=True)
 
 
 def clear_db():
     """Clears the database directory."""
-    shutil.rmtree(Config.db_dir, ignore_errors=True)
-    os.makedirs(Config.db_dir, exist_ok=True)
+    shutil.rmtree(Config().db_dir, ignore_errors=True)
+    os.makedirs(Config().db_dir, exist_ok=True)
 
 
 def clear_data():
     """Clears the data directory."""
-    shutil.rmtree(Config.data_dir, ignore_errors=True)
+    shutil.rmtree(Config().data_dir, ignore_errors=True)
 
     # Create new config file with default settings
     Config._instance = None
