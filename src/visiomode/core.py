@@ -2,15 +2,16 @@
 
 #  This file is part of visiomode.
 #  Copyright (c) 2020 Constantinos Eleftheriou <Constantinos.Eleftheriou@ed.ac.uk>
+#  Copyright (c) 2024 Olivier Delree <odelree@ed.ac.uk>
 #  Distributed under the terms of the MIT Licence.
 
+import importlib.resources as resources
 import os
 import logging
 import time
 import datetime
 import threading
 import queue
-import pkg_resources
 import pygame as pg
 import visiomode.config as conf
 import visiomode.models as models
@@ -56,7 +57,7 @@ class Visiomode:
         # Set app icon
         # Dimensions should be 512x512, 300 ppi for retina
         icon = pg.image.load(
-            pkg_resources.resource_filename("visiomode.res", "icon.png")
+            str(resources.files("visiomode.res") / "icon.png")
         )
         pg.display.set_icon(icon)
 
@@ -89,7 +90,7 @@ class Visiomode:
 
         # Loading screen - wait until webpanel comes online
         loading_img = pg.image.load(
-            pkg_resources.resource_filename("visiomode.res", "loading.png")
+            str(resources.files("visiomode.res") / "loading.png"),
         )
         loading_img = pg.transform.smoothscale(loading_img, (100, 100))
         loading_img_pos = loading_img.get_rect()
