@@ -7,10 +7,12 @@ converted file stored in Visiomode's cache directory.
 """
 #  This file is part of visiomode.
 #  Copyright (c) 2023 Constantinos Eleftheriou <Constantinos.Eleftheriou@ed.ac.uk>
+#  Copyright (c) 2024 Olivier Delree <odelree@ed.ac.uk>
 #  Distributed under the terms of the MIT Licence.
+
+# Note that `pynwb` is imported inside its own function to save on startup time
 import os
 import json
-import pynwb
 import pandas as pd
 
 import visiomode.config as cfg
@@ -22,6 +24,9 @@ config = cfg.Config()
 
 
 def to_nwb(session_path):
+    # Delayed import to save on startup time
+    import pynwb
+
     with open(session_path, "r") as f:
         session = json.load(f)
 
