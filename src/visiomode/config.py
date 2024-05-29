@@ -28,7 +28,7 @@ DEFAULT_CONFIG = {
 }
 
 
-class Config(object):
+class Config:
     """App configuration class.
 
     This class loads and saves configuration from a JSON file. If no config file exists, it creates one with default values.
