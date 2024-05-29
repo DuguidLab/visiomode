@@ -12,9 +12,20 @@ import visiomode.config as conf
 import visiomode.plugins as plugins
 
 
-def get_available_devices():
-    """Return list of all serial devices connected to the machine."""
-    return [dev.device for dev in ports.comports()]
+def get_available_devices() -> list[str]:
+    """
+    Return list of all serial devices connected to the machine, with ones defined in the
+    config prepended.
+    """
+    # Get an ordered set of keys so that options presented to the user are more
+    # pleasingly organised.
+    return list(
+        dict.fromkeys(
+            [conf.Config().reward_device_address]
+            + [conf.Config().input_device_address]
+            + [dev.device for dev in ports.comports()]
+        ).keys()
+    )
 
 
 def get_input_device(profile_id, address=None):

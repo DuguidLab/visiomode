@@ -25,6 +25,8 @@ DEFAULT_CONFIG = {
     "height": 800,
     "fullscreen": False,
     "devices": "devices",
+    "input_device_address": "/dev/ttyS0",
+    "reward_device_address": "/dev/ttyS0",
     "config_path": ".visiomode.json",
 }
 
@@ -46,6 +48,8 @@ class Config:
         height: Screen height.
         fullscreen: Fullscreen mode flag.
         devices: Path to devices directory.
+        input_device_address: Path to the input device address.
+        reward_device_address: Path to the device address.
         config_path: Path to the config.
     """
 
@@ -60,6 +64,8 @@ class Config:
     height: int
     fullscreen: bool
     devices: str
+    input_device_address: str
+    reward_device_address: str
     config_path: str
 
     _instance = None
