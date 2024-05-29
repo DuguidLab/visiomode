@@ -160,6 +160,7 @@ def clear_db():
 def clear_data():
     """Clears the data directory."""
     shutil.rmtree(Config().data_dir, ignore_errors=True)
+    shutil.rmtree(Config().config_path, ignore_errors=True)
 
     # Create new config file with default settings
     Config._instance = None
