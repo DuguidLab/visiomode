@@ -18,6 +18,7 @@ DEFAULT_CONFIG = {
     "debug": True,
     "flask_key": "dev",
     "data_dir": "visiomode_data",
+    "instance_dir": "visiomode_data/instance",
     "cache_dir": "visiomode_data/cache",
     "db_dir": "visiomode_data/db",
     "fps": 60,
@@ -37,6 +38,7 @@ class Config:
         debug: Debug mode flag.
         flask_key: Flask secret key.
         data_dir: Path to data directory.
+        instance_dir: Path to the Flask instance directory.
         cache_dir: Path to cache directory.
         fps: Screen refresh rate in frames per second.
         width: Screen width.
@@ -49,6 +51,7 @@ class Config:
     debug: bool
     flask_key: str
     data_dir: str
+    instance_dir: str
     cache_dir: str
     fps: int
     width: int

@@ -23,7 +23,7 @@ def create_app(action_q=None, log_q=None):
     """
     config = cfg.Config()
 
-    app = flask.Flask(__name__)
+    app = flask.Flask(__name__, instance_path=os.path.abspath(config.instance_dir))
     app.config.from_mapping({"SECRET_KEY": config.flask_key, "DEBUG": config.debug})
 
     # ensure that instance dir exists
