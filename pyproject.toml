@@ -79,6 +79,14 @@ build = "mkdocs build --clean --strict"
 serve = "mkdocs serve --dev-addr localhost:8000"
 deploy = "mkdocs gh-deploy --force"
 
+[tool.hatch.envs.test]
+python = "3.9"
+
+[tool.hatch.envs.test.scripts]
+run = [
+  "python -m unittest discover {args:.}"
+]
+
 [tool.hatch.envs.lint]
 detached = true
 dependencies = [
