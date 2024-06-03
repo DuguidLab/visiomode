@@ -79,6 +79,11 @@ build = "mkdocs build --clean --strict"
 serve = "mkdocs serve --dev-addr localhost:8000"
 deploy = "mkdocs gh-deploy --force"
 
+[tool.hatch.envs.tests]
+dependencies = [
+  "parameterized>=0.9.0"
+]
+
 [tool.hatch.envs.lint]
 detached = true
 dependencies = [
