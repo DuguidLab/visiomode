@@ -98,6 +98,7 @@ class Session(Base):
 
     Attributes:
         animal_id: String representing the animal identifier.
+        experimenter_name: String representing the experimenter's name.
         experiment: A string holding the experiment identifier.
         protocol: An instance of the Protocol class.
         duration: Integer representing the session duration in minutes.
@@ -107,10 +108,12 @@ class Session(Base):
         device: String hostname of the device running the session. Defaults to the hostname provided by the socket lib.
         trials: A mutable list of session trials; each trial is an instance of the Trial dataclass. Automatically populated using protocol.trials after class instantiation.
         animal_meta: A dictionary with animal metadata (see Animal class). Automatically populated using animal_id after class instantiation.
+        experimenter_meta: A dictionary with experimenter metadata (see Experimenter class). Automatically populated using experimenter_name after class instantiation.
         version: Visiomode version this was generated with.
     """
 
     animal_id: str
+    experimenter_name: str
     experiment: str
     duration: float
     protocol: None = None
@@ -121,10 +124,12 @@ class Session(Base):
     device: str = socket.gethostname()
     trials: typing.List[Trial] = dataclasses.field(default_factory=list)
     animal_meta: dict = None
+    experimenter_meta: dict = None
     version: str = __about__.__version__
 
     def __post_init__(self):
         self.animal_meta = Animal.get_animal(self.animal_id)
+        self.experimenter_meta = Experimenter.get_experimenter(self.experimenter_name)
         self.trials = self.protocol.trials
 
     def to_dict(self):
