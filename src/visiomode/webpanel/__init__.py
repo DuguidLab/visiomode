@@ -2,6 +2,7 @@
 
 #  This file is part of visiomode.
 #  Copyright (c) 2020 Constantinos Eleftheriou <Constantinos.Eleftheriou@ed.ac.uk>
+#  Copyright (c) 2024 Olivier Delree <odelree@ed.ac.uk>
 #  Distributed under the terms of the MIT Licence.
 
 import os
@@ -123,6 +124,12 @@ def create_app(action_q=None, log_q=None):
     app.add_url_rule(
         "/api/animals",
         view_func=api.AnimalsAPI.as_view("animals_api"),
+        methods=["GET", "POST"],
+    )
+
+    app.add_url_rule(
+        "/api/experimenters",
+        view_func=api.ExperimentersAPI.as_view("experimenters_api"),
         methods=["GET", "POST"],
     )
 

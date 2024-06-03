@@ -2,6 +2,7 @@
 
 #  This file is part of visiomode.
 #  Copyright (c) 2020 Constantinos Eleftheriou <Constantinos.Eleftheriou@ed.ac.uk>
+#  Copyright (c) 2024 Olivier Delree <odelree@ed.ac.uk>
 #  Distributed under the terms of the MIT Licence.
 import os
 import dataclasses
@@ -10,6 +11,8 @@ import socket
 import json
 import typing
 import copy
+import logging
+import operator
 
 from visiomode import __about__, config
 
@@ -239,3 +242,109 @@ class Animal(Base):
             ]
             with open(path, "w") as f:
                 json.dump(animals, f)
+
+
+@dataclasses.dataclass
+class Experimenter(Base):
+    """Experimenter model class.
+
+    Attributes:
+        experimenter_name (str): Name of the experimenter.
+        laboratory_name (str): Name of the laboratory the experimenter works in.
+        institution_name (str): Name of the institution the experimenter works for.
+    """
+
+    experimenter_name: str
+    laboratory_name: str
+    institution_name: str
+
+    def save(self) -> None:
+        """Append experimenter metadata to JSON database file."""
+        database_path = f"{cfg.db_dir}{os.sep}experimenters.json"
+
+        if not os.path.exists(database_path):
+            experimenters = [self.to_dict()]
+        else:
+            with open(database_path, "r") as handle:
+                experimenters = json.load(handle)
+
+            # If experiment already exists, replace them
+            experimenters = [
+                experimenter
+                for experimenter in experimenters
+                if not experimenter["experimenter_name"].lower()
+                == self.experimenter_name.lower()
+            ]
+            experimenters.append(self.to_dict())
+
+        with open(database_path, "w") as handle:
+            json.dump(experimenters, handle)
+
+    @classmethod
+    def get_experimenter(cls, experimenter_name: str) -> typing.Optional[dict]:
+        """Get an experimenter's metadata from the database based on their name.
+
+        Returns:
+            Dictionary with experimenter attributes if they have a record, None
+            otherwise.
+        """
+        database_path = f"{cfg.db_dir}{os.sep}experimenters.json"
+
+        if os.path.exists(database_path):
+            with open(database_path, "r") as handle:
+                experimenters = json.load(handle)
+
+            for experimenter in experimenters:
+                if (
+                    experimenter["experimenter_name"].lower()
+                    == experimenter_name.lower()
+                ):
+                    return experimenter
+
+        return None
+
+    @classmethod
+    def get_experimenters(cls) -> list[dict]:
+        """Return all experimenters from the database.
+
+        Returns:
+            List of dictionaries with experimenter attributes.
+        """
+        database_path = f"{cfg.db_dir}{os.sep}experimenters.json"
+
+        experimenters = []
+        if os.path.exists(database_path):
+            with open(database_path, "r") as handle:
+                experimenters = json.load(handle)
+
+        return experimenters
+
+    @classmethod
+    def delete_experimenter(cls, experimenter_name: str) -> None:
+        """Delete experimenter from the database.
+
+        Args:
+            experimenter_name (str): Name of the experimenter to delete.
+        """
+        database_path = f"{cfg.db_dir}{os.sep}experimenters.json"
+
+        if not os.path.exists(database_path):
+            return
+
+        with open(database_path, "r") as handle:
+            experimenters = json.load(handle)
+
+        try:
+            experimenters.pop(
+                list(
+                    map(operator.itemgetter("experimenter_name"), experimenters)
+                ).index(experimenter_name)
+            )
+        except ValueError:
+            logging.error(
+                f"Tried removing '{experimenter_name}' from database "
+                f"but it was not in it."
+            )
+
+        with open(database_path, "w") as handle:
+            json.dump(experimenters, handle)
