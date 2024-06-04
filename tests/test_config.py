@@ -37,7 +37,9 @@ class ConfigTest(unittest.TestCase):
         # Reset the state as we found it
         config.Config._instance = None
         os.chdir(self.previous_working_directory)
-        if self.pre_test_config_path:  # if not, the config hadn't been initialised before test
+        if (
+            self.pre_test_config_path
+        ):  # if not, the config hadn't been initialised before test
             config.Config(self.pre_test_config_path)
 
         self.temporary_directory.cleanup()
@@ -111,7 +113,7 @@ class ConfigTest(unittest.TestCase):
             [
                 "WARNING:root:Config is malformed, it does not have attribute "
                 "'fullscreen'. Using default value."
-            ]
+            ],
         )
 
     def test_clear_cache(self) -> None:
@@ -127,5 +129,5 @@ class ConfigTest(unittest.TestCase):
         self.assert_not_equal_ctime("data_dir", config.clear_data)
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     unittest.main()
