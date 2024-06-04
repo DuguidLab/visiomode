@@ -187,12 +187,12 @@ class Visiomode:
             if request["type"] == "start":
                 # Update config
                 conf.Config().input_device_address = (
-                        request["data"].get("response_address")
-                        or conf.Config().input_device_address
+                    request["data"].get("response_address")
+                    or conf.Config().input_device_address
                 )
                 conf.Config().reward_device_address = (
-                        request["data"].get("reward_address")
-                        or conf.Config().reward_device_address
+                    request["data"].get("reward_address")
+                    or conf.Config().reward_device_address
                 )
                 conf.Config().save()
 
