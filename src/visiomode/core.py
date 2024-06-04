@@ -56,9 +56,7 @@ class Visiomode:
 
         # Set app icon
         # Dimensions should be 512x512, 300 ppi for retina
-        icon = pg.image.load(
-            str(resources.files("visiomode.res") / "icon.png")
-        )
+        icon = pg.image.load(str(resources.files("visiomode.res") / "icon.png"))
         pg.display.set_icon(icon)
 
         # Initialise screen
