@@ -5,6 +5,7 @@ Each export function takes a `session_path` argument, a string pointing to the
 location of a stored session JSON file, and returns a string reference to the
 converted file stored in Visiomode's cache directory.
 """
+
 #  This file is part of visiomode.
 #  Copyright (c) 2023 Constantinos Eleftheriou <Constantinos.Eleftheriou@ed.ac.uk>
 #  Copyright (c) 2024 Olivier Delree <odelree@ed.ac.uk>
