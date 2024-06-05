@@ -1,6 +1,7 @@
 /*
  * This file is part of visiomode.
  * Copyright (c) 2023 Constantinos Eleftheriou <Constantinos.Eleftheriou@ed.ac.uk>
+ * Copyright (c) 2024 Olivier Delree <odelree@ed.ac.uk>
  * Distributed under the terms of the MIT Licence.
  */
 
@@ -23,9 +24,7 @@ fetch("/api/history")
             let protocol = row.insertCell(2);
             protocol.innerHTML = session.protocol;
             let downloadButton = row.insertCell(3);
-            btn = document.createElement('input');
             downloadButton.innerHTML = `
-            <div class="dropdown">
                 <button
                     class="btn btn-primary btn-sm dropdown-toggle"
                     type="button" id="dropdownMenuButton" data-toggle="dropdown"
@@ -37,7 +36,6 @@ fetch("/api/history")
                     <a class="dropdown-item" href="/api/download/csv/${session.fname}">CSV</a>
                     <a class="dropdown-item" href="/api/download/nwb/${session.fname}">NWB</a>
                 </div>
-            </div>
             `;
         });
     });
