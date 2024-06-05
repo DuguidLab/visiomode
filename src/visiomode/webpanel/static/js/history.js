@@ -46,6 +46,10 @@ fetch("/api/history")
 
 let table = document.getElementById("sessionsTableData");
 
+const canvasContext = document.getElementById("trialsChart");
+let trialsChart;
+let currentChartSessionId;
+
 table.onclick = async function (event) {
     let session_id = event.target.closest("tr").cells[event.target.parentNode.cells.length - 1].innerHTML;
     let session = await fetch(`/api/history?session_id=${session_id}`)
@@ -62,4 +66,51 @@ table.onclick = async function (event) {
     document.getElementById("timestamp").value = session?.timestamp ?? "";
     document.getElementById("trial-count").value = session?.trials?.length ?? "";
     document.getElementById("notes").value = session?.notes ?? "";
+
+    // Avoid unnecessarily redrawing the chart when reopening the same modal
+    if (session_id !== currentChartSessionId) {
+        trialsChart?.destroy();
+
+        if (session?.trials?.length) {
+            trialsChart = createChart(canvasContext, [
+                session.trials.filter((obj) => obj.outcome === "correct").length,
+                session.trials.filter((obj) => obj.outcome === "incorrect").length,
+                session.trials.filter((obj) => obj.outcome === "precued").length,
+                session.trials.filter((obj) => obj.outcome === "no_response").length,
+            ]);
+        } else {
+            trialsChart = createChart(canvasContext, []);
+        }
+
+        currentChartSessionId = session_id;
+    }
+}
+
+function createChart(canvas, session_data) {
+    return new Chart(canvas, {
+        type: "doughnut",
+        data: {
+            labels: ["Correct", "Incorrect", "Precued", "No Response"],
+            datasets: [{
+                label: "# of Trials",
+                data: session_data,
+                borderWidth: 1
+            }]
+        },
+        options: {
+            devicePixelRatio: 3,
+            responsive: true,
+            plugins: {
+                legend: {
+                    display: true,
+                    position: "right",
+                    labels: {
+                        font: {
+                            size: 14
+                        }
+                    }
+                },
+            }
+        },
+    });
 }
