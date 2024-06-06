@@ -177,3 +177,30 @@ function deleteSessionData(sessionId) {
         }
     });
 }
+
+let summaryModal = document.getElementById("viewSession");
+summaryModal.onshown = () => {
+    document.getElementById("notes").focus();
+}
+
+function updateSessionData(sessionId, updatedSessionData) {
+    $.ajax({
+        type: "POST",
+        url: "/api/history",
+        data: JSON.stringify({
+            type: "update",
+            data: {sessionId, updatedSessionData},
+        }),
+        dataType: "json",
+        contentType: "application/json",
+    });
+}
+
+let updateSessionButton = document.getElementById("updateButton");
+updateSessionButton.onclick = () => {
+    let newData = {
+        "notes": document.getElementById("notes").value,
+    }
+
+    updateSessionData(currentSessionId, newData);
+}

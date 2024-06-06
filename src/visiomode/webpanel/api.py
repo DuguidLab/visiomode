@@ -148,6 +148,32 @@ class HistoryAPI(flask.views.MethodView):
                     return_code = 409
             except KeyError:
                 logging.error("Malformed request data for request type 'DELETE'.")
+        elif request_type == "update":
+            try:
+                session_id = request_data["sessionId"]
+                updated_session_data = request_data["updatedSessionData"]
+
+                try:
+                    session_path = f"{config.data_dir}{os.sep}{session_id}.json"
+                    with open(session_path) as handle:
+                        session_data = json.load(handle)
+
+                    # Currently only notes can be updated
+                    session_data["notes"] = updated_session_data["notes"]
+
+                    with open(session_path, "w") as handle:
+                        json.dump(session_data, handle)
+
+                    success = True
+                    return_code = 200
+                except OSError or FileNotFoundError:
+                    logging.error(f"Error handling session'{session_id}'.")
+                    return_code = 409
+                except KeyError:
+                    logging.error(f"Error updating requested session attributes.")
+                    return_code = 400
+            except KeyError:
+                logging.error("Malformed request data for request type 'UPDATE'.")
 
         return (
             json.dumps({"success": success}),
