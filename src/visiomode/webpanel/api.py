@@ -118,6 +118,43 @@ class HistoryAPI(flask.views.MethodView):
                         )
             return {"sessions": sessions}
 
+    def post(self):
+        success = False
+        return_code = 500
+
+        config = cfg.Config()
+
+        request = flask.request
+        if request.content_type != "application/json":
+            return_code = 415
+            return (
+                json.dumps({"success": success}),
+                return_code,
+                {"ContentType": "application/json"},
+            )
+
+        request_type = request.json.get("type")
+        request_data = request.json.get("data")
+
+        if request_type == "delete":
+            try:
+                session_id = request_data["sessionId"]
+                try:
+                    os.remove(f"{config.data_dir}{os.sep}{session_id}.json")
+                    success = True
+                    return_code = 200
+                except OSError or FileNotFoundError:
+                    logging.error(f"Could not delete session '{session_id}'.")
+                    return_code = 409
+            except KeyError:
+                logging.error("Malformed request data for request type 'DELETE'.")
+
+        return (
+            json.dumps({"success": success}),
+            return_code,
+            {"ContentType": "application/json"},
+        )
+
 
 class DownloadAPI(flask.views.MethodView):
     """Download session data in whatever format the user wants."""
