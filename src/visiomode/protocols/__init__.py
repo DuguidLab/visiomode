@@ -76,7 +76,7 @@ class Task(Protocol):
         response_address,
         reward_address,
         reward_profile,
-        **kwargs
+        **kwargs,
     ):
         super().__init__(screen)
 

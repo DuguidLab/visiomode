@@ -174,7 +174,7 @@ class StimuliFunctionsTest(unittest.TestCase):
         normalised_array = stimuli.normalise_array(float_array)
 
         self.assertGreaterEqual(normalised_array.min(), 0)
-        self.assertLess(normalised_array.max(), 2 ** 8)
+        self.assertLess(normalised_array.max(), 2**8)
         self.assertEqual(normalised_array.dtype, np.uint8)
 
     def test_grayscale_array(self) -> None:
@@ -184,7 +184,7 @@ class StimuliFunctionsTest(unittest.TestCase):
 
         self.assertEqual(grayscale_array.shape, (8, 7, 3))
         self.assertGreaterEqual(grayscale_array.min(), 0)
-        self.assertLess(grayscale_array.max(), 2 ** 8)
+        self.assertLess(grayscale_array.max(), 2**8)
         self.assertEqual(grayscale_array.dtype, np.uint8)
 
 
