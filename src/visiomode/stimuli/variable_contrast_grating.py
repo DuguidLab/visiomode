@@ -32,7 +32,7 @@ class VariableContrastGrating(grating.Grating):
 
     def get_details(self):
         return {
-            "id": self.get_identifier,
-            "common_name": self.get_common_name,
+            "id": self.get_identifier(),
+            "common_name": self.get_common_name(),
             "trial_contrast": self.trial_contrast,
         }
