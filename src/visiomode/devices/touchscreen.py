@@ -26,7 +26,7 @@ class Touchscreen(devices.InputDevice):
             dist_y = touch_event.dy * self.config.height
             name = "left" if pos_x >= (self.config.width / 2) else "right"
             return models.Response(
-                timestamp=datetime.datetime.now().isoformat(),
+                timestamp=datetime.datetime.now(),
                 name=name,
                 pos_x=pos_x,
                 pos_y=pos_y,

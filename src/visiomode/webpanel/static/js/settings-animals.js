@@ -64,8 +64,8 @@ function updateAnimal() {
         data: JSON.stringify({
             type: "update",
             data: {
-                id: animalId,
-                dob: animalDob,
+                animal_id: animalId,
+                date_of_birth: animalDob,
                 sex: animalSex,
                 species: animalSpecies,
                 genotype: animalGenotype,

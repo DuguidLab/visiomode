@@ -1,5 +1,6 @@
 #  This file is part of visiomode.
 #  Copyright (c) 2021 Constantinos Eleftheriou <Constantinos.Eleftheriou@ed.ac.uk>
+#  Copyright (c) 2024 Olivier Delree <odelree@ed.ac.uk>
 #  Distributed under the terms of the MIT Licence.
 
 """Module that defines the available task and stimulation protocols in a stimulus agnostic manner."""
@@ -198,7 +199,7 @@ class Task(Protocol):
         if not outcome:
             return
 
-        stimulus = "None"
+        stimulus = {"id": "None"}
         if outcome != PRECUED:
             if (
                 self.distractor
@@ -252,12 +253,10 @@ class Task(Protocol):
         trial_start,
         outcome,
         response=None,
-        response_time=0,
+        response_time=0.0,
         sdt_type="NA",
         stimulus=None,
     ):
-        if not response:
-            response = {"name": "none"}
         trial = models.Trial(
             outcome=outcome,
             iti=self.iti,
