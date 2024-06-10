@@ -2,6 +2,7 @@
 
 #  This file is part of visiomode.
 #  Copyright (c) 2020 Constantinos Eleftheriou <Constantinos.Eleftheriou@ed.ac.uk>
+#  Copyright (c) 2024 Olivier Delree <odelree@ed.ac.uk>
 #  Distributed under the terms of the MIT Licence.
 import os
 import json
@@ -11,6 +12,8 @@ import socket
 import glob
 import flask
 import flask.views
+import pydantic
+
 import visiomode.config as cfg
 import visiomode.devices as devices
 import visiomode.protocols as protocols
@@ -18,6 +21,7 @@ import visiomode.stimuli as stimuli
 import visiomode.webpanel.export as export
 
 from visiomode.models import Animal
+import visiomode.database as db
 
 
 class DeviceAPI(flask.views.MethodView):
@@ -158,9 +162,11 @@ class SettingsAPI(flask.views.MethodView):
 class AnimalsAPI(flask.views.MethodView):
     """API for managing animal profiles."""
 
+    database = db.get_database(Animal)
+
     def get(self):
         """Get animal profiles."""
-        return {"animals": Animal.get_animals()}
+        return {"animals": self.database.get_entries()}
 
     def post(self):
         request_type = flask.request.json.get("type")  # add, delete, update
@@ -169,20 +175,22 @@ class AnimalsAPI(flask.views.MethodView):
         if request_type == "delete":
             animal_id = request.get("id")
             if animal_id:
-                Animal.delete_animal(animal_id)
+                self.database.delete_entry(animal_id)
             else:
-                animals = Animal.get_animals()
+                animals = self.database.get_entries()
                 for animal in animals:
-                    Animal.delete_animal(animal["animal_id"])
+                    self.database.delete_entry(animal["animal_id"])
         elif (request_type == "update") or (request_type == "add"):
-            animal = Animal(
-                animal_id=request.get("id"),
-                date_of_birth=request.get("dob"),
-                sex=request.get("sex"),
-                species=request.get("species"),
-                genotype=request.get("genotype"),
-                description=request.get("description"),
-                rfid=request.get("rfid"),
-            )
-            animal.save()
+            try:
+                animal = Animal(**request)
+                self.database.save_entry(animal)
+            except pydantic.ValidationError:
+                logging.error(
+                    f"Could not validate animal model from request data:\n{request}"
+                )
+                return (
+                    json.dumps({"success": False}),
+                    400,
+                    {"ContentType": "application/json"},
+                )
         return json.dumps({"success": True}), 200, {"ContentType": "application/json"}

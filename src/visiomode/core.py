@@ -2,17 +2,19 @@
 
 #  This file is part of visiomode.
 #  Copyright (c) 2020 Constantinos Eleftheriou <Constantinos.Eleftheriou@ed.ac.uk>
+#  Copyright (c) 2024 Olivier Delree <odelree@ed.ac.uk>
 #  Distributed under the terms of the MIT Licence.
 
 import os
 import logging
 import time
-import datetime
 import threading
 import queue
+import json
 import pkg_resources
 import pygame as pg
 import visiomode.config as conf
+import visiomode.database as database
 import visiomode.models as models
 import visiomode.webpanel as webpanel
 import visiomode.protocols as protocols
@@ -142,6 +144,7 @@ class Visiomode:
         protocol is stopped. If the application receives a quit event, the
         session is saved and the application exits.
         """
+        session_database = database.get_database(models.Session)
         while True:
             if self.session:
                 self.session.protocol.update()
@@ -155,7 +158,7 @@ class Visiomode:
                 self.session.protocol.stop()
                 self.session.complete = True
                 self.session.trials = self.session.protocol.trials
-                self.session.save(self.config.data_dir)
+                session_database.save_entry(self.session)
 
                 self.session = None
                 pg.event.clear()  # Clear unused events so queue doesn't fill up
@@ -163,7 +166,7 @@ class Visiomode:
             if pg.event.get(eventtype=pg.QUIT):
                 if self.session:
                     self.session.trials = self.session.protocol.trials
-                    self.session.save(self.config.data_dir)
+                    session_database.save_entry(self.session)
                 return
 
             pg.display.flip()
@@ -187,10 +190,7 @@ class Visiomode:
             if request["type"] == "start":
                 protocol = protocols.get_protocol(request["data"].pop("protocol"))
                 self.session = models.Session(
-                    animal_id=request["data"].pop("animal_id"),
-                    experiment=request["data"].pop("experiment"),
-                    duration=float(request["data"].pop("duration")),
-                    timestamp=datetime.datetime.now().isoformat(),
+                    **request["data"],
                     protocol=protocol(screen=self.screen, **request["data"]),
                     spec=request["data"],
                 )
@@ -199,7 +199,11 @@ class Visiomode:
                 self.log_q.put(
                     {
                         "status": "active" if self.session else "inactive",
-                        "data": self.session.to_json() if self.session else [],
+                        "data": (
+                            json.loads(self.session.model_dump_json())
+                            if self.session
+                            else []
+                        ),
                     }
                 )
             elif request["type"] == "stop":
