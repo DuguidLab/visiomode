@@ -1,0 +1,78 @@
+{% extends "base.html" %}
+{% set active_page = "settings" %}
+{% block title %}Settings{% endblock %}
+
+{% block content %}
+<div class="card shadow">
+    <div class="card-header py-3">
+        <p class="text-primary m-0 font-weight-bold">Experimenters</p>
+    </div>
+    <div class="card-body">
+        <div class="table-responsive">
+            <table  class="table table-hover" id="animalsTable">
+                <thead>
+                    <tr>
+                        <th>Experimenter name</th>
+                        <th>Laboratory name</th>
+                        <th>Institution name</th>
+                    </tr>
+                </thead>
+                <tbody id="experimentersTableData"></tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="updateExperimenter" tabindex="-1" role="dialog"
+    aria-labelledby="updateExperimenterTitle" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="updateExperimenterLongTitle">Edit experimenter details</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form id="add-experimenter-form">
+                    <div class="form-group row align-items-center">
+                        <label for="experimenter-name" class="col-sm-5 col-form-label">Experimenter name<sup>*</sup><br>(first and last name)</label>
+                        <div class="col-sm-7">
+                            <input type="text" class="form-control" id="experimenter-name" required>
+                        </div>
+                    </div>
+                    <div class="form-group row d-none">
+                        <label for="previous-experimenter-name" class="col-sm-5 col-form-label">Experimenter name<sup>*</sup><br>(first and last name)</label>
+                        <div class="col-sm-7">
+                            <input type="text" class="form-control" id="previous-experimenter-name" required>
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label for="laboratory-name" class="col-sm-5 col-form-label">Laboratory name<sup>*</sup></label>
+                        <div class="col-sm-7">
+                            <input type="text" class="form-control" id="laboratory-name" required>
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label for="institution-name" class="col-sm-5 col-form-label">Institution name<sup>*</sup></label>
+                        <div class="col-sm-7">
+                            <input type="text" class="form-control" id="institution-name" required>
+                        </div>
+                    </div>
+                </form>
+
+                <sup>*</sup> Indicates a required field.
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary" id="delete-experimenter-btn">Delete</button>
+                <button type="button" class="btn btn-primary" id="update-experimenter-btn">Save changes</button>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script type="text/javascript" src="static/js/settings-experimenters.js"></script>
+{% endblock %}

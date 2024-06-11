@@ -2,6 +2,7 @@
 
 #  This file is part of visiomode.
 #  Copyright (c) 2020 Constantinos Eleftheriou <Constantinos.Eleftheriou@ed.ac.uk>
+#  Copyright (c) 2024 Olivier Delree <odelree@ed.ac.uk>
 #  Distributed under the terms of the MIT Licence.
 import os
 import json
@@ -17,7 +18,7 @@ import visiomode.protocols as protocols
 import visiomode.stimuli as stimuli
 import visiomode.webpanel.export as export
 
-from visiomode.models import Animal
+from visiomode.models import Animal, Experimenter
 
 
 class DeviceAPI(flask.views.MethodView):
@@ -185,4 +186,45 @@ class AnimalsAPI(flask.views.MethodView):
                 rfid=request.get("rfid"),
             )
             animal.save()
+        return json.dumps({"success": True}), 200, {"ContentType": "application/json"}
+
+
+class ExperimentersAPI(flask.views.MethodView):
+    """API for managing experimenter profiles."""
+
+    @staticmethod
+    def get() -> dict:
+        """Get experimenter profiles.
+
+        Returns:
+            Dictionary with a single key "experimenters" and a value corresponding
+            to the list of experimenters metadata dictionaries.
+        """
+        return {"experimenters": Experimenter.get_experimenters()}
+
+    @staticmethod
+    def post() -> tuple[str, int, dict[str, str]]:
+        """Carry out POST request."""
+        request_type = flask.request.json.get("type")  # add, delete, update
+        request = flask.request.json.get("data")
+        print(request)
+        if request_type == "delete":
+            experimenter_name = request.get("experimenter_name")
+            if experimenter_name:
+                Experimenter.delete_experimenter(experimenter_name)
+            else:
+                experimenters = Experimenter.get_experimenters()
+                for experimenter in experimenters:
+                    Experimenter.delete_experimenter(experimenter["experimenter_name"])
+        elif (request_type == "update") or (request_type == "add"):
+            if request_type == "update":
+                previous_experimenter_name = request.get("previous_experimenter_name")
+                if Experimenter.get_experimenter(previous_experimenter_name):
+                    Experimenter.delete_experimenter(previous_experimenter_name)
+            experimenter = Experimenter(
+                experimenter_name=request.get("experimenter_name"),
+                laboratory_name=request.get("laboratory_name"),
+                institution_name=request.get("institution_name"),
+            )
+            experimenter.save()
         return json.dumps({"success": True}), 200, {"ContentType": "application/json"}

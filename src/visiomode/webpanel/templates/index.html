@@ -15,18 +15,31 @@
                             <form id="session-form">
                                 <div class="row">
                                     <div class="col">
-                                        <div class="form-group">
-                                            <!-- Animal Selector -->
-
-                                            <label for="animal_id">Animal ID</label>
-                                            <div class="input-group">
-                                                <select id="animal_id" class="custom-select form-control mb-3" required></select>
-                                                <div class="input-group-append mb-3">
-                                                <a class="btn btn-outline-secondary" role="button" href="#" data-toggle="modal"
-                                                data-target="#addAnimal">Add animal</a>
-                                                </div>
+                                        <!-- Animal Selector -->
+                                        <label for="animal_id">Animal ID</label>
+                                        <div class="input-group">
+                                            <select id="animal_id" class="custom-select form-control mb-3" required></select>
+                                            <div class="input-group-append mb-3">
+                                            <a class="btn btn-outline-secondary" role="button" href="#" data-toggle="modal" data-target="#addAnimal">Add animal</a>
                                             </div>
-                                            <!-- Protocol selector -->
+                                        </div>
+                                        <label for="experiment">Experiment Reference</label>
+                                        <input id="experiment" class="form-control mb-3" type="text" placeholder="experiment id" required>
+                                    </div>
+                                    <div class="col">
+                                        <!-- Experimenter Selector -->
+                                        <label for="experimenter_name">Experimenter</label>
+                                        <div class="input-group">
+                                            <select id="experimenter_name" class="custom-select form-control mb-3"></select>
+                                            <div class="input-group-append mb-3">
+                                            <a class="btn btn-outline-secondary" role="button" href="#" data-toggle="modal" data-target="#addExperimenter">Add experimenter</a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col">
+                                        <!-- Protocol selector -->
                                             <label for="protocol">Protocol</label>
                                             <select id="protocol" class="custom-select form-control mb-3">
                                                 <optgroup label="Tasks">
@@ -40,15 +53,8 @@
                                                     {% endfor %}
                                                 </optgroup>
                                             </select>
-                                        </div>
                                     </div>
                                     <div class="col">
-                                        <label for="experiment">Experiment Reference</label>
-                                        <input id="experiment"
-                                               class="form-control mb-3"
-                                               type="text"
-                                               placeholder="experiment id"
-                                               required>
                                         <label for="duration">Duration (mins)</label>
                                         <input id="duration" class="form-control mb-3"
                                                type="number" value="30"
@@ -228,6 +234,48 @@
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
                 <button type="button" class="btn btn-primary" id="add-animal-btn">Save animal</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="addExperimenter" tabindex="-1" role="dialog"
+    aria-labelledby="addExperimenterTitle" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="addExperimenterLongTitle">Add experimenter</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form id="add-experimenter-form">
+                    <div class="form-group row align-items-center">
+                        <label for="new-experimenter-name" class="col-sm-5 col-form-label">Experimenter name<sup>*</sup><br>(first and last name)</label>
+                        <div class="col-sm-7">
+                            <input type="text" class="form-control" id="new-experimenter-name" required>
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label for="new-laboratory-name" class="col-sm-5 col-form-label">Laboratory name<sup>*</sup></label>
+                        <div class="col-sm-7">
+                            <input type="text" class="form-control" id="new-laboratory-name" required>
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label for="new-institution-name" class="col-sm-5 col-form-label">Institution name<sup>*</sup></label>
+                        <div class="col-sm-7">
+                            <input type="text" class="form-control" id="new-institution-name" required>
+                        </div>
+                    </div>
+                </form>
+
+                <sup>*</sup> Indicates a required field.
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary" id="add-experimenter-btn">Save experimenter</button>
             </div>
         </div>
     </div>

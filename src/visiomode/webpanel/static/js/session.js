@@ -1,6 +1,7 @@
 /*
  * This file is part of visiomode.
  * Copyright (c) 2020 Constantinos Eleftheriou <Constantinos.Eleftheriou@ed.ac.uk>
+ * Copyright (c) 2024 Olivier Delree <odelree@ed.ac.uk>
  * Distributed under the terms of the MIT Licence.
  */
 let form = document.getElementById('session-form');
@@ -274,6 +275,23 @@ function loadAnimals() {
 
 loadAnimals();
 
+// load experimenters
+function loadExperimenters() {
+    let experimenter_selector = document.getElementById('experimenter_name');
+    return $.get("/api/experimenters").done(function (data) {
+        experimenter_selector.innerHTML = "";
+        data.experimenters.reverse(); // reverse order to show latest experimenters first
+        data.experimenters.forEach(function (experimenter) {
+            let option = document.createElement('option');
+            option.value = experimenter.experimenter_name;
+            option.text = experimenter.experimenter_name;
+            experimenter_selector.add(option);
+        });
+    });
+}
+
+loadExperimenters();
+
 
 // Modals
 
@@ -317,4 +335,38 @@ function addAnimal() {
 
 addAnimalButton.onclick = function () {
     addAnimal().done(loadAnimals);
+}
+
+let addExperimenterForm = document.getElementById("add-experimenter-form")
+
+let addExperimenterButton = document.getElementById('add-experimenter-btn');
+
+function addExperimenter() {
+    if (addExperimenterForm.reportValidity()) {
+        let experimenterName = document.getElementById("new-experimenter-name").value;
+        let laboratoryName = document.getElementById("new-laboratory-name").value;
+        let institutionName = document.getElementById("new-institution-name").value;
+
+        return $.ajax({
+            type: 'POST',
+            url: "/api/experimenters",
+            data: JSON.stringify({
+                type: "add",
+                data: {
+                    experimenter_name: experimenterName,
+                    laboratory_name: laboratoryName,
+                    institution_name: institutionName,
+                },
+            }),
+            dataType: "json",
+            contentType: "application/json",
+            success: function () {
+                $("#addExperimenter").modal("hide");
+            }
+        });
+    }
+}
+
+addExperimenterButton.onclick = function () {
+    addExperimenter().done(loadExperimenters);
 }

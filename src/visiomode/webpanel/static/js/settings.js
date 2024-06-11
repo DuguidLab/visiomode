@@ -1,6 +1,7 @@
 /*
  * This file is part of visiomode.
  * Copyright (c) 2023 Constantinos Eleftheriou <Constantinos.Eleftheriou@ed.ac.uk>
+ * Copyright (c) 2024 Olivier Delree <odelree@ed.ac.uk>
  * Distributed under the terms of the MIT Licence.
  */
 
@@ -13,6 +14,9 @@ let deleteAllDataButton = document.getElementById('delete-all-data-btn');
 
 let addAnimalButton = document.getElementById('add-animal-btn');
 let deleteAnimalDataButton = document.getElementById('delete-animal-data-btn');
+
+let addExperimenterButton = document.getElementById('add-experimenter-btn');
+let deleteExperimenterDataButton = document.getElementById('delete-experimenter-data-btn');
 
 
 /// Display & storage settings
@@ -104,6 +108,77 @@ deleteAllDataButton.onclick = function () {
 
 
 loadSettings();
+
+
+// Experimenters
+
+function addExperimenter() {
+    let experimenterName = document.getElementById("new-experimenter-name").value;
+    let laboratoryName = document.getElementById("new-laboratory-name").value;
+    let institutionName = document.getElementById("new-institution-name").value;
+
+    $.ajax({
+        type: 'POST',
+        url: "/api/experimenters",
+        data: JSON.stringify({
+            type: "add",
+            data: {
+                experimenter_name: experimenterName,
+                laboratory_name: laboratoryName,
+                institution_name: institutionName,
+            },
+        }),
+        dataType: "json",
+        contentType: "application/json",
+        success: function (data) {
+            $("#addExperimenter").modal("hide");
+        }
+    });
+}
+
+addExperimenterButton.onclick = function () {
+    addExperimenter();
+}
+
+function exportExperimenters() {
+    // Export animals as CSV
+    $.get("/api/experimenters", function (data) {
+        experimenters = data.experimenters;
+        let replacer = (key, value) => value === null ? '' : value
+        let header = Object.keys(experimenters[0])
+        let csv = [
+            header.join(','), // header row first
+            ...experimenters.map(row => header.map(
+                fieldName => JSON.stringify(row[fieldName], replacer)).join(','))
+        ].join('\r\n');
+        let csvExport = new Blob([csv], {type: "text/csv"});
+        let url = window.URL.createObjectURL(csvExport);
+        let a = document.createElement('a');
+        a.href = url;
+        a.download = 'experimenters.csv';
+        a.click();
+    });
+}
+
+function deleteExperimenterData() {
+    $.ajax({
+        type: 'POST',
+        url: "/api/experimenters",
+        data: JSON.stringify({
+            type: "delete",
+            data: {},
+        }),
+        dataType: "json",
+        contentType: "application/json",
+        success: function (data) {
+            $("#deleteExperimenterData").modal("hide");
+        }
+    });
+}
+
+deleteExperimenterDataButton.onclick = function () {
+    deleteExperimenterData();
+}
 
 
 /// Animals

@@ -33,12 +33,28 @@ def to_nwb(session_path):
 
     session_start_time = datetime.fromisoformat(session["timestamp"])
 
-    nwbfile = pynwb.NWBFile(
-        session_description="Visiomode {} behaviour".format(session.get("protocol")),
-        identifier=session_path.split("/")[-1].replace(".json", ""),
-        session_start_time=session_start_time,
-        experiment_description=session.get("experiment"),
-    )
+    experimenter_metadata = session["experimenter_meta"]
+    if experimenter_metadata:
+        nwbfile = pynwb.NWBFile(
+            session_description="Visiomode {} behaviour".format(
+                session.get("protocol")
+            ),
+            identifier=session_path.split("/")[-1].replace(".json", ""),
+            session_start_time=session_start_time,
+            experiment_description=session.get("experiment"),
+            experimenter=experimenter_metadata.get("experimenter_name"),
+            lab=experimenter_metadata.get("laboratory_name"),
+            institution=experimenter_metadata.get("institution_name"),
+        )
+    else:
+        nwbfile = pynwb.NWBFile(
+            session_description="Visiomode {} behaviour".format(
+                session.get("protocol")
+            ),
+            identifier=session_path.split("/")[-1].replace(".json", ""),
+            session_start_time=session_start_time,
+            experiment_description=session.get("experiment"),
+        )
 
     nwbfile.subject = pynwb.file.Subject(subject_id=session["animal_id"])
 
