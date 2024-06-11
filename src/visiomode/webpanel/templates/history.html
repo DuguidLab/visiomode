@@ -9,18 +9,99 @@
         </div>
         <div class="card-body">
             <div class="table-responsive">
-                <table  class="table table-hover" id="sessionsTable">
+                <table class="table table-hover" id="sessionsTable">
                     <thead>
-                        <tr>
-                            <th>Date</th>
-                            <th>Animal ID</th>
-                            <th>Protocol</th>
-                            <th>Session Data</th>
-                        </tr>
+                    <tr>
+                        <th>Date</th>
+                        <th>Animal ID</th>
+                        <th>Protocol</th>
+                        <th>Session Data</th>
+                        <th class="d-none">Session ID</th>
+                    </tr>
                     </thead>
-
-                    <tbody id="sessionsTableData"a></tbody>
+                    <tbody id="sessionsTableData"></tbody>
                 </table>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="viewSession" tabindex="-1" role="dialog" aria-labelledby="viewSessionTitle"
+         aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-xl" role="document">
+            <div class="modal-content">
+                <div class="row">
+                    <div class="col">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="viewSessionLongTitle">Session details</h5>
+                        </div>
+                        <div class="modal-body">
+                            <form>
+                                <div class="form-group row">
+                                    <label for="animal-id" class="col-sm-4 col-form-label">Animal ID</label>
+                                    <div class="col-sm-7">
+                                        <input type="text" class="form-control" id="animal-id" readonly>
+                                    </div>
+                                </div>
+                                <div class="form-group row">
+                                    <label for="duration" class="col-sm-4 col-form-label">Duration (mins)</label>
+                                    <div class="col-sm-7">
+                                        <input type="text" class="form-control" id="duration" readonly>
+                                    </div>
+                                </div>
+                                <div class="form-group row">
+                                    <label for="experiment-id" class="col-sm-4 col-form-label">Experiment ID</label>
+                                    <div class="col-sm-7">
+                                        <input type="text" class="form-control" id="experiment-id" readonly>
+                                    </div>
+                                </div>
+                                <div class="form-group row align-items-center">
+                                    <label for="experimenter-name" class="col-sm-4 col-form-label">Experimenter</label>
+                                    <div class="col-sm-7">
+                                        <input type="text" class="form-control" id="experimenter-name" readonly>
+                                    </div>
+                                </div>
+                                <div class="form-group row">
+                                    <label for="protocol" class="col-sm-4 col-form-label">Protocol</label>
+                                    <div class="col-sm-7">
+                                        <input type="text" class="form-control" id="protocol" readonly>
+                                    </div>
+                                </div>
+                                <div class="form-group row">
+                                    <label for="timestamp" class="col-sm-4 col-form-label">Timestamp</label>
+                                    <div class="col-sm-7">
+                                        <input type="text" class="form-control" id="timestamp" readonly>
+                                    </div>
+                                </div>
+                                <div class="form-group row">
+                                    <label for="trial-count" class="col-sm-4 col-form-label">Trial count</label>
+                                    <div class="col-sm-7">
+                                        <input type="text" class="form-control" id="trial-count" readonly>
+                                    </div>
+                                </div>
+                                <div class="form-group row align-items-top">
+                                    <label for="notes" class="col-sm-4 col-form-label">Notes</label>
+                                    <div class="col-sm-7 input-sm-10">
+                                <textarea rows="8" style="height:100%; resize: none;" type="text" class="form-control"
+                                          id="notes" readonly></textarea>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                    <div class="col">
+                        <div class="modal-header">
+                            <h5 class="modal-title">Overview</h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                            <div id="chart-area">
+                                <canvas id="trialsChart"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
