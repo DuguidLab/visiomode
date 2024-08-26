@@ -187,6 +187,7 @@ class Visiomode:
                 protocol = protocols.get_protocol(request["data"].pop("protocol"))
                 self.session = models.Session(
                     animal_id=request["data"].pop("animal_id"),
+                    experimenter_name=request["data"].pop("experimenter_name"),
                     experiment=request["data"].pop("experiment"),
                     duration=float(request["data"].pop("duration")),
                     timestamp=datetime.datetime.now().isoformat(),
