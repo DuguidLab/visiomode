@@ -9,7 +9,6 @@ import numpy as np
 import pygame as pg
 import visiomode.config as conf
 import visiomode.mixins as mixins
-import visiomode.plugins as plugins
 
 config = conf.Config()
 
@@ -91,6 +90,3 @@ class Stimulus(pg.sprite.Sprite, mixins.BaseClassMixin, mixins.WebFormMixin):
 
     def generate_new_trial(self):
         """Regenerate stimuli for a fresh trial"""
-
-
-plugins.load_modules_dir(__path__[0])
