@@ -91,7 +91,7 @@ dependencies = [
   "ruff>=0.0.243",
 ]
 [tool.hatch.envs.lint.scripts]
-typing = "mypy --install-types --non-interactive {args:src/duguidlab_nwb tests}"
+typing = "mypy --install-types --non-interactive {args:src/visiomode tests}"
 style = [
   "ruff {args:.}",
   "black --check --diff {args:.}",
