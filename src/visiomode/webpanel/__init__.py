@@ -111,7 +111,9 @@ def create_app(action_q=None, log_q=None):
     )
 
     app.add_url_rule(
-        "/api/history", view_func=api.HistoryAPI.as_view("history_api"), methods=["GET"]
+        "/api/history",
+        view_func=api.HistoryAPI.as_view("history_api"),
+        methods=["GET", "POST"],
     )
 
     app.add_url_rule(

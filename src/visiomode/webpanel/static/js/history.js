@@ -46,13 +46,15 @@ fetch("/api/history")
 
 let table = document.getElementById("sessionsTableData");
 
+let currentSessionId;
+
 const canvasContext = document.getElementById("trialsChart");
 let trialsChart;
 let currentChartSessionId;
 
 table.onclick = async function (event) {
-    let session_id = event.target.closest("tr").cells[event.target.parentNode.cells.length - 1].innerHTML;
-    let session = await fetch(`/api/history?session_id=${session_id}`)
+    currentSessionId = event.target.closest("tr").cells[event.target.parentNode.cells.length - 1].innerHTML;
+    let session = await fetch(`/api/history?session_id=${currentSessionId}`)
         .then((response) => response.json())
         .then((data) => data.session);
 
@@ -68,7 +70,7 @@ table.onclick = async function (event) {
     document.getElementById("notes").value = session?.notes ?? "";
 
     // Avoid unnecessarily redrawing the chart when reopening the same modal
-    if (session_id !== currentChartSessionId) {
+    if (currentSessionId !== currentChartSessionId) {
         trialsChart?.destroy();
 
         if (session?.trials?.length) {
@@ -82,7 +84,7 @@ table.onclick = async function (event) {
             trialsChart = createChart(canvasContext, []);
         }
 
-        currentChartSessionId = session_id;
+        currentChartSessionId = currentSessionId;
     }
 }
 
@@ -113,4 +115,92 @@ function createChart(canvas, session_data) {
             }
         },
     });
+}
+
+let deleteSessionDataSpan = document.getElementById("deleteSessionDataSpan");
+let deleteSessionDataButton = document.getElementById("deleteSessionDataButton");
+let buttonAnimation;
+let buttonAnimationDuration = 1000;
+
+function generateLoadingButtonKeyFrames() {
+    let keyFrames = [];
+    for (let i = 0; i <= 100; i++) {
+        keyFrames.push({background: `linear-gradient(to right, #bb2d3b 0%, #bb2d3b ${i}%, #DC3545 ${i}%, #DC3545 100%)`});
+    }
+    return keyFrames;
+}
+
+deleteSessionDataSpan.onmouseover = () => {
+    // Create the animation if it's the first hover event
+    if (!buttonAnimation) {
+        buttonAnimation = deleteSessionDataButton.animate(generateLoadingButtonKeyFrames(), {
+            duration: buttonAnimationDuration,
+        });
+        buttonAnimation.onfinish = () => {
+            // `onfinish` triggers when the animation gets back to the start
+            // if the user stops hovering, so only enable the button if it
+            // reached the "forward end"
+            if (buttonAnimation.currentTime === buttonAnimationDuration) {
+                deleteSessionDataButton.removeAttribute("disabled");
+            }
+        };
+    }
+    buttonAnimation.playbackRate = 1;  // Resume animation forward
+}
+deleteSessionDataSpan.onmouseout = () => {
+    deleteSessionDataButton.setAttribute("disabled", "");
+    buttonAnimation.playbackRate = -2;  // Reverse animation at twice the speed
+}
+
+deleteSessionDataButton.onclick = () => {
+    deleteSessionData(currentSessionId);
+    // Reset the animation
+    buttonAnimation.playbackRate = -1;
+    buttonAnimation.finish();
+};
+
+function deleteSessionData(sessionId) {
+    $.ajax({
+        type: "POST",
+        url: "/api/history",
+        data: JSON.stringify({
+            type: "delete",
+            data: {sessionId},
+        }),
+        dataType: "json",
+        contentType: "application/json",
+        success: function () {
+            // Close all the modals
+            $('.modal').modal('hide');
+            // Remove the row for the deleted session
+            $("#sessionsTableData").find("td:contains('" + sessionId + "')").closest("tr").remove();
+        }
+    });
+}
+
+let summaryModal = document.getElementById("viewSession");
+summaryModal.onshown = () => {
+    document.getElementById("notes").focus();
+}
+
+function updateSessionData(sessionId, updatedSessionData) {
+    $.ajax({
+        type: "POST",
+        url: "/api/history",
+        data: JSON.stringify({
+            type: "update",
+            data: {sessionId, updatedSessionData},
+        }),
+        dataType: "json",
+        contentType: "application/json",
+    });
+}
+
+let updateSessionButton = document.getElementById("updateButton");
+updateSessionButton.onclick = () => {
+    let newData = {
+        "notes": document.getElementById("notes").value,
+    }
+
+    updateSessionData(currentSessionId, newData);
 }
