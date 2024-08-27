@@ -53,20 +53,22 @@
                     <div class="form-group row">
                         <label for="animal-sex" class="col-sm-3 col-form-label">Sex<sup>*</sup></label>
                         <div class="col-sm-5">
-                            <div class="form-check">
-                                <select id="animal-sex" class="form-control">
-                                    <option value="U">Unknown</option>
-                                    <option value="M">Male</option>
-                                    <option value="F">Female</option>
-                                    <option value="O">Other</option>
-                                </select>
-                            </div>
+                            <select id="animal-sex" class="custom-select form-control" required>
+                                <option value="U">Unknown</option>
+                                <option value="M">Male</option>
+                                <option value="F">Female</option>
+                                <option value="O">Other</option>
+                            </select>
                         </div>
                     </div>
                     <div class="form-group row">
                         <label for="animal-species" class="col-sm-3 col-form-label">Species<sup>*</sup></label>
                         <div class="col-sm-5">
-                            <input type="text" class="form-control" id="animal-species" value="Mus musculus" required>
+                            <select class="custom-select form-control" id="animal-species" required>
+                                <option>Mus musculus</option>
+                                <option>Rattus norvegicus</option>
+                                <option>Other</option>
+                            </select>
                         </div>
                     </div>
                     <div class="form-group row">
