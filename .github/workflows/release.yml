@@ -18,8 +18,8 @@ permissions:
   id-token: write
 
 jobs:
-  deploy:
-
+  publish:
+    name: "build & publish"
     runs-on: ubuntu-latest
     environment: release
 

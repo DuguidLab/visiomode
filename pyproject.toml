@@ -78,10 +78,22 @@ build = "mkdocs build --clean --strict"
 serve = "mkdocs serve --dev-addr localhost:8000"
 deploy = "mkdocs gh-deploy --force"
 
-[tool.hatch.envs.tests]
+
+[tool.hatch.envs.test]
 dependencies = [
-  "parameterized>=0.9.0"
+  "parameterized>=0.9.0",
+  "coverage[toml]",
+  "pytest",
+  "pytest-cov",
+  "pytest-mock",
 ]
+
+[[tool.hatch.envs.test.matrix]]
+python = ["3.9", "3.10", "3.11", "3.12"]
+
+[tool.hatch.envs.test.scripts]
+run-coverage = "pytest --cov-config=pyproject.toml --cov=visiomode --cov=tests"
+run = "run-coverage --no-cov"
 
 [tool.hatch.envs.lint]
 detached = true
@@ -91,7 +103,7 @@ dependencies = [
   "ruff>=0.0.243",
 ]
 [tool.hatch.envs.lint.scripts]
-typing = "mypy --install-types --non-interactive {args:src/duguidlab_nwb tests}"
+typing = "mypy --install-types --non-interactive {args:src/visiomode tests}"
 style = [
   "ruff {args:.}",
   "black --check --diff {args:.}",

@@ -3,11 +3,11 @@ on:
   push:
     branches:
       - main
-      - master
 permissions:
   contents: write
 jobs:
   deploy:
+    name: "docs"
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
