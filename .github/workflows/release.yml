@@ -19,7 +19,7 @@ permissions:
 
 jobs:
   deploy:
-
+    name: "build & publish"
     runs-on: ubuntu-latest
     environment: release
 
