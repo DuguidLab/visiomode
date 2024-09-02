@@ -26,9 +26,9 @@ classifiers = [
 ]
 keywords = ["touchscreen", "rodent", "behaviour", "neuroscience"]
 dependencies = [
-  "Flask>=2.0.3",
+  "Flask>=3.0",
   "PyYAML>=6.0",
-  "Werkzeug>=2.2,<3.0",
+  "Werkzeug>=3.0.3",
   "pyserial>=3.5",
   "numpy>=1.22",
   "pygame>=2.5.1",
