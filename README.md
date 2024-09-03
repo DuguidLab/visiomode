@@ -2,8 +2,8 @@
 
 ---
 
- [![Build Status](https://github.com/celefthe/visiomode/workflows/build/badge.svg)](https://github.com/celefthe/visiomode/actions)
-[![codecov](https://codecov.io/gh/celefthe/visiomode/branch/master/graph/badge.svg?token=1O1WDTTHOH)](https://codecov.io/gh/celefthe/visiomode)
+[![Build & Test](https://github.com/DuguidLab/visiomode/actions/workflows/build.yml/badge.svg?branch=main)](https://github.com/DuguidLab/visiomode/actions/workflows/build.yml)
+[![codecov](https://codecov.io/gh/DuguidLab/visiomode/graph/badge.svg?token=1O1WDTTHOH)](https://codecov.io/gh/DuguidLab/visiomode)
 [![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
 
 
