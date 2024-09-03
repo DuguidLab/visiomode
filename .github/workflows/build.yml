@@ -31,7 +31,7 @@ jobs:
         sudo apt install -y libhdf5-dev libsdl2-mixer-2.0-0 libsdl2-image-2.0-0 libsdl2-2.0-0 libsdl2-ttf-2.0-0
 
     - name: Tests & coverage
-      run: hatch run +py=${{ matrix.python-version }} test:run-coverage
+      run: hatch run +py=${{ matrix.python-version }} test:run-coverage-ci
 
   build:
     name: "build"
