@@ -26,7 +26,7 @@ sudo apt update && sudo apt upgrade
 Visiomode runs on SDL 2.0. To make sure all system dependencies are present, run
 
 ```bash
-sudo apt install libsdl2-mixer-2.0-0 libsdl2-image-2.0-0 libsdl2-2.0-0 libsdl2-ttf-2.0-0
+sudo apt install -y libhdf5-dev libsdl2-mixer-2.0-0 libsdl2-image-2.0-0 libsdl2-2.0-0 libsdl2-ttf-2.0-0
 ```
 
 Install `pipx` using
