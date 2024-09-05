@@ -15,7 +15,7 @@ import flask
 import flask.views
 import visiomode.config as cfg
 import visiomode.devices as devices
-import visiomode.protocols as protocols
+import visiomode.tasks as tasks
 import visiomode.stimuli as stimuli
 import visiomode.webpanel.export as export
 
@@ -58,12 +58,12 @@ class StimulusAPI(flask.views.MethodView):
         return "No Additional Options"
 
 
-class ProtocolAPI(flask.views.MethodView):
-    def get(self, protocol_id):
-        protocol = protocols.get_protocol(protocol_id)
-        if protocol and protocol.form_path:
+class TaskAPI(flask.views.MethodView):
+    def get(self, task_id):
+        task = tasks.get_task(task_id)
+        if task and task.form_path:
             return flask.render_template(
-                protocol.get_form(),
+                task.get_form(),
                 stimuli=list(stimuli.Stimulus.get_children()),
                 reward_profiles=devices.OutputDevice.get_children(),
                 response_profiles=devices.InputDevice.get_children(),
@@ -107,7 +107,7 @@ class HistoryAPI(flask.views.MethodView):
                                 "fname": session_file.split(os.sep)[-1],
                                 "animal_id": session["animal_id"],
                                 "date": session["timestamp"],
-                                "protocol": session["protocol"],
+                                "task": session["task"],
                                 "experiment": session["experiment"],
                                 "session_id": pathlib.Path(session_file).stem,
                             }

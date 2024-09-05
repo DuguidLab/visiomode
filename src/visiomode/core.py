@@ -16,7 +16,7 @@ import pygame as pg
 import visiomode.config as conf
 import visiomode.models as models
 import visiomode.webpanel as webpanel
-import visiomode.protocols as protocols
+import visiomode.tasks as tasks
 
 # Register mouse events as touch events - useful for debugging.
 os.environ["SDL_MOUSE_TOUCH_EVENTS"] = "1"
@@ -27,7 +27,7 @@ class Visiomode:
 
     This class handles the main application loop, and initialises the mouse GUI
     and user webpanel. It also handles requests from the webpanel, and passes
-    them on to the appropriate protocol runner.
+    them on to the appropriate task runner.
     """
 
     def __init__(self):
@@ -136,24 +136,24 @@ class Visiomode:
         """Main application loop.
 
         This is the main application loop. It checks for events, and updates the
-        protocol runner if one is active. If the protocol is no longer running,
+        task runner if one is active. If the task is no longer running,
         or the session duration has elapsed, the session is saved and the
-        protocol is stopped. If the application receives a quit event, the
+        task is stopped. If the application receives a quit event, the
         session is saved and the application exits.
         """
         while True:
             if self.session:
-                self.session.protocol.update()
-                self.session.trials = self.session.protocol.trials
+                self.session.task.update()
+                self.session.trials = self.session.task.trials
             if self.session and (
-                not self.session.protocol.is_running
-                or time.time() - self.session.protocol.start_time
+                not self.session.task.is_running
+                or time.time() - self.session.task.start_time
                 > self.session.duration * 60
             ):
                 logging.info("Session finished.")
-                self.session.protocol.stop()
+                self.session.task.stop()
                 self.session.complete = True
-                self.session.trials = self.session.protocol.trials
+                self.session.trials = self.session.task.trials
                 self.session.save(self.config.data_dir)
 
                 self.session = None
@@ -161,7 +161,7 @@ class Visiomode:
 
             if pg.event.get(eventtype=pg.QUIT):
                 if self.session:
-                    self.session.trials = self.session.protocol.trials
+                    self.session.trials = self.session.task.trials
                     self.session.save(self.config.data_dir)
                 return
 
@@ -171,7 +171,7 @@ class Visiomode:
         """Parser for requests from the webpanel.
 
         This tries to parse the request and pass it on to the appropriate
-        protocol runner. It also handles requests for the current status of the
+        task runner. It also handles requests for the current status of the
         application.
 
         Requests are read from the class action queue, which is written to by
@@ -184,17 +184,17 @@ class Visiomode:
                 logging.error("Invalid request - {}".format(request))
                 continue
             if request["type"] == "start":
-                protocol = protocols.get_protocol(request["data"].pop("protocol"))
+                task = tasks.get_task(request["data"].pop("task"))
                 self.session = models.Session(
                     animal_id=request["data"].pop("animal_id"),
                     experimenter_name=request["data"].pop("experimenter_name"),
                     experiment=request["data"].pop("experiment"),
                     duration=float(request["data"].pop("duration")),
                     timestamp=datetime.datetime.now().isoformat(),
-                    protocol=protocol(screen=self.screen, **request["data"]),
+                    task=task(screen=self.screen, **request["data"]),
                     spec=request["data"],
                 )
-                self.session.protocol.start()
+                self.session.task.start()
             elif request["type"] == "status":
                 self.log_q.put(
                     {
@@ -203,7 +203,7 @@ class Visiomode:
                     }
                 )
             elif request["type"] == "stop":
-                self.session.protocol.stop()
+                self.session.task.stop()
 
 
 def rotate(image, rect, angle):

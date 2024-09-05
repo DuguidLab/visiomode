@@ -11,7 +11,7 @@ import threading
 
 import flask
 import visiomode.config as cfg
-import visiomode.protocols as protocols
+import visiomode.tasks as tasks
 import visiomode.stimuli as stimuli
 import visiomode.webpanel.api as api
 
@@ -42,8 +42,8 @@ def create_app(action_q=None, log_q=None):
         """Visiomode Dashboard."""
         return flask.render_template(
             "index.html",
-            tasks=protocols.Task.get_children(),
-            presentations=protocols.Presentation.get_children(),
+            tasks=tasks.Task.get_children(),
+            presentations=tasks.Presentation.get_children(),
             stimuli=stimuli.Stimulus.get_children(),
         )
 
@@ -89,8 +89,8 @@ def create_app(action_q=None, log_q=None):
     )
 
     app.add_url_rule(
-        "/api/protocol-form/<protocol_id>",
-        view_func=api.ProtocolAPI.as_view("protocol_api"),
+        "/api/task-form/<task_id>",
+        view_func=api.TaskAPI.as_view("task_api"),
         methods=["GET"],
     )
 

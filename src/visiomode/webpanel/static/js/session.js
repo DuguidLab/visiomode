@@ -89,7 +89,7 @@ function getStatus() {
 
             document.getElementById('animal_id').value = session_data.animal_id;
             document.getElementById('experiment').value = session_data.experiment;
-            document.getElementById('protocol').value = session_data.protocol;
+            document.getElementById('task').value = session_data.task;
             document.getElementById('duration').value = session_data.duration;
 
             logList.innerHTML = "" // Clear contents
@@ -246,16 +246,16 @@ function isCanvasBlank(canvas) {
 
 /// Dynamic form updates
 
-// load protocol options on select
-protocol_selector = document.getElementById('protocol');
+// load task options on select
+task_selector = document.getElementById('task');
 
-protocol_selector.onchange = function () {
-    $.get("/api/protocol-form/" + protocol_selector.value).done(function (data) {
-        $('#protocol-options').html(data);
+task_selector.onchange = function () {
+    $.get("/api/task-form/" + task_selector.value).done(function (data) {
+        $('#task-options').html(data);
     })
 }
 
-protocol_selector.onchange();
+task_selector.onchange();
 
 
 // load animals

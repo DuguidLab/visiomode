@@ -36,37 +36,11 @@ TouchEvent = collections.namedtuple(
 )
 
 
-def get_protocol(protocol_id):
-    return Protocol.get_child(protocol_id)
+def get_task(task_id):
+    return Task.get_child(task_id)
 
 
-class Protocol(mixins.BaseClassMixin, mixins.WebFormMixin, mixins.ProtocolEventsMixin):
-    form_path = None
-
-    def __init__(self, screen):
-        self.screen = screen
-        self.is_running = False
-        self.start_time = None
-
-        self.trials = []
-
-        self.clock = pg.time.Clock()
-        self.config = conf.Config()
-        self._timedelta = 0
-
-    def update(self):
-        """Protocol event handling and graphics rendering"""
-
-    def start(self):
-        """Start the protocol"""
-        self.is_running = True
-        self.start_time = time.time()
-
-    def stop(self):
-        self.is_running = False
-
-
-class Task(Protocol):
+class Task(mixins.BaseClassMixin, mixins.WebFormMixin, mixins.TaskEventsMixin):
     def __init__(
         self,
         screen,
@@ -78,7 +52,15 @@ class Task(Protocol):
         reward_profile,
         **kwargs,
     ):
-        super().__init__(screen)
+        self.screen = screen
+        self.is_running = False
+        self.start_time = None
+
+        self.trials = []
+
+        self.clock = pg.time.Clock()
+        self.config = conf.Config()
+        self._timedelta = 0
 
         self.iti = float(iti) / 1000  # ms to s
         self.stimulus_duration = float(stimulus_duration) / 1000  # ms to s
@@ -103,12 +85,14 @@ class Task(Protocol):
         )
 
     def start(self):
-        super(Task, self).start()
+        """Start the task"""
+        self.is_running = True
+        self.start_time = time.time()
         self._session_thread.start()
 
     def stop(self):
         self.hide_stimulus()
-        super(Task, self).stop()
+        self.is_running = False
 
     def show_stimulus(self):
         raise NotImplementedError
@@ -270,9 +254,9 @@ class Task(Protocol):
         )
         return trial
 
-    def on_protocol_start(self):
-        self.response_device.on_protocol_start()
-        self.reward_device.on_protocol_start()
+    def on_task_start(self):
+        self.response_device.on_task_start()
+        self.reward_device.on_task_start()
 
     def on_trial_start(self):
         self.response_device.on_trial_start()
@@ -286,9 +270,9 @@ class Task(Protocol):
         self.response_device.on_trial_end()
         self.reward_device.on_trial_end()
 
-    def on_protocol_end(self):
-        self.response_device.on_protocol_end()
-        self.reward_device.on_protocol_end()
+    def on_task_end(self):
+        self.response_device.on_task_end()
+        self.reward_device.on_task_end()
 
     def on_correct(self):
         self.response_device.on_correct()
@@ -307,17 +291,13 @@ class Task(Protocol):
         self.reward_device.on_precued()
 
     def _session_runner(self):
-        self.on_protocol_start()
+        self.on_task_start()
         while self.is_running:
             self.trial_block()
-        self.on_protocol_end()
+        self.on_task_end()
 
 
-class Presentation(Protocol):
-    pass
-
-
-class InvalidProtocol(Exception):
+class InvalidTask(Exception):
     pass
 
 
