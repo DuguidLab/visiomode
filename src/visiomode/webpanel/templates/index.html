@@ -42,16 +42,9 @@
                                         <!-- Task selector -->
                                             <label for="task">Task</label>
                                             <select id="task" class="custom-select form-control mb-3">
-                                                <optgroup label="Tasks">
-                                                    {% for task in tasks %}
-                                                        <option value="{{ task.get_identifier() }}">{{ task.get_common_name() }}</option>
-                                                    {% endfor %}
-                                                </optgroup>
-                                                <optgroup label="Presentations">
-                                                    {% for presentation in presentations %}
-                                                        <option value="{{ presentation.get_identifier() }}">{{ presentation.get_common_name() }}</option>
-                                                    {% endfor %}
-                                                </optgroup>
+                                                {% for task in tasks %}
+                                                    <option value="{{ task.get_identifier() }}">{{ task.get_common_name() }}</option>
+                                                {% endfor %}
                                             </select>
                                     </div>
                                     <div class="col">

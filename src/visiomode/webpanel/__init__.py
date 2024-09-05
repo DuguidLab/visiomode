@@ -43,7 +43,6 @@ def create_app(action_q=None, log_q=None):
         return flask.render_template(
             "index.html",
             tasks=tasks.Task.get_children(),
-            presentations=tasks.Presentation.get_children(),
             stimuli=stimuli.Stimulus.get_children(),
         )
 
