@@ -36,9 +36,7 @@ def to_nwb(session_path):
     experimenter_metadata = session["experimenter_meta"]
     if experimenter_metadata:
         nwbfile = pynwb.NWBFile(
-            session_description="Visiomode {} behaviour".format(
-                session.get("protocol")
-            ),
+            session_description="Visiomode {} behaviour".format(session.get("task")),
             identifier=session_path.split("/")[-1].replace(".json", ""),
             session_start_time=session_start_time,
             experiment_description=session.get("experiment"),
@@ -48,9 +46,7 @@ def to_nwb(session_path):
         )
     else:
         nwbfile = pynwb.NWBFile(
-            session_description="Visiomode {} behaviour".format(
-                session.get("protocol")
-            ),
+            session_description="Visiomode {} behaviour".format(session.get("task")),
             identifier=session_path.split("/")[-1].replace(".json", ""),
             session_start_time=session_start_time,
             experiment_description=session.get("experiment"),

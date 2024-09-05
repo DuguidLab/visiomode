@@ -7,11 +7,11 @@ import random
 import pygame as pg
 
 import visiomode.stimuli as stimulus
-import visiomode.protocols as protocols
+import visiomode.tasks as tasks
 
 
-class GoNoGo(protocols.Task):
-    form_path = "protocols/gonogo.html"
+class GoNoGo(tasks.Task):
+    form_path = "tasks/gonogo.html"
 
     def __init__(self, target, distractor, corrections_enabled="false", **kwargs):
         super(GoNoGo, self).__init__(**kwargs)

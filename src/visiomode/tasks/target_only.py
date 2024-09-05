@@ -5,11 +5,11 @@
 import pygame as pg
 
 import visiomode.stimuli as stimuli
-import visiomode.protocols as protocols
+import visiomode.tasks as tasks
 
 
-class TargetOnly(protocols.Task):
-    form_path = "protocols/target_only.html"
+class TargetOnly(tasks.Task):
+    form_path = "tasks/target_only.html"
 
     def __init__(self, target, **kwargs):
         super(TargetOnly, self).__init__(**kwargs)

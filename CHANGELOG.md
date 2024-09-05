@@ -4,6 +4,13 @@ Versions follow [Semantic Versioning](https://semver.org) (`<major>.<minor>.<pat
 
 ## [Unreleased]
 
+### Changed
+
+- Protocols have been renamed to Tasks ([[#237](https://github.com/DuguidLab/visiomode/issues/237)]).
+- Use hatch CI for testing and building, sunset Tox ([#216](https://github.com/DuguidLab/visiomode/issues/216)).
+- CI runs have more meaningful names ([#231](https://github.com/DuguidLab/visiomode/issues/231)).
+- Update Flask and Werkzeug to >v3.0 ([#227](https://github.com/DuguidLab/visiomode/issues/227)).
+
 ## [0.6.0] - 2024-08-29
 
 ### Added

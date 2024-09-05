@@ -22,8 +22,8 @@ fetch("/api/history")
             date.innerHTML = session.date;
             let animal_id = row.insertCell(1);
             animal_id.innerHTML = session.animal_id;
-            let protocol = row.insertCell(2);
-            protocol.innerHTML = session.protocol;
+            let task = row.insertCell(2);
+            task.innerHTML = session.task;
             let downloadButton = row.insertCell(3);
             downloadButton.innerHTML = `
                 <button
@@ -64,7 +64,7 @@ table.onclick = async function (event) {
     document.getElementById("duration").value = session?.duration ?? "";
     document.getElementById("experiment-id").value = session?.experiment ?? "";
     document.getElementById("experimenter-name").value = session?.experimenter_name ?? "";
-    document.getElementById("protocol").value = session?.protocol ?? "";
+    document.getElementById("task").value = session?.task ?? "";
     document.getElementById("timestamp").value = session?.timestamp ?? "";
     document.getElementById("trial-count").value = session?.trials?.length ?? "";
     document.getElementById("notes").value = session?.notes ?? "";

@@ -39,19 +39,12 @@
                                 </div>
                                 <div class="row">
                                     <div class="col">
-                                        <!-- Protocol selector -->
-                                            <label for="protocol">Protocol</label>
-                                            <select id="protocol" class="custom-select form-control mb-3">
-                                                <optgroup label="Tasks">
-                                                    {% for task in tasks %}
-                                                        <option value="{{ task.get_identifier() }}">{{ task.get_common_name() }}</option>
-                                                    {% endfor %}
-                                                </optgroup>
-                                                <optgroup label="Presentations">
-                                                    {% for presentation in presentations %}
-                                                        <option value="{{ presentation.get_identifier() }}">{{ presentation.get_common_name() }}</option>
-                                                    {% endfor %}
-                                                </optgroup>
+                                        <!-- Task selector -->
+                                            <label for="task">Task</label>
+                                            <select id="task" class="custom-select form-control mb-3">
+                                                {% for task in tasks %}
+                                                    <option value="{{ task.get_identifier() }}">{{ task.get_common_name() }}</option>
+                                                {% endfor %}
                                             </select>
                                     </div>
                                     <div class="col">
@@ -67,7 +60,7 @@
                                                 aria-expanded="false" aria-controls="collapse-1"
                                                 href="#collapse-options" role="button">More Options</a>
                                             <div class="collapse" id="collapse-options" style="margin-top: 10px">
-                                                <div id="protocol-options"></div>
+                                                <div id="task-options"></div>
                                             </div>
                                         </div>
                                     </div>

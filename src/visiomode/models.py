@@ -100,13 +100,13 @@ class Session(Base):
         animal_id: String representing the animal identifier.
         experimenter_name: String representing the experimenter's name.
         experiment: A string holding the experiment identifier.
-        protocol: An instance of the Protocol class.
+        task: An instance of the Task class.
         duration: Integer representing the session duration in minutes.
         complete: Boolean value indicating whether or not a session was completed
         timestamp: A string with the session start date and time (ISO format). Defaults to current date and time.
         notes: String with additional session notes. Defaults to empty string
         device: String hostname of the device running the session. Defaults to the hostname provided by the socket lib.
-        trials: A mutable list of session trials; each trial is an instance of the Trial dataclass. Automatically populated using protocol.trials after class instantiation.
+        trials: A mutable list of session trials; each trial is an instance of the Trial dataclass. Automatically populated using task.trials after class instantiation.
         animal_meta: A dictionary with animal metadata (see Animal class). Automatically populated using animal_id after class instantiation.
         experimenter_meta: A dictionary with experimenter metadata (see Experimenter class). Automatically populated using experimenter_name after class instantiation.
         version: Visiomode version this was generated with.
@@ -116,7 +116,7 @@ class Session(Base):
     experimenter_name: str
     experiment: str
     duration: float
-    protocol: None = None
+    task: None = None
     spec: dict = None
     complete: bool = False
     timestamp: str = datetime.datetime.now().isoformat()
@@ -130,7 +130,7 @@ class Session(Base):
     def __post_init__(self):
         self.animal_meta = Animal.get_animal(self.animal_id)
         self.experimenter_meta = Experimenter.get_experimenter(self.experimenter_name)
-        self.trials = self.protocol.trials
+        self.trials = self.task.trials
 
     def to_dict(self):
         """Get class instance attributes as a dictionary.
@@ -142,7 +142,7 @@ class Session(Base):
         """
         instance = copy.copy(self)
         instance.trials = [trial.to_dict() for trial in self.trials if self.trials]
-        instance.protocol = self.protocol.get_identifier()
+        instance.task = self.task.get_identifier()
         return dataclasses.asdict(instance)
 
     def save(self, path):
