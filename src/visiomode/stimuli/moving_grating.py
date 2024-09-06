@@ -38,7 +38,7 @@ class MovingGrating(stimuli.Stimulus):
         self.pos = pgm.Vector2(self.orig_center)
         self.velocity = pgm.Vector2(0, self.px_per_cycle)
 
-    def update(self, timedelta=0):
+    def update(self):
         if self.hidden:
             return
         if self.rect.bottom <= self.height or self.rect.top >= 0:

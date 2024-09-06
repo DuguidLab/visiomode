@@ -81,7 +81,6 @@ deploy = "mkdocs gh-deploy --force"
 
 [tool.hatch.envs.test]
 dependencies = [
-  "parameterized>=0.9.0",
   "coverage[toml]",
   "pytest",
   "pytest-cov",

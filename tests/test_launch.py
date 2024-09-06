@@ -4,32 +4,17 @@
 #  Distributed under the terms of the MIT Licence.
 
 import pygame
-import unittest
+import pytest
+from typing import Generator
 
 import visiomode.core as core
 
 
-class AppLaunch(unittest.TestCase):
-    @classmethod
-    def setUpClass(cls) -> None:
-        # Ensure pygame is initialised
-        pygame.init()
+def test_launch(pygame_init) -> None:
+    """Test the application starts as expected."""
+    # Set up a timer to automatically close the application as soon as it enters
+    # its main loop.
+    pygame.time.set_timer(pygame.QUIT, 100)
 
-    @classmethod
-    def tearDownClass(cls) -> None:
-        # Ensure to clean up pygame
-        pygame.quit()
-
-    @staticmethod
-    def test_launch() -> None:
-        """Test the application starts as expected."""
-        # Set up a timer to automatically close the application as soon as it enters
-        # its main loop.
-        pygame.time.set_timer(pygame.event.Event(pygame.QUIT), 100)
-
-        # Start the application
-        core.Visiomode()
-
-
-if __name__ == "__main__":
-    unittest.main()
+    # Start the application
+    core.Visiomode()
