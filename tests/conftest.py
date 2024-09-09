@@ -1,6 +1,7 @@
 """Configuration & fixtures for pytest."""
 
 import pytest
+import queue
 from typing import Generator
 
 import pygame
@@ -16,20 +17,28 @@ def pygame_init() -> Generator[None, None, None]:
     pygame.quit()
 
 
+@pytest.fixture(scope="module")
+def test_action_q() -> Generator[queue.Queue, None, None]:
+    """Queue for action messages."""
+    yield queue.Queue()
+
+
+@pytest.fixture(scope="module")
+def test_log_q() -> Generator[queue.Queue, None, None]:
+    """Queue for log messages."""
+    yield queue.Queue()
+
+
 @pytest.fixture()
-def webapp():
-    app = webpanel.create_app()
+def webapp(test_action_q, test_log_q):
+    app = webpanel.create_app(test_action_q, test_log_q)
     app.config.update(
         {
             "TESTING": True,
         }
     )
 
-    # other setup can go here
-
     yield app
-
-    # clean up / reset resources here
 
 
 @pytest.fixture()
