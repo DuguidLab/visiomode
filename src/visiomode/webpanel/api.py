@@ -25,7 +25,15 @@ from visiomode.models import Animal, Experimenter
 class DeviceAPI(flask.views.MethodView):
     def post(self):
         request = json.loads(flask.request.data.decode("utf8"))
-        devices.check_device_profile(request["profile"], request["address"])
+        try:
+            devices.check_device_profile(request["profile"], request["address"])
+        except Exception as e:
+            logging.exception(f"Error checking device profile: {e}")
+            return (
+                json.dumps({"success": False, "error": str(e), "profile": request}),
+                500,
+                {"ContentType": "application/json"},
+            )
         return json.dumps({"success": True}), 200, {"ContentType": "application/json"}
 
 
