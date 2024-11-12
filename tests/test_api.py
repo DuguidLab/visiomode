@@ -1,8 +1,8 @@
 import pytest
 
 import json
+from visiomode import stimuli
 from visiomode.webpanel import api
-from visiomode.devices import Device
 
 
 def test_device_api_post(client):
@@ -28,3 +28,12 @@ def test_session_api_post(client, test_action_q):
     response = client.post("/api/session", json={"hello": "test"})
     assert test_action_q.get() == {"hello": "test"}
     assert response.status_code == 200
+
+
+def test_stimulus_api_get(client):
+    teststimuli = list(stimuli.Stimulus.get_children())
+    for stimulus in teststimuli:
+        response = client.get(f"/api/stimulus-form/{stimulus}")
+        assert response.status_code == 200
+    invalid_response = client.get("/api/stimulus-form/invalid")
+    assert b"No Additional Options" in invalid_response.data
