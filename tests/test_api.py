@@ -37,3 +37,47 @@ def test_stimulus_api_get(client):
         assert response.status_code == 200
     invalid_response = client.get("/api/stimulus-form/invalid")
     assert b"No Additional Options" in invalid_response.data
+
+
+def test_task_api_get(client):
+    ...
+
+
+def test_hostname_api_get(client):
+    ...
+
+
+def test_history_api_get(client):
+    ...
+
+
+def test_history_api_post(client):
+    ...
+
+
+def test_download_api_get(client):
+    ...
+
+
+def test_settings_api_get(client):
+    ...
+
+
+def test_settings_api_post(client):
+    ...
+
+
+def test_animals_api_get(client):
+    ...
+
+
+def test_animals_api_post(client):
+    ...
+
+
+def test_experimenters_api_get(client):
+    ...
+
+
+def test_experimenters_api_post(client):
+    ...
