@@ -12,15 +12,16 @@ import time
 import datetime
 import threading
 import queue
+
 import pygame as pg
+
 import visiomode.config as conf
 import visiomode.devices as devices
 import visiomode.models as models
-import visiomode.webpanel as webpanel
-import visiomode.tasks as tasks
 import visiomode.plugins as plugins
-import visiomode.protocols as protocols
 import visiomode.stimuli as stimuli
+import visiomode.tasks as tasks
+import visiomode.webpanel as webpanel
 
 # Register mouse events as touch events - useful for debugging.
 os.environ["SDL_MOUSE_TOUCH_EVENTS"] = "1"
@@ -60,21 +61,18 @@ class Visiomode:
 
         self.session = None
 
-        # Initialise webpanel, run in background
-        if run_webpanel:
-            webpanel.runserver(action_q=self.action_q, log_q=self.log_q, threaded=True)
+    def run(self) -> None:
+        # Run webpanel
+        webpanel.runserver(action_q=self.action_q, log_q=self.log_q, threaded=True)
 
-            request_thread = threading.Thread(target=self.request_listener, daemon=True)
-            request_thread.start()
+        request_thread = threading.Thread(target=self.request_listener, daemon=True)
+        request_thread.start()
 
         # Initialise GUI
         pg.init()
 
-        if load_plugins:
-            # Load plugins
-            plugins.load_modules_dir(devices.__path__[0])
-            plugins.load_modules_dir(protocols.__path__[0])
-            plugins.load_modules_dir(stimuli.__path__[0])
+        # Load plugins
+        load_plugins()
 
         # Set app icon
         # Dimensions should be 512x512, 300 ppi for retina
@@ -88,11 +86,9 @@ class Visiomode:
         )
         pg.display.set_caption("Visiomode")
 
-        if run_webpanel:
-            self.loading_screen()
+        self.loading_screen()
 
-        if run_application_loop:
-            self.run_main()
+        self.run_main()
 
     def loading_screen(self):
         """Rotating logo to entertain user and mouse while the webpanel is loading."""
@@ -228,6 +224,12 @@ class Visiomode:
                 )
             elif request["type"] == "stop":
                 self.session.task.stop()
+
+
+def load_plugins() -> None:
+    plugins.load_modules_dir(devices.__path__[0])
+    plugins.load_modules_dir(protocols.__path__[0])
+    plugins.load_modules_dir(stimuli.__path__[0])
 
 
 def rotate(image, rect, angle):
