@@ -5,11 +5,13 @@
 #  Copyright (c) 2024 Olivier Delree <odelree@ed.ac.uk>
 #  Distributed under the terms of the MIT Licence.
 
-import os
-import shutil
 import json
 import logging
+import os
+import shutil
 import typing
+
+import serial.tools.list_ports as ports
 
 logging.basicConfig(level=logging.INFO)
 
@@ -25,8 +27,12 @@ DEFAULT_CONFIG = {
     "height": 800,
     "fullscreen": False,
     "devices": "devices",
-    "input_device_address": "/dev/ttyS0",
-    "reward_device_address": "/dev/ttyS0",
+    "input_device_address": (
+        ports.comports()[1] if len(ports.comports()) > 1 else "/dev/ttyS0"
+    ),
+    "reward_device_address": (
+        ports.comports()[0] if len(ports.comports()) else "/dev/ttyS0"
+    ),
     "config_path": ".visiomode.json",
 }
 
