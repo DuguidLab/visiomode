@@ -228,8 +228,8 @@ class Visiomode:
 
 def load_plugins() -> None:
     plugins.load_modules_dir(devices.__path__[0])
-    plugins.load_modules_dir(protocols.__path__[0])
     plugins.load_modules_dir(stimuli.__path__[0])
+    plugins.load_modules_dir(tasks.__path__[0])
 
 
 def rotate(image, rect, angle):
