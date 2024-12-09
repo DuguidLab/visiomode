@@ -4,8 +4,8 @@
 
 import logging
 import os
+import pathlib
 import tempfile
-import time
 import typing
 import unittest
 
@@ -44,24 +44,21 @@ class ConfigTest(unittest.TestCase):
 
         self.temporary_directory.cleanup()
 
-    def assert_not_equal_ctime(self, attribute: str, function: typing.Callable) -> None:
-        """
-        Test that ctimes of `attribute` are different before and after call to
-        `function`.
-        """
+    def assert_clear_path(self, path_attribute: str, function: typing.Callable) -> None:
+        """Tests `path` is properly cleared."""
         config_ = config.Config()
-        first_ctime = os.stat(getattr(config_, attribute)).st_ctime
 
-        # Artificial sleep so that ctime can be different when recreating the
-        # directory. Without it, the ctime is the same, possibly because the
-        # deletion and creation coalesce somehow?
-        time.sleep(0.001)
+        sentinel_path = (
+            getattr(config_, path_attribute)
+            + os.sep
+            + str(id(f"assert_clear_{path_attribute}"))
+        )
+        pathlib.Path(sentinel_path).touch()
 
         function()
 
-        second_ctime = os.stat(getattr(config_, attribute)).st_ctime
-
-        self.assertNotEqual(first_ctime, second_ctime)
+        self.assertFalse(os.path.exists(sentinel_path))
+        self.assertTrue(os.path.exists(getattr(config_, path_attribute)))
 
     def test_singleton(self) -> None:
         """Test that we get the same instance with subsequent calls."""
@@ -118,15 +115,15 @@ class ConfigTest(unittest.TestCase):
 
     def test_clear_cache(self) -> None:
         """Test clearing cache does delete and recreate cache directory."""
-        self.assert_not_equal_ctime("cache_dir", config.clear_cache)
+        self.assert_clear_path("cache_dir", config.clear_cache)
 
     def test_clear_db(self) -> None:
         """Test clearing database does delete and recreate database directory."""
-        self.assert_not_equal_ctime("db_dir", config.clear_db)
+        self.assert_clear_path("db_dir", config.clear_db)
 
     def test_clear_data(self) -> None:
         """Test clearing data does delete and recreate data directory."""
-        self.assert_not_equal_ctime("data_dir", config.clear_data)
+        self.assert_clear_path("data_dir", config.clear_data)
 
 
 if __name__ == "__main__":
