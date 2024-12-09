@@ -4,6 +4,15 @@ Versions follow [Semantic Versioning](https://semver.org) (`<major>.<minor>.<pat
 
 ## [Unreleased]
 
+### Changed
+
+- Protocols have been renamed to Tasks ([[#237](https://github.com/DuguidLab/visiomode/issues/237)]).
+- Use hatch CI for testing and building, sunset Tox ([#216](https://github.com/DuguidLab/visiomode/issues/216)).
+- CI runs have more meaningful names ([#231](https://github.com/DuguidLab/visiomode/issues/231)).
+- Update Flask and Werkzeug to >v3.0 ([#227](https://github.com/DuguidLab/visiomode/issues/227)).
+
+## [0.6.0] - 2024-08-29
+
 ### Added
 
 - Change app config from the Settings panel ([#105](https://github.com/DuguidLab/visiomode/issues/105)).
@@ -220,7 +229,8 @@ Versions follow [Semantic Versioning](https://semver.org) (`<major>.<minor>.<pat
 - Redis-based syncing between behaviour & web interface components.
 - SocketIO reads Redis updates for web interface.
 
-[unreleased]: https://github.com/DuguidLab/visiomode/compare/v0.5.2...HEAD
+[unreleased]: https://github.com/DuguidLab/visiomode/compare/v0.6.0...HEAD
+[0.6.0]: https://github.com/DuguidLab/visiomode/compare/v0.5.2...v0.6.0
 [0.5.2]: https://github.com/DuguidLab/visiomode/compare/v0.5.1...v0.5.2
 [0.5.1]: https://github.com/DuguidLab/visiomode/compare/v0.5.0...v0.5.1
 [0.5.0]: https://github.com/DuguidLab/visiomode/compare/v0.4.1...v0.5.0

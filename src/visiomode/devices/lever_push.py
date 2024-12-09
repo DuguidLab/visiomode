@@ -65,7 +65,7 @@ class LeverPush(devices.InputDevice):
     def on_trial_end(self):
         self.lock_lever()
 
-    def on_protocol_end(self):
+    def on_task_end(self):
         self.bus.close()
 
     def test(self):

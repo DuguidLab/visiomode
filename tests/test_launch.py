@@ -1,19 +1,20 @@
 #  This file is part of visiomode.
 #  Copyright (c) 2022 Constantinos Eleftheriou <Constantinos.Eleftheriou@ed.ac.uk>
+#  Copyright (c) 2024 Olivier Delree <odelree@ed.ac.uk>
 #  Distributed under the terms of the MIT Licence.
 
-#  This file is part of visiomode.
-#  Copyright (c) 2022 Constantinos Eleftheriou <Constantinos.Eleftheriou@ed.ac.uk>
-#  Distributed under the terms of the MIT Licence.
+import pygame
+import pytest
+from typing import Generator
 
-import unittest
-import visiomode
-
-
-class AppLaunch(unittest.TestCase):
-    def test_launch(self):
-        pass
+import visiomode.core as core
 
 
-if __name__ == "__main__":
-    unittest.main()
+def test_launch(pygame_init) -> None:
+    """Test the application starts as expected."""
+    # Set up a timer to automatically close the application as soon as it enters
+    # its main loop.
+    pygame.time.set_timer(pygame.QUIT, 100)
+
+    # Start the application
+    core.Visiomode()

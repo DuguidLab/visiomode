@@ -8,7 +8,7 @@ build-backend = "hatchling.build"
 name = "visiomode"
 description = "An open-source platform for touchscreen-based visuomotor tasks in rodents."
 readme = "README.md"
-requires-python = ">=3.8"
+requires-python = ">=3.9"
 license = { file = "LICENSE" }
 authors = [
   { name = "Constantinos Eleftheriou", email = "Constantinos.Eleftheriou@ed.ac.uk" },
@@ -22,14 +22,13 @@ classifiers = [
   "Intended Audience :: Science/Research",
   "License :: OSI Approved :: MIT License",
   "Operating System :: POSIX :: Linux",
-  "Programming Language :: Python :: 3.8",
   "Programming Language :: Python :: 3.9",
 ]
 keywords = ["touchscreen", "rodent", "behaviour", "neuroscience"]
 dependencies = [
-  "Flask>=2.0.3",
+  "Flask>=3.0",
   "PyYAML>=6.0",
-  "Werkzeug>=2.2,<3.0",
+  "Werkzeug>=3.0.3",
   "pyserial>=3.5",
   "numpy>=1.22",
   "pygame>=2.5.1",
@@ -79,6 +78,23 @@ build = "mkdocs build --clean --strict"
 serve = "mkdocs serve --dev-addr localhost:8000"
 deploy = "mkdocs gh-deploy --force"
 
+
+[tool.hatch.envs.test]
+dependencies = [
+  "coverage[toml]",
+  "pytest",
+  "pytest-cov",
+  "pytest-mock",
+]
+
+[[tool.hatch.envs.test.matrix]]
+python = ["3.9", "3.10", "3.11", "3.12"]
+
+[tool.hatch.envs.test.scripts]
+run-coverage = "pytest --cov-config=pyproject.toml --cov=visiomode --cov=tests"
+run-coverage-ci = "run-coverage --cov-report=xml"
+run = "run-coverage --no-cov"
+
 [tool.hatch.envs.lint]
 detached = true
 dependencies = [
@@ -87,7 +103,7 @@ dependencies = [
   "ruff>=0.0.243",
 ]
 [tool.hatch.envs.lint.scripts]
-typing = "mypy --install-types --non-interactive {args:src/duguidlab_nwb tests}"
+typing = "mypy --install-types --non-interactive {args:src/visiomode tests}"
 style = [
   "ruff {args:.}",
   "black --check --diff {args:.}",

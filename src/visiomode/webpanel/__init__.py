@@ -2,6 +2,7 @@
 
 #  This file is part of visiomode.
 #  Copyright (c) 2020 Constantinos Eleftheriou <Constantinos.Eleftheriou@ed.ac.uk>
+#  Copyright (c) 2024 Olivier Delree <odelree@ed.ac.uk>
 #  Distributed under the terms of the MIT Licence.
 
 import os
@@ -10,7 +11,7 @@ import threading
 
 import flask
 import visiomode.config as cfg
-import visiomode.protocols as protocols
+import visiomode.tasks as tasks
 import visiomode.stimuli as stimuli
 import visiomode.webpanel.api as api
 
@@ -41,8 +42,7 @@ def create_app(action_q=None, log_q=None):
         """Visiomode Dashboard."""
         return flask.render_template(
             "index.html",
-            tasks=protocols.Task.get_children(),
-            presentations=protocols.Presentation.get_children(),
+            tasks=tasks.Task.get_children(),
             stimuli=stimuli.Stimulus.get_children(),
         )
 
@@ -60,6 +60,11 @@ def create_app(action_q=None, log_q=None):
     def settings_animals():
         """Animals view/edit page."""
         return flask.render_template("settings-animals.html")
+
+    @app.route("/settings-experimenters")
+    def settings_experimenters():
+        """Experimenters view/edit page."""
+        return flask.render_template("settings-experimenters.html")
 
     @app.route("/help")
     def docs():
@@ -83,8 +88,8 @@ def create_app(action_q=None, log_q=None):
     )
 
     app.add_url_rule(
-        "/api/protocol-form/<protocol_id>",
-        view_func=api.ProtocolAPI.as_view("protocol_api"),
+        "/api/task-form/<task_id>",
+        view_func=api.TaskAPI.as_view("task_api"),
         methods=["GET"],
     )
 
@@ -105,7 +110,9 @@ def create_app(action_q=None, log_q=None):
     )
 
     app.add_url_rule(
-        "/api/history", view_func=api.HistoryAPI.as_view("history_api"), methods=["GET"]
+        "/api/history",
+        view_func=api.HistoryAPI.as_view("history_api"),
+        methods=["GET", "POST"],
     )
 
     app.add_url_rule(
@@ -123,6 +130,12 @@ def create_app(action_q=None, log_q=None):
     app.add_url_rule(
         "/api/animals",
         view_func=api.AnimalsAPI.as_view("animals_api"),
+        methods=["GET", "POST"],
+    )
+
+    app.add_url_rule(
+        "/api/experimenters",
+        view_func=api.ExperimentersAPI.as_view("experimenters_api"),
         methods=["GET", "POST"],
     )
 

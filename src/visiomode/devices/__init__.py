@@ -51,7 +51,7 @@ def check_device_profile(profile_id, address):
         logging.error("Not an input device!")
 
 
-class Device(mixins.BaseClassMixin, mixins.ProtocolEventsMixin):
+class Device(mixins.BaseClassMixin, mixins.TaskEventsMixin):
     def __init__(self, address=None, profile_path=None):
         self.profile_path = profile_path or (
             conf.Config().devices + os.sep + self.get_identifier() + ".yml"

@@ -5,6 +5,7 @@ Each export function takes a `session_path` argument, a string pointing to the
 location of a stored session JSON file, and returns a string reference to the
 converted file stored in Visiomode's cache directory.
 """
+
 #  This file is part of visiomode.
 #  Copyright (c) 2023 Constantinos Eleftheriou <Constantinos.Eleftheriou@ed.ac.uk>
 #  Copyright (c) 2024 Olivier Delree <odelree@ed.ac.uk>
@@ -32,12 +33,24 @@ def to_nwb(session_path):
 
     session_start_time = datetime.fromisoformat(session["timestamp"])
 
-    nwbfile = pynwb.NWBFile(
-        session_description="Visiomode {} behaviour".format(session.get("protocol")),
-        identifier=session_path.split("/")[-1].replace(".json", ""),
-        session_start_time=session_start_time,
-        experiment_description=session.get("experiment"),
-    )
+    experimenter_metadata = session["experimenter_meta"]
+    if experimenter_metadata:
+        nwbfile = pynwb.NWBFile(
+            session_description="Visiomode {} behaviour".format(session.get("task")),
+            identifier=session_path.split("/")[-1].replace(".json", ""),
+            session_start_time=session_start_time,
+            experiment_description=session.get("experiment"),
+            experimenter=experimenter_metadata.get("experimenter_name"),
+            lab=experimenter_metadata.get("laboratory_name"),
+            institution=experimenter_metadata.get("institution_name"),
+        )
+    else:
+        nwbfile = pynwb.NWBFile(
+            session_description="Visiomode {} behaviour".format(session.get("task")),
+            identifier=session_path.split("/")[-1].replace(".json", ""),
+            session_start_time=session_start_time,
+            experiment_description=session.get("experiment"),
+        )
 
     nwbfile.subject = pynwb.file.Subject(subject_id=session["animal_id"])
 

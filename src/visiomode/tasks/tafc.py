@@ -7,11 +7,11 @@ import random
 import pygame as pg
 
 import visiomode.stimuli as stimulus
-import visiomode.protocols as protocols
+import visiomode.tasks as tasks
 
 
-class TwoAlternativeForcedChoice(protocols.Task):
-    form_path = "protocols/tafc.html"
+class TwoAlternativeForcedChoice(tasks.Task):
+    form_path = "tasks/tafc.html"
 
     def __init__(
         self, target, distractor, sep_size=50, corrections_enabled="false", **kwargs

@@ -2,6 +2,7 @@
 
 #  This file is part of visiomode.
 #  Copyright (c) 2020 Constantinos Eleftheriou <Constantinos.Eleftheriou@ed.ac.uk>
+#  Copyright (c) 2024 Olivier Delree <odelree@ed.ac.uk>
 #  Distributed under the terms of the MIT Licence.
 import os
 import json
@@ -9,15 +10,16 @@ import logging
 import queue
 import socket
 import glob
+import pathlib
 import flask
 import flask.views
 import visiomode.config as cfg
 import visiomode.devices as devices
-import visiomode.protocols as protocols
+import visiomode.tasks as tasks
 import visiomode.stimuli as stimuli
 import visiomode.webpanel.export as export
 
-from visiomode.models import Animal
+from visiomode.models import Animal, Experimenter
 
 
 class DeviceAPI(flask.views.MethodView):
@@ -56,12 +58,12 @@ class StimulusAPI(flask.views.MethodView):
         return "No Additional Options"
 
 
-class ProtocolAPI(flask.views.MethodView):
-    def get(self, protocol_id):
-        protocol = protocols.get_protocol(protocol_id)
-        if protocol and protocol.form_path:
+class TaskAPI(flask.views.MethodView):
+    def get(self, task_id):
+        task = tasks.get_task(task_id)
+        if task and task.form_path:
             return flask.render_template(
-                protocol.get_form(),
+                task.get_form(),
                 stimuli=list(stimuli.Stimulus.get_children()),
                 reward_profiles=devices.OutputDevice.get_children(),
                 response_profiles=devices.InputDevice.get_children(),
@@ -81,24 +83,103 @@ class HistoryAPI(flask.views.MethodView):
     def get(self):
         """Get stored session data."""
         config = cfg.Config()
-        session_files = glob.glob(config.data_dir + os.sep + "*.json")
-        sessions = []
-        for session_file in session_files:
-            with open(session_file) as f:
+
+        session_id = flask.request.args.get("session_id")
+        if session_id:  # A specific session was requested
+            session = {}
+            try:
+                with open(f"{config.data_dir}{os.sep}{session_id}.json") as handle:
+                    session = json.load(handle)
+            except Exception as e:
+                logging.exception(
+                    f"Couldn't get session data for session '{session_id}'."
+                )
+            return {"session": session}
+        else:  # All sessions were requested
+            session_files = glob.glob(config.data_dir + os.sep + "*.json")
+            sessions = []
+            for session_file in session_files:
+                with open(session_file) as f:
+                    try:
+                        session = json.load(f)
+                        sessions.append(
+                            {
+                                "fname": session_file.split(os.sep)[-1],
+                                "animal_id": session["animal_id"],
+                                "date": session["timestamp"],
+                                "task": session["task"],
+                                "experiment": session["experiment"],
+                                "session_id": pathlib.Path(session_file).stem,
+                            }
+                        )
+                    except:
+                        logging.exception(
+                            "Couldn't read session JSON file, wrong format?"
+                        )
+            return {"sessions": sessions}
+
+    def post(self):
+        success = False
+        return_code = 500
+
+        config = cfg.Config()
+
+        request = flask.request
+        if request.content_type != "application/json":
+            return_code = 415
+            return (
+                json.dumps({"success": success}),
+                return_code,
+                {"ContentType": "application/json"},
+            )
+
+        request_type = request.json.get("type")
+        request_data = request.json.get("data")
+
+        if request_type == "delete":
+            try:
+                session_id = request_data["sessionId"]
                 try:
-                    session = json.load(f)
-                    sessions.append(
-                        {
-                            "fname": session_file.split(os.sep)[-1],
-                            "animal_id": session["animal_id"],
-                            "date": session["timestamp"],
-                            "protocol": session["protocol"],
-                            "experiment": session["experiment"],
-                        }
-                    )
-                except:
-                    logging.exception("Couldn't read session JSON file, wrong format?")
-        return {"sessions": sessions}
+                    os.remove(f"{config.data_dir}{os.sep}{session_id}.json")
+                    success = True
+                    return_code = 200
+                except OSError or FileNotFoundError:
+                    logging.error(f"Could not delete session '{session_id}'.")
+                    return_code = 409
+            except KeyError:
+                logging.error("Malformed request data for request type 'DELETE'.")
+        elif request_type == "update":
+            try:
+                session_id = request_data["sessionId"]
+                updated_session_data = request_data["updatedSessionData"]
+
+                try:
+                    session_path = f"{config.data_dir}{os.sep}{session_id}.json"
+                    with open(session_path) as handle:
+                        session_data = json.load(handle)
+
+                    # Currently only notes can be updated
+                    session_data["notes"] = updated_session_data["notes"]
+
+                    with open(session_path, "w") as handle:
+                        json.dump(session_data, handle)
+
+                    success = True
+                    return_code = 200
+                except OSError or FileNotFoundError:
+                    logging.error(f"Error handling session'{session_id}'.")
+                    return_code = 409
+                except KeyError:
+                    logging.error(f"Error updating requested session attributes.")
+                    return_code = 400
+            except KeyError:
+                logging.error("Malformed request data for request type 'UPDATE'.")
+
+        return (
+            json.dumps({"success": success}),
+            return_code,
+            {"ContentType": "application/json"},
+        )
 
 
 class DownloadAPI(flask.views.MethodView):
@@ -185,4 +266,45 @@ class AnimalsAPI(flask.views.MethodView):
                 rfid=request.get("rfid"),
             )
             animal.save()
+        return json.dumps({"success": True}), 200, {"ContentType": "application/json"}
+
+
+class ExperimentersAPI(flask.views.MethodView):
+    """API for managing experimenter profiles."""
+
+    @staticmethod
+    def get() -> dict:
+        """Get experimenter profiles.
+
+        Returns:
+            Dictionary with a single key "experimenters" and a value corresponding
+            to the list of experimenters metadata dictionaries.
+        """
+        return {"experimenters": Experimenter.get_experimenters()}
+
+    @staticmethod
+    def post() -> tuple[str, int, dict[str, str]]:
+        """Carry out POST request."""
+        request_type = flask.request.json.get("type")  # add, delete, update
+        request = flask.request.json.get("data")
+        print(request)
+        if request_type == "delete":
+            experimenter_name = request.get("experimenter_name")
+            if experimenter_name:
+                Experimenter.delete_experimenter(experimenter_name)
+            else:
+                experimenters = Experimenter.get_experimenters()
+                for experimenter in experimenters:
+                    Experimenter.delete_experimenter(experimenter["experimenter_name"])
+        elif (request_type == "update") or (request_type == "add"):
+            if request_type == "update":
+                previous_experimenter_name = request.get("previous_experimenter_name")
+                if Experimenter.get_experimenter(previous_experimenter_name):
+                    Experimenter.delete_experimenter(previous_experimenter_name)
+            experimenter = Experimenter(
+                experimenter_name=request.get("experimenter_name"),
+                laboratory_name=request.get("laboratory_name"),
+                institution_name=request.get("institution_name"),
+            )
+            experimenter.save()
         return json.dumps({"success": True}), 200, {"ContentType": "application/json"}

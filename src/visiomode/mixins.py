@@ -1,4 +1,5 @@
 """Useful Mixins for class code reuse."""
+
 #  This file is part of visiomode.
 #  Copyright (c) 2020 Constantinos Eleftheriou <Constantinos.Eleftheriou@ed.ac.uk>
 #  Distributed under the terms of the MIT Licence.
@@ -72,17 +73,17 @@ class WebFormMixin:
         return cls.form_path
 
 
-class ProtocolEventsMixin:
-    """Interface declarations for methods handling protocol events.
+class TaskEventsMixin:
+    """Interface declarations for methods handling task events.
 
     This mixin provides a set of interface declarations for methods that handle
-    protocol events. These methods are called by the protocol runner at
+    task events. These methods are called by the task runner at
     appropriate times during the experiment, and can be overridden by the
-    protocol class to implement custom behaviour.
+    task class to implement custom behaviour.
     """
 
-    def on_protocol_start(self):
-        """Called when the protocol is started."""
+    def on_task_start(self):
+        """Called when the task is started."""
         pass
 
     def on_trial_start(self):
@@ -97,8 +98,8 @@ class ProtocolEventsMixin:
         """Called when a trial is ended."""
         pass
 
-    def on_protocol_end(self):
-        """Called when the protocol is ended."""
+    def on_task_end(self):
+        """Called when the task is ended."""
         pass
 
     def on_correct(self):
