@@ -298,3 +298,7 @@ class Task(mixins.BaseClassMixin, mixins.WebFormMixin, mixins.TaskEventsMixin):
 
 class InvalidTask(Exception):
     pass
+
+
+class InvalidProtocol(Exception):
+    pass
