@@ -195,7 +195,6 @@ class Visiomode:
                 )
                 conf.Config().save()
 
-                protocol = protocols.get_protocol(request["data"].pop("protocol"))
                 task = tasks.get_task(request["data"].pop("task"))
                 self.session = models.Session(
                     animal_id=request["data"].pop("animal_id"),
