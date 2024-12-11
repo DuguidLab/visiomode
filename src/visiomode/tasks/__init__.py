@@ -15,7 +15,6 @@ import visiomode.config as conf
 import visiomode.devices as devices
 import visiomode.models as models
 import visiomode.mixins as mixins
-import visiomode.plugins as plugins
 
 
 CORRECT = "correct"
@@ -301,4 +300,5 @@ class InvalidTask(Exception):
     pass
 
 
-plugins.load_modules_dir(__path__[0])
+class InvalidProtocol(Exception):
+    pass

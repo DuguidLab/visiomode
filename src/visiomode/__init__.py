@@ -14,7 +14,8 @@ faulthandler.enable()
 
 def run():
     """Entry point for the `visiomode` cli command."""
-    visiomode.core.Visiomode()
+    app = visiomode.core.Visiomode()
+    app.run()
 
 
 if __name__ == "__main__":

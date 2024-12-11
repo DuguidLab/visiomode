@@ -17,4 +17,5 @@ def test_launch(pygame_init) -> None:
     pygame.time.set_timer(pygame.QUIT, 100)
 
     # Start the application
-    core.Visiomode()
+    app = core.Visiomode()
+    app.run()

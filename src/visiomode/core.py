@@ -12,11 +12,16 @@ import time
 import datetime
 import threading
 import queue
+
 import pygame as pg
+
 import visiomode.config as conf
+import visiomode.devices as devices
 import visiomode.models as models
-import visiomode.webpanel as webpanel
+import visiomode.plugins as plugins
+import visiomode.stimuli as stimuli
 import visiomode.tasks as tasks
+import visiomode.webpanel as webpanel
 
 # Register mouse events as touch events - useful for debugging.
 os.environ["SDL_MOUSE_TOUCH_EVENTS"] = "1"
@@ -30,12 +35,23 @@ class Visiomode:
     them on to the appropriate task runner.
     """
 
-    def __init__(self):
+    def __init__(
+        self,
+        run_application_loop: bool = True,
+        run_webpanel: bool = True,
+        load_plugins: bool = True,
+    ):
         """Initialise application.
 
         This initialises the application, and starts the webpanel and GUI
         threads. It also loads the configuration file, and displays the
         loading animation on the GUI screen while the webpanel is loading.
+
+        Args:
+            run_application_loop (bool): Whether to run the application loop after the
+                                         app has been started.
+            run_webpanel (bool): Whether to start the webpanel with the application.
+                                 This also dictates whether the loading screen is shown.
         """
         self.clock = pg.time.Clock()
         self.config = conf.Config()
@@ -45,7 +61,8 @@ class Visiomode:
 
         self.session = None
 
-        # Initialise webpanel, run in background
+    def run(self) -> None:
+        # Run webpanel
         webpanel.runserver(action_q=self.action_q, log_q=self.log_q, threaded=True)
 
         request_thread = threading.Thread(target=self.request_listener, daemon=True)
@@ -53,6 +70,9 @@ class Visiomode:
 
         # Initialise GUI
         pg.init()
+
+        # Load plugins
+        load_plugins()
 
         # Set app icon
         # Dimensions should be 512x512, 300 ppi for retina
@@ -204,6 +224,12 @@ class Visiomode:
                 )
             elif request["type"] == "stop":
                 self.session.task.stop()
+
+
+def load_plugins() -> None:
+    plugins.load_modules_dir(devices.__path__[0])
+    plugins.load_modules_dir(stimuli.__path__[0])
+    plugins.load_modules_dir(tasks.__path__[0])
 
 
 def rotate(image, rect, angle):
