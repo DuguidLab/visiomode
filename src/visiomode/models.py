@@ -142,7 +142,7 @@ class Session(Base):
         """
         instance = copy.copy(self)
         instance.trials = [trial.to_dict() for trial in self.trials if self.trials]
-        instance.task = self.task.get_identifier()
+        instance.task = self.task.get_identifier() if self.task else None
         return dataclasses.asdict(instance)
 
     def save(self, path):
