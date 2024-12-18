@@ -130,7 +130,7 @@ class Session(Base):
     def __post_init__(self):
         self.animal_meta = Animal.get_animal(self.animal_id)
         self.experimenter_meta = Experimenter.get_experimenter(self.experimenter_name)
-        self.trials = self.task.trials
+        self.trials = self.task.trials if self.task else []
 
     def to_dict(self):
         """Get class instance attributes as a dictionary.
