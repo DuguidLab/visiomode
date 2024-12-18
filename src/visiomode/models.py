@@ -145,7 +145,7 @@ class Session(Base):
         instance.task = self.task.get_identifier() if self.task else None
         return dataclasses.asdict(instance)
 
-    def save(self, path):
+    def save(self, path=cfg.data_dir):
         """Save session to json file."""
         session_id = (
             "sub-"
