@@ -79,8 +79,82 @@ def test_history_api_get_all_sessions(client, session):
     assert len(sessions["sessions"]) > 0
 
 
-def test_history_api_post(client):
-    ...
+def test_history_api_post(client, session):
+    # Test return 415 code for invalid content type
+    response = client.post("/api/history", content_type="invalid")
+    assert response.status_code == 415
+
+    # Test session update
+    response = client.post(
+        "/api/history",
+        json={
+            "type": "update",
+            "data": {
+                "sessionId": session,
+                "updatedSessionData": {"notes": "this is a test"},
+            },
+        },
+    )
+    assert response.status_code == 200
+
+    # Attempt to update non-existent session
+    response = client.post(
+        "/api/history",
+        json={
+            "type": "update",
+            "data": {
+                "sessionId": "idontexist",
+                "updatedSessionData": {"notes": "this is a test"},
+            },
+        },
+    )
+    assert response.status_code == 409
+
+    # Try to update a field that's not notes (and therefore can't be changed)
+    response = client.post(
+        "/api/history",
+        json={
+            "type": "update",
+            "data": {
+                "sessionId": session,
+                "updatedSessionData": {"animal_id": "blah"},
+            },
+        },
+    )
+    assert response.status_code == 400
+
+    # Botch update request
+    response = client.post(
+        "/api/history",
+        json={
+            "type": "update",
+            "data": {
+                "sessionId": session,
+                "keythatdoesntexist": {"blah": "blah"},
+            },
+        },
+    )
+    assert response.status_code == 500
+
+    # Test session delete
+    response = client.post(
+        "/api/history", json={"type": "delete", "data": {"sessionId": session}}
+    )
+    assert response.status_code == 200
+
+    # Try deleting a session that doesn't exist
+    # Test session delete
+    response = client.post(
+        "/api/history", json={"type": "delete", "data": {"sessionId": "idontexist"}}
+    )
+    assert response.status_code == 409
+
+    # Botch delete request
+    # Test session delete
+    response = client.post(
+        "/api/history", json={"type": "delete", "data": {"hello": "blah"}}
+    )
+    assert response.status_code == 500
 
 
 def test_download_api_get(client):
