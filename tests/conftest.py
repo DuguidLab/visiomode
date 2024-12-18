@@ -6,7 +6,8 @@ from typing import Generator
 
 import pygame
 
-import visiomode.webpanel as webpanel
+from visiomode import webpanel, models, tasks, stimuli
+import visiomode.config as cfg
 
 
 @pytest.fixture(scope="module")
@@ -42,10 +43,34 @@ def webapp(test_action_q, test_log_q):
 
 
 @pytest.fixture()
-def client(webapp):
+def config(tmp_path):
+    test_config = cfg.Config()
+    test_data_dir = tmp_path / "visiomode_data"
+    test_data_dir.mkdir()
+    test_config.data_dir = str(test_data_dir)
+    test_config.save(str(tmp_path / ".visiomode.json"))
+
+    return test_config
+
+
+@pytest.fixture()
+def client(webapp, config):
     return webapp.test_client()
 
 
 @pytest.fixture()
 def runner(webapp):
     return webapp.test_cli_runner()
+
+
+@pytest.fixture()
+def session(config):
+    """Generate test session data and save in the expected path."""
+
+    session = models.Session(
+        animal_id="test_animal",
+        experimenter_name="test",
+        experiment="test_exp",
+        duration=30,
+    )
+    return session.save(config.data_dir)
