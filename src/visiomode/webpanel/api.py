@@ -151,12 +151,13 @@ class HistoryAPI(flask.views.MethodView):
                     os.remove(f"{config.data_dir}{os.sep}{session_id}.json")
                     success = True
                     return_code = 200
-                except OSError or FileNotFoundError:
+                except (OSError, FileNotFoundError):
                     logging.error(f"Could not delete session '{session_id}'.")
                     return_code = 409
             except KeyError:
                 logging.error("Malformed request data for request type 'DELETE'.")
         elif request_type == "update":
+            print(request_data)
             try:
                 session_id = request_data["sessionId"]
                 updated_session_data = request_data["updatedSessionData"]
@@ -174,7 +175,7 @@ class HistoryAPI(flask.views.MethodView):
 
                     success = True
                     return_code = 200
-                except OSError or FileNotFoundError:
+                except (OSError, FileNotFoundError):
                     logging.error(f"Error handling session'{session_id}'.")
                     return_code = 409
                 except KeyError:
