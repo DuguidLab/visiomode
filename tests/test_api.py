@@ -1,8 +1,8 @@
 import pytest
 
 import json
-from visiomode import stimuli
-from visiomode import tasks
+import logging
+from visiomode import stimuli, tasks, models
 from visiomode.webpanel import api
 
 
@@ -54,8 +54,29 @@ def test_hostname_api_get(client):
     assert response.status_code == 200
 
 
-def test_history_api_get(client):
-    ...
+def test_history_api_get_single_session(client, session, caplog):
+    caplog.set_level(logging.ERROR)
+    # Valid session
+    response = client.get(f"/api/history?session_id={session}")
+    session_data = json.loads(response.get_data(as_text=True))
+    assert response.status_code == 200
+    assert session_data["session"]
+    assert session_data["session"]["animal_id"] == "test_animal"
+
+    # Invalid session
+    response = client.get(f"/api/history?session_id=invalid")
+    session_data = json.loads(response.get_data(as_text=True))
+    for record in caplog.records:
+        assert record.levelname == "ERROR"
+    assert "Couldn't get session data" in caplog.text
+
+
+def test_history_api_get_all_sessions(client, session):
+    response = client.get(f"/api/history")
+    sessions = json.loads(response.get_data(as_text=True))
+    assert response.status_code == 200
+    assert sessions["sessions"]
+    assert len(sessions["sessions"]) > 0
 
 
 def test_history_api_post(client):
