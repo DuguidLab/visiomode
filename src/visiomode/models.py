@@ -159,6 +159,8 @@ class Session(Base):
         with open(f_path, "w", encoding="utf-8") as f:
             json.dump(self.to_dict(), f)
 
+        return session_id
+
     def __repr__(self):
         return "<Session {}>".format(str(self.timestamp))
 
