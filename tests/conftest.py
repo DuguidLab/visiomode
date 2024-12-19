@@ -48,6 +48,9 @@ def config(tmp_path):
     test_data_dir = tmp_path / "visiomode_data"
     test_data_dir.mkdir()
     test_config.data_dir = str(test_data_dir)
+    test_cache_dir = tmp_path / "visiomode_data/cache"
+    test_cache_dir.mkdir()
+    test_config.cache_dir = str(test_cache_dir)
     test_config.save(str(tmp_path / ".visiomode.json"))
 
     return test_config
