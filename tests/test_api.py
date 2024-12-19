@@ -157,8 +157,38 @@ def test_history_api_post(client, session):
     assert response.status_code == 500
 
 
-def test_download_api_get(client):
-    ...
+def test_download_api_get(client, session):
+    # Test JSON export
+    ftype = "json"
+    response = client.get(f"/api/download/{ftype}/{session}.json")
+    assert response.status_code == 200
+    assert (
+        response.headers["Content-Disposition"]
+        == f"attachment; filename={session}.{ftype}"
+    )
+
+    # Test CSV export
+    ftype = "csv"
+    response = client.get(f"/api/download/{ftype}/{session}.json")
+    assert response.status_code == 200
+    assert (
+        response.headers["Content-Disposition"]
+        == f"attachment; filename={session}.{ftype}"
+    )
+
+    # Test NWB export
+    ftype = "nwb"
+    response = client.get(f"/api/download/{ftype}/{session}.json")
+    assert response.status_code == 200
+    assert (
+        response.headers["Content-Disposition"]
+        == f"attachment; filename={session}.{ftype}"
+    )
+
+    # Test invalid export request
+    ftype = "invalid"
+    response = client.get(f"/api/download/{ftype}/{session}.json")
+    assert "not supported" in response.get_data(as_text=True)
 
 
 def test_settings_api_get(client):
