@@ -114,3 +114,20 @@ def session(config):
         ]
     )
     return session.save(config.data_dir)
+
+
+@pytest.fixture()
+def animal():
+    animal = models.Animal(
+        animal_id="testanimal",
+        date_of_birth=str(datetime.now().isoformat()),
+        sex="M",
+        species="Mus musculus",
+        genotype="wt",
+    )
+    return animal.save()
+
+
+@pytest.fixture()
+def experimenter():
+    ...

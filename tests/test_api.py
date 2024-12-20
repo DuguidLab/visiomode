@@ -242,8 +242,11 @@ def test_settings_api_post(client):
     assert response.status_code == 200
 
 
-def test_animals_api_get(client):
-    ...
+def test_animals_api_get(client, animal):
+    response = client.get("/api/animals")
+    animal_data = json.loads(response.get_data(as_text=True))["animals"]
+    assert animal_data
+    assert len(animal_data) > 0
 
 
 def test_animals_api_post(client):
