@@ -207,6 +207,8 @@ class Animal(Base):
             with open(path, "w") as f:
                 json.dump([self.to_dict()], f)
 
+        return self.animal_id
+
     @classmethod
     def get_animal(cls, animal_id):
         """Get an animal from the database based on its ID."""
