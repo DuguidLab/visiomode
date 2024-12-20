@@ -254,7 +254,6 @@ class AnimalsAPI(flask.views.MethodView):
     def post(self):
         request_type = flask.request.json.get("type")  # add, delete, update
         request = flask.request.json.get("data")
-        print(request)
         if request_type == "delete":
             animal_id = request.get("id")
             if animal_id:
@@ -295,7 +294,6 @@ class ExperimentersAPI(flask.views.MethodView):
         """Carry out POST request."""
         request_type = flask.request.json.get("type")  # add, delete, update
         request = flask.request.json.get("data")
-        print(request)
         if request_type == "delete":
             experimenter_name = request.get("experimenter_name")
             if experimenter_name:
