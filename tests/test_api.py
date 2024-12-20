@@ -61,7 +61,7 @@ def test_history_api_get_single_session(client, session, caplog):
     session_data = json.loads(response.get_data(as_text=True))
     assert response.status_code == 200
     assert session_data["session"]
-    assert session_data["session"]["animal_id"] == "test_animal"
+    assert session_data["session"]["animal_id"] == "testanimal"
 
     # Invalid session
     response = client.get(f"/api/history?session_id=invalid")
@@ -178,11 +178,13 @@ def test_download_api_get(client, session):
 
     # Test NWB export
     ftype = "nwb"
+    subject_id = session.split("sub-")[1].split("_")[0]
+    session_date = session.split("date-")[1].split("T")[0].replace("-", "")
+    nwb_fname = f"sub-{subject_id}_ses-{session_date}_behavior.nwb"
     response = client.get(f"/api/download/{ftype}/{session}.json")
     assert response.status_code == 200
     assert (
-        response.headers["Content-Disposition"]
-        == f"attachment; filename={session}.{ftype}"
+        response.headers["Content-Disposition"] == f"attachment; filename={nwb_fname}"
     )
 
     # Test invalid export request
