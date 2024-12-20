@@ -1,5 +1,6 @@
 import pytest
 
+import os
 import json
 import logging
 from visiomode import stimuli, tasks, models
@@ -206,7 +207,40 @@ def test_settings_api_get(client):
 
 
 def test_settings_api_post(client):
-    ...
+    # Test config update
+    response = client.post(
+        "/api/settings",
+        json={
+            "type": "update",
+            "data": {
+                "width": 300,
+                "height": 300,
+                "fps": 60,
+                "fullscreen": False,
+            },
+        },
+    )
+    assert response.status_code == 200
+
+    # Check that config's actually been updated
+    config = json.loads(client.get("/api/settings").get_data(as_text=True))
+    assert config["width"] == 300
+    assert config["height"] == 300
+    assert config["fps"] == 60
+    assert config["fullscreen"] == False
+
+    # Test cache clearing
+    response = client.post(
+        "/api/settings", json={"type": "delete", "data": {"path": "cache"}}
+    )
+    assert response.status_code == 200
+    assert not os.listdir(config["cache_dir"])
+
+    # Test app data clearing
+    response = client.post(
+        "/api/settings", json={"type": "delete", "data": {"path": "app-data"}}
+    )
+    assert response.status_code == 200
 
 
 def test_animals_api_get(client):
