@@ -91,7 +91,7 @@ def to_nwb(session_path):
 
     subject_id = session.get("animal_id")
     session_date = session.get("timestamp").split("T")[0].replace("-", "")
-    fname = "sub-{}_ses-{}_behavior.nwb".format(subject_id, session_date)
+    fname = f"sub-{subject_id}_ses-{session_date}_behavior.nwb"
     outpath = config.cache_dir + os.sep + fname
     with pynwb.NWBHDF5IO(outpath, "w") as io:
         io.write(nwbfile)
