@@ -2,6 +2,7 @@
 
 import pytest
 import queue
+from datetime import datetime
 from typing import Generator
 
 import pygame
@@ -71,9 +72,45 @@ def session(config):
     """Generate test session data and save in the expected path."""
 
     session = models.Session(
-        animal_id="test_animal",
+        animal_id="testanimal",
         experimenter_name="test",
         experiment="test_exp",
         duration=30,
+        spec={"stimulus_duration": 10000},
+        timestamp=str(datetime.now().isoformat()),
+    )
+    session.trials.extend(
+        [
+            models.Trial(
+                outcome="correct",
+                iti=5.0,
+                response=models.Response(
+                    timestamp=str(datetime.now().isoformat()),
+                    name="lever",
+                    pos_x=0.0,
+                    pos_y=0.0,
+                    dist_x=0.0,
+                    dist_y=0.0,
+                ),
+                response_time=1.0,
+                sdt_type="hit",
+                stimulus="None",
+            ),
+            models.Trial(
+                outcome="incorrect",
+                iti=5.0,
+                response=models.Response(
+                    timestamp=str(datetime.now().isoformat()),
+                    name="lever",
+                    pos_x=0.0,
+                    pos_y=0.0,
+                    dist_x=0.0,
+                    dist_y=0.0,
+                ),
+                response_time=1.5,
+                sdt_type="false_alarm",
+                stimulus="None",
+            ),
+        ]
     )
     return session.save(config.data_dir)
