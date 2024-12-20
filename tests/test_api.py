@@ -194,7 +194,15 @@ def test_download_api_get(client, session):
 
 
 def test_settings_api_get(client):
-    ...
+    response = client.get("/api/settings")
+    assert {
+        "width",
+        "height",
+        "fps",
+        "fullscreen",
+        "data_dir",
+        "cache_dir",
+    } <= json.loads(response.get_data(as_text=True)).keys()
 
 
 def test_settings_api_post(client):
