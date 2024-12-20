@@ -3,8 +3,7 @@ import pytest
 import os
 import json
 import logging
-from visiomode import stimuli, tasks, models
-from visiomode.webpanel import api
+from visiomode import stimuli, tasks
 
 
 def test_device_api_post(client):
