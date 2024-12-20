@@ -126,7 +126,6 @@ def _flatten_trials(session):
             + float(session["spec"]["stimulus_duration"]) / 1000
         )
         if trial["response"].get("timestamp"):
-            print(trial["response"])
             stop_time = (
                 datetime.fromisoformat(trial["response"]["timestamp"])
                 - session_start_time

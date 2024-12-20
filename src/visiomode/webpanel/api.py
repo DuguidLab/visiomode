@@ -224,7 +224,6 @@ class SettingsAPI(flask.views.MethodView):
         request = flask.request.json.get("data")
         config = cfg.Config()
 
-        print(request)
         if request_type == "update":
             config.width = request.get("width", config.width)
             config.height = request.get("height", config.height)
