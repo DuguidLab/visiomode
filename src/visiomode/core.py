@@ -204,6 +204,17 @@ class Visiomode:
                 logging.error("Invalid request - {}".format(request))
                 continue
             if request["type"] == "start":
+                # Update config
+                conf.Config().input_device_address = (
+                    request["data"].get("response_address")
+                    or conf.Config().input_device_address
+                )
+                conf.Config().reward_device_address = (
+                    request["data"].get("reward_address")
+                    or conf.Config().reward_device_address
+                )
+                conf.Config().save()
+
                 task = tasks.get_task(request["data"].pop("task"))
                 self.session = models.Session(
                     animal_id=request["data"].pop("animal_id"),

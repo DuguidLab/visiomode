@@ -11,7 +11,7 @@
         <label id="response_address_label" for="response_address">Input Device Address</label>
         <select id="response_address" class="custom-select form-control mb-3">
             {% for address in serial_devices %}
-                <option value="{{ address }}">{{ address }}</option>
+                <option value="{{ address }}" {% if loop.index == 2 %} selected {% endif %}>{{ address }}</option>
             {% endfor %}
         </select>
     </div>
