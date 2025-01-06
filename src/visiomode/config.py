@@ -28,10 +28,10 @@ DEFAULT_CONFIG = {
     "fullscreen": False,
     "devices": "devices",
     "input_device_address": (
-        ports.comports()[1] if len(ports.comports()) > 1 else "/dev/ttyS0"
+        ports.comports()[1].device if len(ports.comports()) > 1 else "/dev/ttyS0"
     ),
     "reward_device_address": (
-        ports.comports()[0] if len(ports.comports()) else "/dev/ttyS0"
+        ports.comports()[0].device if len(ports.comports()) else "/dev/ttyS0"
     ),
     "config_path": ".visiomode.json",
 }
