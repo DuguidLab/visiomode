@@ -1,8 +1,9 @@
-import pytest
-
-import os
 import json
 import logging
+import os
+
+import pytest
+
 from visiomode import stimuli, tasks
 
 
@@ -50,7 +51,7 @@ def test_task_api_get(client):
 
 
 def test_hostname_api_get(client):
-    response = client.get(f"/api/hostname")
+    response = client.get("/api/hostname")
     assert response.status_code == 200
 
 
@@ -64,7 +65,7 @@ def test_history_api_get_single_session(client, session, caplog):
     assert session_data["session"]["animal_id"] == "testanimal"
 
     # Invalid session
-    response = client.get(f"/api/history?session_id=invalid")
+    response = client.get("/api/history?session_id=invalid")
     session_data = json.loads(response.get_data(as_text=True))
     for record in caplog.records:
         assert record.levelname == "ERROR"
@@ -72,7 +73,7 @@ def test_history_api_get_single_session(client, session, caplog):
 
 
 def test_history_api_get_all_sessions(client, session):
-    response = client.get(f"/api/history")
+    response = client.get("/api/history")
     sessions = json.loads(response.get_data(as_text=True))
     assert response.status_code == 200
     assert sessions["sessions"]
@@ -250,7 +251,59 @@ def test_animals_api_get(client, animal):
 
 
 def test_animals_api_post(client):
-    ...
+    animal = {
+        "animal_id": "test123",
+        "dob": "2024-05-02",
+        "sex": "U",
+        "species": "Mus musculus",
+        "genotype": "Wt",
+        "description": "",
+        "rfid": "",
+    }
+
+    # Test add
+    response = client.post(
+        "/api/animals",
+        json={
+            "type": "add",
+            "data": animal,
+        },
+    )
+    assert response.status_code == 200
+
+    # Check that the animal was actually added
+    animal_data = json.loads(client.get("/api/animals").get_data(as_text=True))[
+        "animals"
+    ]
+    assert animal["animal_id"] in [entry["animal_id"] for entry in animal_data]
+
+    # Test update
+    response = client.post(
+        "/api/animals",
+        json={
+            "type": "update",
+            "data": {
+                "animal_id": "test123",
+                "description": "hello",
+            },
+        },
+    )
+    assert response.status_code == 200
+
+    animal_data = json.loads(client.get("/api/animals").get_data(as_text=True))[
+        "animals"
+    ]
+    assert animal["animal_id"] in [entry["animal_id"] for entry in animal_data]
+    assert (
+        "hello"
+        == [
+            entry["description"]
+            for entry in animal_data
+            if entry["animal_id"] == animal["animal_id"]
+        ][0]
+    )
+
+    # Test delete
 
 
 def test_experimenters_api_get(client):

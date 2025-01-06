@@ -3,7 +3,8 @@
 #  Distributed under the terms of the MIT Licence.
 
 import pygame as pg
-import visiomode.stimuli as stimuli
+
+from visiomode import stimuli
 
 
 class SolidColour(stimuli.Stimulus):

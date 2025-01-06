@@ -5,10 +5,10 @@
 #  Copyright (c) 2024 Olivier Delree <odelree@ed.ac.uk>
 #  Distributed under the terms of the MIT Licence.
 
-import os
-import shutil
 import json
 import logging
+import os
+import shutil
 import typing
 
 logging.basicConfig(level=logging.INFO)
@@ -66,7 +66,7 @@ class Config:
 
     def __new__(
         cls,
-        config_path: typing.Optional[str] = None,
+        config_path: str | None = None,
     ) -> "Config":
         """Initialise Config singleton with a path to a configuration file.
 
@@ -102,7 +102,7 @@ class Config:
 
         return cls._instance
 
-    def save(self, path: typing.Optional[str] = None):
+    def save(self, path: str | None = None):
         if path is None:
             path = self.config_path
         else:
@@ -120,14 +120,14 @@ class Config:
         Args:
             config_path: Path to config JSON file.
         """
-        with open(config_path, "r") as f:
+        with open(config_path) as f:
             config = json.load(f)
 
         for key, value in config.items():
             if key in DEFAULT_CONFIG:
                 setattr(self, key, value)
             else:
-                logging.warning("Unknown config key: {}".format(key))
+                logging.warning(f"Unknown config key: {key}")
 
         self._validate()
 

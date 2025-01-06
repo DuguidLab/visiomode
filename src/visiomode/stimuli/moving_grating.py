@@ -6,7 +6,7 @@
 import pygame as pg
 from pygame import math as pgm
 
-import visiomode.stimuli as stimuli
+from visiomode import stimuli
 from visiomode.stimuli.grating import Grating
 
 
