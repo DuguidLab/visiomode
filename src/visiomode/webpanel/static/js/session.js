@@ -315,7 +315,7 @@ function addAnimal() {
             data: JSON.stringify({
                 type: "add",
                 data: {
-                    id: animalId,
+                    animal_id: animalId,
                     dob: animalDob,
                     sex: animalSex,
                     species: animalSpecies,

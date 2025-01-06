@@ -255,7 +255,7 @@ class AnimalsAPI(flask.views.MethodView):
         request_type = flask.request.json.get("type")  # add, delete, update
         request = flask.request.json.get("data")
         if request_type == "delete":
-            animal_id = request.get("id")
+            animal_id = request.get("animal_id")
             if animal_id:
                 Animal.delete_animal(animal_id)
             else:
@@ -264,7 +264,7 @@ class AnimalsAPI(flask.views.MethodView):
                     Animal.delete_animal(animal["animal_id"])
         elif (request_type == "update") or (request_type == "add"):
             animal = Animal(
-                animal_id=request.get("id"),
+                animal_id=request.get("animal_id"),
                 date_of_birth=request.get("dob"),
                 sex=request.get("sex"),
                 species=request.get("species"),
