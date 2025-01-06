@@ -4,16 +4,19 @@
 
 """Module that defines the available task and stimulation protocols in a stimulus agnostic manner."""
 import collections
+import time
 import datetime
+import threading
 import logging
 import queue
-import threading
-import time
-
 import pygame as pg
 
 import visiomode.config as conf
-from visiomode import devices, mixins, models, plugins
+import visiomode.devices as devices
+import visiomode.models as models
+import visiomode.mixins as mixins
+import visiomode.plugins as plugins
+
 
 CORRECT = "correct"
 INCORRECT = "incorrect"
@@ -202,7 +205,7 @@ class Task(mixins.BaseClassMixin, mixins.WebFormMixin, mixins.TaskEventsMixin):
         trial = self.parse_trial(
             trial_start_iso, outcome, response, response_time, sdt_type, stimulus
         )
-        logging.debug(f"Trial info - {trial.__dict__}")
+        logging.debug("Trial info - {}".format(trial.__dict__))
         self.trials.append(trial)
 
         # Hide stimulus at end of trial before calling handlers, so any reward dispensation associated

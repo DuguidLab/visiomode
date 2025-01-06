@@ -5,7 +5,7 @@
 import numpy as np
 import pygame as pg
 
-from visiomode import stimuli
+import visiomode.stimuli as stimuli
 
 
 class Grating(stimuli.Stimulus):

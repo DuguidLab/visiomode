@@ -5,15 +5,15 @@
 #  Copyright (c) 2024 Olivier Delree <odelree@ed.ac.uk>
 #  Distributed under the terms of the MIT Licence.
 
-import logging
 import os
+import logging
 import threading
 
 import flask
-
 import visiomode.config as cfg
-from visiomode import stimuli, tasks
-from visiomode.webpanel import api
+import visiomode.tasks as tasks
+import visiomode.stimuli as stimuli
+import visiomode.webpanel.api as api
 
 
 def create_app(action_q=None, log_q=None):
@@ -32,7 +32,9 @@ def create_app(action_q=None, log_q=None):
         os.makedirs(app.instance_path, exist_ok=True)
     except OSError as exc:
         logging.warning(
-            f"Could not create instance directory ({app.instance_path}) - {exc!s}"
+            "Could not create instance directory ({}) - {}".format(
+                app.instance_path, str(exc)
+            )
         )
 
     @app.route("/")

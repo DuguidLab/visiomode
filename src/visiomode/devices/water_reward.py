@@ -3,10 +3,8 @@
 #  Distributed under the terms of the MIT Licence.
 
 import time
-
 import serial
-
-from visiomode import devices
+import visiomode.devices as devices
 
 
 class WaterReward(devices.OutputDevice):

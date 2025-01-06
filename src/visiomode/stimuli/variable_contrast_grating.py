@@ -3,11 +3,10 @@
 #  Distributed under the terms of the MIT Licence.
 
 import random
-
 import pygame as pg
 
-from visiomode import stimuli
-from visiomode.stimuli import grating
+import visiomode.stimuli as stimuli
+import visiomode.stimuli.grating as grating
 
 
 class VariableContrastGrating(grating.Grating):

@@ -2,15 +2,14 @@
 #  Copyright (c) 2021 Constantinos Eleftheriou <Constantinos.Eleftheriou@ed.ac.uk>
 #  Distributed under the terms of the MIT Licence.
 
-import datetime
-import queue
-import threading
 import time
-
+import datetime
 import serial
-
+import threading
+import queue
+import visiomode.devices as devices
+import visiomode.models as models
 import visiomode.config as conf
-from visiomode import devices, models
 
 lever_response_map = {"R": "response", "P": "partial", "E": "error"}
 

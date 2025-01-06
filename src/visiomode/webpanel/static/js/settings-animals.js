@@ -64,7 +64,7 @@ function updateAnimal() {
         data: JSON.stringify({
             type: "update",
             data: {
-                animal_id: animalId,
+                id: animalId,
                 dob: animalDob,
                 sex: animalSex,
                 species: animalSpecies,
@@ -96,7 +96,7 @@ deleteAnimalButton.onclick = function () {
         data: JSON.stringify({
             type: "delete",
             data: {
-                animal_id: animalId,
+                id: animalId,
             },
         }),
         dataType: "json",

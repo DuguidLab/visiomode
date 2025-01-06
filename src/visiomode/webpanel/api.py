@@ -4,21 +4,22 @@
 #  Copyright (c) 2020 Constantinos Eleftheriou <Constantinos.Eleftheriou@ed.ac.uk>
 #  Copyright (c) 2024 Olivier Delree <odelree@ed.ac.uk>
 #  Distributed under the terms of the MIT Licence.
-import glob
+import os
 import json
 import logging
-import os
-import pathlib
 import queue
 import socket
-
+import glob
+import pathlib
 import flask
 import flask.views
-
 import visiomode.config as cfg
-from visiomode import devices, stimuli, tasks
+import visiomode.devices as devices
+import visiomode.tasks as tasks
+import visiomode.stimuli as stimuli
+import visiomode.webpanel.export as export
+
 from visiomode.models import Animal, Experimenter
-from visiomode.webpanel import export
 
 
 class DeviceAPI(flask.views.MethodView):
@@ -44,7 +45,7 @@ class SessionAPI(flask.views.MethodView):
     def post(self):
         """Session management request."""
         request = flask.request.json
-        logging.debug(f"Session POST request - {request}")
+        logging.debug("Session POST request - {}".format(request))
         self.action_q.put(request)
         return json.dumps({"success": True}), 200, {"ContentType": "application/json"}
 
@@ -97,7 +98,7 @@ class HistoryAPI(flask.views.MethodView):
             try:
                 with open(f"{config.data_dir}{os.sep}{session_id}.json") as handle:
                     session = json.load(handle)
-            except Exception:
+            except Exception as e:
                 logging.exception(
                     f"Couldn't get session data for session '{session_id}'."
                 )
@@ -178,7 +179,7 @@ class HistoryAPI(flask.views.MethodView):
                     logging.error(f"Error handling session'{session_id}'.")
                     return_code = 409
                 except KeyError:
-                    logging.error("Error updating requested session attributes.")
+                    logging.error(f"Error updating requested session attributes.")
                     return_code = 400
             except KeyError:
                 logging.error("Malformed request data for request type 'UPDATE'.")
@@ -206,7 +207,7 @@ class DownloadAPI(flask.views.MethodView):
             csv_fname = export.to_csv(sessions_dir + os.sep + filename)
             return flask.send_from_directory(cache_dir, csv_fname, as_attachment=True)
         else:
-            return f"File format {filetype} is not supported (yet)"
+            return "File format {} is not supported (yet)".format(filetype)
 
 
 class SettingsAPI(flask.views.MethodView):
@@ -254,7 +255,7 @@ class AnimalsAPI(flask.views.MethodView):
         request_type = flask.request.json.get("type")  # add, delete, update
         request = flask.request.json.get("data")
         if request_type == "delete":
-            animal_id = request.get("animal_id")
+            animal_id = request.get("id")
             if animal_id:
                 Animal.delete_animal(animal_id)
             else:
@@ -263,7 +264,7 @@ class AnimalsAPI(flask.views.MethodView):
                     Animal.delete_animal(animal["animal_id"])
         elif (request_type == "update") or (request_type == "add"):
             animal = Animal(
-                animal_id=request.get("animal_id"),
+                animal_id=request.get("id"),
                 date_of_birth=request.get("dob"),
                 sex=request.get("sex"),
                 species=request.get("species"),

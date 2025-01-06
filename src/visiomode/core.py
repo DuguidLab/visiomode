@@ -5,18 +5,18 @@
 #  Copyright (c) 2024 Olivier Delree <odelree@ed.ac.uk>
 #  Distributed under the terms of the MIT Licence.
 
-import datetime
-import logging
+import importlib.resources as resources
 import os
-import queue
-import threading
+import logging
 import time
-from importlib import resources
-
+import datetime
+import threading
+import queue
 import pygame as pg
-
 import visiomode.config as conf
-from visiomode import models, tasks, webpanel
+import visiomode.models as models
+import visiomode.webpanel as webpanel
+import visiomode.tasks as tasks
 
 # Register mouse events as touch events - useful for debugging.
 os.environ["SDL_MOUSE_TOUCH_EVENTS"] = "1"
@@ -181,7 +181,7 @@ class Visiomode:
         while True:
             request = self.action_q.get()
             if "type" not in request.keys():
-                logging.error(f"Invalid request - {request}")
+                logging.error("Invalid request - {}".format(request))
                 continue
             if request["type"] == "start":
                 task = tasks.get_task(request["data"].pop("task"))

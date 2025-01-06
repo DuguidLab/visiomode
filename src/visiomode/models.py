@@ -4,17 +4,18 @@
 #  Copyright (c) 2020 Constantinos Eleftheriou <Constantinos.Eleftheriou@ed.ac.uk>
 #  Copyright (c) 2024 Olivier Delree <odelree@ed.ac.uk>
 #  Distributed under the terms of the MIT Licence.
-import copy
+import os
 import dataclasses
 import datetime
+import socket
 import json
+import typing
+import copy
 import logging
 import operator
-import os
-import socket
-import typing
 
 from visiomode import __about__, config
+
 
 cfg = config.Config()
 
@@ -88,7 +89,7 @@ class Trial(Base):
     sdt_type: str = "NA"
 
     def __repr__(self):
-        return f"<Trial {self.timestamp!s}>"
+        return "<Trial {}>".format(str(self.timestamp))
 
 
 @dataclasses.dataclass
@@ -121,7 +122,7 @@ class Session(Base):
     timestamp: str = datetime.datetime.now().isoformat()
     notes: str = ""
     device: str = socket.gethostname()
-    trials: list[Trial] = dataclasses.field(default_factory=list)
+    trials: typing.List[Trial] = dataclasses.field(default_factory=list)
     animal_meta: dict = None
     experimenter_meta: dict = None
     version: str = __about__.__version__
@@ -161,7 +162,7 @@ class Session(Base):
         return session_id
 
     def __repr__(self):
-        return f"<Session {self.timestamp!s}>"
+        return "<Session {}>".format(str(self.timestamp))
 
 
 @dataclasses.dataclass
@@ -191,7 +192,7 @@ class Animal(Base):
         path = cfg.db_dir + os.sep + "animals.json"
 
         if os.path.exists(path):
-            with open(path) as f:
+            with open(path, "r") as f:
                 animals = json.load(f)
             # If the animal already exists, remove it and append the new one
             animals = [
@@ -214,7 +215,7 @@ class Animal(Base):
         path = cfg.db_dir + os.sep + "animals.json"
 
         if os.path.exists(path):
-            with open(path) as f:
+            with open(path, "r") as f:
                 animals = json.load(f)
             for animal in animals:
                 if animal["animal_id"] == animal_id:
@@ -231,7 +232,7 @@ class Animal(Base):
         path = cfg.db_dir + os.sep + "animals.json"
 
         if os.path.exists(path):
-            with open(path) as f:
+            with open(path, "r") as f:
                 animals = json.load(f)
             return animals
         return []
@@ -242,7 +243,7 @@ class Animal(Base):
         path = cfg.db_dir + os.sep + "animals.json"
 
         if os.path.exists(path):
-            with open(path) as f:
+            with open(path, "r") as f:
                 animals = json.load(f)
             # If the animal exists, remove it
             animals = [
@@ -273,7 +274,7 @@ class Experimenter(Base):
         if not os.path.exists(database_path):
             experimenters = [self.to_dict()]
         else:
-            with open(database_path) as handle:
+            with open(database_path, "r") as handle:
                 experimenters = json.load(handle)
 
             # If experiment already exists, replace them
@@ -289,7 +290,7 @@ class Experimenter(Base):
             json.dump(experimenters, handle)
 
     @classmethod
-    def get_experimenter(cls, experimenter_name: str) -> dict | None:
+    def get_experimenter(cls, experimenter_name: str) -> typing.Optional[dict]:
         """Get an experimenter's metadata from the database based on their name.
 
         Returns:
@@ -299,7 +300,7 @@ class Experimenter(Base):
         database_path = f"{cfg.db_dir}{os.sep}experimenters.json"
 
         if os.path.exists(database_path):
-            with open(database_path) as handle:
+            with open(database_path, "r") as handle:
                 experimenters = json.load(handle)
 
             for experimenter in experimenters:
@@ -322,7 +323,7 @@ class Experimenter(Base):
 
         experimenters = []
         if os.path.exists(database_path):
-            with open(database_path) as handle:
+            with open(database_path, "r") as handle:
                 experimenters = json.load(handle)
 
         return experimenters
@@ -339,7 +340,7 @@ class Experimenter(Base):
         if not os.path.exists(database_path):
             return
 
-        with open(database_path) as handle:
+        with open(database_path, "r") as handle:
             experimenters = json.load(handle)
 
         try:

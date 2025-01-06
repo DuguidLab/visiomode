@@ -1,10 +1,11 @@
+import pytest
+import pygame
 import copy
 
 import numpy as np
-import pygame
-import pytest
 
-from visiomode import stimuli
+import visiomode.stimuli as stimuli
+
 
 teststimuli = list(stimuli.Stimulus.get_children())
 

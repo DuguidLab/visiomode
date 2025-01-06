@@ -6,8 +6,8 @@
 
 import glob
 import importlib.util
-import logging
 import sys
+import logging
 from builtins import str
 
 
@@ -22,20 +22,22 @@ def load_module(path: str, name: str = None) -> None:
         path.split("visiomode")[-1].replace("/", ".").replace(".py", "")
     )
     if name in sys.modules:
-        logging.info(f"Skipping {name} - plugin module is already loaded")
+        logging.info("Skipping {} - plugin module is already loaded".format(name))
         return
 
     spec = importlib.util.spec_from_file_location(name, path)
 
     if not spec:
-        logging.warning(f"Plugin module {name} could not be loaded from {path}")
+        logging.warning(
+            "Plugin module {} could not be loaded from {}".format(name, path)
+        )
         return
 
     module = importlib.util.module_from_spec(spec)
     sys.modules[name] = module
     spec.loader.exec_module(module)
 
-    logging.info(f"Loaded plugin module {name}")
+    logging.info("Loaded plugin module {}".format(name))
 
 
 def load_modules_dir(path: str, exclude: list = None) -> None:
@@ -47,11 +49,11 @@ def load_modules_dir(path: str, exclude: list = None) -> None:
         path: Path to directory containing plugin modules.
         exclude: List of modules to exclude from loading.
     """
-    logging.info(f"Loading plugin modules from {path}")
+    logging.info("Loading plugin modules from {}".format(path))
     module_files = glob.glob(path + "/*.py")
 
     excluded_modules = exclude.append("__init__") if exclude else ["__init__"]
-    logging.info(f"Excluding modules {excluded_modules}")
+    logging.info("Excluding modules {}".format(excluded_modules))
 
     for module_path in module_files:
         if module_path.split("/")[-1].replace(".py", "") in excluded_modules:

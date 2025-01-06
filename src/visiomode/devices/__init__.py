@@ -3,14 +3,13 @@
 #  This file is part of visiomode.
 #  Copyright (c) 2020 Constantinos Eleftheriou <Constantinos.Eleftheriou@ed.ac.uk>
 #  Distributed under the terms of the MIT Licence.
-import logging
 import os
 import queue
-
+import logging
 import serial.tools.list_ports as ports
-
+import visiomode.mixins as mixins
 import visiomode.config as conf
-from visiomode import mixins, plugins
+import visiomode.plugins as plugins
 
 
 def get_available_devices():
@@ -51,7 +50,7 @@ class Device(mixins.BaseClassMixin, mixins.TaskEventsMixin):
         raise NotImplementedError
 
     def __repr__(self):
-        return f"<{self.get_common_name()} device at {self.address}>"
+        return "<{} device at {}>".format(self.get_common_name(), self.address)
 
 
 class InputDevice(Device):

@@ -5,8 +5,8 @@
 #  Distributed under the terms of the MIT Licence.
 
 import faulthandler  # report segmentation faults as tracebacks
-
 import visiomode.core
+
 from visiomode.__about__ import __version__
 
 faulthandler.enable()

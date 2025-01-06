@@ -3,14 +3,13 @@
 #  Distributed under the terms of the MIT Licence.
 
 """Visual stimulus classes implemented """
-import logging
 import os
-
+import logging
 import numpy as np
 import pygame as pg
-
 import visiomode.config as conf
-from visiomode import mixins, plugins
+import visiomode.mixins as mixins
+import visiomode.plugins as plugins
 
 config = conf.Config()
 
@@ -29,7 +28,7 @@ def load_image(name):
         else:
             image = image.convert_alpha()
     except pg.error as message:
-        logging.error(f"Cannot load image: {fullname}")
+        logging.error("Cannot load image: {}".format(fullname))
         raise SystemExit(message)
     return image, image.get_rect()
 

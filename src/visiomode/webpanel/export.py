@@ -12,13 +12,14 @@ converted file stored in Visiomode's cache directory.
 #  Distributed under the terms of the MIT Licence.
 
 # Note that `pynwb` is imported inside its own function to save on startup time
-import json
 import os
-from datetime import datetime
-
+import json
 import pandas as pd
 
 import visiomode.config as cfg
+
+from datetime import datetime
+
 
 config = cfg.Config()
 
@@ -27,7 +28,7 @@ def to_nwb(session_path):
     # Delayed import to save on startup time
     import pynwb
 
-    with open(session_path) as f:
+    with open(session_path, "r") as f:
         session = json.load(f)
 
     session_start_time = datetime.fromisoformat(session["timestamp"])
@@ -99,7 +100,7 @@ def to_nwb(session_path):
 
 
 def to_csv(session_path):
-    with open(session_path) as f:
+    with open(session_path, "r") as f:
         session = json.load(f)
 
     df = pd.DataFrame(_flatten_trials(session))

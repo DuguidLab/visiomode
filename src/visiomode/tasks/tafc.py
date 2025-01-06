@@ -7,7 +7,7 @@ import random
 import pygame as pg
 
 import visiomode.stimuli as stimulus
-from visiomode import tasks
+import visiomode.tasks as tasks
 
 
 class TwoAlternativeForcedChoice(tasks.Task):

@@ -4,7 +4,8 @@
 
 import pygame as pg
 
-from visiomode import stimuli, tasks
+import visiomode.stimuli as stimuli
+import visiomode.tasks as tasks
 
 
 class TargetOnly(tasks.Task):

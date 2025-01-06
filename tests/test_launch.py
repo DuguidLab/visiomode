@@ -3,12 +3,11 @@
 #  Copyright (c) 2024 Olivier Delree <odelree@ed.ac.uk>
 #  Distributed under the terms of the MIT Licence.
 
-from collections.abc import Generator
-
 import pygame
 import pytest
+from typing import Generator
 
-from visiomode import core
+import visiomode.core as core
 
 
 def test_launch(pygame_init) -> None:
