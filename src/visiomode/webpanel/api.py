@@ -4,22 +4,21 @@
 #  Copyright (c) 2020 Constantinos Eleftheriou <Constantinos.Eleftheriou@ed.ac.uk>
 #  Copyright (c) 2024 Olivier Delree <odelree@ed.ac.uk>
 #  Distributed under the terms of the MIT Licence.
-import os
+import glob
 import json
 import logging
+import os
+import pathlib
 import queue
 import socket
-import glob
-import pathlib
+
 import flask
 import flask.views
-import visiomode.config as cfg
-import visiomode.devices as devices
-import visiomode.tasks as tasks
-import visiomode.stimuli as stimuli
-import visiomode.webpanel.export as export
 
+import visiomode.config as cfg
+from visiomode import devices, stimuli, tasks
 from visiomode.models import Animal, Experimenter
+from visiomode.webpanel import export
 
 
 class DeviceAPI(flask.views.MethodView):
@@ -45,7 +44,7 @@ class SessionAPI(flask.views.MethodView):
     def post(self):
         """Session management request."""
         request = flask.request.json
-        logging.debug("Session POST request - {}".format(request))
+        logging.debug(f"Session POST request - {request}")
         self.action_q.put(request)
         return json.dumps({"success": True}), 200, {"ContentType": "application/json"}
 
@@ -98,7 +97,7 @@ class HistoryAPI(flask.views.MethodView):
             try:
                 with open(f"{config.data_dir}{os.sep}{session_id}.json") as handle:
                     session = json.load(handle)
-            except Exception as e:
+            except Exception:
                 logging.exception(
                     f"Couldn't get session data for session '{session_id}'."
                 )
@@ -179,7 +178,7 @@ class HistoryAPI(flask.views.MethodView):
                     logging.error(f"Error handling session'{session_id}'.")
                     return_code = 409
                 except KeyError:
-                    logging.error(f"Error updating requested session attributes.")
+                    logging.error("Error updating requested session attributes.")
                     return_code = 400
             except KeyError:
                 logging.error("Malformed request data for request type 'UPDATE'.")
@@ -207,7 +206,7 @@ class DownloadAPI(flask.views.MethodView):
             csv_fname = export.to_csv(sessions_dir + os.sep + filename)
             return flask.send_from_directory(cache_dir, csv_fname, as_attachment=True)
         else:
-            return "File format {} is not supported (yet)".format(filetype)
+            return f"File format {filetype} is not supported (yet)"
 
 
 class SettingsAPI(flask.views.MethodView):
