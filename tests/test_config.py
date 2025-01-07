@@ -10,7 +10,7 @@ import typing
 
 import pytest
 
-import visiomode.config as config
+from visiomode import config
 
 
 @pytest.fixture()
@@ -46,11 +46,7 @@ def assert_clear_path(path_attribute: str, function: typing.Callable) -> None:
     """Tests `path` is properly cleared."""
     config_ = config.Config()
 
-    sentinel_path = (
-        getattr(config_, path_attribute)
-        + os.sep
-        + str(id(f"assert_clear_{path_attribute}"))
-    )
+    sentinel_path = getattr(config_, path_attribute) + os.sep + str(id(f"assert_clear_{path_attribute}"))
     pathlib.Path(sentinel_path).touch()
 
     function()
@@ -108,10 +104,7 @@ def test_malformed_config_load(caplog, set_up_and_tear_down) -> None:
     config.Config._instance = None
     with caplog.at_level(logging.WARNING):
         config.Config()
-    assert (
-        "Config is malformed, it does not have attribute 'fullscreen'. "
-        "Using default value." in caplog.text
-    )
+    assert "Config is malformed, it does not have attribute 'fullscreen'. " "Using default value." in caplog.text
 
 
 def test_clear_cache(set_up_and_tear_down) -> None:

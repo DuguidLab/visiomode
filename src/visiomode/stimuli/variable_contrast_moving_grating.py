@@ -3,11 +3,11 @@
 #  Distributed under the terms of the MIT Licence.
 
 import random
+
 import pygame as pg
 
-import visiomode.stimuli as stimuli
-import visiomode.stimuli.grating as grating
-import visiomode.stimuli.moving_grating as moving_grating
+from visiomode import stimuli
+from visiomode.stimuli import grating, moving_grating
 
 
 class VariableContrastMovingGrating(moving_grating.MovingGrating):
@@ -17,9 +17,7 @@ class VariableContrastMovingGrating(moving_grating.MovingGrating):
         super().__init__(background, **kwargs)
 
         self.contrasts = contrasts
-        self.sinusoid_array = grating.Grating._sinusoid(
-            self.width, self.height, self.period
-        )
+        self.sinusoid_array = grating.Grating._sinusoid(self.width, self.height, self.period)
 
         self.generate_new_trial()
 

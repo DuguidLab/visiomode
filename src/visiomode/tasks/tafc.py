@@ -7,15 +7,13 @@ import random
 import pygame as pg
 
 import visiomode.stimuli as stimulus
-import visiomode.tasks as tasks
+from visiomode import tasks
 
 
 class TwoAlternativeForcedChoice(tasks.Task):
     form_path = "tasks/tafc.html"
 
-    def __init__(
-        self, target, distractor, sep_size=50, corrections_enabled="false", **kwargs
-    ):
+    def __init__(self, target, distractor, sep_size=50, corrections_enabled="false", **kwargs):
         super(TwoAlternativeForcedChoice, self).__init__(**kwargs)
 
         self.background = pg.Surface(self.screen.get_size())
@@ -26,25 +24,15 @@ class TwoAlternativeForcedChoice(tasks.Task):
         self.corrections_enabled = True if corrections_enabled == "true" else False
 
         self.separator_size = int(sep_size)  # pixels
-        self.separator = pg.Rect(
-            ((0, 0), (self.separator_size, self.screen.get_height()))
-        )
+        self.separator = pg.Rect(((0, 0), (self.separator_size, self.screen.get_height())))
         self.separator.centerx = self.screen.get_rect().centerx
 
         target = stimulus.get_stimulus(target)
-        target_params = {
-            key.replace("t_", ""): kwargs[key]
-            for key in kwargs.keys()
-            if key.startswith("t_")
-        }
+        target_params = {key.replace("t_", ""): kwargs[key] for key in kwargs.keys() if key.startswith("t_")}
         self.target = target(background=self.background, **target_params)
 
         distractor = stimulus.get_stimulus(distractor)
-        distractor_params = {
-            key.replace("d_", ""): kwargs[key]
-            for key in kwargs.keys()
-            if key.startswith("d_")
-        }
+        distractor_params = {key.replace("d_", ""): kwargs[key] for key in kwargs.keys() if key.startswith("d_")}
         self.distractor = distractor(background=self.background, **distractor_params)
 
     def show_stimulus(self):

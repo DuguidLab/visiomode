@@ -5,23 +5,18 @@
 #  Copyright (c) 2024 Olivier Delree <odelree@ed.ac.uk>
 #  Distributed under the terms of the MIT Licence.
 
-import importlib.resources as resources
-import os
-import logging
-import time
 import datetime
-import threading
+import logging
+import os
 import queue
+import threading
+import time
+from importlib import resources
 
 import pygame as pg
 
 import visiomode.config as conf
-import visiomode.devices as devices
-import visiomode.models as models
-import visiomode.plugins as plugins
-import visiomode.stimuli as stimuli
-import visiomode.tasks as tasks
-import visiomode.webpanel as webpanel
+from visiomode import devices, models, plugins, stimuli, tasks, webpanel
 
 # Register mouse events as touch events - useful for debugging.
 os.environ["SDL_MOUSE_TOUCH_EVENTS"] = "1"
@@ -143,9 +138,7 @@ class Visiomode:
 
         textpos = text.get_rect()
         textpos.centerx = self.background.get_rect().centerx
-        textpos.centery = (
-            self.background.get_rect().centery + 60
-        )  # TODO calculate offset at runtime
+        textpos.centery = self.background.get_rect().centery + 60  # TODO calculate offset at runtime
 
         self.background.blit(text, textpos)
         self.screen.blit(self.background, (0, 0))
@@ -167,8 +160,7 @@ class Visiomode:
                 self.session.trials = self.session.task.trials
             if self.session and (
                 not self.session.task.is_running
-                or time.time() - self.session.task.start_time
-                > self.session.duration * 60
+                or time.time() - self.session.task.start_time > self.session.duration * 60
             ):
                 logging.info("Session finished.")
                 self.session.task.stop()
@@ -201,17 +193,15 @@ class Visiomode:
         while True:
             request = self.action_q.get()
             if "type" not in request.keys():
-                logging.error("Invalid request - {}".format(request))
+                logging.error(f"Invalid request - {request}")
                 continue
             if request["type"] == "start":
                 # Update config
                 conf.Config().input_device_address = (
-                    request["data"].get("response_address")
-                    or conf.Config().input_device_address
+                    request["data"].get("response_address") or conf.Config().input_device_address
                 )
                 conf.Config().reward_device_address = (
-                    request["data"].get("reward_address")
-                    or conf.Config().reward_device_address
+                    request["data"].get("reward_address") or conf.Config().reward_device_address
                 )
                 conf.Config().save()
 

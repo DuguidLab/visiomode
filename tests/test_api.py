@@ -1,8 +1,9 @@
-import pytest
-
-import os
 import json
 import logging
+import os
+
+import pytest
+
 from visiomode import stimuli, tasks
 
 
@@ -11,9 +12,7 @@ def test_device_api_post(client):
         "/api/device",
         json={"profile": "leverpush", "address": "/dev/null"},
     )
-    assert (invalid_response.status_code == 500) or (
-        invalid_response.status_code == 200
-    )
+    assert (invalid_response.status_code == 500) or (invalid_response.status_code == 200)
 
 
 def test_session_api_get(client, test_log_q, test_action_q):
@@ -52,7 +51,7 @@ def test_task_api_get(client):
 
 
 def test_hostname_api_get(client):
-    response = client.get(f"/api/hostname")
+    response = client.get("/api/hostname")
     assert response.status_code == 200
 
 
@@ -66,7 +65,7 @@ def test_history_api_get_single_session(client, session, caplog):
     assert session_data["session"]["animal_id"] == "testanimal"
 
     # Invalid session
-    response = client.get(f"/api/history?session_id=invalid")
+    response = client.get("/api/history?session_id=invalid")
     session_data = json.loads(response.get_data(as_text=True))
     for record in caplog.records:
         assert record.levelname == "ERROR"
@@ -74,7 +73,7 @@ def test_history_api_get_single_session(client, session, caplog):
 
 
 def test_history_api_get_all_sessions(client, session):
-    response = client.get(f"/api/history")
+    response = client.get("/api/history")
     sessions = json.loads(response.get_data(as_text=True))
     assert response.status_code == 200
     assert sessions["sessions"]
@@ -139,23 +138,17 @@ def test_history_api_post(client, session):
     assert response.status_code == 500
 
     # Test session delete
-    response = client.post(
-        "/api/history", json={"type": "delete", "data": {"sessionId": session}}
-    )
+    response = client.post("/api/history", json={"type": "delete", "data": {"sessionId": session}})
     assert response.status_code == 200
 
     # Try deleting a session that doesn't exist
     # Test session delete
-    response = client.post(
-        "/api/history", json={"type": "delete", "data": {"sessionId": "idontexist"}}
-    )
+    response = client.post("/api/history", json={"type": "delete", "data": {"sessionId": "idontexist"}})
     assert response.status_code == 409
 
     # Botch delete request
     # Test session delete
-    response = client.post(
-        "/api/history", json={"type": "delete", "data": {"hello": "blah"}}
-    )
+    response = client.post("/api/history", json={"type": "delete", "data": {"hello": "blah"}})
     assert response.status_code == 500
 
 
@@ -164,19 +157,13 @@ def test_download_api_get(client, session):
     ftype = "json"
     response = client.get(f"/api/download/{ftype}/{session}.json")
     assert response.status_code == 200
-    assert (
-        response.headers["Content-Disposition"]
-        == f"attachment; filename={session}.{ftype}"
-    )
+    assert response.headers["Content-Disposition"] == f"attachment; filename={session}.{ftype}"
 
     # Test CSV export
     ftype = "csv"
     response = client.get(f"/api/download/{ftype}/{session}.json")
     assert response.status_code == 200
-    assert (
-        response.headers["Content-Disposition"]
-        == f"attachment; filename={session}.{ftype}"
-    )
+    assert response.headers["Content-Disposition"] == f"attachment; filename={session}.{ftype}"
 
     # Test NWB export
     ftype = "nwb"
@@ -185,9 +172,7 @@ def test_download_api_get(client, session):
     nwb_fname = f"sub-{subject_id}_ses-{session_date}_behavior.nwb"
     response = client.get(f"/api/download/{ftype}/{session}.json")
     assert response.status_code == 200
-    assert (
-        response.headers["Content-Disposition"] == f"attachment; filename={nwb_fname}"
-    )
+    assert response.headers["Content-Disposition"] == f"attachment; filename={nwb_fname}"
 
     # Test invalid export request
     ftype = "invalid"
@@ -231,16 +216,12 @@ def test_settings_api_post(client):
     assert config["fullscreen"] == False
 
     # Test cache clearing
-    response = client.post(
-        "/api/settings", json={"type": "delete", "data": {"path": "cache"}}
-    )
+    response = client.post("/api/settings", json={"type": "delete", "data": {"path": "cache"}})
     assert response.status_code == 200
     assert not os.listdir(config["cache_dir"])
 
     # Test app data clearing
-    response = client.post(
-        "/api/settings", json={"type": "delete", "data": {"path": "app-data"}}
-    )
+    response = client.post("/api/settings", json={"type": "delete", "data": {"path": "app-data"}})
     assert response.status_code == 200
 
 
@@ -280,19 +261,10 @@ def test_animals_api_post(client):
     assert response_update.status_code == 200
     response_get = client.get("/api/animals")
     animal_data = json.loads(response_get.get_data(as_text=True))["animals"]
-    assert (
-        "hello"
-        == [
-            animal["description"]
-            for animal in animal_data
-            if animal["animal_id"] == new_animal["id"]
-        ][0]
-    )
+    assert "hello" == [animal["description"] for animal in animal_data if animal["animal_id"] == new_animal["id"]][0]
 
     # Test delete for a single animal
-    response_delete = client.post(
-        "/api/animals", json={"type": "delete", "data": {"id": new_animal["id"]}}
-    )
+    response_delete = client.post("/api/animals", json={"type": "delete", "data": {"id": new_animal["id"]}})
     assert response_delete.status_code == 200
     response_get = client.get("/api/animals")
     animal_data = json.loads(response_get.get_data(as_text=True))["animals"]
@@ -355,9 +327,7 @@ def test_experimenters_api_post(client, experimenter):
     assert response_update.status_code == 200
     response_get = client.get("/api/experimenters")
     experimenter_data = json.loads(response_get.get_data(as_text=True))["experimenters"]
-    assert "Jane Doe" in [
-        experimenter["experimenter_name"] for experimenter in experimenter_data
-    ]
+    assert "Jane Doe" in [experimenter["experimenter_name"] for experimenter in experimenter_data]
     assert new_experimenter["experimenter_name"] not in [
         experimenter["experimenter_name"] for experimenter in experimenter_data
     ]
@@ -370,14 +340,10 @@ def test_experimenters_api_post(client, experimenter):
     assert response_delete.status_code == 200
     response_get = client.get("/api/experimenters")
     experimenter_data = json.loads(response_get.get_data(as_text=True))["experimenters"]
-    assert experimenter not in [
-        experimenter["experimenter_name"] for experimenter in experimenter_data
-    ]
+    assert experimenter not in [experimenter["experimenter_name"] for experimenter in experimenter_data]
 
     # Test delete all
-    response_delete = client.post(
-        "/api/experimenters", json={"type": "delete", "data": {}}
-    )
+    response_delete = client.post("/api/experimenters", json={"type": "delete", "data": {}})
     assert response_delete.status_code == 200
     response_get = client.get("/api/experimenters")
     experimenter_data = json.loads(response_get.get_data(as_text=True))["experimenters"]

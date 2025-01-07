@@ -6,7 +6,7 @@
 import pygame as pg
 from pygame import math as pgm
 
-import visiomode.stimuli as stimuli
+from visiomode import stimuli
 from visiomode.stimuli.grating import Grating
 
 
@@ -22,13 +22,9 @@ class MovingGrating(stimuli.Stimulus):
         self.frequency = float(freq)
         # Determine sign of direction based on frequency (negative => downwards, positive => upwards)
         self.direction = (lambda x: (-1, 1)[x < 0])(self.frequency)
-        self.px_per_cycle = (
-            self.direction * (self.period * abs(self.frequency)) / stimuli.config.fps
-        )
+        self.px_per_cycle = self.direction * (self.period * abs(self.frequency)) / stimuli.config.fps
 
-        grating = Grating.sinusoid(
-            self.width, self.height + (self.period * 2), self.period, self.contrast
-        )
+        grating = Grating.sinusoid(self.width, self.height + (self.period * 2), self.period, self.contrast)
         self.image = pg.surfarray.make_surface(grating).convert(self.screen)
         self.rect = self.image.get_rect()
         self.area = self.screen.get_rect()

@@ -7,7 +7,7 @@ import random
 import pygame as pg
 
 import visiomode.stimuli as stimulus
-import visiomode.tasks as tasks
+from visiomode import tasks
 
 
 class GoNoGo(tasks.Task):
@@ -26,19 +26,11 @@ class GoNoGo(tasks.Task):
         self._trial_count = 0
 
         target = stimulus.get_stimulus(target)
-        target_params = {
-            key.replace("t_", ""): kwargs[key]
-            for key in kwargs.keys()
-            if key.startswith("t_")
-        }
+        target_params = {key.replace("t_", ""): kwargs[key] for key in kwargs.keys() if key.startswith("t_")}
         self.target = target(background=self.background, **target_params)
 
         distractor = stimulus.get_stimulus(distractor)
-        distractor_params = {
-            key.replace("d_", ""): kwargs[key]
-            for key in kwargs.keys()
-            if key.startswith("d_")
-        }
+        distractor_params = {key.replace("d_", ""): kwargs[key] for key in kwargs.keys() if key.startswith("d_")}
         self.distractor = distractor(background=self.background, **distractor_params)
 
         self.current_stimulus = self.target
