@@ -250,7 +250,63 @@ def test_animals_api_get(client, animal):
 
 
 def test_animals_api_post(client):
-    ...
+    new_animal = {
+        "id": "test123",
+        "dob": "2024-05-02",
+        "sex": "M",
+        "species": "Mus musculus",
+    }
+    # Test add
+    response_add = client.post("/api/animals", json={"type": "add", "data": new_animal})
+    assert response_add.status_code == 200
+    response_get = client.get("/api/animals")
+    animal_data = json.loads(response_get.get_data(as_text=True))["animals"]
+    assert new_animal["id"] in [animal["animal_id"] for animal in animal_data]
+
+    # Test update
+    response_update = client.post(
+        "/api/animals",
+        json={
+            "type": "update",
+            "data": {
+                "id": new_animal["id"],
+                "description": "hello",
+            },
+        },
+    )
+    assert response_update.status_code == 200
+    response_get = client.get("/api/animals")
+    animal_data = json.loads(response_get.get_data(as_text=True))["animals"]
+    assert (
+        "hello"
+        == [
+            animal["description"]
+            for animal in animal_data
+            if animal["animal_id"] == new_animal["id"]
+        ][0]
+    )
+
+    # Test delete for a single animal
+    response_delete = client.post(
+        "/api/animals", json={"type": "delete", "data": {"id": new_animal["id"]}}
+    )
+    assert response_delete.status_code == 200
+    response_get = client.get("/api/animals")
+    animal_data = json.loads(response_get.get_data(as_text=True))["animals"]
+    assert new_animal["id"] not in [animal["animal_id"] for animal in animal_data]
+
+    # Test delete for all animals
+    response_delete_all = client.post(
+        "/api/animals",
+        json={
+            "type": "delete",
+            "data": {},
+        },
+    )
+    assert response_delete_all.status_code == 200
+    response_get = client.get("/api/animals")
+    animal_data = json.loads(response_get.get_data(as_text=True))["animals"]
+    assert not animal_data
 
 
 def test_experimenters_api_get(client):
