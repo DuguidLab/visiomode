@@ -256,6 +256,7 @@ def test_animals_api_post(client):
         "sex": "M",
         "species": "Mus musculus",
     }
+
     # Test add
     response_add = client.post("/api/animals", json={"type": "add", "data": new_animal})
     assert response_add.status_code == 200
@@ -316,5 +317,66 @@ def test_experimenters_api_get(client, experimenter):
     assert len(experimenter_data) > 0
 
 
-def test_experimenters_api_post(client):
-    ...
+def test_experimenters_api_post(client, experimenter):
+    new_experimenter = {
+        "experimenter_name": "John Doe",
+        "laboratory_name": "Doe lab",
+        "institution_name": "University of Things",
+    }
+
+    # Test add
+    response_add = client.post(
+        "/api/experimenters",
+        json={
+            "type": "add",
+            "data": new_experimenter,
+        },
+    )
+    assert response_add.status_code == 200
+    response_get = client.get("/api/experimenters")
+    experimenter_data = json.loads(response_get.get_data(as_text=True))["experimenters"]
+    assert new_experimenter["experimenter_name"] in [
+        experimenter["experimenter_name"] for experimenter in experimenter_data
+    ]
+
+    # Test update
+    response_update = client.post(
+        "/api/experimenters",
+        json={
+            "type": "update",
+            "data": {
+                "previous_experimenter_name": "John Doe",
+                "experimenter_name": "Jane Doe",
+            },
+        },
+    )
+    assert response_update.status_code == 200
+    response_get = client.get("/api/experimenters")
+    experimenter_data = json.loads(response_get.get_data(as_text=True))["experimenters"]
+    assert "Jane Doe" in [
+        experimenter["experimenter_name"] for experimenter in experimenter_data
+    ]
+    assert new_experimenter["experimenter_name"] not in [
+        experimenter["experimenter_name"] for experimenter in experimenter_data
+    ]
+
+    # Test delete by id
+    response_delete = client.post(
+        "/api/experimenters",
+        json={"type": "delete", "data": {"experimenter_name": experimenter}},
+    )
+    assert response_delete.status_code == 200
+    response_get = client.get("/api/experimenters")
+    experimenter_data = json.loads(response_get.get_data(as_text=True))["experimenters"]
+    assert experimenter not in [
+        experimenter["experimenter_name"] for experimenter in experimenter_data
+    ]
+
+    # Test delete all
+    response_delete = client.post(
+        "/api/experimenters", json={"type": "delete", "data": {}}
+    )
+    assert response_delete.status_code == 200
+    response_get = client.get("/api/experimenters")
+    experimenter_data = json.loads(response_get.get_data(as_text=True))["experimenters"]
+    assert not experimenter_data
