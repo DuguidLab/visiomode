@@ -130,4 +130,9 @@ def animal():
 
 @pytest.fixture()
 def experimenter():
-    ...
+    experimenter = models.Experimenter(
+        experimenter_name="testexperimenter",
+        laboratory_name="duguid lab",
+        institution_name="UoE",
+    )
+    return experimenter.save()

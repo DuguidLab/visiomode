@@ -309,8 +309,11 @@ def test_animals_api_post(client):
     assert not animal_data
 
 
-def test_experimenters_api_get(client):
-    ...
+def test_experimenters_api_get(client, experimenter):
+    response = client.get("/api/experimenters")
+    experimenter_data = json.loads(response.get_data(as_text=True))["experimenters"]
+    assert experimenter_data
+    assert len(experimenter_data) > 0
 
 
 def test_experimenters_api_post(client):
