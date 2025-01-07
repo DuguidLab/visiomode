@@ -289,6 +289,8 @@ class Experimenter(Base):
         with open(database_path, "w") as handle:
             json.dump(experimenters, handle)
 
+        return self.experimenter_name
+
     @classmethod
     def get_experimenter(cls, experimenter_name: str) -> typing.Optional[dict]:
         """Get an experimenter's metadata from the database based on their name.
