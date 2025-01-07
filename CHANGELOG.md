@@ -10,6 +10,8 @@ Versions follow [Semantic Versioning](https://semver.org) (`<major>.<minor>.<pat
 - Use hatch CI for testing and building, sunset Tox ([#216](https://github.com/DuguidLab/visiomode/issues/216)).
 - CI runs have more meaningful names ([#231](https://github.com/DuguidLab/visiomode/issues/231)).
 - Update Flask and Werkzeug to >v3.0 ([#227](https://github.com/DuguidLab/visiomode/issues/227)).
+- Changed testing framework to pytest ([[#239](https://github.com/DuguidLab/visiomode/issues/239)], [[#242](https://github.com/DuguidLab/visiomode/issues/242)]).
+- Enhanced test coverage ([[#240](https://github.com/DuguidLab/visiomode/issues/240)], [[#211](https://github.com/DuguidLab/visiomode/issues/211)], [[#71](https://github.com/DuguidLab/visiomode/issues/71)], [[#72](https://github.com/DuguidLab/visiomode/issues/72)]).
 
 ## [0.6.0] - 2024-08-29
 
