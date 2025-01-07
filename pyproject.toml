@@ -92,7 +92,7 @@ python = ["3.9", "3.10", "3.11", "3.12"]
 
 [tool.hatch.envs.test.scripts]
 run-coverage = "pytest --cov-config=pyproject.toml --cov=visiomode --cov=tests --cov-report term --cov-report xml:coverage.xml"
-run-coverage-ci = "run-coverage --cov-report=xml"
+run-coverage-ci = "run-coverage --cov-report=xml:coverage.xml"
 run = "run-coverage --no-cov"
 
 [tool.hatch.envs.lint]
