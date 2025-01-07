@@ -130,7 +130,7 @@ class Session(Base):
     def __post_init__(self):
         self.animal_meta = Animal.get_animal(self.animal_id)
         self.experimenter_meta = Experimenter.get_experimenter(self.experimenter_name)
-        self.trials = self.task.trials
+        self.trials = self.task.trials if self.task else []
 
     def to_dict(self):
         """Get class instance attributes as a dictionary.
@@ -142,10 +142,10 @@ class Session(Base):
         """
         instance = copy.copy(self)
         instance.trials = [trial.to_dict() for trial in self.trials if self.trials]
-        instance.task = self.task.get_identifier()
+        instance.task = self.task.get_identifier() if self.task else None
         return dataclasses.asdict(instance)
 
-    def save(self, path):
+    def save(self, path=cfg.data_dir):
         """Save session to json file."""
         session_id = (
             "sub-"
@@ -158,6 +158,8 @@ class Session(Base):
         f_path = path + os.sep + session_id + ".json"
         with open(f_path, "w", encoding="utf-8") as f:
             json.dump(self.to_dict(), f)
+
+        return session_id
 
     def __repr__(self):
         return "<Session {}>".format(str(self.timestamp))
@@ -204,6 +206,8 @@ class Animal(Base):
         else:
             with open(path, "w") as f:
                 json.dump([self.to_dict()], f)
+
+        return self.animal_id
 
     @classmethod
     def get_animal(cls, animal_id):
@@ -284,6 +288,8 @@ class Experimenter(Base):
 
         with open(database_path, "w") as handle:
             json.dump(experimenters, handle)
+
+        return self.experimenter_name
 
     @classmethod
     def get_experimenter(cls, experimenter_name: str) -> typing.Optional[dict]:
