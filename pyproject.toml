@@ -157,7 +157,9 @@ ignore = [
   # Ignore checks for possible passwords
   "S105", "S106", "S107",
   # Ignore complexity
-  "C901", "PLR0911", "PLR0912", "PLR0913", "PLR0915", "ISC001"
+  "C901", "PLR0911", "PLR0912", "PLR0913", "PLR0915", "ISC001",
+  # Ignore binding to all interfaces
+  "S104"
 ]
 # unfixable = [
 #   # Don't touch unused imports
@@ -171,5 +173,5 @@ known-first-party = ["visiomode"]
 ban-relative-imports = "all"
 
 [tool.ruff.per-file-ignores]
-# Tests can use magic values, assertions, relative and unused imports
-"tests/**/*" = ["PLR2004", "S101", "TID252", "F401"]
+# Tests can use magic values, assertions, relative and unused imports, and unused arguments
+"tests/**/*" = ["PLR2004", "S101", "TID252", "F401", "ARG001"]
