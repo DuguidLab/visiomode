@@ -122,7 +122,7 @@ all = [
 [tool.ruff]
 target-version = "py39"
 line-length = 120
-select = [
+lint.select = [
   "A",
   "ARG",
   "B",
@@ -149,7 +149,7 @@ select = [
   "W",
   "YTT",
 ]
-ignore = [
+lint.ignore = [
   # Allow non-abstract empty methods in abstract base classes
   "B027",
   # Allow boolean positional values in function calls, like `dict.get(... True)`
@@ -159,19 +159,24 @@ ignore = [
   # Ignore complexity
   "C901", "PLR0911", "PLR0912", "PLR0913", "PLR0915", "ISC001",
   # Ignore binding to all interfaces
-  "S104"
+  "S104",
+  # Ignore timezone guff
+  "DTZ005"
 ]
 # unfixable = [
 #   # Don't touch unused imports
 #   "F401",
 # ]
 
-[tool.ruff.isort]
+[tool.ruff.lint.isort]
 known-first-party = ["visiomode"]
 
-[tool.ruff.flake8-tidy-imports]
+[tool.ruff.lint.flake8-tidy-imports]
 ban-relative-imports = "all"
 
-[tool.ruff.per-file-ignores]
+[tool.ruff.lint.flake8-unused-arguments]
+ignore-variadic-names = true
+
+[tool.ruff.lint.per-file-ignores]
 # Tests can use magic values, assertions, relative and unused imports, and unused arguments
 "tests/**/*" = ["PLR2004", "S101", "TID252", "F401", "ARG001"]
