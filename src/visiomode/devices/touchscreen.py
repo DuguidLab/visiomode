@@ -3,7 +3,6 @@
 #  Distributed under the terms of the MIT Licence.
 import datetime
 import logging
-from zoneinfo import ZoneInfo
 
 import pygame as pg
 
@@ -28,7 +27,7 @@ class Touchscreen(devices.InputDevice):
             dist_y = touch_event.dy * self.config.height
             name = "left" if pos_x >= (self.config.width / 2) else "right"
             return models.Response(
-                timestamp=datetime.datetime.now(tz=ZoneInfo("localtime")).isoformat(),
+                timestamp=datetime.datetime.now().isoformat(),
                 name=name,
                 pos_x=pos_x,
                 pos_y=pos_y,
