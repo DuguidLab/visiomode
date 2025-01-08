@@ -56,9 +56,7 @@ class SessionAPI(flask.views.MethodView):
 
 class StimulusAPI(flask.views.MethodView):
     def get(self, stimulus_id):
-        idx = flask.request.args.get(
-            "idx"
-        )  # used to differentiate multiple stimuli on same page
+        idx = flask.request.args.get("idx")  # used to differentiate multiple stimuli on same page
         stimulus = stimuli.get_stimulus(stimulus_id)
         if stimulus and stimulus.form_path:
             return flask.render_template(stimulus.get_form(), idx=idx)
@@ -98,9 +96,7 @@ class HistoryAPI(flask.views.MethodView):
                 with open(f"{config.data_dir}{os.sep}{session_id}.json") as handle:
                     session = json.load(handle)
             except Exception:
-                logging.exception(
-                    f"Couldn't get session data for session '{session_id}'."
-                )
+                logging.exception(f"Couldn't get session data for session '{session_id}'.")
             return {"session": session}
         else:  # All sessions were requested
             session_files = glob.glob(config.data_dir + os.sep + "*.json")
@@ -120,9 +116,7 @@ class HistoryAPI(flask.views.MethodView):
                             }
                         )
                     except:
-                        logging.exception(
-                            "Couldn't read session JSON file, wrong format?"
-                        )
+                        logging.exception("Couldn't read session JSON file, wrong format?")
             return {"sessions": sessions}
 
     def post(self):
@@ -236,9 +230,7 @@ class SettingsAPI(flask.views.MethodView):
                 logging.warning("Clearing cache directory.")
                 cfg.clear_cache()
             elif request.get("path") == "app-data":
-                logging.warning(
-                    "Clearing app data directory. Will revert to default settings."
-                )
+                logging.warning("Clearing app data directory. Will revert to default settings.")
                 cfg.clear_data()
         return json.dumps({"success": True}), 200, {"ContentType": "application/json"}
 
