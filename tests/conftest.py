@@ -8,7 +8,10 @@ import pygame
 import pytest
 
 import visiomode.config as cfg
-from visiomode import models, stimuli, tasks, webpanel
+from visiomode import core, models, stimuli, tasks, webpanel
+
+
+core.load_plugins()
 
 
 @pytest.fixture(scope="module")
