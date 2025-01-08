@@ -50,7 +50,7 @@ class LeverPush(devices.InputDevice):
         # self._command_q.put(b"U\n")
         self.bus.write(b"U\n")
 
-    def listen(self, threaded=True):
+    def listen(self, *, threaded=True):
         self.listening = True
         if threaded:
             thread = threading.Thread(target=self._message_listener, daemon=True)
@@ -82,4 +82,5 @@ class LeverPush(devices.InputDevice):
             if message == "response":
                 self._response_q.put(message)
             elif message == "error":
-                raise devices.DeviceError("Lever-push controller error.")
+                msg = "Lever-push controller error."
+                raise devices.DeviceError(msg)

@@ -32,9 +32,9 @@ class Visiomode:
 
     def __init__(
         self,
-        run_application_loop: bool = True,
-        run_webpanel: bool = True,
-        load_plugins: bool = True,
+        # run_application_loop: bool = True,
+        # run_webpanel: bool = True,
+        # load_plugins: bool = True,
     ):
         """Initialise application.
 
@@ -85,7 +85,7 @@ class Visiomode:
 
         self.run_main()
 
-    def loading_screen(self):
+    def loading_screen(self, max_angle=1080, angle_rotation=5):
         """Rotating logo to entertain user and mouse while the webpanel is loading."""
         # Fill background
         self.background = pg.Surface(self.screen.get_size())
@@ -117,13 +117,13 @@ class Visiomode:
         pg.display.flip()
 
         angle = 0
-        while angle != 1080:
+        while angle != max_angle:
             events = pg.event.get()
             for event in events:
                 if event.type == pg.QUIT:
                     return
 
-            angle += 5
+            angle += angle_rotation
 
             image, rect = rotate(loading_img, loading_img_pos, angle)
 

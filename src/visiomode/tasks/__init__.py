@@ -201,7 +201,7 @@ class Task(mixins.BaseClassMixin, mixins.WebFormMixin, mixins.TaskEventsMixin):
             self.on_no_response()
 
         # Correction trials
-        if self.corrections_enabled and (outcome == NO_RESPONSE or outcome == INCORRECT):
+        if self.corrections_enabled and (outcome not in (NO_RESPONSE, INCORRECT)):
             self.correction_trial = True
         if self.corrections_enabled and self.correction_trial and (outcome == CORRECT):
             self.correction_trial = False
@@ -272,9 +272,9 @@ class Task(mixins.BaseClassMixin, mixins.WebFormMixin, mixins.TaskEventsMixin):
         self.on_task_end()
 
 
-class InvalidTask(Exception):
+class InvalidTaskError(Exception):
     pass
 
 
-class InvalidProtocol(Exception):
+class InvalidProtocolError(Exception):
     pass

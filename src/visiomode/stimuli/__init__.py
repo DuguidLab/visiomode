@@ -31,7 +31,7 @@ def load_image(name):
             image = image.convert_alpha()
     except pg.error as message:
         logging.error(f"Cannot load image: {fullname}")
-        raise SystemExit(message)
+        raise SystemExit(message) from None
     return image, image.get_rect()
 
 

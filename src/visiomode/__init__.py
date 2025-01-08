@@ -7,7 +7,7 @@
 import faulthandler  # report segmentation faults as tracebacks
 
 import visiomode.core
-from visiomode.__about__ import __version__
+from visiomode.__about__ import __version__  # noqa: F401
 
 faulthandler.enable()
 

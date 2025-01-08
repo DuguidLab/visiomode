@@ -75,6 +75,7 @@ def create_app(action_q=None, log_q=None):
     @app.errorhandler(404)
     def page_not_found(e):
         """404 page not found redirect."""
+        logging.warning(msg=f"Request returned 404 - {e}")
         return flask.render_template("404.html")
 
     app.add_url_rule(
@@ -136,7 +137,7 @@ def create_app(action_q=None, log_q=None):
     return app
 
 
-def runserver(action_q, log_q, threaded=False):
+def runserver(action_q, log_q, *, threaded=False):
     """Runs the flask app in an integrated server."""
     app = create_app(action_q, log_q)
     if threaded:

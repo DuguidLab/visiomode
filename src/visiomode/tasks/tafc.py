@@ -14,7 +14,7 @@ class TwoAlternativeForcedChoice(tasks.Task):
     form_path = "tasks/tafc.html"
 
     def __init__(self, target, distractor, sep_size=50, corrections_enabled="false", **kwargs):
-        super(TwoAlternativeForcedChoice, self).__init__(**kwargs)
+        super().__init__(**kwargs)
 
         self.background = pg.Surface(self.screen.get_size())
         self.background = self.background.convert()

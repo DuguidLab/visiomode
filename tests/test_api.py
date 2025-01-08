@@ -12,7 +12,7 @@ def test_device_api_post(client):
         "/api/device",
         json={"profile": "leverpush", "address": "/dev/null"},
     )
-    assert (invalid_response.status_code == 500) or (invalid_response.status_code == 200)
+    assert invalid_response.status_code in (500, 200)
 
 
 def test_session_api_get(client, test_log_q, test_action_q):
@@ -213,7 +213,7 @@ def test_settings_api_post(client):
     assert config["width"] == 300
     assert config["height"] == 300
     assert config["fps"] == 60
-    assert config["fullscreen"] == False
+    assert not config["fullscreen"]
 
     # Test cache clearing
     response = client.post("/api/settings", json={"type": "delete", "data": {"path": "cache"}})
@@ -261,7 +261,7 @@ def test_animals_api_post(client):
     assert response_update.status_code == 200
     response_get = client.get("/api/animals")
     animal_data = json.loads(response_get.get_data(as_text=True))["animals"]
-    assert "hello" == [animal["description"] for animal in animal_data if animal["animal_id"] == new_animal["id"]][0]
+    assert "hello" == next(animal["description"] for animal in animal_data if animal["animal_id"] == new_animal["id"])
 
     # Test delete for a single animal
     response_delete = client.post("/api/animals", json={"type": "delete", "data": {"id": new_animal["id"]}})

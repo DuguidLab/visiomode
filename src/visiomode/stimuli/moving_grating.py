@@ -21,7 +21,7 @@ class MovingGrating(stimuli.Stimulus):
         self.contrast = float(contrast)
         self.frequency = float(freq)
         # Determine sign of direction based on frequency (negative => downwards, positive => upwards)
-        self.direction = (lambda x: (-1, 1)[x < 0])(self.frequency)
+        self.direction = (lambda x: (-1, 1)[x < 0])(self.frequency)  # noqa: PLC3002
         self.px_per_cycle = self.direction * (self.period * abs(self.frequency)) / stimuli.config.fps
 
         grating = Grating.sinusoid(self.width, self.height + (self.period * 2), self.period, self.contrast)

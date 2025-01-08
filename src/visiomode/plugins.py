@@ -8,10 +8,10 @@ import glob
 import importlib.util
 import logging
 import sys
-from builtins import str
+from typing import Optional
 
 
-def load_module(path: str, name: str = None) -> None:
+def load_module(path: str, name: Optional[str] = None) -> None:
     """Load plugin module from file.
 
     Args:
@@ -36,7 +36,7 @@ def load_module(path: str, name: str = None) -> None:
     logging.info(f"Loaded plugin module {name}")
 
 
-def load_modules_dir(path: str, exclude: list = None) -> None:
+def load_modules_dir(path: str, exclude: Optional[list] = None) -> None:
     """Load all modules from a directory.
 
     This will not load __init__.py in that directory, if one exists.

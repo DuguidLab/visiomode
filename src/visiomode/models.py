@@ -81,11 +81,14 @@ class Trial(Base):
     outcome: str
     iti: float
     response: Response
-    timestamp: str = datetime.datetime.now().isoformat()
+    timestamp: str
     correction: bool = False
     response_time: int = 0
     stimulus: dict = dataclasses.field(default_factory=dict)
     sdt_type: str = "NA"
+
+    def __post_init__(self):
+        self.timestamp = datetime.datetime.now().isoformat()
 
     def __repr__(self):
         return f"<Trial {self.timestamp!s}>"
@@ -105,9 +108,12 @@ class Session(Base):
         timestamp: A string with the session start date and time (ISO format). Defaults to current date and time.
         notes: String with additional session notes. Defaults to empty string
         device: String hostname of the device running the session. Defaults to the hostname provided by the socket lib.
-        trials: A mutable list of session trials; each trial is an instance of the Trial dataclass. Automatically populated using task.trials after class instantiation.
-        animal_meta: A dictionary with animal metadata (see Animal class). Automatically populated using animal_id after class instantiation.
-        experimenter_meta: A dictionary with experimenter metadata (see Experimenter class). Automatically populated using experimenter_name after class instantiation.
+        trials: A mutable list of session trials; each trial is an instance of the Trial dataclass. Automatically
+            populated using task.trials after class instantiation.
+        animal_meta: A dictionary with animal metadata (see Animal class). Automatically populated using animal_id after
+            class instantiation.
+        experimenter_meta: A dictionary with experimenter metadata (see Experimenter class). Automatically populated
+            using experimenter_name after class instantiation.
         version: Visiomode version this was generated with.
     """
 
@@ -115,21 +121,25 @@ class Session(Base):
     experimenter_name: str
     experiment: str
     duration: float
+    timestamp: str
+    device: str
+    spec: dict
+    animal_meta: dict
+    experimenter_meta: dict
     task: None = None
-    spec: dict = None
     complete: bool = False
-    timestamp: str = datetime.datetime.now().isoformat()
     notes: str = ""
-    device: str = socket.gethostname()
-    trials: typing.List[Trial] = dataclasses.field(default_factory=list)
-    animal_meta: dict = None
-    experimenter_meta: dict = None
+    trials: list[Trial] = dataclasses.field(default_factory=list)
     version: str = __about__.__version__
 
     def __post_init__(self):
         self.animal_meta = Animal.get_animal(self.animal_id)
         self.experimenter_meta = Experimenter.get_experimenter(self.experimenter_name)
         self.trials = self.task.trials if self.task else []
+        self.timestamp = datetime.datetime.now().isoformat() if not self.timestamp else self.timestamp
+        self.device = socket.gethostname() if not self.device else self.device
+        self.animal_meta = {} if not self.animal_meta else self.animal_meta
+        self.experimenter_meta = {} if not self.experimenter_meta else self.experimenter_meta
 
     def to_dict(self):
         """Get class instance attributes as a dictionary.

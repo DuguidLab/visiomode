@@ -11,7 +11,7 @@ class TargetOnly(tasks.Task):
     form_path = "tasks/target_only.html"
 
     def __init__(self, target, **kwargs):
-        super(TargetOnly, self).__init__(**kwargs)
+        super().__init__(**kwargs)
 
         self.background = pg.Surface(self.screen.get_size())
         self.background = self.background.convert()

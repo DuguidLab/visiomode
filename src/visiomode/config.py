@@ -36,7 +36,8 @@ DEFAULT_CONFIG = {
 class Config:
     """App configuration class.
 
-    This class loads and saves configuration from a JSON file. If no config file exists, it creates one with default values.
+    This class loads and saves configuration from a JSON file. If no config file exists, it creates one with default
+    values.
 
     Attributes:
         debug: Debug mode flag.
@@ -87,7 +88,7 @@ class Config:
                                          DEFAULT_CONFIG_PATH. Only used if it exists.
         """
         if cls._instance is None:
-            cls._instance = super(Config, cls).__new__(cls)
+            cls._instance = super().__new__(cls)
 
             if config_path is None:
                 config_path = DEFAULT_CONFIG["config_path"]

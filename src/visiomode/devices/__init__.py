@@ -6,7 +6,6 @@
 #  Distributed under the terms of the MIT Licence.
 import logging
 import os
-import queue
 
 import serial.tools.list_ports as ports
 

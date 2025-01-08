@@ -14,7 +14,7 @@ class GoNoGo(tasks.Task):
     form_path = "tasks/gonogo.html"
 
     def __init__(self, target, distractor, corrections_enabled="false", **kwargs):
-        super(GoNoGo, self).__init__(**kwargs)
+        super().__init__(**kwargs)
 
         self.background = pg.Surface(self.screen.get_size())
         self.background = self.background.convert()
@@ -51,7 +51,7 @@ class GoNoGo(tasks.Task):
         self.current_stimulus.update()
 
     def get_random_stimulus(self):
-        return random.choice([self.target, self.distractor])
+        return random.choice([self.target, self.distractor])  # noqa: S311
 
     @classmethod
     def get_common_name(cls):
