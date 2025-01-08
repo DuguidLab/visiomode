@@ -6,41 +6,37 @@
 
 import glob
 import importlib.util
-import sys
 import logging
-from builtins import str
+import sys
+from typing import Optional
 
 
-def load_module(path: str, name: str = None) -> None:
+def load_module(path: str, name: Optional[str] = None) -> None:
     """Load plugin module from file.
 
     Args:
         path: Path to plugin module (i.e. a python file).
         name: Name of plugin module. If not provided, this will be inferred from the path.
     """
-    name = name or "visiomode{}".format(
-        path.split("visiomode")[-1].replace("/", ".").replace(".py", "")
-    )
+    name = name or "visiomode{}".format(path.split("visiomode")[-1].replace("/", ".").replace(".py", ""))
     if name in sys.modules:
-        logging.info("Skipping {} - plugin module is already loaded".format(name))
+        logging.info(f"Skipping {name} - plugin module is already loaded")
         return
 
     spec = importlib.util.spec_from_file_location(name, path)
 
     if not spec:
-        logging.warning(
-            "Plugin module {} could not be loaded from {}".format(name, path)
-        )
+        logging.warning(f"Plugin module {name} could not be loaded from {path}")
         return
 
     module = importlib.util.module_from_spec(spec)
     sys.modules[name] = module
     spec.loader.exec_module(module)
 
-    logging.info("Loaded plugin module {}".format(name))
+    logging.info(f"Loaded plugin module {name}")
 
 
-def load_modules_dir(path: str, exclude: list = None) -> None:
+def load_modules_dir(path: str, exclude: Optional[list] = None) -> None:
     """Load all modules from a directory.
 
     This will not load __init__.py in that directory, if one exists.
@@ -49,11 +45,11 @@ def load_modules_dir(path: str, exclude: list = None) -> None:
         path: Path to directory containing plugin modules.
         exclude: List of modules to exclude from loading.
     """
-    logging.info("Loading plugin modules from {}".format(path))
+    logging.info(f"Loading plugin modules from {path}")
     module_files = glob.glob(path + "/*.py")
 
     excluded_modules = exclude.append("__init__") if exclude else ["__init__"]
-    logging.info("Excluding modules {}".format(excluded_modules))
+    logging.info(f"Excluding modules {excluded_modules}")
 
     for module_path in module_files:
         if module_path.split("/")[-1].replace(".py", "") in excluded_modules:

@@ -5,15 +5,15 @@
 #  Copyright (c) 2024 Olivier Delree <odelree@ed.ac.uk>
 #  Distributed under the terms of the MIT Licence.
 
-import os
 import logging
+import os
 import threading
 
 import flask
+
 import visiomode.config as cfg
-import visiomode.tasks as tasks
-import visiomode.stimuli as stimuli
-import visiomode.webpanel.api as api
+from visiomode import stimuli, tasks
+from visiomode.webpanel import api
 
 
 def create_app(action_q=None, log_q=None):
@@ -31,11 +31,7 @@ def create_app(action_q=None, log_q=None):
     try:
         os.makedirs(app.instance_path, exist_ok=True)
     except OSError as exc:
-        logging.warning(
-            "Could not create instance directory ({}) - {}".format(
-                app.instance_path, str(exc)
-            )
-        )
+        logging.warning(f"Could not create instance directory ({app.instance_path}) - {exc!s}")
 
     @app.route("/")
     def index():
@@ -79,6 +75,7 @@ def create_app(action_q=None, log_q=None):
     @app.errorhandler(404)
     def page_not_found(e):
         """404 page not found redirect."""
+        logging.warning(msg=f"Request returned 404 - {e}")
         return flask.render_template("404.html")
 
     app.add_url_rule(
@@ -99,9 +96,7 @@ def create_app(action_q=None, log_q=None):
         methods=["GET"],
     )
 
-    app.add_url_rule(
-        "/api/device", view_func=api.DeviceAPI.as_view("device_api"), methods=["POST"]
-    )
+    app.add_url_rule("/api/device", view_func=api.DeviceAPI.as_view("device_api"), methods=["POST"])
 
     app.add_url_rule(
         "/api/hostname",
@@ -142,7 +137,7 @@ def create_app(action_q=None, log_q=None):
     return app
 
 
-def runserver(action_q, log_q, threaded=False):
+def runserver(action_q, log_q, *, threaded=False):
     """Runs the flask app in an integrated server."""
     app = create_app(action_q, log_q)
     if threaded:

@@ -27,12 +27,8 @@ DEFAULT_CONFIG = {
     "height": 800,
     "fullscreen": False,
     "devices": "devices",
-    "input_device_address": (
-        ports.comports()[1].device if len(ports.comports()) > 1 else "/dev/ttyS0"
-    ),
-    "reward_device_address": (
-        ports.comports()[0].device if len(ports.comports()) else "/dev/ttyS0"
-    ),
+    "input_device_address": (ports.comports()[1].device if len(ports.comports()) > 1 else "/dev/ttyS0"),
+    "reward_device_address": (ports.comports()[0].device if len(ports.comports()) else "/dev/ttyS0"),
     "config_path": ".visiomode.json",
 }
 
@@ -40,7 +36,8 @@ DEFAULT_CONFIG = {
 class Config:
     """App configuration class.
 
-    This class loads and saves configuration from a JSON file. If no config file exists, it creates one with default values.
+    This class loads and saves configuration from a JSON file. If no config file exists, it creates one with default
+    values.
 
     Attributes:
         debug: Debug mode flag.
@@ -91,7 +88,7 @@ class Config:
                                          DEFAULT_CONFIG_PATH. Only used if it exists.
         """
         if cls._instance is None:
-            cls._instance = super(Config, cls).__new__(cls)
+            cls._instance = super().__new__(cls)
 
             if config_path is None:
                 config_path = DEFAULT_CONFIG["config_path"]
@@ -108,9 +105,7 @@ class Config:
             os.makedirs(cls._instance.cache_dir, exist_ok=True)
             os.makedirs(cls._instance.db_dir, exist_ok=True)
         elif config_path is not None:
-            logging.warning(
-                "Config has already been loaded, ignoring `config_path` passed to constructor."
-            )
+            logging.warning("Config has already been loaded, ignoring `config_path` passed to constructor.")
 
         return cls._instance
 
@@ -132,14 +127,14 @@ class Config:
         Args:
             config_path: Path to config JSON file.
         """
-        with open(config_path, "r") as f:
+        with open(config_path) as f:
             config = json.load(f)
 
         for key, value in config.items():
             if key in DEFAULT_CONFIG:
                 setattr(self, key, value)
             else:
-                logging.warning("Unknown config key: {}".format(key))
+                logging.warning(f"Unknown config key: {key}")
 
         self._validate()
 
@@ -151,9 +146,7 @@ class Config:
     def _validate(self) -> None:
         for key, value in DEFAULT_CONFIG.items():
             if not hasattr(self, key):
-                logging.warning(
-                    f"Config is malformed, it does not have attribute '{key}'. Using default value."
-                )
+                logging.warning(f"Config is malformed, it does not have attribute '{key}'. Using default value.")
                 setattr(self, key, value)
 
 

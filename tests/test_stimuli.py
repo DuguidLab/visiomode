@@ -1,11 +1,10 @@
-import pytest
-import pygame
 import copy
 
 import numpy as np
+import pygame
+import pytest
 
-import visiomode.stimuli as stimuli
-
+from visiomode import stimuli
 
 teststimuli = list(stimuli.Stimulus.get_children())
 
@@ -27,9 +26,9 @@ def test_show(background, stimulus):
     stimulus_instance.show()
 
     assert not stimulus_instance.hidden
-    assert pygame.display.get_surface().get_at(
+    assert pygame.display.get_surface().get_at(stimulus_instance.rect.topleft) == stimulus_instance.image.get_at(
         stimulus_instance.rect.topleft
-    ) == stimulus_instance.image.get_at(stimulus_instance.rect.topleft)
+    )
 
 
 @pytest.mark.parametrize("stimulus", teststimuli)
@@ -37,9 +36,9 @@ def test_draw(background, stimulus):
     stimulus_instance = stimulus(background, colour="yellow")
     stimulus_instance.draw()
 
-    assert pygame.display.get_surface().get_at(
+    assert pygame.display.get_surface().get_at(stimulus_instance.rect.topleft) == stimulus_instance.image.get_at(
         stimulus_instance.rect.topleft
-    ) == stimulus_instance.image.get_at(stimulus_instance.rect.topleft)
+    )
 
 
 @pytest.mark.parametrize("stimulus", teststimuli)
@@ -49,9 +48,9 @@ def test_hide(background, stimulus):
     stimulus_instance.hide()
 
     assert stimulus_instance.hidden
-    assert pygame.display.get_surface().get_at(
+    assert pygame.display.get_surface().get_at(stimulus_instance.rect.topleft) == stimulus_instance.background.get_at(
         stimulus_instance.rect.topleft
-    ) == stimulus_instance.background.get_at(stimulus_instance.rect.topleft)
+    )
 
 
 @pytest.mark.parametrize("stimulus", teststimuli)
@@ -61,25 +60,21 @@ def test_update(background, stimulus):
     stimulus_instance.update()
 
     if stimulus_instance.get_identifier().startswith("moving"):
-        assert pygame.display.get_surface().get_at(
+        assert pygame.display.get_surface().get_at(stimulus_instance.rect.center) != stimulus_instance.image.get_at(
             stimulus_instance.rect.center
-        ) != stimulus_instance.image.get_at(stimulus_instance.rect.center)
+        )
         return
 
-    assert pygame.display.get_surface().get_at(
+    assert pygame.display.get_surface().get_at(stimulus_instance.rect.center) == stimulus_instance.image.get_at(
         stimulus_instance.rect.center
-    ) == stimulus_instance.image.get_at(stimulus_instance.rect.center)
+    )
 
 
 @pytest.mark.parametrize("stimulus", teststimuli)
 def test_collision(background, stimulus):
     stimulus_instance = stimulus(background, colour="yellow")
-    assert not stimulus_instance.collision(
-        stimulus_instance.rect.topleft[0] - 1, stimulus_instance.rect.topleft[1]
-    )
-    assert stimulus_instance.collision(
-        stimulus_instance.rect.topleft[0], stimulus_instance.rect.topleft[1]
-    )
+    assert not stimulus_instance.collision(stimulus_instance.rect.topleft[0] - 1, stimulus_instance.rect.topleft[1])
+    assert stimulus_instance.collision(stimulus_instance.rect.topleft[0], stimulus_instance.rect.topleft[1])
 
 
 @pytest.mark.parametrize("stimulus", teststimuli)

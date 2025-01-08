@@ -3,19 +3,18 @@
 #  Distributed under the terms of the MIT Licence.
 
 """Module that defines the available task and stimulation protocols in a stimulus agnostic manner."""
+
 import collections
-import time
 import datetime
-import threading
 import logging
 import queue
+import threading
+import time
+
 import pygame as pg
 
 import visiomode.config as conf
-import visiomode.devices as devices
-import visiomode.models as models
-import visiomode.mixins as mixins
-
+from visiomode import devices, mixins, models
 
 CORRECT = "correct"
 INCORRECT = "incorrect"
@@ -30,9 +29,7 @@ CORRECT_REJECTION = "correct_rejection"
 TOUCHDOWN = pg.FINGERDOWN
 TOUCHUP = pg.FINGERUP
 
-TouchEvent = collections.namedtuple(
-    "TouchEvent", ["event_type", "on_target", "x", "y", "timestamp"]
-)
+TouchEvent = collections.namedtuple("TouchEvent", ["event_type", "on_target", "x", "y", "timestamp"])
 
 
 def get_task(task_id):
@@ -71,17 +68,13 @@ class Task(mixins.BaseClassMixin, mixins.WebFormMixin, mixins.TaskEventsMixin):
         self.distractor = None
         self.separator = None
 
-        self.response_device = devices.get_input_device(
-            response_device, response_address
-        )
+        self.response_device = devices.get_input_device(response_device, response_address)
 
         self.reward_device = devices.get_output_profile(reward_profile, reward_address)
 
         self._response_q = queue.Queue()
 
-        self._session_thread = threading.Thread(
-            target=self._session_runner, daemon=True
-        )
+        self._session_thread = threading.Thread(target=self._session_runner, daemon=True)
 
     def start(self):
         """Start the task"""
@@ -137,25 +130,16 @@ class Task(mixins.BaseClassMixin, mixins.WebFormMixin, mixins.TaskEventsMixin):
             self.show_stimulus()
             self.on_stimulus_start()
             stimulus_start = time.time()
-            while self.is_running and (
-                time.time() - stimulus_start < self.stimulus_duration
-            ):
+            while self.is_running and (time.time() - stimulus_start < self.stimulus_duration):
                 if not self._response_q.empty():
                     response_event = self._response_q.get()
                     if response_event:
                         # If the response is on the separator (and one exists), ignore it.
-                        if self.separator and self.separator.collidepoint(
-                            response_event.pos_x, response_event.pos_y
-                        ):
+                        if self.separator and self.separator.collidepoint(response_event.pos_x, response_event.pos_y):
                             logging.debug("Separator response, ignoring...")
                             continue
 
-                        if (
-                            self.target.collision(
-                                response_event.pos_x, response_event.pos_y
-                            )
-                            and not self.target.hidden
-                        ):
+                        if self.target.collision(response_event.pos_x, response_event.pos_y) and not self.target.hidden:
                             outcome = CORRECT
                             sdt_type = HIT
                             response = response_event
@@ -183,11 +167,7 @@ class Task(mixins.BaseClassMixin, mixins.WebFormMixin, mixins.TaskEventsMixin):
 
         stimulus = "None"
         if outcome != PRECUED:
-            if (
-                self.distractor
-                and not self.target.hidden
-                and not self.distractor.hidden
-            ):
+            if self.distractor and not self.target.hidden and not self.distractor.hidden:
                 stimulus = {
                     "target": self.target.get_details(),
                     "distractor": self.distractor.get_details(),
@@ -201,10 +181,8 @@ class Task(mixins.BaseClassMixin, mixins.WebFormMixin, mixins.TaskEventsMixin):
 
         if not response_time:
             response_time = time.time() - stimulus_start
-        trial = self.parse_trial(
-            trial_start_iso, outcome, response, response_time, sdt_type, stimulus
-        )
-        logging.debug("Trial info - {}".format(trial.__dict__))
+        trial = self.parse_trial(trial_start_iso, outcome, response, response_time, sdt_type, stimulus)
+        logging.debug(f"Trial info - {trial.__dict__}")
         self.trials.append(trial)
 
         # Hide stimulus at end of trial before calling handlers, so any reward dispensation associated
@@ -223,9 +201,7 @@ class Task(mixins.BaseClassMixin, mixins.WebFormMixin, mixins.TaskEventsMixin):
             self.on_no_response()
 
         # Correction trials
-        if self.corrections_enabled and (
-            outcome == NO_RESPONSE or outcome == INCORRECT
-        ):
+        if self.corrections_enabled and (outcome not in (NO_RESPONSE, INCORRECT)):
             self.correction_trial = True
         if self.corrections_enabled and self.correction_trial and (outcome == CORRECT):
             self.correction_trial = False
@@ -296,9 +272,9 @@ class Task(mixins.BaseClassMixin, mixins.WebFormMixin, mixins.TaskEventsMixin):
         self.on_task_end()
 
 
-class InvalidTask(Exception):
+class InvalidTaskError(Exception):
     pass
 
 
-class InvalidProtocol(Exception):
+class InvalidProtocolError(Exception):
     pass

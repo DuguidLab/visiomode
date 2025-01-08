@@ -12,14 +12,13 @@ converted file stored in Visiomode's cache directory.
 #  Distributed under the terms of the MIT Licence.
 
 # Note that `pynwb` is imported inside its own function to save on startup time
-import os
 import json
+import os
+from datetime import datetime
+
 import pandas as pd
 
 import visiomode.config as cfg
-
-from datetime import datetime
-
 
 config = cfg.Config()
 
@@ -28,7 +27,7 @@ def to_nwb(session_path):
     # Delayed import to save on startup time
     import pynwb
 
-    with open(session_path, "r") as f:
+    with open(session_path) as f:
         session = json.load(f)
 
     session_start_time = datetime.fromisoformat(session["timestamp"])
@@ -54,38 +53,24 @@ def to_nwb(session_path):
 
     nwbfile.subject = pynwb.file.Subject(subject_id=session["animal_id"])
 
-    nwbfile.add_trial_column(
-        name="stimulus", description="the visual stimuli during the trial"
-    )
+    nwbfile.add_trial_column(name="stimulus", description="the visual stimuli during the trial")
     nwbfile.add_trial_column(name="cue_onset", description="when the stimulus came on")
-    nwbfile.add_trial_column(
-        name="response", description="trial response type (left, right, lever)"
-    )
+    nwbfile.add_trial_column(name="response", description="trial response type (left, right, lever)")
     nwbfile.add_trial_column(name="response_time", description="response timestamp")
     nwbfile.add_trial_column(name="pos_x", description="response position in x-axis")
     nwbfile.add_trial_column(name="pos_y", description="response position in y-axis")
-    nwbfile.add_trial_column(
-        name="dist_x", description="response displacement in x-axis"
-    )
-    nwbfile.add_trial_column(
-        name="dist_y", description="response displacement in y-axis"
-    )
+    nwbfile.add_trial_column(name="dist_x", description="response displacement in x-axis")
+    nwbfile.add_trial_column(name="dist_y", description="response displacement in y-axis")
     nwbfile.add_trial_column(name="outcome", description="trial outcome")
-    nwbfile.add_trial_column(
-        name="correction", description="whether trial was a correction trial"
-    )
-    nwbfile.add_trial_column(
-        name="sdt_type", description="signal detection theory classification"
-    )
+    nwbfile.add_trial_column(name="correction", description="whether trial was a correction trial")
+    nwbfile.add_trial_column(name="sdt_type", description="signal detection theory classification")
 
     for trial in _flatten_trials(session):
         nwbfile.add_trial(**trial)
 
     nwbfile.create_device(
         name=session["device"],
-        description="Visiomode acquisition device version {}".format(
-            session.get("version", "<0.5.0")
-        ),
+        description="Visiomode acquisition device version {}".format(session.get("version", "<0.5.0")),
         manufacturer="Duguid Lab",
     )
 
@@ -100,7 +85,7 @@ def to_nwb(session_path):
 
 
 def to_csv(session_path):
-    with open(session_path, "r") as f:
+    with open(session_path) as f:
         session = json.load(f)
 
     df = pd.DataFrame(_flatten_trials(session))
@@ -116,26 +101,13 @@ def _flatten_trials(session):
     session_start_time = datetime.fromisoformat(session["timestamp"])
 
     for trial in session.get("trials"):
-        start_time = (
-            datetime.fromisoformat(trial["timestamp"]) - session_start_time
-        ).total_seconds()
+        start_time = (datetime.fromisoformat(trial["timestamp"]) - session_start_time).total_seconds()
 
-        stop_time = (
-            start_time
-            + trial["iti"]
-            + float(session["spec"]["stimulus_duration"]) / 1000
-        )
+        stop_time = start_time + trial["iti"] + float(session["spec"]["stimulus_duration"]) / 1000
         if trial["response"].get("timestamp"):
-            stop_time = (
-                datetime.fromisoformat(trial["response"]["timestamp"])
-                - session_start_time
-            ).total_seconds()
+            stop_time = (datetime.fromisoformat(trial["response"]["timestamp"]) - session_start_time).total_seconds()
 
-        stimulus = (
-            trial["stimulus"].get("common_name")
-            if trial["stimulus"] != "None"
-            else "None"
-        )
+        stimulus = trial["stimulus"].get("common_name") if trial["stimulus"] != "None" else "None"
         cue_onset = start_time + trial["iti"]
 
         response = trial["response"].get("name")

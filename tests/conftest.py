@@ -1,14 +1,16 @@
 """Configuration & fixtures for pytest."""
 
-import pytest
 import queue
+from collections.abc import Generator
 from datetime import datetime
-from typing import Generator
 
 import pygame
+import pytest
 
-from visiomode import webpanel, models, tasks, stimuli
 import visiomode.config as cfg
+from visiomode import core, models, stimuli, tasks, webpanel
+
+core.load_plugins()
 
 
 @pytest.fixture(scope="module")

@@ -7,14 +7,14 @@ import random
 import pygame as pg
 
 import visiomode.stimuli as stimulus
-import visiomode.tasks as tasks
+from visiomode import tasks
 
 
 class GoNoGo(tasks.Task):
     form_path = "tasks/gonogo.html"
 
     def __init__(self, target, distractor, corrections_enabled="false", **kwargs):
-        super(GoNoGo, self).__init__(**kwargs)
+        super().__init__(**kwargs)
 
         self.background = pg.Surface(self.screen.get_size())
         self.background = self.background.convert()
@@ -26,19 +26,11 @@ class GoNoGo(tasks.Task):
         self._trial_count = 0
 
         target = stimulus.get_stimulus(target)
-        target_params = {
-            key.replace("t_", ""): kwargs[key]
-            for key in kwargs.keys()
-            if key.startswith("t_")
-        }
+        target_params = {key.replace("t_", ""): kwargs[key] for key in kwargs.keys() if key.startswith("t_")}
         self.target = target(background=self.background, **target_params)
 
         distractor = stimulus.get_stimulus(distractor)
-        distractor_params = {
-            key.replace("d_", ""): kwargs[key]
-            for key in kwargs.keys()
-            if key.startswith("d_")
-        }
+        distractor_params = {key.replace("d_", ""): kwargs[key] for key in kwargs.keys() if key.startswith("d_")}
         self.distractor = distractor(background=self.background, **distractor_params)
 
         self.current_stimulus = self.target
@@ -59,7 +51,7 @@ class GoNoGo(tasks.Task):
         self.current_stimulus.update()
 
     def get_random_stimulus(self):
-        return random.choice([self.target, self.distractor])
+        return random.choice([self.target, self.distractor])  # noqa: S311
 
     @classmethod
     def get_common_name(cls):

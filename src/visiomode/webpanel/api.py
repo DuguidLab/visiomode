@@ -56,9 +56,7 @@ class SessionAPI(flask.views.MethodView):
 
 class StimulusAPI(flask.views.MethodView):
     def get(self, stimulus_id):
-        idx = flask.request.args.get(
-            "idx"
-        )  # used to differentiate multiple stimuli on same page
+        idx = flask.request.args.get("idx")  # used to differentiate multiple stimuli on same page
         stimulus = stimuli.get_stimulus(stimulus_id)
         if stimulus and stimulus.form_path:
             return flask.render_template(stimulus.get_form(), idx=idx)
@@ -98,9 +96,7 @@ class HistoryAPI(flask.views.MethodView):
                 with open(f"{config.data_dir}{os.sep}{session_id}.json") as handle:
                     session = json.load(handle)
             except Exception:
-                logging.exception(
-                    f"Couldn't get session data for session '{session_id}'."
-                )
+                logging.exception(f"Couldn't get session data for session '{session_id}'.")
             return {"session": session}
         else:  # All sessions were requested
             session_files = glob.glob(config.data_dir + os.sep + "*.json")
@@ -119,10 +115,8 @@ class HistoryAPI(flask.views.MethodView):
                                 "session_id": pathlib.Path(session_file).stem,
                             }
                         )
-                    except:
-                        logging.exception(
-                            "Couldn't read session JSON file, wrong format?"
-                        )
+                    except ValueError:
+                        logging.exception("Couldn't read session JSON file, wrong format?")
             return {"sessions": sessions}
 
     def post(self):
@@ -156,7 +150,6 @@ class HistoryAPI(flask.views.MethodView):
             except KeyError:
                 logging.error("Malformed request data for request type 'DELETE'.")
         elif request_type == "update":
-            print(request_data)
             try:
                 session_id = request_data["sessionId"]
                 updated_session_data = request_data["updatedSessionData"]
@@ -236,9 +229,7 @@ class SettingsAPI(flask.views.MethodView):
                 logging.warning("Clearing cache directory.")
                 cfg.clear_cache()
             elif request.get("path") == "app-data":
-                logging.warning(
-                    "Clearing app data directory. Will revert to default settings."
-                )
+                logging.warning("Clearing app data directory. Will revert to default settings.")
                 cfg.clear_data()
         return json.dumps({"success": True}), 200, {"ContentType": "application/json"}
 
@@ -261,7 +252,7 @@ class AnimalsAPI(flask.views.MethodView):
                 animals = Animal.get_animals()
                 for animal in animals:
                     Animal.delete_animal(animal["animal_id"])
-        elif (request_type == "update") or (request_type == "add"):
+        elif request_type in ("update", "add"):
             animal = Animal(
                 animal_id=request.get("id"),
                 date_of_birth=request.get("dob"),
@@ -291,8 +282,8 @@ class ExperimentersAPI(flask.views.MethodView):
     @staticmethod
     def post() -> tuple[str, int, dict[str, str]]:
         """Carry out POST request."""
-        request_type = flask.request.json.get("type")  # add, delete, update
-        request = flask.request.json.get("data")
+        request_type = flask.request.json.get("type") if flask.request.json else None  # add, delete, update
+        request = flask.request.json.get("data") if flask.request.json else None
         if request_type == "delete":
             experimenter_name = request.get("experimenter_name")
             if experimenter_name:
@@ -301,15 +292,15 @@ class ExperimentersAPI(flask.views.MethodView):
                 experimenters = Experimenter.get_experimenters()
                 for experimenter in experimenters:
                     Experimenter.delete_experimenter(experimenter["experimenter_name"])
-        elif (request_type == "update") or (request_type == "add"):
+        elif request_type in ("update", "add"):
             if request_type == "update":
                 previous_experimenter_name = request.get("previous_experimenter_name")
                 if Experimenter.get_experimenter(previous_experimenter_name):
                     Experimenter.delete_experimenter(previous_experimenter_name)
-            experimenter = Experimenter(
+            new_experimenter = Experimenter(
                 experimenter_name=request.get("experimenter_name"),
                 laboratory_name=request.get("laboratory_name"),
                 institution_name=request.get("institution_name"),
             )
-            experimenter.save()
+            new_experimenter.save()
         return json.dumps({"success": True}), 200, {"ContentType": "application/json"}

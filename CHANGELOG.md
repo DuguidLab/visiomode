@@ -12,6 +12,7 @@ Versions follow [Semantic Versioning](https://semver.org) (`<major>.<minor>.<pat
 - Update Flask and Werkzeug to >v3.0 ([#227](https://github.com/DuguidLab/visiomode/issues/227)).
 - Changed testing framework to pytest ([[#239](https://github.com/DuguidLab/visiomode/issues/239)], [[#242](https://github.com/DuguidLab/visiomode/issues/242)]).
 - Enhanced test coverage ([[#240](https://github.com/DuguidLab/visiomode/issues/240)], [[#211](https://github.com/DuguidLab/visiomode/issues/211)], [[#71](https://github.com/DuguidLab/visiomode/issues/71)], [[#72](https://github.com/DuguidLab/visiomode/issues/72)]).
+- Switch to `ruff` for linting and formatting ([[[#246](https://github.com/DuguidLab/visiomode/issues/246)]]).
 
 ## [0.6.0] - 2024-08-29
 

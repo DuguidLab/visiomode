@@ -4,18 +4,17 @@
 #  Copyright (c) 2020 Constantinos Eleftheriou <Constantinos.Eleftheriou@ed.ac.uk>
 #  Copyright (c) 2024 Olivier Delree <odelree@ed.ac.uk>
 #  Distributed under the terms of the MIT Licence.
-import os
+import copy
 import dataclasses
 import datetime
-import socket
 import json
-import typing
-import copy
 import logging
 import operator
+import os
+import socket
+import typing
 
 from visiomode import __about__, config
-
 
 cfg = config.Config()
 
@@ -82,14 +81,17 @@ class Trial(Base):
     outcome: str
     iti: float
     response: Response
-    timestamp: str = datetime.datetime.now().isoformat()
+    timestamp: typing.Optional[str] = None
     correction: bool = False
     response_time: int = 0
     stimulus: dict = dataclasses.field(default_factory=dict)
     sdt_type: str = "NA"
 
+    def __post_init__(self):
+        self.timestamp = datetime.datetime.now().isoformat()
+
     def __repr__(self):
-        return "<Trial {}>".format(str(self.timestamp))
+        return f"<Trial {self.timestamp!s}>"
 
 
 @dataclasses.dataclass
@@ -106,9 +108,12 @@ class Session(Base):
         timestamp: A string with the session start date and time (ISO format). Defaults to current date and time.
         notes: String with additional session notes. Defaults to empty string
         device: String hostname of the device running the session. Defaults to the hostname provided by the socket lib.
-        trials: A mutable list of session trials; each trial is an instance of the Trial dataclass. Automatically populated using task.trials after class instantiation.
-        animal_meta: A dictionary with animal metadata (see Animal class). Automatically populated using animal_id after class instantiation.
-        experimenter_meta: A dictionary with experimenter metadata (see Experimenter class). Automatically populated using experimenter_name after class instantiation.
+        trials: A mutable list of session trials; each trial is an instance of the Trial dataclass. Automatically
+            populated using task.trials after class instantiation.
+        animal_meta: A dictionary with animal metadata (see Animal class). Automatically populated using animal_id after
+            class instantiation.
+        experimenter_meta: A dictionary with experimenter metadata (see Experimenter class). Automatically populated
+            using experimenter_name after class instantiation.
         version: Visiomode version this was generated with.
     """
 
@@ -116,21 +121,25 @@ class Session(Base):
     experimenter_name: str
     experiment: str
     duration: float
+    timestamp: typing.Optional[str] = None
+    device: typing.Optional[str] = None
+    spec: typing.Optional[dict] = None
+    animal_meta: typing.Optional[dict] = None
+    experimenter_meta: typing.Optional[dict] = None
     task: None = None
-    spec: dict = None
     complete: bool = False
-    timestamp: str = datetime.datetime.now().isoformat()
     notes: str = ""
-    device: str = socket.gethostname()
-    trials: typing.List[Trial] = dataclasses.field(default_factory=list)
-    animal_meta: dict = None
-    experimenter_meta: dict = None
+    trials: list[Trial] = dataclasses.field(default_factory=list)
     version: str = __about__.__version__
 
     def __post_init__(self):
         self.animal_meta = Animal.get_animal(self.animal_id)
         self.experimenter_meta = Experimenter.get_experimenter(self.experimenter_name)
         self.trials = self.task.trials if self.task else []
+        self.timestamp = datetime.datetime.now().isoformat() if not self.timestamp else self.timestamp
+        self.device = socket.gethostname() if not self.device else self.device
+        self.animal_meta = {} if not self.animal_meta else self.animal_meta
+        self.experimenter_meta = {} if not self.experimenter_meta else self.experimenter_meta
 
     def to_dict(self):
         """Get class instance attributes as a dictionary.
@@ -162,7 +171,7 @@ class Session(Base):
         return session_id
 
     def __repr__(self):
-        return "<Session {}>".format(str(self.timestamp))
+        return f"<Session {self.timestamp!s}>"
 
 
 @dataclasses.dataclass
@@ -192,14 +201,10 @@ class Animal(Base):
         path = cfg.db_dir + os.sep + "animals.json"
 
         if os.path.exists(path):
-            with open(path, "r") as f:
+            with open(path) as f:
                 animals = json.load(f)
             # If the animal already exists, remove it and append the new one
-            animals = [
-                animal
-                for animal in animals
-                if not animal["animal_id"] == self.animal_id
-            ]
+            animals = [animal for animal in animals if not animal["animal_id"] == self.animal_id]
             animals.append(self.to_dict())
             with open(path, "w") as f:
                 json.dump(animals, f)
@@ -215,7 +220,7 @@ class Animal(Base):
         path = cfg.db_dir + os.sep + "animals.json"
 
         if os.path.exists(path):
-            with open(path, "r") as f:
+            with open(path) as f:
                 animals = json.load(f)
             for animal in animals:
                 if animal["animal_id"] == animal_id:
@@ -232,7 +237,7 @@ class Animal(Base):
         path = cfg.db_dir + os.sep + "animals.json"
 
         if os.path.exists(path):
-            with open(path, "r") as f:
+            with open(path) as f:
                 animals = json.load(f)
             return animals
         return []
@@ -243,12 +248,10 @@ class Animal(Base):
         path = cfg.db_dir + os.sep + "animals.json"
 
         if os.path.exists(path):
-            with open(path, "r") as f:
+            with open(path) as f:
                 animals = json.load(f)
             # If the animal exists, remove it
-            animals = [
-                animal for animal in animals if not animal["animal_id"] == animal_id
-            ]
+            animals = [animal for animal in animals if not animal["animal_id"] == animal_id]
             with open(path, "w") as f:
                 json.dump(animals, f)
 
@@ -267,22 +270,21 @@ class Experimenter(Base):
     laboratory_name: str
     institution_name: str
 
-    def save(self) -> None:
+    def save(self) -> str:
         """Append experimenter metadata to JSON database file."""
         database_path = f"{cfg.db_dir}{os.sep}experimenters.json"
 
         if not os.path.exists(database_path):
             experimenters = [self.to_dict()]
         else:
-            with open(database_path, "r") as handle:
+            with open(database_path) as handle:
                 experimenters = json.load(handle)
 
             # If experiment already exists, replace them
             experimenters = [
                 experimenter
                 for experimenter in experimenters
-                if not experimenter["experimenter_name"].lower()
-                == self.experimenter_name.lower()
+                if not experimenter["experimenter_name"].lower() == self.experimenter_name.lower()
             ]
             experimenters.append(self.to_dict())
 
@@ -302,14 +304,11 @@ class Experimenter(Base):
         database_path = f"{cfg.db_dir}{os.sep}experimenters.json"
 
         if os.path.exists(database_path):
-            with open(database_path, "r") as handle:
+            with open(database_path) as handle:
                 experimenters = json.load(handle)
 
             for experimenter in experimenters:
-                if (
-                    experimenter["experimenter_name"].lower()
-                    == experimenter_name.lower()
-                ):
+                if experimenter["experimenter_name"].lower() == experimenter_name.lower():
                     return experimenter
 
         return None
@@ -325,7 +324,7 @@ class Experimenter(Base):
 
         experimenters = []
         if os.path.exists(database_path):
-            with open(database_path, "r") as handle:
+            with open(database_path) as handle:
                 experimenters = json.load(handle)
 
         return experimenters
@@ -342,20 +341,15 @@ class Experimenter(Base):
         if not os.path.exists(database_path):
             return
 
-        with open(database_path, "r") as handle:
+        with open(database_path) as handle:
             experimenters = json.load(handle)
 
         try:
             experimenters.pop(
-                list(
-                    map(operator.itemgetter("experimenter_name"), experimenters)
-                ).index(experimenter_name)
+                list(map(operator.itemgetter("experimenter_name"), experimenters)).index(experimenter_name)
             )
         except ValueError:
-            logging.error(
-                f"Tried removing '{experimenter_name}' from database "
-                f"but it was not in it."
-            )
+            logging.error(f"Tried removing '{experimenter_name}' from database " f"but it was not in it.")
 
         with open(database_path, "w") as handle:
             json.dump(experimenters, handle)
