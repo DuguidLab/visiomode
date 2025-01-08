@@ -10,7 +10,6 @@ import pytest
 import visiomode.config as cfg
 from visiomode import core, models, stimuli, tasks, webpanel
 
-
 core.load_plugins()
 
 
