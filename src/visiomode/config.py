@@ -75,7 +75,7 @@ class Config:
 
     def __new__(
         cls,
-        config_path: typing.Optional[str] = None,
+        config_path: str = "",
     ) -> "Config":
         """Initialise Config singleton with a path to a configuration file.
 
@@ -90,8 +90,8 @@ class Config:
         if cls._instance is None:
             cls._instance = super().__new__(cls)
 
-            if config_path is None:
-                config_path = DEFAULT_CONFIG["config_path"]
+            if not config_path:
+                config_path = str(DEFAULT_CONFIG["config_path"])
 
             if os.path.exists(config_path):
                 logging.info(f"Loading config from {config_path}")

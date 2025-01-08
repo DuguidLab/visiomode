@@ -283,7 +283,7 @@ class ExperimentersAPI(flask.views.MethodView):
     def post() -> tuple[str, int, dict[str, str]]:
         """Carry out POST request."""
         request_type = flask.request.json.get("type") if flask.request.json else None  # add, delete, update
-        request = flask.request.json.get("data") if flask.request.json else None
+        request = flask.request.json.get("data") if flask.request.json else {}
         if request_type == "delete":
             experimenter_name = request.get("experimenter_name")
             if experimenter_name:
@@ -294,13 +294,13 @@ class ExperimentersAPI(flask.views.MethodView):
                     Experimenter.delete_experimenter(experimenter["experimenter_name"])
         elif request_type in ("update", "add"):
             if request_type == "update":
-                previous_experimenter_name = request.get("previous_experimenter_name")
+                previous_experimenter_name = str(request.get("previous_experimenter_name"))
                 if Experimenter.get_experimenter(previous_experimenter_name):
                     Experimenter.delete_experimenter(previous_experimenter_name)
             new_experimenter = Experimenter(
-                experimenter_name=request.get("experimenter_name"),
-                laboratory_name=request.get("laboratory_name"),
-                institution_name=request.get("institution_name"),
+                experimenter_name=str(request.get("experimenter_name")),
+                laboratory_name=str(request.get("laboratory_name")),
+                institution_name=str(request.get("institution_name")),
             )
             new_experimenter.save()
         return json.dumps({"success": True}), 200, {"ContentType": "application/json"}
