@@ -31,7 +31,8 @@ def load_module(path: str, name: Optional[str] = None) -> None:
 
     module = importlib.util.module_from_spec(spec)
     sys.modules[name] = module
-    spec.loader.exec_module(module)
+    if spec.loader:
+        spec.loader.exec_module(module)
 
     logging.info(f"Loaded plugin module {name}")
 
@@ -48,10 +49,14 @@ def load_modules_dir(path: str, exclude: Optional[list] = None) -> None:
     logging.info(f"Loading plugin modules from {path}")
     module_files = glob.glob(path + "/*.py")
 
-    excluded_modules = exclude.append("__init__") if exclude else ["__init__"]
-    logging.info(f"Excluding modules {excluded_modules}")
+    if exclude:
+        exclude.append("__init__")
+    else:
+        exclude = ["__init__"]
+
+    logging.info(f"Excluding modules {exclude}")
 
     for module_path in module_files:
-        if module_path.split("/")[-1].replace(".py", "") in excluded_modules:
+        if module_path.split("/")[-1].replace(".py", "") in exclude:
             continue
         load_module(module_path)
