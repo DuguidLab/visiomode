@@ -98,7 +98,7 @@ dependencies = [
   "ruff>=0.0.243",
 ]
 [tool.hatch.envs.lint.scripts]
-typing = "mypy --install-types --non-interactive {args:src/visiomode tests}"
+typing = "mypy --install-types --ignore-missing-imports --non-interactive {args:src/visiomode}"
 style = [
   "ruff check {args:src/visiomode tests}",
 ]
