@@ -81,7 +81,7 @@ class Trial(Base):
     outcome: str
     iti: float
     response: Response
-    timestamp: str
+    timestamp: typing.Optional[str] = None
     correction: bool = False
     response_time: int = 0
     stimulus: dict = dataclasses.field(default_factory=dict)
@@ -121,11 +121,11 @@ class Session(Base):
     experimenter_name: str
     experiment: str
     duration: float
-    timestamp: str
-    device: str
-    spec: dict
-    animal_meta: dict
-    experimenter_meta: dict
+    timestamp: typing.Optional[str] = None
+    device: typing.Optional[str] = None
+    spec: typing.Optional[dict] = None
+    animal_meta: typing.Optional[dict] = None
+    experimenter_meta: typing.Optional[dict] = None
     task: None = None
     complete: bool = False
     notes: str = ""
@@ -270,7 +270,7 @@ class Experimenter(Base):
     laboratory_name: str
     institution_name: str
 
-    def save(self) -> None:
+    def save(self) -> str:
         """Append experimenter metadata to JSON database file."""
         database_path = f"{cfg.db_dir}{os.sep}experimenters.json"
 
