@@ -4,6 +4,10 @@ Versions follow [Semantic Versioning](https://semver.org) (`<major>.<minor>.<pat
 
 ## [Unreleased]
 
+### Added
+
+- Ability to preplan protocol sessions, selectable on web interface under "Protocols" ([[[#106](https://github.com/DuguidLab/visiomode/issues/106)]]).
+
 ### Changed
 
 - Protocols have been renamed to Tasks ([[#237](https://github.com/DuguidLab/visiomode/issues/237)]).
