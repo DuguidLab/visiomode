@@ -94,18 +94,15 @@ run = "run-coverage --no-cov"
 [tool.hatch.envs.lint]
 detached = true
 dependencies = [
-  "black>=23.1.0",
   "mypy>=1.0.0",
   "ruff>=0.0.243",
 ]
 [tool.hatch.envs.lint.scripts]
 typing = "mypy --install-types --non-interactive {args:src/visiomode tests}"
 style = [
-  "ruff check {args:.}",
-  "black --check --diff {args:src/visiomode tests}",
+  "ruff check {args:src/visiomode tests}",
 ]
 fmt = [
-  "black {args:.}",
   "ruff check --fix {args:src/visiomode tests}",
   "ruff format {args:src/visiomode tests}",
   "style",
