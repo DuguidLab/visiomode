@@ -375,14 +375,55 @@ class Protocol(Base):
     created_on: str
     last_modified: str
     spec: dict = dataclasses.field(default_factory=dict)
+    _db_path = f"{cfg.db_dir}{os.sep}protocols.json"
 
-    def save(self): ...
+    def save(self) -> str:
+        """Append protocol schemas to JSON database file."""
+        if not os.path.exists(self._db_path):
+            protocols = [self.to_dict()]
+        else:
+            with open(self._db_path) as handle:
+                protocols = json.load(handle)
+
+        # If protocol exists, replace it
+        protocols = [protocol for protocol in protocols if not protocol["id"] == self.id]
+        protocols.append(self.to_dict())
+
+        with open(self._db_path, "w") as handle:
+            json.dump(protocols, handle)
+
+        return self.id
 
     @classmethod
-    def get_protocol(cls, protocol_id: str) -> typing.Optional[dict]: ...
+    def get_protocol(cls, protocol_id: str) -> typing.Optional[dict]:
+        """Return a protocol schema based on id.
+
+        Returns:
+            Dictionary with prtocols schema if it exists, otherwise None.
+        """
+        if os.path.exists(cls._db_path):
+            with open(cls._db_path) as handle:
+                protocols = json.load(handle)
+
+            for protocol in protocols:
+                if protocol["id"] == protocol_id:
+                    return protocol
+
+        return None
 
     @classmethod
-    def get_protocols(cls) -> typing.Optional[list[dict]]: ...
+    def get_protocols(cls) -> list[dict]:
+        """Returns all prtocol schemas from the database
+
+        Returns:
+            list[dict]: List of dictionaries, each dictionary containing a protocol schema
+        """
+        protocols = []
+        if os.path.exists(cls._db_path):
+            with open(cls._db_path) as handle:
+                protocols = json.load(handle)
+
+        return protocols
 
     @classmethod
     def delete_protocol(cls, protocol_id: str) -> None: ...
