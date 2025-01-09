@@ -304,3 +304,6 @@ class ExperimentersAPI(flask.views.MethodView):
             )
             new_experimenter.save()
         return json.dumps({"success": True}), 200, {"ContentType": "application/json"}
+
+
+class ProtocolsAPI(flask.views.MethodView): ...

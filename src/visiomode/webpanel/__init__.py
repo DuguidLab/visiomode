@@ -134,6 +134,12 @@ def create_app(action_q=None, log_q=None):
         methods=["GET", "POST"],
     )
 
+    app.add_url_rule(
+        "/api/protocols",
+        view_func=api.ExperimentersAPI.as_view("protocols_api"),
+        methods=["GET", "POST"],
+    )
+
     return app
 
 
