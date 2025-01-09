@@ -349,7 +349,7 @@ class Experimenter(Base):
                 list(map(operator.itemgetter("experimenter_name"), experimenters)).index(experimenter_name)
             )
         except ValueError:
-            logging.error(f"Tried removing '{experimenter_name}' from database " f"but it was not in it.")
+            logging.error(f"Tried removing '{experimenter_name}' from database but it was not in it.")
 
         with open(database_path, "w") as handle:
             json.dump(experimenters, handle)
@@ -413,10 +413,10 @@ class Protocol(Base):
 
     @classmethod
     def get_protocols(cls) -> list[dict]:
-        """Returns all prtocol schemas from the database
+        """Returns all prtocol schemas from the database.
 
         Returns:
-            list[dict]: List of dictionaries, each dictionary containing a protocol schema
+            list[dict]: List of dictionaries, each dictionary containing a protocol schema.
         """
         protocols = []
         if os.path.exists(cls._db_path):
@@ -426,4 +426,22 @@ class Protocol(Base):
         return protocols
 
     @classmethod
-    def delete_protocol(cls, protocol_id: str) -> None: ...
+    def delete_protocol(cls, protocol_id: str) -> None:
+        """Delete a protocol schema from the database.
+
+        Args:
+            protocol_id (str): Protocol ID to be deleted.
+        """
+        if not os.path.exists(cls._db_path):
+            return
+
+        with open(cls._db_path) as handle:
+            protocols = json.load(handle)
+
+        try:
+            protocols.pop(list(map(operator.itemgetter("id"), protocols)).index(protocol_id))
+        except ValueError:
+            logging.error(f"Tried removing protocol '{protocol_id}' from database but it was not in it.")
+
+        with open(cls._db_path, "w") as handle:
+            json.dump(protocols, handle)
