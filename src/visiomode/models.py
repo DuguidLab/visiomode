@@ -413,7 +413,7 @@ class Protocol(Base):
 
     @classmethod
     def get_protocols(cls) -> list[dict]:
-        """Returns all prtocol schemas from the database.
+        """Returns all protocol schemas from the database.
 
         Returns:
             list[dict]: List of dictionaries, each dictionary containing a protocol schema.
