@@ -382,8 +382,7 @@ class Protocol(Base):
     def get_protocol(cls, protocol_id: str) -> typing.Optional[dict]: ...
 
     @classmethod
-    def get_protocols(cls) -> list[dict]:
-        return [{}]
+    def get_protocols(cls) -> typing.Optional[list[dict]]: ...
 
     @classmethod
     def delete_protocol(cls, protocol_id: str) -> None: ...
