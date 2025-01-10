@@ -50,7 +50,11 @@ def create_app(action_q=None, log_q=None):
     @app.route("/settings")
     def settings():
         """Settings page."""
-        return flask.render_template("settings.html")
+        return flask.render_template(
+            "settings.html",
+            tasks=tasks.Task.get_children(),
+            stimuli=stimuli.Stimulus.get_children(),
+        )
 
     @app.route("/settings-animals")
     def settings_animals():
