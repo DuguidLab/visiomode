@@ -258,3 +258,16 @@ function deleteAnimalData() {
 deleteAnimalDataButton.onclick = function () {
     deleteAnimalData();
 }
+
+
+// Protocols
+
+task_selector = document.getElementById('task');
+
+task_selector.onchange = function () {
+    $.get("/api/task-form/" + task_selector.value).done(function (data) {
+        $('#task-options').html(data);
+    })
+}
+
+task_selector.onchange();

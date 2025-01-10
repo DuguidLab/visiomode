@@ -70,7 +70,8 @@
                     </div>
                     <div class="card-body" style="min-height: 178px;">
                         <ul style="list-style-type: none" class="list-group list-group-flush">
-                            <li class="list-group-item"><a href="#">Add new protocol</a></li>
+                            <li class="list-group-item"><a href="#" data-toggle="modal"
+                                data-target="#addProtocol">Add new protocol</a></li>
                             <li class="list-group-item"><a href="#">View/edit protocols</a></li>
                             <li class="list-group-item"><a href="#">Export protocols</a></li>
                             <li class="list-group-item"><a href="#" class="text-danger">Delete all protocols</a>
@@ -422,6 +423,62 @@
             </div>
         </div>
     </div>
+</div>
+
+
+<!-- Protocols -->
+<div class="modal fade" id="addProtocol" tabindex="-1" role="dialog"
+aria-labelledby="addProtocolTitle" aria-hidden="true">
+<div class="modal-dialog modal-lg" role="document">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h5 class="modal-title" id="addProtocolLongTitle">Add protocol</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+        <div class="modal-body">
+            <div class="container-fluid">
+                <form>
+                    <div class="form-group row">
+                        <label for="name" class="col-md-4 col-form-label">Protocol name<sup>*</sup></label>
+                        <div class="col-md-5">
+                            <input type="text" class="form-control" id="name" required>
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label for="name" class="col-md-4 col-form-label">Created by<sup>*</sup></label>
+                        <div class="col-md-5">
+                            <input type="text" class="form-control" id="created_by" required>
+                        </div>
+                    </div>
+                    <hr>
+                    <div class="form-group row">
+                        <div class="col">
+                            <label for="task" >Task</label>
+                                <select id="task" class="custom-select form-control mb-3">
+                                    {% for task in tasks %}
+                                        <option value="{{ task.get_identifier() }}">{{ task.get_common_name() }}</option>
+                                    {% endfor %}
+                                </select>
+                        </div>
+                        <div class="col">
+                            <label for="duration">Duration (mins)</label>
+                            <input id="duration" class="form-control mb-3"
+                                   type="number" value="30"
+                                   min="0" step="5">
+                        </div>
+                    </div>
+                    <div id="task-options"></div>
+                </form>
+            </div>
+        </div>
+        <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+            <button type="button" class="btn btn-primary" id="add-protocol-btn">Save protocol</button>
+        </div>
+    </div>
+</div>
 </div>
 
 {% endblock %}
