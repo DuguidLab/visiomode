@@ -5,6 +5,22 @@
  * Distributed under the terms of the MIT Licence.
  */
 
+// Monkey-patch object prototype to add a python-like "pop" function
+// See https://stackoverflow.com/questions/49847788/is-there-a-javascript-object-equivalent-to-pythons-pop-on-dicts/49847870#49847870
+Object.defineProperty(Object.prototype, 'pop', {
+    enumerable: false,
+    configurable: true,
+    writable: false,
+    value: function (key) {
+      const ret = this[key];
+      delete this[key];
+
+      return ret;
+    }
+  });
+
+// ------------------------------------
+
 let currentSettings = {};
 
 let displaySettingsButton = document.getElementById('display-settings-btn');
@@ -17,6 +33,8 @@ let deleteAnimalDataButton = document.getElementById('delete-animal-data-btn');
 
 let addExperimenterButton = document.getElementById('add-experimenter-btn');
 let deleteExperimenterDataButton = document.getElementById('delete-experimenter-data-btn');
+
+let addProtocolButton = document.getElementById("add-protocol-btn");
 
 
 /// Display & storage settings
@@ -271,3 +289,33 @@ task_selector.onchange = function () {
 }
 
 task_selector.onchange();
+
+function addProtocol() {
+    let form = document.getElementById("protocol-add-form");
+    if (form.reportValidity()) {
+        let fields = [...form.getElementsByClassName('form-control')];
+        let request = fields.reduce((_, x) => ({ ..._, [x.id]: x.value }), {});
+
+        $.ajax({
+            type: 'POST',
+            url: "/api/protocols",
+            data: JSON.stringify({
+                type: "add",
+                data: {
+                    "name": request.pop("name"),
+                    "created_by": request.pop("created_by"),
+                    "protocol_spec": request,
+                },
+            }),
+            dataType: "json",
+            contentType: "application/json",
+            success: function (data) {
+                $("#addProtocol").modal("hide");
+            }
+        });
+    }
+}
+
+addProtocolButton.onclick = function () {
+    addProtocol();
+}
