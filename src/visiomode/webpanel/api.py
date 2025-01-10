@@ -11,13 +11,14 @@ import os
 import pathlib
 import queue
 import socket
+import datetime
 
 import flask
 import flask.views
 
 import visiomode.config as cfg
 from visiomode import devices, stimuli, tasks
-from visiomode.models import Animal, Experimenter
+from visiomode.models import Animal, Experimenter, Protocol
 from visiomode.webpanel import export
 
 
@@ -306,4 +307,32 @@ class ExperimentersAPI(flask.views.MethodView):
         return json.dumps({"success": True}), 200, {"ContentType": "application/json"}
 
 
-class ProtocolsAPI(flask.views.MethodView): ...
+class ProtocolsAPI(flask.views.MethodView):
+    @staticmethod
+    def get() -> dict:
+        return {"protocols": Protocol.get_protocols()}
+
+    @staticmethod
+    def post() -> tuple[str, int, dict[str, str]]:
+        request_type = flask.request.json.get("type") if flask.request.json else None
+        request = flask.request.json.get("data") if flask.request.json else {}
+
+        if request_type in ("add", "update"):
+            protocol = Protocol(
+                id=request.get("id", ""),
+                name=request.get("name", ""),
+                created_by=request.get("created_by", ""),
+                created_on=request.get("created_on", datetime.datetime.now().isoformat()),
+                last_modified=datetime.datetime.now().isoformat(),
+                spec=request.get("spec", {}),
+            )
+            protocol.save()
+        elif request_type == "delete":
+            if request.get("id"):
+                Protocol.delete_protocol(request.get("id", ""))
+            else:
+                protocols = Protocol.get_protocols()
+                for _protocol in protocols:
+                    Protocol.delete_protocol(_protocol["id"])
+
+        return json.dumps({"success": True}), 200, {"ContentType": "application/json"}
