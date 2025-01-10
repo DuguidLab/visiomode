@@ -66,6 +66,11 @@ def create_app(action_q=None, log_q=None):
         """Experimenters view/edit page."""
         return flask.render_template("settings-experimenters.html")
 
+    @app.route("/settings-protocols")
+    def settings_protocols():
+        """Protocols view/edit page."""
+        return flask.render_template("settings-protocols.html")
+
     @app.route("/help")
     def docs():
         """Help / documentation page."""
