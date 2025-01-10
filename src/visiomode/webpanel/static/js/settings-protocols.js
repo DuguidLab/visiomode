@@ -58,6 +58,16 @@ table.onclick = function (event) {
     document.getElementById("institution-name").value = selected_protocol.institution_name;
 }
 
+task_selector = document.getElementById('task');
+
+task_selector.onchange = function () {
+    $.get("/api/task-form/" + task_selector.value).done(function (data) {
+        $('#task-options').html(data);
+    })
+}
+
+task_selector.onchange();
+
 function updateProtocol() {
     let protocolName = document.getElementById("protocol-name").value;
     let laboratoryName = document.getElementById("laboratory-name").value;

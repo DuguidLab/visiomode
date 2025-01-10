@@ -69,7 +69,11 @@ def create_app(action_q=None, log_q=None):
     @app.route("/settings-protocols")
     def settings_protocols():
         """Protocols view/edit page."""
-        return flask.render_template("settings-protocols.html")
+        return flask.render_template(
+            "settings-protocols.html",
+            tasks=tasks.Task.get_children(),
+            stimuli=stimuli.Stimulus.get_children(),
+        )
 
     @app.route("/help")
     def docs():
