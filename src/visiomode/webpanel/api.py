@@ -308,12 +308,24 @@ class ExperimentersAPI(flask.views.MethodView):
 
 
 class ProtocolsAPI(flask.views.MethodView):
+    """API for interacting with the Protocols model."""
+
     @staticmethod
     def get() -> dict:
+        """Get protocol schemas.
+
+        Returns:
+            dict: A dictionary containing a list of protocols under the "protocols" key.
+        """
         return {"protocols": Protocol.get_protocols()}
 
     @staticmethod
     def post() -> tuple[str, int, dict[str, str]]:
+        """Service POST request to add, update or delete a protocol schema.
+
+        Returns:
+            tuple[str, int, dict[str, str]]: Success tuple, to be consumed by a browser.
+        """
         request_type = flask.request.json.get("type") if flask.request.json else None
         request = flask.request.json.get("data") if flask.request.json else {}
 
