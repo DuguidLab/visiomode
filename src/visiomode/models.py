@@ -12,8 +12,8 @@ import logging
 import operator
 import os
 import socket
-import uuid
 import typing
+import uuid
 
 from visiomode import __about__, config
 

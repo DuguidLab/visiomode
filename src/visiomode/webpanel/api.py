@@ -4,6 +4,7 @@
 #  Copyright (c) 2020 Constantinos Eleftheriou <Constantinos.Eleftheriou@ed.ac.uk>
 #  Copyright (c) 2024 Olivier Delree <odelree@ed.ac.uk>
 #  Distributed under the terms of the MIT Licence.
+import datetime
 import glob
 import json
 import logging
@@ -11,7 +12,6 @@ import os
 import pathlib
 import queue
 import socket
-import datetime
 
 import flask
 import flask.views
