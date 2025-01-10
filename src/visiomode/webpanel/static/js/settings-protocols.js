@@ -51,22 +51,30 @@ function loadExperimenters() {
 table.onclick = function (event) {
     let protocol_id = event.target.parentNode.cells[5].innerHTML;
     let selected_protocol = protocols.find(element => element.id === protocol_id);
-    console.log(selected_protocol);
+
     $("#updateProtocol").modal();
-    document.getElementById("protocol-name").value = selected_protocol.protocol_name;
-    document.getElementById("laboratory-name").value = selected_protocol.laboratory_name;
-    document.getElementById("institution-name").value = selected_protocol.institution_name;
+
+    document.getElementById("id").value = selected_protocol.id;
+    document.getElementById("name").value = selected_protocol.name;
+    document.getElementById("created_by").value = selected_protocol.created_by;
+    document.getElementById("created_on").value = selected_protocol.created_on;
+    document.getElementById("last_modified").value = selected_protocol.last_modified;
+    document.getElementById("task").value = selected_protocol.protocol_spec.task;
+
+    let task_selector = document.getElementById('task');
+
+    task_selector.onchange = function () {
+        $.get("/api/task-form/" + task_selector.value).done(function (data) {
+            $('#task-options').html(data);
+        })
+    }
+    task_selector.onchange();
+
+    for (const [key, value] of Object.entries(selected_protocol.protocol_spec)) {
+        document.getElementById(key).value = value;
+        console.log(key);
+    }
 }
-
-task_selector = document.getElementById('task');
-
-task_selector.onchange = function () {
-    $.get("/api/task-form/" + task_selector.value).done(function (data) {
-        $('#task-options').html(data);
-    })
-}
-
-task_selector.onchange();
 
 function updateProtocol() {
     let protocolName = document.getElementById("protocol-name").value;
