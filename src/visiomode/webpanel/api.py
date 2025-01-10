@@ -336,7 +336,7 @@ class ProtocolsAPI(flask.views.MethodView):
                 created_by=request.get("created_by", ""),
                 created_on=request.get("created_on", datetime.datetime.now().isoformat()),
                 last_modified=datetime.datetime.now().isoformat(),
-                spec=request.get("spec", {}),
+                protocol_spec=request.get("protocol_spec", {}),
             )
             protocol.save()
         elif request_type == "delete":
