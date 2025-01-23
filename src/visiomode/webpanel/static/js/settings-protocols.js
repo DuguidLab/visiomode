@@ -30,7 +30,6 @@ function loadExperimenters() {
             let protocolsTableData = document.getElementById("protocolsTableData");
             protocolsTableData.innerHTML = "";
             protocols.forEach(protocol => {
-                console.log(protocol.protocol_spec.target)
                 let row = protocolsTableData.insertRow();
                 let protocol_name = row.insertCell(0);
                 protocol_name.innerHTML = protocol.name;
@@ -63,17 +62,58 @@ table.onclick = function (event) {
 
     let task_selector = document.getElementById('task');
 
+    let updateProperty = function(key, value) {
+        let deferred = $.Deferred();
+
+        document.getElementById(key).value = value;
+        document.getElementById(key).onchange();
+
+        deferred.resolve();
+
+        return deferred
+    }
+
+    let updateStimulusSelectors = function() {
+        let deferred = $.Deferred();
+
+        if ('response_device' in selected_protocol.protocol_spec) {
+            document.getElementById('response_device').value = selected_protocol.protocol_spec.response_device;
+            document.getElementById('response_device').onchange();
+        }
+        if ('target' in selected_protocol.protocol_spec) {
+            document.getElementById('target').value = selected_protocol.protocol_spec.target;
+            document.getElementById('target').onchange();
+        }
+        if ('distractor' in selected_protocol.protocol_spec) {
+            document.getElementById('distractor').value = selected_protocol.protocol_spec.distractor;
+            document.getElementById('distractor').onchange();
+        }
+
+        deferred.resolve();
+
+        return deferred
+    }
+
     task_selector.onchange = function () {
         $.get("/api/task-form/" + task_selector.value).done(function (data) {
             $('#task-options').html(data);
+        }).then(_ =>  {
+            updateStimulusSelectors().then(_ => {
+                console.log(selected_protocol.protocol_spec);
+                for (const [key, value] of Object.entries(selected_protocol.protocol_spec)) {
+                    console.log(key);
+                    if (document.getElementById(key)) {
+                        document.getElementById(key).value = value;
+                    }
+                    else {
+                        console.log("Couldn't find " + key);
+                    }
+                }
+            })
         })
     }
-    task_selector.onchange();
-
-    for (const [key, value] of Object.entries(selected_protocol.protocol_spec)) {
-        document.getElementById(key).value = value;
-        console.log(key);
-    }
+    console.log("hello");
+    task_selector.onchange()
 }
 
 function updateProtocol() {
