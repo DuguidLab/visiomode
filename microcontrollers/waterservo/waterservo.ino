@@ -19,19 +19,27 @@ void setup() {
 }
 
 void loop() {
-  buttonState = digitalRead(BUTTON_PIN);
-  if (buttonState == 1) {
-    if (dispensing == false) {
-      dispensing = true;
-      dispenseReward(false);
-      dispensing = false;
-    }
-  }
+  // buttonState = digitalRead(BUTTON_PIN);
+  // if (buttonState == 1) {
+  //   if (dispensing == false) {
+  //     // Serial.println("PRESSED");
+  //     dispensing = true;
+  //     dispenseReward(false);
+  //     dispensing = false;
+  //   }
+  // }
   if (Serial.available() > 0) {
     char state = Serial.read();
     if (state == 'T') {
       dispenseReward(true);
     }
+    if (state == 'S') {
+        if (dispensing == false) {
+          dispensing = true;
+          dispenseReward(false);
+          dispensing = false;
+        }
+      }
     if (state == 'H' || state == 'h') {
       digitalWrite(LED_BUILTIN, HIGH);
       Serial.println("LED ON");
