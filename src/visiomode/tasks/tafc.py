@@ -27,13 +27,15 @@ class TwoAlternativeForcedChoice(tasks.Task):
         self.separator = pg.Rect(((0, 0), (self.separator_size, self.screen.get_height())))
         self.separator.centerx = self.screen.get_rect().centerx
 
+        self.stimulus_width = (self.screen.get_size()[0] - self.separator_size) // 2
+
         target = stimulus.get_stimulus(target)
         target_params = {key.replace("t_", ""): kwargs[key] for key in kwargs.keys() if key.startswith("t_")}
-        self.target = target(background=self.background, **target_params)
+        self.target = target(background=self.background, width=self.stimulus_width, **target_params)
 
         distractor = stimulus.get_stimulus(distractor)
         distractor_params = {key.replace("d_", ""): kwargs[key] for key in kwargs.keys() if key.startswith("d_")}
-        self.distractor = distractor(background=self.background, **distractor_params)
+        self.distractor = distractor(background=self.background, width=self.stimulus_width, **distractor_params)
 
     def show_stimulus(self):
         if not self.correction_trial:
@@ -56,8 +58,12 @@ class TwoAlternativeForcedChoice(tasks.Task):
         self.target.update()
 
     def shuffle_centerx(self):
-        centers = [
-            0 - (self.separator_size / 2),
-            self.screen.get_width() + (self.separator_size / 2),
-        ]
+        # centers = [
+        #     0 - (self.separator_size / 2),
+        #     self.screen.get_width() + (self.separator_size / 2),
+        # ]
+        centers = (
+            ((self.screen.get_width() // 2) - (self.separator_size // 2)) // 2,
+            (self.screen.get_width() // 2) + (self.separator_size // 2) + (self.stimulus_width // 2),
+        )
         return random.sample(centers, 2)
