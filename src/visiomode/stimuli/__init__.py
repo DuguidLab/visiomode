@@ -53,13 +53,13 @@ def grayscale_array(array, contrast=1.0):
 class Stimulus(pg.sprite.Sprite, mixins.BaseClassMixin, mixins.WebFormMixin):
     form_path = "stimuli/stimulus.html"
 
-    def __init__(self, background, **kwargs):
+    def __init__(self, background, width=None, height=None, **kwargs):
         super().__init__()
         self.screen = pg.display.get_surface()
         self.background = background
 
-        self.height = self.screen.get_height()
-        self.width = self.screen.get_width()
+        self.height = height if height else self.screen.get_height()
+        self.width = width if width else self.screen.get_width()
 
         self.hidden = True
 
