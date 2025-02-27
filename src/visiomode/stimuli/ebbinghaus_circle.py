@@ -10,8 +10,8 @@ import pygame as pg
 from visiomode import stimuli
 
 
-class EbbinghausDot(stimuli.Stimulus):
-    form_path = "stimuli/ebbinghaus_dot.html"
+class EbbinghausCircle(stimuli.Stimulus):
+    form_path = "stimuli/ebbinghaus_circle.html"
 
     def __init__(
         self,
