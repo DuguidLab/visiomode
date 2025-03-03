@@ -1,0 +1,83 @@
+<div class="row">
+    <div class="col">
+        <label for="{{ idx or ''}}center_sizes">Center circle size</label>
+        <select multiple class="form-control mb-3" id="{{ idx or ''}}center_size" aria-describedby="centerSizeHelpBlock">
+                <option value="10">10 px</option>
+                <option value="20" selected>20 px</option>
+                <option value="30">30 px</option>
+                <option value="40">40 px</option>
+        </select>
+        <small id="centerSizeHelpBlock" class="form-text text-muted mb-3">
+            Hold down Ctrl (Cmd on MacOS) or Shift to select multiple options if you wish for the center circle size to vary across trials.
+        </small>
+    </div>
+    <div class="col">
+        <label for="{{ idx or '' }}center_colour">Center circle colour</label>
+        <input id="{{ idx or '' }}center_colour" class="form-control mb-3"
+               type="color" value="#aaaaaa">
+    </div>
+</div>
+
+<div class="row">
+    <div class="col">
+        <label for="{{ idx or ''}}context_enabled">Context circles</label>
+        <select id="{{ idx or ''}}context_enabled" class="custom-select form-control mb-3">
+            <option value="true">Enabled</option>
+            <option value="false">Disabled</option>
+        </select>
+    </div>
+    <div class="col">
+        <label for="{{ idx or ''}}n_context">Number of context circles</label>
+        <input id="{{ idx or ''}}n_context" class="form-control mb-3"
+               type="number" value="6"
+               min="4" max="12" step="1">
+    </div>
+</div>
+
+<div class="row">
+    <div class="col">
+        <label for="{{ idx or ''}}ratios">Context circle size ratio</label>
+        <select multiple class="form-control mb-3" id="{{ idx or ''}}ratios" aria-describedby="{{ idx or ''}}ratioHelpBlock">
+                <option>0.25</option>
+                <option selected>0.5</option>
+                <option>0.75</option>
+                <option selected>1.0</option>
+                <option>1.25</option>
+                <option selected>1.5</option>
+                <option>1.75</option>
+                <option selected>2.0</option>
+                <option>2.25</option>
+                <option>2.5</option>
+        </select>
+        <small id="{{ idx or ''}}centerSizeHelpBlock" class="form-text text-muted mb-3">
+            Hold down Ctrl (Cmd on MacOS) or Shift to select multiple options if you wish for the context circle size relative to the center circle to vary across trials.
+        </small>
+    </div>
+    <div class="col">
+        <label for="{{ idx or '' }}context_colour">Context circle colour</label>
+        <input id="{{ idx or '' }}context_colour" class="form-control mb-3"
+               type="color" value="#aaaaaa">
+    </div>
+</div>
+
+<script>
+    // Disable context circle options if context is disabled
+    context_selector = document.getElementById("{{ idx or ''}}context_enabled");
+
+    context_selector.onchange = function () {
+        if (context_selector.value === "true") {
+            document.getElementById("{{ idx or ''}}n_context").disabled = false;
+            document.getElementById("{{ idx or ''}}ratios").disabled = false;
+            document.getElementById("{{ idx or ''}}context_colour").disabled = false;
+        }
+        if (context_selector.value === "false") {
+            document.getElementById("{{ idx or ''}}n_context").disabled = true;
+            document.getElementById("{{ idx or ''}}ratios").disabled = true;
+            document.getElementById("{{ idx or ''}}context_colour").disabled = true;
+        }
+
+        return false;
+    };
+
+    context_selector.onchange();
+</script>

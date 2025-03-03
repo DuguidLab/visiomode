@@ -20,18 +20,18 @@ class EbbinghausCircle(stimuli.Stimulus):
         n_context=6,
         center_sizes=(10, 20, 30),
         ratios=(0.25, 0.5, 1, 2),
-        center_colour=(127, 127, 127),
-        context_colour=(127, 127, 127),
+        center_colour="#aaaaaa",
+        context_colour="#aaaaaa",
         **kwargs,
     ):
         super().__init__(background, **kwargs)
 
-        self.center_sizes = center_sizes
-        self.ratios = ratios
-        self.context_enabled = context_enabled
-        self.n_context = n_context
-        self.center_colour = center_colour
-        self.context_colour = context_colour
+        self.center_sizes = [int(size) for size in center_sizes]
+        self.ratios = [float(ratio) for ratio in ratios]
+        self.context_enabled = bool(context_enabled)
+        self.n_context = int(n_context)
+        self.center_colour = pg.Color(center_colour)
+        self.context_colour = pg.Color(context_colour)
 
         self.image = pg.Surface((self.width, self.height))
         self.rect = self.image.get_rect()
