@@ -26,7 +26,8 @@ session_button.onclick = function () {
     if (form.reportValidity() && (session_status !== "active")) {
         // Start session
         let fields = [...form.getElementsByClassName('form-control')];
-        let request = fields.reduce((_, x) => ({ ..._, [x.id]: x.value }), {});
+
+        let request = fields.reduce((_, x) => ({ ..._, [x.id]: $("#" + x.id).val() }), {});
         console.log(JSON.stringify(request))
 
         $.ajax({
