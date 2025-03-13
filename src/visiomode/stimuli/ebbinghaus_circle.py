@@ -18,7 +18,7 @@ class EbbinghausCircle(stimuli.Stimulus):
         background,
         context_enabled=True,
         n_context=6,
-        center_sizes=(10, 20, 30),
+        center_size=(10, 20, 30),
         ratios=(0.25, 0.5, 1, 2),
         center_colour="#aaaaaa",
         context_colour="#aaaaaa",
@@ -26,7 +26,7 @@ class EbbinghausCircle(stimuli.Stimulus):
     ):
         super().__init__(background, **kwargs)
 
-        self.center_sizes = [int(size) for size in center_sizes]
+        self.center_size = [int(size) for size in center_size]
         self.ratios = [float(ratio) for ratio in ratios]
         self.context_enabled = bool(context_enabled)
         self.n_context = int(n_context)
@@ -37,7 +37,7 @@ class EbbinghausCircle(stimuli.Stimulus):
         self.rect = self.image.get_rect()
 
     def generate_new_trial(self):
-        center_size = random.sample(self.center_sizes, 1)[0]
+        center_size = random.sample(self.center_size, 1)[0]
         context_ratio = random.sample(self.ratios, 1)[0]
 
         # draw centre circle
