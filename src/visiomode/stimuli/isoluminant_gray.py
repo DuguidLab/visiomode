@@ -11,4 +11,4 @@ class IsoluminantGray(solidcolour.SolidColour):
     form_path = ""
 
     def __init__(self, background, **kwargs):
-        super().__init__(background, colour=(127, 127, 127))
+        super().__init__(background, colour=(127, 127, 127), **kwargs)
