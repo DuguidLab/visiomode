@@ -39,12 +39,12 @@ class TwoAlternativeForcedChoice(tasks.Task):
 
     def show_stimulus(self):
         if not self.correction_trial:
-            self.target.generate_new_trial()
-            self.distractor.generate_new_trial()
-
             target_x, distr_x = self.shuffle_centerx()
             self.target.set_centerx(target_x)
             self.distractor.set_centerx(distr_x)
+
+            self.target.generate_new_trial()
+            self.distractor.generate_new_trial()
 
         self.target.show()
         self.distractor.show()
@@ -63,7 +63,7 @@ class TwoAlternativeForcedChoice(tasks.Task):
         #     self.screen.get_width() + (self.separator_size / 2),
         # ]
         centers = (
-            ((self.screen.get_width() // 2) - (self.separator_size // 2)) // 2,
-            (self.screen.get_width() // 2) + (self.separator_size // 2) + (self.stimulus_width // 2),
+            ((self.screen.get_width() / 2) - (self.separator_size / 2)) / 2,
+            (self.screen.get_width() / 2) + (self.separator_size / 2) + (self.stimulus_width / 2),
         )
         return random.sample(centers, 2)
