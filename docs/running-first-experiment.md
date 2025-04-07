@@ -10,9 +10,14 @@ Now that we've built our arena, we can start running experiments with Visiomode.
 
 ## Setting up the touchscreen module
 
-1. Power on the Raspberry Pi 4 and wait for the desktop to load.
+1. Power on the Raspberry Pi 4 and wait for the desktop to load. Make a note of the Pi's IP address, if this is not already known (see [the previous section](index.md)).
 
 2. Connect to the raspberry pi via SSH.
+    On Linux or MacOS, open a terminal and type the following. If you're on Windows, open a PowerShell terminal instead.
+    ```bash
+    ssh <YOUR-RPI-USERNAME>@<YOUR-IP-ADDRESS>
+    ```
+    Replacing `<YOUR-RPI-USERNAME>` & `<YOUR-IP-ADDRESS>` with the username you set when setting up the Raspberry Pi and the IP address you took note of in the previous step. You may be prompted for your password if you created one when setting up your Raspberry Pi.
 
 3. Start the Visiomode server by running the following command:
 
@@ -23,7 +28,7 @@ Now that we've built our arena, we can start running experiments with Visiomode.
 4. Open a web browser on your computer and navigate to the following URL:
 
     ```bash
-    http://<raspberry-pi-ip-address>:5000
+    http://<YOUR-IP-ADDRESS>:5000
     ```
 
     You should be greeted by Visiomode's web interface!
@@ -38,24 +43,7 @@ Now that we've built our arena, we can start running experiments with Visiomode.
 
 ## Running your first experiment
 
-1. On the web interface, navigate to the "Dashboard" tab and change the task parameters to match the table below. Click "More Options" to see all available settings.
 
-    | Setting                | Value                                   |
-    |------------------------|-----------------------------------------|
-    | Animal ID              | _The animal's identifier_               |
-    | Experiment Reference   | _Identifier for the experimental cohort_ |
-    | Protocol               | Single Target                           |
-    | Duration               | 30                                      |
-    | Reward Profile         | Water Reward                            |
-    | Device Address         | _USB device path, usually /dev/ttyUSB0_ |
-    | Inter-Trial Interval   | 4000                                    |
-    | Stimulus Interval      | 10000                                   |
-    | Target                 | Moving Grating                          |
-    | Target Period (cycles) | 30                                      |
-    | Target Contrast        | 1.0                                     |
-    | Target Frequency (Hz)  | 1.0                                     |
-
-2. Place the mouse in the arena and start the experiment by clicking the "Start" button on the web interface.
 
 ## Cleaning up
 
