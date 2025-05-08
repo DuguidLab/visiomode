@@ -67,10 +67,6 @@ class Stimulus(pg.sprite.Sprite, mixins.BaseClassMixin, mixins.WebFormMixin):
         self.hidden = False
 
         self.screen.blit(self.image, self.rect)
-        print(self.get_common_name())
-        print(self.rect.x, self.rect.y)
-        print(self.rect.width, self.rect.height)
-        print(self.rect.centerx, self.rect.centery)
 
     def draw(self):
         self.screen.blit(self.image, self.rect)
