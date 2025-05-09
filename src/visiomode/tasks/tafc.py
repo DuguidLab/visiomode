@@ -37,15 +37,20 @@ class TwoAlternativeForcedChoice(tasks.Task):
         distractor_params = {key.replace("d_", ""): kwargs[key] for key in kwargs.keys() if key.startswith("d_")}
         self.distractor = distractor(background=self.background, width=self.stimulus_width, **distractor_params)
 
-    def show_stimulus(self):
+    def on_trial_start(self):
         if not self.correction_trial:
             target_x, distr_x = self.shuffle_centerx()
+            print(target_x, distr_x)
             self.target.set_centerx(target_x)
             self.distractor.set_centerx(distr_x)
 
+            print("target")
             self.target.generate_new_trial()
+            print("dist")
             self.distractor.generate_new_trial()
+        return super().on_trial_start()
 
+    def show_stimulus(self):
         self.target.show()
         self.distractor.show()
 

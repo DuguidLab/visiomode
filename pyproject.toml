@@ -31,7 +31,7 @@ dependencies = [
   "Werkzeug>=3.0.3",
   "pyserial>=3.5",
   "numpy>=1.22",
-  "pygame>=2.5.1",
+  "pygame>=2.6.1",
   "pynwb>=2.2.0",
 ]
 dynamic = ["version"]
