@@ -39,19 +39,18 @@ class EbbinghausCircle(stimuli.Stimulus):
     def generate_new_trial(self):
         super().generate_new_trial()
 
-        self.image.fill((127, 127, 127))
+        self.image.fill((0, 0, 0))
 
         self.center_radius = random.sample(self.center_size, 1)[0]
         self.context_radius = random.sample(self.ratios, 1)[0]
-
-        print(self.rect.centerx)
-        print(self.rect)
 
         # draw centre circle
         self.centre_circle = pg.draw.circle(
             self.image,
             self.center_colour,
-            (self.rect.centerx, self.rect.centery),
+            # (self.rect.y // 2, self.rect.x // 2),
+            (self.rect.width // 2, self.rect.height // 2),
+            # (self.center_radius, self.center_radius),
             self.center_radius,
         )
 
