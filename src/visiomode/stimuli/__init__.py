@@ -89,7 +89,7 @@ class Stimulus(pg.sprite.Sprite, mixins.BaseClassMixin, mixins.WebFormMixin):
 
     def get_details(self):
         """Returns a dictionary of stimulus attributes."""
-        return {"id": self.get_identifier(), "common_name": self.get_common_name()}
+        return {"id": self.get_identifier(), "common_name": self.get_common_name(), "attributes": vars(self)}
 
     def generate_new_trial(self):
         """Regenerate stimuli for a fresh trial"""

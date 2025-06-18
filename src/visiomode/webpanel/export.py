@@ -103,11 +103,12 @@ def _flatten_trials(session):
     for trial in session.get("trials"):
         start_time = (datetime.fromisoformat(trial["timestamp"]) - session_start_time).total_seconds()
 
-        stop_time = start_time + trial["iti"] + float(session["spec"]["stimulus_duration"]) / 1000
+        stop_time = start_time + trial["iti"] + float(session["spec"].get("stimulus_duration", 10000)) / 1000
         if trial["response"].get("timestamp"):
             stop_time = (datetime.fromisoformat(trial["response"]["timestamp"]) - session_start_time).total_seconds()
 
         stimulus = trial["stimulus"].get("common_name") if trial["stimulus"] != "None" else "None"
+        stimulus_attributes = trial["stimulus"].get("attributes") if trial["stimulus"] != "None" else "None"
         cue_onset = start_time + trial["iti"]
 
         response = trial["response"].get("name")
@@ -134,4 +135,5 @@ def _flatten_trials(session):
             "dist_x": dist_x,
             "dist_y": dist_y,
             "sdt_type": sdt_type,
+            "stimulus_attributes": stimulus_attributes,
         }

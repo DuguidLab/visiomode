@@ -265,6 +265,9 @@ class Task(mixins.BaseClassMixin, mixins.WebFormMixin, mixins.TaskEventsMixin):
         self.response_device.on_precued()
         self.reward_device.on_precued()
 
+    def get_spec(self):
+        """Return task specification"""
+
     def _session_runner(self):
         self.on_task_start()
         while self.is_running:

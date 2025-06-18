@@ -110,7 +110,7 @@ class HistoryAPI(flask.views.MethodView):
                                 "fname": session_file.split(os.sep)[-1],
                                 "animal_id": session["animal_id"],
                                 "date": session["timestamp"],
-                                "task": session["task"],
+                                "task": session.get("task"),
                                 "experiment": session["experiment"],
                                 "session_id": pathlib.Path(session_file).stem,
                             }
