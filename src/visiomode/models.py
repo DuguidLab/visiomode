@@ -140,7 +140,7 @@ class Session(Base):
         self.device = socket.gethostname() if not self.device else self.device
         self.animal_meta = {} if not self.animal_meta else self.animal_meta
         self.experimenter_meta = {} if not self.experimenter_meta else self.experimenter_meta
-        self.spec = self.task.get_spec if self.task else None
+        self.spec = self.task.get_spec if self.task else {}
 
     def to_dict(self):
         """Get class instance attributes as a dictionary.
