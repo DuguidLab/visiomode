@@ -53,6 +53,18 @@ class GoNoGo(tasks.Task):
     def get_random_stimulus(self):
         return random.choice([self.target, self.distractor])  # noqa: S311
 
+    def get_spec(self):
+        """Return task specification as a dictionary."""
+        return {
+            "iti": self.iti,
+            "stimulus_duration": self.stimulus_duration,
+            "response_profile": self.response_profile,
+            "response_address": self.response_address,
+            "corrections_enabled": self.corrections_enabled,
+            "target_stimulus": self.target.get_identifier(),
+            "distractor_stimulus": self.distractor.get_identifier(),
+        }
+
     @classmethod
     def get_common_name(cls):
         return "Go / NoGo"

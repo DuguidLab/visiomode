@@ -61,3 +61,15 @@ class TwoAlternativeForcedChoice(tasks.Task):
             self.screen.get_width() + (self.separator_size / 2),
         ]
         return random.sample(centers, 2)
+
+    def get_spec(self):
+        """Return task specification as a dictionary."""
+        return {
+            "iti": self.iti,
+            "stimulus_duration": self.stimulus_duration,
+            "response_profile": self.response_profile,
+            "response_address": self.response_address,
+            "corrections_enabled": self.corrections_enabled,
+            "target_stimulus": self.target.get_identifier(),
+            "distractor_stimulus": self.distractor.get_identifier(),
+        }
