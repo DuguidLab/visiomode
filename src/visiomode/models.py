@@ -140,6 +140,7 @@ class Session(Base):
         self.device = socket.gethostname() if not self.device else self.device
         self.animal_meta = {} if not self.animal_meta else self.animal_meta
         self.experimenter_meta = {} if not self.experimenter_meta else self.experimenter_meta
+        self.spec = self.task.get_spec if self.task else None
 
     def to_dict(self):
         """Get class instance attributes as a dictionary.
@@ -349,7 +350,7 @@ class Experimenter(Base):
                 list(map(operator.itemgetter("experimenter_name"), experimenters)).index(experimenter_name)
             )
         except ValueError:
-            logging.error(f"Tried removing '{experimenter_name}' from database " f"but it was not in it.")
+            logging.error(f"Tried removing '{experimenter_name}' from database but it was not in it.")
 
         with open(database_path, "w") as handle:
             json.dump(experimenters, handle)

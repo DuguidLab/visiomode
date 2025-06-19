@@ -68,8 +68,12 @@ class Task(mixins.BaseClassMixin, mixins.WebFormMixin, mixins.TaskEventsMixin):
         self.distractor = None
         self.separator = None
 
+        self.response_address = response_address
+        self.response_profile = response_device
         self.response_device = devices.get_input_device(response_device, response_address)
 
+        self.reward_address = reward_address
+        self.reward_profile = reward_profile
         self.reward_device = devices.get_output_profile(reward_profile, reward_address)
 
         self._response_q = queue.Queue()
@@ -266,7 +270,14 @@ class Task(mixins.BaseClassMixin, mixins.WebFormMixin, mixins.TaskEventsMixin):
         self.reward_device.on_precued()
 
     def get_spec(self):
-        """Return task specification"""
+        """Return task specification as a dictionary."""
+        return {
+            "iti": self.iti,
+            "stimulus_duration": self.stimulus_duration,
+            "response_profile": self.response_profile,
+            "response_address": self.response_address,
+            "corrections_enabled": self.corrections_enabled,
+        }
 
     def _session_runner(self):
         self.on_task_start()
