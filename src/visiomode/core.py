@@ -205,15 +205,15 @@ class Visiomode:
                 )
                 conf.Config().save()
 
-                task = tasks.get_task(request["data"].pop("task"))
+                task_cls = tasks.get_task(request["data"].pop("task"))
+                task = task_cls(screen=self.screen, **request["data"])
                 self.session = models.Session(
                     animal_id=request["data"].pop("animal_id"),
                     experimenter_name=request["data"].pop("experimenter_name"),
                     experiment=request["data"].pop("experiment"),
                     duration=float(request["data"].pop("duration")),
                     timestamp=datetime.datetime.now().isoformat(),
-                    task=task(screen=self.screen, **request["data"]),
-                    spec=request["data"],
+                    task=task,
                 )
                 self.session.task.start()
             elif request["type"] == "status":

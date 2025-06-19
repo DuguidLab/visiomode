@@ -30,8 +30,17 @@ class VariableContrastMovingGrating(moving_grating.MovingGrating):
         self.area = self.screen.get_rect()
 
     def get_details(self):
+        """Returns a dictionary of stimulus attributes."""
         return {
             "id": self.get_identifier(),
             "common_name": self.get_common_name(),
+            "width": self.width,
+            "height": self.height,
+            "center_x": self.rect.centerx,
+            "center_y": self.rect.centery,
             "trial_contrast": self.trial_contrast,
+            "period": self.period,
+            "frequency": self.frequency,
+            "drift_direction": "upwards" if self.direction > 0 else "downwards",
+            "velocity_px": self.px_per_cycle,
         }

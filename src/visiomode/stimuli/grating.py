@@ -21,6 +21,19 @@ class Grating(stimuli.Stimulus):
         self.rect = self.image.get_rect()
         self.area = self.screen.get_rect()
 
+    def get_details(self):
+        """Returns a dictionary of stimulus attributes."""
+        return {
+            "id": self.get_identifier(),
+            "common_name": self.get_common_name(),
+            "width": self.width,
+            "height": self.height,
+            "center_x": self.rect.centerx,
+            "center_y": self.rect.centery,
+            "contrast": self.contrast,
+            "period": self.period,
+        }
+
     @classmethod
     def sinusoid(cls, width: int, height: int, period: int, contrast: float = 1.0):
         sinusoid = Grating._sinusoid(width, height, period)

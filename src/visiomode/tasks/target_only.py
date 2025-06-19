@@ -30,3 +30,14 @@ class TargetOnly(tasks.Task):
 
     def hide_stimulus(self):
         self.target.hide()
+
+    def get_spec(self):
+        """Return task specification as a dictionary."""
+        return {
+            "iti": self.iti,
+            "stimulus_duration": self.stimulus_duration,
+            "response_profile": self.response_profile,
+            "response_address": self.response_address,
+            "corrections_enabled": self.corrections_enabled,
+            "target_stimulus": self.target.get_identifier(),
+        }
