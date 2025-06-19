@@ -108,7 +108,6 @@ def _flatten_trials(session):
             stop_time = (datetime.fromisoformat(trial["response"]["timestamp"]) - session_start_time).total_seconds()
 
         stimulus = trial["stimulus"].get("common_name") if trial["stimulus"] != "None" else "None"
-        stimulus_attributes = trial["stimulus"].get("attributes") if trial["stimulus"] != "None" else "None"
         cue_onset = start_time + trial["iti"]
 
         response = trial["response"].get("name")
@@ -135,5 +134,4 @@ def _flatten_trials(session):
             "dist_x": dist_x,
             "dist_y": dist_y,
             "sdt_type": sdt_type,
-            "stimulus_attributes": stimulus_attributes,
         }
