@@ -44,3 +44,19 @@ class MovingGrating(stimuli.Stimulus):
         # self.rect.move_ip(0, self.px_per_cycle)
 
         self.draw()
+
+    def get_details(self):
+        """Returns a dictionary of stimulus attributes."""
+        return {
+            "id": self.get_identifier(),
+            "common_name": self.get_common_name(),
+            "width": self.width,
+            "height": self.height,
+            "center_x": self.rect.centerx,
+            "center_y": self.rect.centery,
+            "contrast": self.contrast,
+            "period": self.period,
+            "frequency": self.frequency,
+            "drift_direction": "upwards" if self.direction > 0 else "downwards",
+            "velocity_px": self.px_per_cycle,
+        }
