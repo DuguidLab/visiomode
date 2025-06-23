@@ -87,9 +87,6 @@ class Trial(Base):
     stimulus: dict = dataclasses.field(default_factory=dict)
     sdt_type: str = "NA"
 
-    def __post_init__(self):
-        self.timestamp = datetime.datetime.now().isoformat()
-
     def __repr__(self):
         return f"<Trial {self.timestamp!s}>"
 
@@ -140,7 +137,7 @@ class Session(Base):
         self.device = socket.gethostname() if not self.device else self.device
         self.animal_meta = {} if not self.animal_meta else self.animal_meta
         self.experimenter_meta = {} if not self.experimenter_meta else self.experimenter_meta
-        self.spec = self.task.get_spec if self.task else {}
+        self.spec = self.task.get_spec() if self.task else {}
 
     def to_dict(self):
         """Get class instance attributes as a dictionary.
