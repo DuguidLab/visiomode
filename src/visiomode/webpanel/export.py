@@ -53,19 +53,15 @@ def to_nwb(session_path):
 
     nwbfile.subject = pynwb.file.Subject(subject_id=session["animal_id"])
 
-    nwbfile.add_trial_column(name="stimulus", description="the visual stimuli during the trial")
-    nwbfile.add_trial_column(name="cue_onset", description="when the stimulus came on")
-    nwbfile.add_trial_column(name="response", description="trial response type (left, right, lever)")
-    nwbfile.add_trial_column(name="response_time", description="response timestamp")
-    nwbfile.add_trial_column(name="pos_x", description="response position in x-axis")
-    nwbfile.add_trial_column(name="pos_y", description="response position in y-axis")
-    nwbfile.add_trial_column(name="dist_x", description="response displacement in x-axis")
-    nwbfile.add_trial_column(name="dist_y", description="response displacement in y-axis")
-    nwbfile.add_trial_column(name="outcome", description="trial outcome")
-    nwbfile.add_trial_column(name="correction", description="whether trial was a correction trial")
-    nwbfile.add_trial_column(name="sdt_type", description="signal detection theory classification")
+    trials = flatten_trials(session)
+    trial_keys = set().union(*(trial.keys() for trial in trials))
+    for key in trial_keys:
+        try:
+            nwbfile.add_trial_column(name=key, description="")
+        except ValueError:
+            continue
 
-    for trial in flatten_trials(session):
+    for trial in trials:
         nwbfile.add_trial(**trial)
 
     nwbfile.create_device(
