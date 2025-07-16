@@ -83,7 +83,7 @@ class Trial(Base):
     response: Response
     timestamp: typing.Optional[str] = None
     correction: bool = False
-    response_time: int = 0
+    response_time: float = 0.0
     stimulus: dict = dataclasses.field(default_factory=dict)
     sdt_type: str = "NA"
 
