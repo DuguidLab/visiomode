@@ -53,7 +53,7 @@ def to_nwb(session_path):
 
     nwbfile.subject = pynwb.file.Subject(subject_id=session["animal_id"])
 
-    trials = flatten_trials(session)
+    trials = list(flatten_trials(session))
     trial_keys = set().union(*(trial.keys() for trial in trials))
     for key in trial_keys:
         try:
@@ -130,7 +130,7 @@ def flatten_trials(session):
                 }
                 stimulus = {**target_stim, **distractor_stim}
 
-        cue_onset = start_time + trial["iti"] if stimulus else None
+        cue_onset = start_time + trial["iti"] if stimulus else "NA"
 
         yield {
             "start_time": start_time,
