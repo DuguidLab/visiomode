@@ -98,6 +98,7 @@ def session(config):
                 response_time=1.0,
                 sdt_type="hit",
                 stimulus="None",
+                correction=False,
             ),
             models.Trial(
                 outcome="incorrect",
@@ -114,6 +115,7 @@ def session(config):
                 response_time=1.5,
                 sdt_type="false_alarm",
                 stimulus="None",
+                correction=False,
             ),
         ]
     )
