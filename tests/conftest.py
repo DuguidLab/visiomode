@@ -85,6 +85,7 @@ def session(config):
         [
             models.Trial(
                 outcome="correct",
+                timestamp=str(datetime.now().isoformat()),
                 iti=5.0,
                 response=models.Response(
                     timestamp=str(datetime.now().isoformat()),
@@ -97,9 +98,11 @@ def session(config):
                 response_time=1.0,
                 sdt_type="hit",
                 stimulus="None",
+                correction=False,
             ),
             models.Trial(
                 outcome="incorrect",
+                timestamp=str(datetime.now().isoformat()),
                 iti=5.0,
                 response=models.Response(
                     timestamp=str(datetime.now().isoformat()),
@@ -112,6 +115,7 @@ def session(config):
                 response_time=1.5,
                 sdt_type="false_alarm",
                 stimulus="None",
+                correction=False,
             ),
         ]
     )
