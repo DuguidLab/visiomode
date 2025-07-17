@@ -76,9 +76,9 @@
         });
     };
 
-    reward_selector = document.getElementById('response_device')
-    reward_selector.onchange = function () {
-        if (reward_selector.options[reward_selector.selectedIndex].value === "touchscreen") {
+    responseDeviceSelector = document.getElementById('response_device')
+    responseDeviceSelector.onchange = function () {
+        if (responseDeviceSelector.options[responseDeviceSelector.selectedIndex].value === "touchscreen" || responseDeviceSelector.options[responseDeviceSelector.selectedIndex].value === "debuginput") {
             document.getElementById('response_address').style.display = "none"
             document.getElementById('response_address_label').style.display = "none"
             document.getElementById('response_test_label').style.display = "none"
@@ -91,5 +91,23 @@
         }
     }
 
-    reward_selector.onchange();
+    responseDeviceSelector.onchange();
+
+
+    rewardDeviceSelector = document.getElementById('reward_profile')
+    rewardDeviceSelector.onchange = function () {
+        if (rewardDeviceSelector.options[rewardDeviceSelector.selectedIndex].value === "debugoutput") {
+            document.getElementById('reward_address').style.display = "none"
+            document.getElementById('reward_address_label').style.display = "none"
+            document.getElementById('reward_test_label').style.display = "none"
+            document.getElementById('test-reward-btn').style.display = "none"
+        } else {
+            document.getElementById('reward_address').style.display = "block"
+            document.getElementById('reward_address_label').style.display = "block"
+            document.getElementById('reward_test_label').style.display = "block"
+            document.getElementById('test-reward-btn').style.display = "block"
+        }
+    }
+
+    rewardDeviceSelector.onchange();
 </script>
