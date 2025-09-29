@@ -13,12 +13,13 @@ class SolidColour(stimuli.Stimulus):
     def __init__(self, background, colour, **kwargs):
         super().__init__(background, **kwargs)
         self.colour = colour
-        rgb = pg.Color(colour)
+        self.rgb = pg.Color(colour)
 
         self.image = pg.Surface((self.width, self.height))
-        self.image.fill(rgb)
+        self.image.fill(self.rgb)
         self.rect = self.image.get_rect()
         self.area = self.screen.get_rect()
+        print(colour)
 
     def get_details(self):
         """Returns a dictionary of stimulus attributes."""
@@ -29,5 +30,10 @@ class SolidColour(stimuli.Stimulus):
             "height": self.height,
             "center_x": self.rect.centerx,
             "center_y": self.rect.centery,
-            "colour": self.colour,
+            "colour_hex": self.colour,
+            "colour_rgba": str(self.rgb),
+            "hue": self.rgb.hsla[0],
+            "saturation": self.rgb.hsla[1],
+            "luminance": self.rgb.hsla[2],
+            "alpha": self.rgb.hsla[3],
         }
