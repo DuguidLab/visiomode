@@ -19,7 +19,6 @@ class SolidColour(stimuli.Stimulus):
         self.image.fill(self.rgb)
         self.rect = self.image.get_rect()
         self.area = self.screen.get_rect()
-        print(colour)
 
     def get_details(self):
         """Returns a dictionary of stimulus attributes."""
