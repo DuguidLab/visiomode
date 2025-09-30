@@ -3,47 +3,41 @@
 #  Distributed under the terms of the MIT Licence.
 
 import random
-import colorsys
 
 import pygame as pg
-import colorsys
-
-
-import visiomode.stimuli.solid_colour as solidcolour
 
 from visiomode import stimuli
 
+# class VariableColourFixedRange(stimuli.Stimulus):
+#     form_path = "stimuli/variable_colour_fixed.html"
 
-class VariableColourFixedRange(solidcolour.SolidColour):
-    form_path = "stimuli/variable_colour_fixed.html"
+#     def __init__(self, background, base_colour, saturations, luminances, **kwargs):
+#         super().__init__(background, **kwargs)
 
-    def __init__(self, background, base_colour, saturations, luminances, **kwargs):
-        super().__init__(background, **kwargs)
+#         self.colour = base_colour
+#         self.rgb = pg.Color(base_colour)
 
-        self.colour = base_colour
-        self.rgb = pg.Color(base_colour)
+#         self.image = pg.Surface((self.width, self.height))
+#         self.image.fill(self.rgb)
+#         self.rect = self.image.get_rect()
+#         self.area = self.screen.get_rect()
 
-        self.image = pg.Surface((self.width, self.height))
-        self.image.fill(self.rgb)
-        self.rect = self.image.get_rect()
-        self.area = self.screen.get_rect()
-
-    def get_details(self):
-        """Returns a dictionary of stimulus attributes."""
-        return {
-            "id": self.get_identifier(),
-            "common_name": self.get_common_name(),
-            "width": self.width,
-            "height": self.height,
-            "center_x": self.rect.centerx,
-            "center_y": self.rect.centery,
-            "colour_hex": self.colour,
-            "colour_rgba": str(self.rgb),
-            "hue": self.rgb.hsla[0],
-            "saturation": self.rgb.hsla[1],
-            "luminance": self.rgb.hsla[2],
-            "alpha": self.rgb.hsla[3],
-        }
+#     def get_details(self):
+#         """Returns a dictionary of stimulus attributes."""
+#         return {
+#             "id": self.get_identifier(),
+#             "common_name": self.get_common_name(),
+#             "width": self.width,
+#             "height": self.height,
+#             "center_x": self.rect.centerx,
+#             "center_y": self.rect.centery,
+#             "colour_hex": self.colour,
+#             "colour_rgba": str(self.rgb),
+#             "hue": self.rgb.hsla[0],
+#             "saturation": self.rgb.hsla[1],
+#             "luminance": self.rgb.hsla[2],
+#             "alpha": self.rgb.hsla[3],
+#         }
 
 
 class VariableColourUniformRange(stimuli.Stimulus):
@@ -62,7 +56,7 @@ class VariableColourUniformRange(stimuli.Stimulus):
         super().__init__(background, **kwargs)
 
         self.hue = float(hue)
-        if self.hue < 0:
+        if self.hue < 0:  # pygame.Color hates negative values
             self.hue = 360 - abs(self.hue)
         self.saturation_min = float(saturation_min)
         self.saturation_max = float(saturation_max)
