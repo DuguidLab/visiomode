@@ -1,0 +1,49 @@
+<div class="row">
+    <div class="col">
+        <label for="{{ idx or ''}}hue">Hue (degrees)</label>
+        <input id="{{ idx or ''}}hue" class="form-control mb-3" type="number" value="30" min="-360" max=360 step="1">
+    </div>
+    <div class="col">
+        <label></label>
+        <div class="card mt-1" id="{{ idx or ''}}hue_viewer">
+            <div class="card-body"></div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col">
+        <label for="{{ idx or ''}}saturation_min">Saturation min (0-100%)</label>
+        <input id="{{ idx or ''}}saturation_min" class="form-control mb-3" type="number" value="50" min="0" max="100"
+            step="0.1">
+    </div>
+    <div class="col">
+        <label for="{{ idx or ''}}saturation_max">Saturation max (0-100%)</label>
+        <input id="{{ idx or ''}}saturation_max" class="form-control mb-3" type="number" value="50" min="0" max="100"
+            step="0.1">
+    </div>
+</div>
+
+<div class="row">
+    <div class="col">
+        <label for="{{ idx or ''}}luminance_min">Luminance min (0-100%)</label>
+        <input id="{{ idx or ''}}luminance_min" class="form-control mb-3" type="number" value="50" min="0" max="100"
+            step="0.1">
+    </div>
+    <div class="col">
+        <label for="{{ idx or ''}}luminance_max">Luminance max (0-100%)</label>
+        <input id="{{ idx or ''}}luminance_max" class="form-control mb-3" type="number" value="50" min="0" max="100"
+            step="0.1">
+    </div>
+</div>
+
+
+<script>
+    hue_selector = document.getElementById("{{ idx or ''}}hue");
+    hue_viewer = document.getElementById("{{ idx or ''}}hue_viewer");
+
+    hue_selector.oninput = function () {
+        hue_viewer.style.backgroundColor = `hsl(${hue_selector.value} 50 50)`;
+    }
+    hue_selector.oninput();
+</script>
